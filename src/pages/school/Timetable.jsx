@@ -1,181 +1,423 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { Calendar, Plus, MapPin, Search } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { powerSync } from '@/api/PowerSyncConnector';
-import { base44 } from '@/api/base44Client';
+import React, { useState, useMemo } from 'react';
+import { 
+  useIndustryRecords, 
+  useMutateIndustryRecord, 
+  useDeleteIndustryRecord 
+} from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { 
+  Calendar, 
+  Plus, 
+  Trash2, 
+  Edit, 
+  Clock, 
+  MapPin, 
+  User, 
+  BookOpen, 
+  AlertTriangle 
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+const PERIODS = [
+  { id: 1, type: 'class', startTime: '07:30', endTime: '08:15', name: 'Period 1' },
+  { id: 2, type: 'class', startTime: '08:15', endTime: '09:00', name: 'Period 2' },
+  { id: 3, type: 'class', startTime: '09:00', endTime: '09:45', name: 'Period 3' },
+  { id: 'break1', type: 'break', startTime: '09:45', endTime: '10:00', name: 'Morning Break' },
+  { id: 4, type: 'class', startTime: '10:00', endTime: '10:45', name: 'Period 4' },
+  { id: 5, type: 'class', startTime: '10:45', endTime: '11:30', name: 'Period 5' },
+  { id: 6, type: 'class', startTime: '11:30', endTime: '12:15', name: 'Period 6' },
+  { id: 'break2', type: 'break', startTime: '12:15', endTime: '13:00', name: 'Lunch Break' },
+  { id: 7, type: 'class', startTime: '13:00', endTime: '13:45', name: 'Period 7' },
+  { id: 8, type: 'class', startTime: '13:45', endTime: '14:30', name: 'Period 8' },
+];
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-const PERIODS = [1, 2, 3, 4, 5, 6, 7, 8];
+
+const SUBJECTS = [
+  'Mathematics', 
+  'English', 
+  'Science', 
+  'Social Studies', 
+  'ICT', 
+  'Ghanaian Language', 
+  'French', 
+  'Religious & Moral Education', 
+  'Physical Education', 
+  'Creative Arts'
+];
 
 export default function Timetable() {
-  const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const [selectedClass, setSelectedClass] = useState('Grade 9A');
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ subject: 'Mathematics', teacher: '', room: '', day: 'Monday', period: '1', startTime: '08:00', endTime: '09:00' });
+  const { data: timetableRecords = [], isLoading: loadingTimetable } = useIndustryRecords('school_timetable');
+  const { data: classRecords = [] } = useIndustryRecords('school_class');
+  const { data: teacherRecords = [] } = useIndustryRecords('school_teacher');
+  const { mutateAsync: mutateRecord, isLoading: isSaving } = useMutateIndustryRecord();
+  const { mutateAsync: deleteRecord } = useDeleteIndustryRecord();
 
-  const { data: dbRecords = [], isLoading } = useIndustryRecords('timetable_slot');
-  const mutateRecord = useMutateIndustryRecord();
-  const deleteRecord = useDeleteIndustryRecord();
+  const [selectedClass, setSelectedClass] = useState('');
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('add'); // 'add', 'edit'
+  const [currentRecordId, setCurrentRecordId] = useState(null);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    day: '',
+    period: '',
+    start_time: '',
+    end_time: '',
+    subject: '',
+    teacher_id: '',
+    teacher_name: '',
+    room: ''
+  });
 
-  const classSlots = dbRecords.filter(r => r.data?.className === selectedClass).map(r => ({ id: r.id, ...r.data }));
+  // Derived data
+  const classTimetable = useMemo(() => {
+    return timetableRecords.filter(r => r.data?.class_name === selectedClass);
+  }, [timetableRecords, selectedClass]);
 
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-    const { source, destination, draggableId } = result;
-    if (source.droppableId === destination.droppableId) return;
-
-    const [destDay, destPeriod] = destination.droppableId.split('-');
+  // Handlers
+  const handleCellClick = (day, period) => {
+    if (!selectedClass) {
+      toast.error('Please select a class first');
+      return;
+    }
     
-    mutateRecord.mutate({
-      id: draggableId,
-      recordType: 'timetable_slot',
-      payload: { ...classSlots.find(s => s.id === draggableId), day: destDay, period: parseInt(destPeriod) },
-      status: 'active',
-      searchText: `${selectedClass} ${destDay}`
+    const existingSlot = classTimetable.find(
+      r => r.data?.day === day && r.data?.period === period.id
+    );
+
+    if (existingSlot) {
+      // Edit mode
+      setModalMode('edit');
+      setCurrentRecordId(existingSlot.id);
+      setFormData({
+        day: existingSlot.data.day || day,
+        period: existingSlot.data.period || period.id,
+        start_time: existingSlot.data.start_time || period.startTime,
+        end_time: existingSlot.data.end_time || period.endTime,
+        subject: existingSlot.data.subject || '',
+        teacher_id: existingSlot.data.teacher_id || '',
+        teacher_name: existingSlot.data.teacher_name || '',
+        room: existingSlot.data.room || ''
+      });
+    } else {
+      // Add mode
+      setModalMode('add');
+      setCurrentRecordId(null);
+      setFormData({
+        day,
+        period: period.id,
+        start_time: period.startTime,
+        end_time: period.endTime,
+        subject: '',
+        teacher_id: '',
+        teacher_name: '',
+        room: ''
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleTeacherChange = (teacherId) => {
+    const teacher = teacherRecords.find(t => t.id === teacherId);
+    setFormData({
+      ...formData,
+      teacher_id: teacherId,
+      teacher_name: teacher ? (teacher.data.name || teacher.data.full_name || 'Unknown') : ''
     });
   };
 
-  const handleAddSlot = () => {
-    mutateRecord.mutate({
-      recordType: 'timetable_slot',
-      payload: { ...formData, className: selectedClass, period: parseInt(formData.period) },
-      status: 'active',
-      searchText: `${selectedClass} ${formData.day}`
-    }, {
-      onSuccess: () => { toast.success('Slot added!'); setShowModal(false); }
-    });
+  const handleSave = async () => {
+    if (!formData.subject || !formData.teacher_id) {
+      toast.error('Please select a subject and teacher');
+      return;
+    }
+
+    // Check for conflict
+    if (modalMode === 'add') {
+      const isConflict = timetableRecords.some(r => 
+        r.data?.day === formData.day && 
+        r.data?.period === formData.period &&
+        r.data?.class_name === selectedClass &&
+        r.id !== currentRecordId
+      );
+
+      if (isConflict) {
+        toast.error('A slot already exists for this day and period');
+        return;
+      }
+    }
+
+    try {
+      const payload = {
+        ...formData,
+        class_name: selectedClass
+      };
+
+      await mutateRecord({
+        id: currentRecordId,
+        recordType: 'school_timetable',
+        payload,
+        searchText: `${selectedClass} ${formData.day} ${formData.subject}`
+      });
+
+      toast.success(`Timetable slot ${modalMode === 'add' ? 'added' : 'updated'}`);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to save slot');
+    }
   };
+
+  const handleDelete = async () => {
+    if (!currentRecordId) return;
+    
+    if (window.confirm('Are you sure you want to delete this slot?')) {
+      try {
+        await deleteRecord({
+          id: currentRecordId,
+          recordType: 'school_timetable'
+        });
+        toast.success('Slot deleted');
+        setIsModalOpen(false);
+      } catch (error) {
+        console.error(error);
+        toast.error('Failed to delete slot');
+      }
+    }
+  };
+
+  if (loadingTimetable) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6 font-dmsans max-w-7xl mx-auto">
-      <div className="bg-green-600 p-6 flex justify-between items-center border-4 border-green-900">
+    <div className="p-6 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-black text-white uppercase tracking-widest tracking-[-0.02em] tracking-[0.04em]">Master Timetable</h1>
-        </div>
-        <div className="flex gap-4">
-          <select 
-            value={selectedClass} 
-            onChange={e => setSelectedClass(e.target.value)}
-            className="bg-white border-4 border-green-900 px-4 py-2 font-semibold text-green-900 focus:outline-none uppercase tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-          >
-            {['Grade 7B', 'Grade 8C', 'Grade 9A', 'Grade 9B'].map(c => <option key={c}>{c}</option>)}
-          </select>
-          <button onClick={() => setShowModal(true)} className="bg-white text-green-900 border-4 border-green-900 px-4 py-2 font-black uppercase flex items-center gap-2 hover:bg-green-100 transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <Plus className="w-5 h-5"/> New Slot
-          </button>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+            <Calendar className="mr-2 h-6 w-6 text-primary" />
+            Class Timetable
+          </h1>
+          <p className="text-gray-500 mt-1">Manage weekly schedules for classes</p>
         </div>
       </div>
 
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="border-4 border-green-900 bg-white overflow-x-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="min-w-[900px]">
-            <div className="grid grid-cols-6 border-b-4 border-green-900">
-              <div className="bg-green-100 p-4 flex items-center justify-center border-r-4 border-green-900"><Calendar className="w-6 h-6 text-green-800"/></div>
-              {DAYS.map(day => (
-                <div key={day} className="bg-green-100 p-4 text-center font-black text-green-900 uppercase tracking-widest border-r-4 border-green-900 last:border-r-0 tracking-[0.04em]">
-                  {day}
-                </div>
+      <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
+        <div className="max-w-xs">
+          <Label htmlFor="class-select" className="mb-2 block">Select Class</Label>
+          <Select value={selectedClass} onValueChange={setSelectedClass}>
+            <SelectTrigger id="class-select">
+              <SelectValue placeholder="Select a class" />
+            </SelectTrigger>
+            <SelectContent>
+              {classRecords.map(cls => (
+                <SelectItem key={cls.id} value={cls.data.name || cls.id}>
+                  {cls.data.name || 'Unnamed Class'}
+                </SelectItem>
               ))}
-            </div>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-            {PERIODS.map(period => (
-              <div key={period} className="grid grid-cols-6 border-b-4 border-green-900 last:border-b-0 min-h-[120px]">
-                <div className="bg-green-50 p-4 flex flex-col items-center justify-center border-r-4 border-green-900">
-                  <span className="font-black text-2xl text-green-800 tracking-[-0.02em]">P{period}</span>
-                </div>
-                {DAYS.map(day => {
-                  const slotId = `${day}-${period}`;
-                  const slot = classSlots.find(s => s.day === day && s.period === period);
+      {selectedClass ? (
+        <div className="bg-white rounded-lg shadow-sm border overflow-x-auto">
+          <table className="w-full min-w-[800px] border-collapse">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="border-b border-r p-4 text-left font-semibold text-gray-600 w-32">
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-2" />
+                    Time
+                  </div>
+                </th>
+                {DAYS.map(day => (
+                  <th key={day} className="border-b p-4 text-center font-semibold text-gray-600">
+                    {day}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {PERIODS.map((period, index) => {
+                if (period.type === 'break') {
                   return (
-                    <Droppable key={slotId} droppableId={slotId}>
-                      {(provided, snapshot) => (
-                        <div 
-                          ref={provided.innerRef} 
-                          {...provided.droppableProps}
-                          className={`p-2 border-r-4 border-green-900 last:border-r-0 ${snapshot.isDraggingOver ? 'bg-green-200' : 'bg-white'}`}
+                    <tr key={`break-${index}`} className="bg-gray-100">
+                      <td className="border-b border-r p-3 text-sm text-gray-500 font-medium whitespace-nowrap">
+                        {period.startTime} - {period.endTime}
+                      </td>
+                      <td colSpan={5} className="border-b p-3 text-center text-gray-500 font-medium italic tracking-wider">
+                        {period.name.toUpperCase()}
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return (
+                  <tr key={`period-${period.id}`}>
+                    <td className="border-b border-r p-3 align-top whitespace-nowrap">
+                      <div className="font-medium text-gray-900">{period.name}</div>
+                      <div className="text-sm text-gray-500">{period.startTime} - {period.endTime}</div>
+                    </td>
+                    {DAYS.map(day => {
+                      const slot = classTimetable.find(
+                        r => r.data?.day === day && r.data?.period === period.id
+                      );
+
+                      return (
+                        <td 
+                          key={`${day}-${period.id}`} 
+                          className="border-b border-r p-2 align-top h-24 hover:bg-gray-50 transition-colors cursor-pointer relative group"
+                          onClick={() => handleCellClick(day, period)}
                         >
-                          {slot && (
-                            <Draggable draggableId={slot.id} index={0}>
-                              {(provided, snapshot) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className={`h-full border-4 border-green-800 p-3 flex flex-col justify-between ${snapshot.isDragging ? 'bg-green-300' : 'bg-green-50'}`}
-                                >
-                                  <div>
-                                    <p className="font-black text-green-900 uppercase leading-tight tracking-[0.04em]">{slot.subject}</p>
-                                    <p className="text-xs font-semibold text-green-700 mt-1 tracking-[0.04em]">{slot.teacher}</p>
-                                  </div>
-                                  <div className="flex justify-between items-center mt-2">
-                                    <span className="text-[10px] font-black bg-green-800 text-white px-2 py-1 uppercase tracking-[0.04em]">{slot.room}</span>
-                                    <button onClick={() => deleteRecord.mutate({ id: slot.id, recordType: 'timetable_slot'})} className="text-red-500 hover:text-red-700">
-                                      <Plus className="w-4 h-4 rotate-45" />
-                                    </button>
-                                  </div>
+                          {slot ? (
+                            <div className="bg-blue-50 border border-blue-100 rounded p-2 h-full flex flex-col justify-between">
+                              <div>
+                                <div className="font-semibold text-blue-900 text-sm mb-1 truncate">
+                                  {slot.data.subject}
+                                </div>
+                                <div className="text-xs text-blue-700 flex items-center truncate">
+                                  <User className="w-3 h-3 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{slot.data.teacher_name}</span>
+                                </div>
+                              </div>
+                              {slot.data.room && (
+                                <div className="text-xs text-gray-500 flex items-center mt-1 truncate">
+                                  <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{slot.data.room}</span>
                                 </div>
                               )}
-                            </Draggable>
+                              
+                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded">
+                                <span className="bg-white text-xs px-2 py-1 rounded shadow text-gray-700 font-medium flex items-center">
+                                  <Edit className="w-3 h-3 mr-1" /> Edit
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="h-full border-2 border-dashed border-gray-200 rounded flex items-center justify-center text-gray-400 group-hover:border-primary group-hover:text-primary transition-colors bg-gray-50">
+                              <Plus className="w-5 h-5" />
+                            </div>
                           )}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-      </DragDropContext>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-green-900/80 flex items-center justify-center p-4 z-50">
-          <div className="bg-white border-4 border-green-900 p-8 max-w-md w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-2xl font-black text-green-900 uppercase mb-6 tracking-[-0.02em] tracking-[0.04em]">Schedule Class</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Subject</label>
-                <input value={formData.subject} onChange={e=>setFormData({...formData, subject: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Day</label>
-                  <select value={formData.day} onChange={e=>setFormData({...formData, day: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50">
-                    {DAYS.map(d=><option key={d}>{d}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Period</label>
-                  <select value={formData.period} onChange={e=>setFormData({...formData, period: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50">
-                    {PERIODS.map(p=><option key={p} value={p}>P{p}</option>)}
-                  </select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Teacher</label>
-                  <input value={formData.teacher} onChange={e=>setFormData({...formData, teacher: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50" />
-                </div>
-                <div>
-                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Room</label>
-                  <input value={formData.room} onChange={e=>setFormData({...formData, room: e.target.value})} className="w-full border-4 border-green-900 p-2 font-semibold text-green-900 focus:outline-none bg-green-50" />
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-4 mt-8">
-              <button onClick={()=>setShowModal(false)} className="flex-1 border-4 border-green-900 bg-white font-black uppercase py-3 hover:bg-green-50 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Cancel</button>
-              <button onClick={handleAddSlot} className="flex-1 border-4 border-green-900 bg-green-500/10 text-white font-black uppercase py-3 hover:bg-green-600 tracking-[0.04em]">Save</button>
-            </div>
-          </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm border p-12 text-center">
+          <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-1">No Class Selected</h3>
+          <p className="text-gray-500">Please select a class to view or manage its timetable.</p>
         </div>
       )}
+
+      {/* Add/Edit Slot Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{modalMode === 'add' ? 'Add Timetable Slot' : 'Edit Timetable Slot'}</DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="bg-gray-50 p-3 rounded-md flex items-center justify-between text-sm">
+              <span className="font-medium text-gray-700">{selectedClass}</span>
+              <span className="text-gray-500">{formData.day} • {formData.start_time} - {formData.end_time}</span>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="subject">Subject</Label>
+              <Select 
+                value={formData.subject} 
+                onValueChange={(val) => setFormData({...formData, subject: val})}
+              >
+                <SelectTrigger id="subject">
+                  <SelectValue placeholder="Select Subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SUBJECTS.map(subject => (
+                    <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="grid gap-2">
+              <Label htmlFor="teacher">Teacher</Label>
+              <Select 
+                value={formData.teacher_id} 
+                onValueChange={handleTeacherChange}
+              >
+                <SelectTrigger id="teacher">
+                  <SelectValue placeholder="Select Teacher" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teacherRecords.map(teacher => (
+                    <SelectItem key={teacher.id} value={teacher.id}>
+                      {teacher.data.name || teacher.data.full_name || 'Unnamed Teacher'}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="room">Room (Optional)</Label>
+              <Input
+                id="room"
+                value={formData.room}
+                onChange={(e) => setFormData({...formData, room: e.target.value})}
+                placeholder="e.g. Room 3, Lab A"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter className="flex justify-between items-center sm:justify-between">
+            {modalMode === 'edit' ? (
+              <Button type="button" variant="destructive" size="sm" onClick={handleDelete}>
+                <Trash2 className="w-4 h-4 mr-1" /> Delete
+              </Button>
+            ) : (
+              <div></div>
+            )}
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save Slot'}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

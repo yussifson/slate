@@ -1,198 +1,340 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { BedDouble, Search, Plus, Home, MoreVertical, Users, MapPin } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import React, { useState } from 'react';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { Plus, Search, Trash2, Edit2, Users, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { powerSync } from '@/api/PowerSyncConnector';
-import { toast } from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import toast from 'react-hot-toast';
 
 export default function Hostel() {
-  const { t } = useTranslation();
+  const companyId = useCompanyId();
+  const { data: hostels = [], isLoading } = useIndustryRecords('school_hostel');
+  const { mutateAsync: saveRecord } = useMutateIndustryRecord();
+  const { mutateAsync: deleteRecord } = useDeleteIndustryRecord();
+
   const [search, setSearch] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
-
-  const { data: records = [], isLoading } = useIndustryRecords('hostel');
-  const mutateRecord = useMutateIndustryRecord();
-  const deleteRecord = useDeleteIndustryRecord();
-
   const [formData, setFormData] = useState({
-    name: '', type: 'Boys', warden: '', capacity: '', rooms: ''
+    room_number: '',
+    block: 'Block A',
+    type: 'Dormitory',
+    capacity: 20,
+    occupancy: 0,
+    gender: 'Male',
+    house_parent: '',
+    amenities: 'Beds, Storage, Fan',
+    status: 'Available'
   });
 
-  const hostels = records.map(r => ({
-    id: r.id,
-    ...r.data
-  }));
+  const filteredRecords = hostels.filter(record => {
+    const d = record.data;
+    if (!d) return false;
+    return d.room_number?.toLowerCase().includes(search.toLowerCase()) || 
+           d.block?.toLowerCase().includes(search.toLowerCase());
+  });
 
-  const filtered = hostels.filter(h =>
-    h.name?.toLowerCase().includes(search.toLowerCase()) || 
-    h.warden?.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const handleSave = () => {
-    if (!formData.name || !formData.capacity) return toast.error("Name and capacity required");
-    
-    const payload = {
-      name: formData.name,
-      type: formData.type,
-      warden: formData.warden,
-      capacity: formData.capacity,
-      rooms: formData.rooms,
-      status: 'Active'
-    };
-
-    if (editingId) {
-      mutateRecord.mutate({
-        id: editingId, recordType: 'hostel', payload, status: 'active',
-        searchText: `${formData.name} ${formData.warden} ${formData.type}`
-      }, {
-        onSuccess: () => { toast.success("Hostel updated"); setShowModal(false); setEditingId(null); }
+  const openModal = (record = null) => {
+    if (record) {
+      setEditingId(record.id);
+      setFormData({
+        room_number: record.data.room_number || '',
+        block: record.data.block || 'Block A',
+        type: record.data.type || 'Dormitory',
+        capacity: Number(record.data.capacity) || 20,
+        occupancy: Number(record.data.occupancy) || 0,
+        gender: record.data.gender || 'Male',
+        house_parent: record.data.house_parent || '',
+        amenities: record.data.amenities || 'Beds, Storage, Fan',
+        status: record.data.status || 'Available'
       });
     } else {
-      mutateRecord.mutate({
-        recordType: 'hostel', payload, status: 'active',
-        searchText: `${formData.name} ${formData.warden} ${formData.type}`
-      }, {
-        onSuccess: () => { toast.success("Hostel saved"); setShowModal(false); }
+      setEditingId(null);
+      setFormData({
+        room_number: '',
+        block: 'Block A',
+        type: 'Dormitory',
+        capacity: 20,
+        occupancy: 0,
+        gender: 'Male',
+        house_parent: '',
+        amenities: 'Beds, Storage, Fan',
+        status: 'Available'
       });
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!formData.room_number) {
+      toast.error('Room number is required');
+      return;
+    }
+
+    // Auto update status based on occupancy
+    let newStatus = formData.status;
+    if (formData.occupancy >= formData.capacity) {
+      newStatus = 'Full';
+    } else if (newStatus === 'Full' && formData.occupancy < formData.capacity) {
+      newStatus = 'Available';
+    }
+
+    try {
+      await saveRecord({
+        id: editingId,
+        recordType: 'school_hostel',
+        payload: { ...formData, status: newStatus },
+        searchText: `${formData.room_number} ${formData.block} ${formData.gender}`,
+        status: newStatus
+      });
+      toast.success('Room saved successfully');
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to save room');
     }
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this room?')) {
+      try {
+        await deleteRecord({ id, recordType: 'school_hostel' });
+        toast.success('Room deleted');
+      } catch (error) {
+        toast.error('Failed to delete room');
+      }
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Available': return 'bg-green-100 text-green-800';
+      case 'Full': return 'bg-red-100 text-red-800';
+      case 'Under Maintenance': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-gray-500">Loading hostel rooms...</div>;
+  }
+
   return (
-    <div className="space-y-8 font-dmsans p-4 md:p-8 bg-[#f4fdf8] min-h-screen text-slate-900">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-4xl font-black text-emerald-900 tracking-tight uppercase tracking-[-0.02em] tracking-[0.04em]">{t("hostel_dormitory", "Campus Map")}</h1>
-          <p className="text-[#1E3A8A] dark:text-blue-400 font-medium text-lg mt-1">{t("manage_dormitories", "Visual block/room allocation map")}</p>
+          <h1 className="text-2xl font-bold text-gray-800">Hostel Management</h1>
+          <p className="text-gray-600">Manage rooms, dormitories, and capacity.</p>
         </div>
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button onClick={() => { setFormData({name: '', type: 'Boys', warden: '', capacity: '', rooms: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-colors">
-            <Plus className="w-6 h-6" /> {t("add_hostel", "New Block")}
-          </Button>
-        </motion.div>
+        <Button onClick={() => openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Room
+        </Button>
       </div>
-      
-      <div className="border-2 border-emerald-900 bg-[#F0F4FF] dark:bg-blue-900/20 p-6 flex flex-col md:flex-row gap-4 items-center">
-        <div className="w-16 h-16 bg-emerald-200 border-2 border-emerald-900 flex items-center justify-center text-emerald-900 shrink-0">
-          <MapPin className="w-8 h-8" />
-        </div>
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
-          <Input placeholder="Search blocks or wardens..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-white border-2 border-emerald-900 rounded-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-300 w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+
+      <div className="mb-6 max-w-md">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            placeholder="Search rooms or blocks..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10"
+          />
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="py-20 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold text-xl uppercase animate-pulse tracking-[0.04em]">{t("loading", "Loading Map...")}</div>
-      ) : filtered.length === 0 ? (
-        <div className="py-20 text-center border-2 border-dashed border-emerald-300 bg-[#F0F4FF] dark:bg-blue-900/20/50">
-          <BedDouble className="w-16 h-16 mx-auto mb-4 text-emerald-200" />
-          <p className="font-black text-2xl text-emerald-800 uppercase tracking-[-0.02em] tracking-[0.04em]">{t("no_hostels", "No Blocks Found")}</p>
+      {filteredRecords.length === 0 ? (
+        <div className="bg-white p-8 rounded-lg shadow text-center text-gray-500 border border-gray-200">
+          No hostel rooms found. Click "Add Room" to create one.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          <AnimatePresence>
-            {filtered.map((h, i) => (
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} key={h.id} className="bg-white border-2 border-emerald-900 p-6 group relative hover:bg-[#F0F4FF] dark:bg-blue-900/20 transition-colors flex flex-col justify-between min-h-[250px] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                <div className="absolute top-4 right-4 z-10">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-emerald-200 rounded-none transition-all">
-                        <MoreVertical className="h-5 w-5 text-emerald-900" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-40 border-2 border-emerald-900 rounded-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => {
-                        setEditingId(h.id);
-                        setFormData({ name: h.name, type: h.type, warden: h.warden, capacity: h.capacity, rooms: h.rooms });
-                        setShowModal(true);
-                      }}>{t("edit", "Edit Block")}</DropdownMenuItem>
-                      <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-red-100 focus:text-red-900 text-red-600 p-3" onClick={() => {
-                        if (window.confirm("Delete this block?")) deleteRecord.mutate({ id: h.id, recordType: 'hostel' });
-                      }}>{t("delete", "Demolish")}</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredRecords.map((record) => {
+            const data = record.data;
+            const occupancyPercentage = (data.occupancy / data.capacity) * 100;
+            return (
+              <div key={record.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-indigo-100 p-2 rounded-lg">
+                      <Home className="h-5 w-5 text-indigo-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-800">{data.room_number}</h3>
+                      <p className="text-xs text-gray-500">{data.block} • {data.type}</p>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(data.status)}`}>
+                    {data.status}
+                  </span>
                 </div>
-                
-                <div>
-                  <div className={`w-16 h-16 border-2 border-emerald-900 flex items-center justify-center mb-6 ${h.type === 'Boys' ? 'bg-blue-200 text-blue-900' : h.type === 'Girls' ? 'bg-pink-200 text-pink-900' : 'bg-purple-200 text-purple-900'}`}>
-                    <Home className="w-8 h-8" />
+
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600 flex items-center gap-1">
+                        <Users className="h-4 w-4" /> Occupancy
+                      </span>
+                      <span className="font-medium">{data.occupancy} / {data.capacity}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full ${occupancyPercentage >= 100 ? 'bg-red-500' : occupancyPercentage >= 80 ? 'bg-yellow-500' : 'bg-green-500'}`}
+                        style={{ width: `${Math.min(occupancyPercentage, 100)}%` }}
+                      ></div>
+                    </div>
                   </div>
-                  <h3 className="font-black text-emerald-900 text-2xl mb-1 uppercase tracking-tight tracking-[-0.02em] tracking-[0.04em]" title={h.name}>{h.name}</h3>
-                  <p className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest mb-6 tracking-[0.04em]">{h.type} Block</p>
+
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="block text-xs text-gray-500">Gender</span>
+                      <span className="font-medium text-gray-800">{data.gender}</span>
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded">
+                      <span className="block text-xs text-gray-500">House Parent</span>
+                      <span className="font-medium text-gray-800 truncate" title={data.house_parent}>{data.house_parent || 'None'}</span>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="space-y-3 mt-auto">
-                  <div className="flex items-center justify-between text-sm bg-emerald-100 border-2 border-emerald-900 p-3">
-                    <span className="flex items-center gap-2 font-semibold text-emerald-900"><Users className="w-4 h-4" /> Capacity</span>
-                    <span className="font-black text-emerald-900 text-lg">{h.capacity}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm bg-emerald-100 border-2 border-emerald-900 p-3">
-                    <span className="flex items-center gap-2 font-semibold text-emerald-900"><BedDouble className="w-4 h-4" /> Rooms</span>
-                    <span className="font-black text-emerald-900 text-lg">{h.rooms || 'N/A'}</span>
-                  </div>
-                  <div className="pt-4 border-t-2 border-emerald-900/20">
-                    <p className="text-xs text-[#1E3A8A] dark:text-blue-400 uppercase font-black tracking-widest mb-1 tracking-[0.04em]">Warden</p>
-                    <p className="text-base font-semibold text-emerald-900 truncate">{h.warden || 'Unassigned'}</p>
-                  </div>
+
+                <div className="mt-4 pt-4 border-t border-gray-100 flex justify-end gap-2">
+                  <Button variant="outline" size="sm" onClick={() => openModal(record)}>
+                    <Edit2 className="h-4 w-4 mr-1" /> Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => handleDelete(record.id)} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+              </div>
+            );
+          })}
         </div>
       )}
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white border-4 border-emerald-900 w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-2xl font-black text-emerald-900 mb-6 uppercase tracking-tight tracking-[-0.02em] tracking-[0.04em]">{editingId ? 'Edit Block' : 'Add Block'}</h2>
-            
-            <div className="space-y-6 school-page-enter font-dmsans">
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("hostel_name", "Block Name")}</label>
-                <Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-[#F0F4FF] dark:bg-blue-900/20" placeholder="e.g. Alpha Block" />
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Room' : 'Add New Room'}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Room Number</Label>
+                <Input
+                  value={formData.room_number}
+                  onChange={(e) => setFormData({ ...formData, room_number: e.target.value })}
+                  placeholder="e.g. A101"
+                />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("type", "Type")}</label>
-                  <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full h-14 border-2 border-emerald-900 bg-[#F0F4FF] dark:bg-blue-900/20 px-4 font-semibold text-emerald-900 focus:outline-none focus:border-emerald-500 rounded-none appearance-none">
-                    <option>Boys</option>
-                    <option>Girls</option>
-                    <option>Co-ed</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("capacity", "Total Beds")}</label>
-                  <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-[#F0F4FF] dark:bg-blue-900/20" placeholder="120" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("rooms", "Total Rooms")}</label>
-                  <Input type="number" value={formData.rooms} onChange={e => setFormData({...formData, rooms: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-[#F0F4FF] dark:bg-blue-900/20" placeholder="30" />
-                </div>
-                <div>
-                  <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("warden", "Warden Name")}</label>
-                  <Input value={formData.warden} onChange={e => setFormData({...formData, warden: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none focus-visible:ring-0 focus-visible:border-emerald-500 bg-[#F0F4FF] dark:bg-blue-900/20" placeholder="John Doe" />
-                </div>
+              <div className="space-y-2">
+                <Label>Block</Label>
+                <Select value={formData.block} onValueChange={(v) => setFormData({ ...formData, block: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Block A">Block A</SelectItem>
+                    <SelectItem value="Block B">Block B</SelectItem>
+                    <SelectItem value="Block C">Block C</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-            
-            <div className="flex gap-4 pt-8">
-              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 text-emerald-900 font-black uppercase tracking-widest rounded-none hover:bg-emerald-100 tracking-[0.04em]" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold border-2 border-emerald-900 font-black uppercase tracking-widest rounded-none transition-colors tracking-[0.04em]" onClick={handleSave}>
-                {mutateRecord.isPending ? 'Saving...' : 'Deploy Block'}
-              </Button>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Room Type</Label>
+                <Select value={formData.type} onValueChange={(v) => setFormData({ ...formData, type: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Dormitory">Dormitory</SelectItem>
+                    <SelectItem value="Private">Private</SelectItem>
+                    <SelectItem value="Semi-private">Semi-private</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Gender</Label>
+                <Select value={formData.gender} onValueChange={(v) => setFormData({ ...formData, gender: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Mixed">Mixed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </motion.div>
-        </div>
-      )}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Capacity</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={formData.capacity}
+                  onChange={(e) => setFormData({ ...formData, capacity: Number(e.target.value) })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Current Occupancy</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max={formData.capacity}
+                  value={formData.occupancy}
+                  onChange={(e) => setFormData({ ...formData, occupancy: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>House Parent</Label>
+                <Input
+                  value={formData.house_parent}
+                  onChange={(e) => setFormData({ ...formData, house_parent: e.target.value })}
+                  placeholder="e.g. Mrs. Adjoa"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Full">Full</SelectItem>
+                    <SelectItem value="Under Maintenance">Under Maintenance</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Amenities</Label>
+              <Input
+                value={formData.amenities}
+                onChange={(e) => setFormData({ ...formData, amenities: e.target.value })}
+                placeholder="Beds, Storage, Fan..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white">Save Room</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

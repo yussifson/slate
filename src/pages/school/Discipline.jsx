@@ -1,114 +1,366 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { ShieldAlert, Plus, Calendar, AlertTriangle, ShieldCheck } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { powerSync } from '@/api/PowerSyncConnector';
-import { format } from "date-fns";
+import React, { useState } from 'react';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { Plus, Search, Trash2, Edit2, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import toast from 'react-hot-toast';
 
 export default function Discipline() {
-  const { t } = useTranslation();
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ studentName: '', type: 'Infraction', date: '', description: '', actionTaken: '' });
+  const companyId = useCompanyId();
+  const { user } = useAuth();
+  
+  const { data: disciplines = [], isLoading } = useIndustryRecords('school_discipline');
+  const { mutateAsync: saveRecord } = useMutateIndustryRecord();
+  const { mutateAsync: deleteRecord } = useDeleteIndustryRecord();
 
-  const { data: records = [], isLoading } = useIndustryRecords('discipline');
-  const mutateRecord = useMutateIndustryRecord();
-  const deleteRecord = useDeleteIndustryRecord();
+  const [search, setSearch] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({
+    student_id: '',
+    student_name: '',
+    class_name: '',
+    incident_type: 'Fighting',
+    severity: 'Moderate',
+    date: new Date().toISOString().split('T')[0],
+    description: '',
+    action_taken: 'Warned',
+    reported_by: user?.name || '',
+    status: 'Open'
+  });
 
-  const logs = records.map(r => ({ id: r.id, ...r.data })).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const filteredRecords = disciplines.filter(record => {
+    const d = record.data;
+    if (!d) return false;
+    const matchesSearch = d.student_name?.toLowerCase().includes(search.toLowerCase()) || d.description?.toLowerCase().includes(search.toLowerCase());
+    const matchesSeverity = severityFilter === 'All' || d.severity === severityFilter;
+    const matchesStatus = statusFilter === 'All' || d.status === statusFilter;
+    return matchesSearch && matchesSeverity && matchesStatus;
+  });
 
-  const handleSave = () => {
-    mutateRecord.mutate({
-      recordType: 'discipline',
-      payload: { ...formData, date: formData.date || new Date().toISOString() },
-      status: 'active',
-      searchText: `${formData.studentName} ${formData.type}`
-    }, {
-      onSuccess: () => setShowModal(false)
-    });
+  const openModal = (record = null) => {
+    if (record) {
+      setEditingId(record.id);
+      setFormData({
+        student_id: record.data.student_id || '',
+        student_name: record.data.student_name || '',
+        class_name: record.data.class_name || '',
+        incident_type: record.data.incident_type || 'Fighting',
+        severity: record.data.severity || 'Moderate',
+        date: record.data.date || new Date().toISOString().split('T')[0],
+        description: record.data.description || '',
+        action_taken: record.data.action_taken || 'Warned',
+        reported_by: record.data.reported_by || '',
+        status: record.data.status || 'Open'
+      });
+    } else {
+      setEditingId(null);
+      setFormData({
+        student_id: '',
+        student_name: '',
+        class_name: '',
+        incident_type: 'Fighting',
+        severity: 'Moderate',
+        date: new Date().toISOString().split('T')[0],
+        description: '',
+        action_taken: 'Warned',
+        reported_by: user?.name || '',
+        status: 'Open'
+      });
+    }
+    setIsModalOpen(true);
   };
 
+  const handleSave = async () => {
+    if (!formData.student_name || !formData.incident_type) {
+      toast.error('Student name and Incident type are required');
+      return;
+    }
+
+    try {
+      await saveRecord({
+        id: editingId,
+        recordType: 'school_discipline',
+        payload: formData,
+        searchText: `${formData.student_name} ${formData.incident_type} ${formData.description}`,
+        status: formData.status
+      });
+      toast.success('Incident saved successfully');
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to save incident');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this incident?')) {
+      try {
+        await deleteRecord({ id, recordType: 'school_discipline' });
+        toast.success('Incident deleted');
+      } catch (error) {
+        toast.error('Failed to delete incident');
+      }
+    }
+  };
+
+  const getSeverityColor = (severity) => {
+    switch (severity) {
+      case 'Minor': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Moderate': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Severe': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'Open': return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'Under Review': return <Clock className="h-4 w-4 text-yellow-500" />;
+      case 'Resolved': return <CheckCircle className="h-4 w-4 text-green-500" />;
+      default: return null;
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-gray-500">Loading discipline records...</div>;
+  }
+
   return (
-    <div className="max-w-4xl mx-auto space-y-8 font-dmsans">
-      <div className="bg-green-600 p-8 border-4 border-green-900 flex justify-between items-center">
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-4xl font-black text-white uppercase tracking-widest flex items-center gap-3 tracking-[-0.02em] tracking-[0.04em]">
-            <ShieldAlert className="w-10 h-10" /> Discipline Log
-          </h1>
-          <p className="text-green-100 font-semibold mt-2 text-lg">Secure timeline of behavioral records</p>
+          <h1 className="text-2xl font-bold text-gray-800">Discipline Management</h1>
+          <p className="text-gray-600">Track and manage student disciplinary incidents.</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="bg-white text-green-900 border-4 border-green-900 px-6 py-3 font-black uppercase flex items-center gap-2 hover:bg-green-100 transition-colors tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <Plus className="w-5 h-5"/> Record Incident
-        </button>
+        <Button onClick={() => openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Plus className="h-4 w-4 mr-2" />
+          Log Incident
+        </Button>
       </div>
 
-      <div className="relative border-l-4 border-green-800 ml-8 space-y-12 pb-12">
-        {logs.map((log, i) => (
-          <div key={log.id} className="relative pl-12">
-            <div className={`absolute -left-[26px] top-4 w-12 h-12 border-4 border-green-900 rounded-full flex items-center justify-center ${log.type === 'Merit' ? 'bg-green-400' : 'bg-red-400'}`}>
-              {log.type === 'Merit' ? <ShieldCheck className="w-6 h-6 text-green-900" /> : <AlertTriangle className="w-6 h-6 text-red-900" />}
-            </div>
-            <div className="bg-white border-4 border-green-900 p-6 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <span className={`px-3 py-1 font-black text-xs uppercase tracking-widest border-2 border-green-900 ${log.type === 'Merit' ? 'bg-green-200' : 'bg-red-200'}`}>
-                    {log.type}
-                  </span>
-                  <h3 className="text-2xl font-black text-green-900 mt-2 tracking-[-0.02em]">{log.studentName}</h3>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-green-700 font-mono">{log.date ? format(new Date(log.date), 'MMM dd, yyyy') : '-'}</p>
-                  <button onClick={() => deleteRecord.mutate({ id: log.id, recordType: 'discipline'})} className="text-xs font-black text-red-600 hover:underline mt-2 uppercase tracking-[0.04em]">Delete</button>
-                </div>
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            placeholder="Search student or description..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={severityFilter} onValueChange={setSeverityFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter Severity" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Severities</SelectItem>
+            <SelectItem value="Minor">Minor</SelectItem>
+            <SelectItem value="Moderate">Moderate</SelectItem>
+            <SelectItem value="Severe">Severe</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Statuses</SelectItem>
+            <SelectItem value="Open">Open</SelectItem>
+            <SelectItem value="Under Review">Under Review</SelectItem>
+            <SelectItem value="Resolved">Resolved</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="p-4 font-medium text-gray-500">Student</th>
+              <th className="p-4 font-medium text-gray-500">Incident</th>
+              <th className="p-4 font-medium text-gray-500">Date</th>
+              <th className="p-4 font-medium text-gray-500">Severity</th>
+              <th className="p-4 font-medium text-gray-500">Status</th>
+              <th className="p-4 font-medium text-gray-500 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredRecords.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="p-8 text-center text-gray-500">
+                  No disciplinary records found.
+                </td>
+              </tr>
+            ) : (
+              filteredRecords.map((record) => (
+                <tr key={record.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-4">
+                    <div className="font-medium text-gray-800">{record.data.student_name}</div>
+                    <div className="text-sm text-gray-500">{record.data.class_name}</div>
+                  </td>
+                  <td className="p-4">
+                    <div className="font-medium text-gray-800">{record.data.incident_type}</div>
+                    <div className="text-sm text-gray-500 max-w-xs truncate">{record.data.description}</div>
+                  </td>
+                  <td className="p-4 text-sm text-gray-600">{record.data.date}</td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getSeverityColor(record.data.severity)}`}>
+                      {record.data.severity}
+                    </span>
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(record.data.status)}
+                      <span className="text-sm font-medium text-gray-700">{record.data.status}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button variant="ghost" size="sm" onClick={() => openModal(record)}>
+                        <Edit2 className="h-4 w-4 text-blue-600" />
+                      </Button>
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(record.id)}>
+                        <Trash2 className="h-4 w-4 text-red-600" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Incident' : 'Log Disciplinary Incident'}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Student Name</Label>
+                <Input
+                  value={formData.student_name}
+                  onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
+                  placeholder="e.g. John Doe"
+                />
               </div>
-              <p className="text-green-800 font-medium mb-4 text-lg leading-relaxed">{log.description}</p>
-              <div className="bg-green-50 border-2 border-green-800 p-4">
-                <p className="text-xs font-black uppercase text-green-600 mb-1 tracking-[0.04em]">Action Taken</p>
-                <p className="font-semibold text-green-900">{log.actionTaken}</p>
+              <div className="space-y-2">
+                <Label>Class</Label>
+                <Input
+                  value={formData.class_name}
+                  onChange={(e) => setFormData({ ...formData, class_name: e.target.value })}
+                  placeholder="e.g. Primary 3A"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Incident Type</Label>
+                <Select value={formData.incident_type} onValueChange={(v) => setFormData({ ...formData, incident_type: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Fighting">Fighting</SelectItem>
+                    <SelectItem value="Bullying">Bullying</SelectItem>
+                    <SelectItem value="Truancy">Truancy</SelectItem>
+                    <SelectItem value="Misconduct">Misconduct</SelectItem>
+                    <SelectItem value="Vandalism">Vandalism</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Severity</Label>
+                <Select value={formData.severity} onValueChange={(v) => setFormData({ ...formData, severity: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Minor">Minor</SelectItem>
+                    <SelectItem value="Moderate">Moderate</SelectItem>
+                    <SelectItem value="Severe">Severe</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Date</Label>
+                <Input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Open">Open</SelectItem>
+                    <SelectItem value="Under Review">Under Review</SelectItem>
+                    <SelectItem value="Resolved">Resolved</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Input
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Details of the incident"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Action Taken</Label>
+                <Select value={formData.action_taken} onValueChange={(v) => setFormData({ ...formData, action_taken: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Warned">Warned</SelectItem>
+                    <SelectItem value="Suspension">Suspension</SelectItem>
+                    <SelectItem value="Parent Called">Parent Called</SelectItem>
+                    <SelectItem value="Counseling">Counseling</SelectItem>
+                    <SelectItem value="Expelled">Expelled</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Reported By</Label>
+                <Input
+                  value={formData.reported_by}
+                  onChange={(e) => setFormData({ ...formData, reported_by: e.target.value })}
+                />
               </div>
             </div>
           </div>
-        ))}
-      </div>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-green-900/80 flex items-center justify-center p-4 z-50">
-          <div className="bg-white border-4 border-green-900 p-8 max-w-lg w-full hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-2xl font-black text-green-900 uppercase mb-6 tracking-[-0.02em] tracking-[0.04em]">Log Incident</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Student Name</label>
-                <input value={formData.studentName} onChange={e=>setFormData({...formData, studentName: e.target.value})} className="w-full border-4 border-green-900 p-3 font-semibold text-green-900 focus:outline-none bg-green-50" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Type</label>
-                  <select value={formData.type} onChange={e=>setFormData({...formData, type: e.target.value})} className="w-full border-4 border-green-900 p-3 font-semibold text-green-900 focus:outline-none bg-green-50">
-                    <option>Infraction</option><option>Merit</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Date</label>
-                  <input type="date" value={formData.date} onChange={e=>setFormData({...formData, date: e.target.value})} className="w-full border-4 border-green-900 p-3 font-semibold text-green-900 focus:outline-none bg-green-50" />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Description</label>
-                <textarea rows={3} value={formData.description} onChange={e=>setFormData({...formData, description: e.target.value})} className="w-full border-4 border-green-900 p-3 font-semibold text-green-900 focus:outline-none bg-green-50 resize-none" />
-              </div>
-              <div>
-                <label className="text-xs font-black uppercase text-green-800 tracking-[0.04em]">Action Taken</label>
-                <input value={formData.actionTaken} onChange={e=>setFormData({...formData, actionTaken: e.target.value})} className="w-full border-4 border-green-900 p-3 font-semibold text-green-900 focus:outline-none bg-green-50" />
-              </div>
-            </div>
-            <div className="flex gap-4 mt-8">
-              <button onClick={()=>setShowModal(false)} className="flex-1 border-4 border-green-900 bg-white font-black uppercase py-3 hover:bg-green-50 tracking-[0.04em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">Cancel</button>
-              <button onClick={handleSave} className="flex-1 border-4 border-green-900 bg-green-500/10 text-white font-black uppercase py-3 hover:bg-green-600 tracking-[0.04em]">Save Log</button>
-            </div>
-          </div>
-        </div>
-      )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white">Save Incident</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

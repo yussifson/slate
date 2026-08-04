@@ -1,178 +1,416 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { MessageSquareWarning, Send, AlertCircle, Clock, Inbox, ShieldAlert } from 'lucide-react';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
+import { Plus, Search, Trash2, Edit2, MessageSquare, AlertCircle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { useAuth } from "@/lib/AuthContext";
-import { toast } from "react-hot-toast";
-import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import toast from 'react-hot-toast';
 
 export default function Complaints() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const { session } = useAuth();
-  const queryClient = useQueryClient();
-  const [subject, setSubject] = useState('');
-  const [details, setDetails] = useState('');
-  const [selectedTicketId, setSelectedTicketId] = useState(null);
-  const [isComposing, setIsComposing] = useState(false);
+  const { user } = useAuth();
+  const { data: complaints = [], isLoading } = useIndustryRecords('school_complaint');
+  const { mutateAsync: saveRecord } = useMutateIndustryRecord();
+  const { mutateAsync: deleteRecord } = useDeleteIndustryRecord();
 
-  const { data: tickets = [] } = useQuery({
-    queryKey: ['school_complaint_ticket', companyId],
-    queryFn: async () => {
-      const all = await base44.getEntities('school_complaint_ticket', companyId);
-      return all.filter(t => t.client_id === session?.user?.id).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-    },
-    enabled: !!companyId && !!session?.user?.id
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    submitted_by: '',
+    category: 'Academic',
+    subject: '',
+    description: '',
+    priority: 'Medium',
+    date: new Date().toISOString().split('T')[0],
+    student_name: '',
+    class_name: '',
+    status: 'Open',
+    resolution: '',
+    resolved_by: '',
+    resolved_date: null
   });
 
-  const submitTicket = useMutation({
-    mutationFn: () => {
-      if (!subject.trim() || !details.trim()) throw new Error("Subject and details required");
-      return base44.createEntity({
-        company_id: companyId,
-        case_type: 'school_complaint_ticket',
-        client_id: session?.user?.id,
-        title: subject,
-        status: 'pending',
-        data: { description: details, severity: 'normal' }
+  const [resolveData, setResolveData] = useState({ resolution: '' });
+
+  const filteredRecords = complaints.filter(record => {
+    const d = record.data;
+    if (!d) return false;
+    const matchesSearch = d.subject?.toLowerCase().includes(search.toLowerCase()) || 
+                          d.submitted_by?.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter === 'All' || d.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const openModal = (record = null) => {
+    if (record) {
+      setEditingId(record.id);
+      setFormData({
+        ...record.data,
       });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['school_complaint_ticket', companyId] });
-      setSubject('');
-      setDetails('');
-      setIsComposing(false);
-      toast.success("Complaint submitted securely to administration.");
-    },
-    onError: (err) => toast.error(err.message)
-  });
+    } else {
+      setEditingId(null);
+      setFormData({
+        submitted_by: '',
+        category: 'Academic',
+        subject: '',
+        description: '',
+        priority: 'Medium',
+        date: new Date().toISOString().split('T')[0],
+        student_name: '',
+        class_name: '',
+        status: 'Open',
+        resolution: '',
+        resolved_by: '',
+        resolved_date: null
+      });
+    }
+    setIsModalOpen(true);
+  };
 
-  const selectedTicket = tickets.find(t => t.id === selectedTicketId);
+  const openResolveModal = (record) => {
+    setEditingId(record.id);
+    setFormData(record.data);
+    setResolveData({ resolution: record.data.resolution || '' });
+    setIsResolveModalOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!formData.subject || !formData.submitted_by) {
+      toast.error('Subject and Submitted By are required');
+      return;
+    }
+
+    try {
+      await saveRecord({
+        id: editingId,
+        recordType: 'school_complaint',
+        payload: formData,
+        searchText: `${formData.subject} ${formData.submitted_by} ${formData.student_name}`,
+        status: formData.status
+      });
+      toast.success('Complaint saved successfully');
+      setIsModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to save complaint');
+    }
+  };
+
+  const handleResolve = async () => {
+    if (!resolveData.resolution) {
+      toast.error('Resolution text is required');
+      return;
+    }
+
+    try {
+      await saveRecord({
+        id: editingId,
+        recordType: 'school_complaint',
+        payload: {
+          ...formData,
+          status: 'Resolved',
+          resolution: resolveData.resolution,
+          resolved_by: user?.name || 'Admin',
+          resolved_date: new Date().toISOString().split('T')[0]
+        },
+        searchText: `${formData.subject} ${formData.submitted_by}`,
+        status: 'Resolved'
+      });
+      toast.success('Complaint resolved');
+      setIsResolveModalOpen(false);
+    } catch (error) {
+      toast.error('Failed to resolve complaint');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this complaint?')) {
+      try {
+        await deleteRecord({ id, recordType: 'school_complaint' });
+        toast.success('Complaint deleted');
+      } catch (error) {
+        toast.error('Failed to delete complaint');
+      }
+    }
+  };
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'Low': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'High': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Urgent': return 'bg-red-100 text-red-800 border-red-200 animate-pulse';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Open': return 'text-red-600 bg-red-50 border-red-200';
+      case 'Under Review': return 'text-orange-600 bg-orange-50 border-orange-200';
+      case 'Resolved': return 'text-green-600 bg-green-50 border-green-200';
+      case 'Closed': return 'text-gray-600 bg-gray-50 border-gray-200';
+      default: return 'text-gray-600 bg-gray-50';
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-8 text-center text-gray-500">Loading complaints...</div>;
+  }
 
   return (
-    <div className="h-[calc(100vh-80px)] flex flex-col font-dmsans bg-[#F0F4FF] dark:bg-blue-900/20 rounded-3xl overflow-hidden border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100 max-w-7xl mx-auto">
-      <div className="bg-emerald-600 text-white p-6 md:p-8 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <ShieldAlert className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-extrabold tracking-tight tracking-[-0.02em]">Anonymous Complaints</h1>
-            <p className="text-emerald-100 mt-1 font-medium">Securely report issues, bullying, or facility problems directly to administration.</p>
-          </div>
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Complaints & Feedback</h1>
+          <p className="text-gray-600">Track and resolve issues from parents and staff.</p>
         </div>
-        <Button 
-          onClick={() => { setSelectedTicketId(null); setIsComposing(true); }} 
-          className="bg-emerald-500/10 hover:bg-emerald-400 text-white border-[0.5px] border-black/9 dark:border-white/8 border-emerald-400 rounded-xl px-6 h-12 text-lg font-semibold transition-all"
-        >
-          <AlertCircle className="w-5 h-5 mr-2" /> File a Report
+        <Button onClick={() => openModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Plus className="h-4 w-4 mr-2" />
+          Log Complaint
         </Button>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="w-full md:w-1/3 bg-white border-r border-emerald-100 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="p-6 border-b border-emerald-100 bg-[#F0F4FF] dark:bg-blue-900/20/50">
-            <h3 className="font-extrabold text-emerald-900 text-xl">My Tickets</h3>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-            {tickets.length === 0 ? (
-              <div className="p-10 text-center text-emerald-400">
-                <Inbox className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="font-semibold text-lg">No complaints filed</p>
-              </div>
-            ) : (
-              tickets.map(ticket => (
-                <motion.div 
-                  whileHover={{ scale: 1.02 }}
-                  key={ticket.id} 
-                  onClick={() => { setSelectedTicketId(ticket.id); setIsComposing(false); }}
-                  className={`p-5 rounded-2xl cursor-pointer border-2 transition-all ${selectedTicketId === ticket.id ? 'bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-400' : 'bg-white border-emerald-100 hover:bg-[#F0F4FF] dark:bg-blue-900/20'}`}
-                >
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-extrabold text-emerald-900 line-clamp-1 flex-1 pr-2 text-lg">{ticket.title}</h4>
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest ${ticket.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-[#1E3A8A] dark:text-blue-400'}`}>
-                      {ticket.status}
-                    </span>
-                  </div>
-                  <p className="text-sm font-medium text-[#1E3A8A] dark:text-blue-400 line-clamp-2 mt-1">{ticket.data?.description}</p>
-                  <div className="flex items-center gap-2.5 mt-4 text-xs font-semibold text-emerald-500 tracking-[0.04em]">
-                    <Clock className="w-3.5 h-3.5" /> {new Date(ticket.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric'})}
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </div>
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            placeholder="Search by subject or submitter..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10"
+          />
         </div>
-
-        <div className="hidden md:flex flex-1 bg-[#F0F4FF] dark:bg-blue-900/20 p-8 overflow-y-auto relative">
-          <AnimatePresence mode="wait">
-            {isComposing ? (
-              <motion.div 
-                key="compose"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-              >
-                <h2 className="text-3xl font-extrabold text-emerald-900 mb-8 flex items-center gap-3 tracking-[-0.02em]">
-                  <AlertCircle className="w-8 h-8 text-[#1E3A8A] dark:text-blue-400" /> New Report
-                </h2>
-                <div className="space-y-6 school-page-enter font-dmsans">
-                  <div>
-                    <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Subject</label>
-                    <Input value={subject} onChange={e => setSubject(e.target.value)} placeholder="e.g. Broken AC in Room 302" className="mt-2 border-emerald-200 focus-visible:ring-emerald-500 rounded-xl h-12 text-lg bg-[#F0F4FF] dark:bg-blue-900/20/50" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-wide tracking-[0.04em]">Details</label>
-                    <textarea value={details} onChange={e => setDetails(e.target.value)} placeholder="Please provide specific details..." className="w-full mt-2 bg-[#F0F4FF] dark:bg-blue-900/20/50 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 rounded-xl p-4 h-64 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 text-emerald-900 text-lg"></textarea>
-                  </div>
-                  <div className="flex gap-4 pt-4">
-                    <Button variant="outline" onClick={() => setIsComposing(false)} className="flex-1 border-emerald-200 text-[#1E3A8A] dark:text-blue-400 hover:bg-[#F0F4FF] dark:bg-blue-900/20 rounded-xl h-14 text-lg font-semibold">Cancel</Button>
-                    <Button onClick={() => submitTicket.mutate()} disabled={submitTicket.isPending} className="flex-1 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold rounded-xl h-14 text-lg font-semibold">
-                      <Send className="w-5 h-5 mr-2" /> {submitTicket.isPending ? 'Sending...' : 'Submit Securely'}
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            ) : selectedTicket ? (
-              <motion.div 
-                key="view"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="bg-white rounded-3xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-200 p-10 max-w-3xl mx-auto w-full shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-              >
-                <div className="mb-8 border-b border-emerald-100 pb-8">
-                  <h2 className="text-4xl font-extrabold text-emerald-900 mb-6 leading-tight tracking-[-0.02em]">{selectedTicket.title}</h2>
-                  <div className="flex items-center gap-4">
-                    <span className={`px-4 py-1.5 rounded-full text-sm font-semibold uppercase tracking-wider ${selectedTicket.status === 'pending' ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-[#1E3A8A] dark:text-blue-400'}`}>
-                      Status: {selectedTicket.status}
-                    </span>
-                    <span className="text-sm font-semibold text-emerald-500 flex items-center gap-2">
-                      <Clock className="w-4 h-4" /> Reported on {new Date(selectedTicket.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-                <div className="prose prose-emerald prose-lg max-w-none">
-                  <p className="text-emerald-800 whitespace-pre-wrap leading-relaxed font-medium bg-[#F0F4FF] dark:bg-blue-900/20 p-6 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-emerald-100">{selectedTicket.data?.description}</p>
-                </div>
-              </motion.div>
-            ) : (
-              <div className="h-full w-full flex flex-col items-center justify-center text-emerald-400">
-                <div className="bg-emerald-100 p-8 rounded-full mb-6">
-                  <MessageSquareWarning className="w-20 h-20 text-emerald-500" />
-                </div>
-                <p className="text-2xl font-extrabold text-[#1E3A8A] dark:text-blue-400 tracking-[-0.02em]">Select a ticket to view details</p>
-                <p className="text-emerald-500 font-medium mt-2">All reports are strictly confidential.</p>
-              </div>
-            )}
-          </AnimatePresence>
-        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="All">All Statuses</SelectItem>
+            <SelectItem value="Open">Open</SelectItem>
+            <SelectItem value="Under Review">Under Review</SelectItem>
+            <SelectItem value="Resolved">Resolved</SelectItem>
+            <SelectItem value="Closed">Closed</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
+
+      <div className="space-y-4">
+        {filteredRecords.length === 0 ? (
+          <div className="bg-white p-8 rounded-lg shadow-sm text-center text-gray-500 border border-gray-200">
+            No complaints found.
+          </div>
+        ) : (
+          filteredRecords.map((record) => {
+            const data = record.data;
+            return (
+              <div key={record.id} className="bg-white p-5 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 hover:shadow-md transition-shadow">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-lg font-bold text-gray-800">{data.subject}</h3>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium border ${getPriorityColor(data.priority)}`}>
+                      {data.priority}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium border ${getStatusColor(data.status)}`}>
+                      {data.status}
+                    </span>
+                  </div>
+                  
+                  <p className="text-gray-600 text-sm mb-4">{data.description}</p>
+                  
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      Submitted by: <span className="font-medium text-gray-700">{data.submitted_by}</span>
+                    </div>
+                    {data.student_name && (
+                      <div>Student: <span className="font-medium text-gray-700">{data.student_name}</span></div>
+                    )}
+                    <div>Date: <span className="font-medium text-gray-700">{data.date}</span></div>
+                    <div>Category: <span className="font-medium text-gray-700">{data.category}</span></div>
+                  </div>
+
+                  {data.status === 'Resolved' && data.resolution && (
+                    <div className="mt-4 p-3 bg-green-50 border border-green-100 rounded-md">
+                      <div className="text-xs font-semibold text-green-800 mb-1 flex items-center gap-1">
+                        <CheckCircle className="h-3.5 w-3.5" /> Resolution ({data.resolved_date}):
+                      </div>
+                      <p className="text-sm text-green-700">{data.resolution}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex md:flex-col justify-end gap-2 shrink-0 md:min-w-[120px]">
+                  {data.status !== 'Resolved' && data.status !== 'Closed' && (
+                    <Button variant="outline" size="sm" className="w-full justify-start text-green-600 hover:text-green-700 hover:bg-green-50" onClick={() => openResolveModal(record)}>
+                      <CheckCircle className="h-4 w-4 mr-2" /> Resolve
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" className="w-full justify-start" onClick={() => openModal(record)}>
+                    <Edit2 className="h-4 w-4 mr-2" /> Edit
+                  </Button>
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(record.id)}>
+                    <Trash2 className="h-4 w-4 mr-2" /> Delete
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>{editingId ? 'Edit Complaint' : 'Log New Complaint'}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Submitted By</Label>
+                <Input
+                  value={formData.submitted_by}
+                  onChange={(e) => setFormData({ ...formData, submitted_by: e.target.value })}
+                  placeholder="e.g. Jane Doe (Parent)"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Category</Label>
+                <Select value={formData.category} onValueChange={(v) => setFormData({ ...formData, category: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Academic">Academic</SelectItem>
+                    <SelectItem value="Behavioral">Behavioral</SelectItem>
+                    <SelectItem value="Facilities">Facilities</SelectItem>
+                    <SelectItem value="Staff">Staff</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Subject</Label>
+              <Input
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                placeholder="Brief summary of the issue"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Detailed explanation..."
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <Select value={formData.priority} onValueChange={(v) => setFormData({ ...formData, priority: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Open">Open</SelectItem>
+                    <SelectItem value="Under Review">Under Review</SelectItem>
+                    <SelectItem value="Resolved">Resolved</SelectItem>
+                    <SelectItem value="Closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Date</Label>
+                <Input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Related Student (Optional)</Label>
+                <Input
+                  value={formData.student_name}
+                  onChange={(e) => setFormData({ ...formData, student_name: e.target.value })}
+                  placeholder="Student Name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Class (Optional)</Label>
+                <Input
+                  value={formData.class_name}
+                  onChange={(e) => setFormData({ ...formData, class_name: e.target.value })}
+                  placeholder="e.g. Primary 3A"
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave} className="bg-indigo-600 hover:bg-indigo-700 text-white">Save Complaint</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Resolve Modal */}
+      <Dialog open={isResolveModalOpen} onOpenChange={setIsResolveModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Resolve Complaint</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="mb-4 bg-gray-50 p-3 rounded text-sm text-gray-700 border border-gray-200">
+              <p className="font-semibold mb-1">Subject: {formData.subject}</p>
+              <p className="text-gray-500">By: {formData.submitted_by}</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Resolution Details</Label>
+              <Textarea
+                rows={4}
+                value={resolveData.resolution}
+                onChange={(e) => setResolveData({ resolution: e.target.value })}
+                placeholder="Explain how this issue was resolved..."
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsResolveModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleResolve} className="bg-green-600 hover:bg-green-700 text-white">Mark as Resolved</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

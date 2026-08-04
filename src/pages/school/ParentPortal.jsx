@@ -1,150 +1,93 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, Download, LayoutDashboard, GraduationCap, ArrowRight, Upload } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { powerSync } from '@/api/PowerSyncConnector';
-import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { Calendar, Bell, FileText, CheckCircle, Clock, BookOpen, User, CreditCard, LayoutDashboard, GraduationCap, ArrowRight } from 'lucide-react';
 import { useIndustryRecords } from '@/hooks/useIndustryData';
-import { UploadDocumentDialog } from "@/components/cases/CaseDocumentRepo";
+import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
-import { format } from "date-fns";
-import { useAuth } from '@/lib/AuthContext';
 
 export default function ParentPortal() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
+  const { user } = useAuth();
+  
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedChildId, setSelectedChildId] = useState(null);
 
-  // Real Database Hooks
-  const { data: studentRecords = [], isLoading: isStudentsLoading } = useQuery({
-    queryKey: ['clients', companyId],
-    queryFn: () => powerSync.getAll('SELECT * FROM school_students WHERE company_id = ?', [companyId]),
-    enabled: !!companyId
-  });
-  const { data: exams = [] } = useIndustryRecords('exam');
-  const { data: attendanceRecords = [] } = useIndustryRecords('attendance');
-  const { data: gradeRecords = [] } = useIndustryRecords('grade');
+  const { data: studentRecords = [], isLoading: isStudentsLoading } = useIndustryRecords('school_student');
+  const { data: attendanceRecords = [] } = useIndustryRecords('school_attendance');
+  const { data: gradeRecords = [] } = useIndustryRecords('school_grade');
+  const { data: examRecords = [] } = useIndustryRecords('school_exam');
+  const { data: feeRecords = [] } = useIndustryRecords('school_fee');
+  const { data: noticeRecords = [] } = useIndustryRecords('school_notice');
+  const { data: assignmentRecords = [] } = useIndustryRecords('school_assignment');
 
-  const queryClient = useQueryClient();
-  const [showUpload, setShowUpload] = useState(false);
+  const isAdmin = user?.email?.includes('admin') || user?.role?.includes('admin') || user?.user_metadata?.role?.includes('admin');
 
-  const mappedStudents = studentRecords.map(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
-    return {
-      id: r.id,
-      name: r.name,
-      studentId: r.id_number,
-      company_id: r.company_id,
-      class: extra.class || 'Unknown',
-      feeStatus: extra.feeStatus || 'Owing',
-      parentEmail: extra.parentEmail || ''
-    };
-  });
-
-  const { user } = useAuth();
-  const proxyParentEmail = user?.email;
-
-  const myChildren = mappedStudents.filter(s => s.parentEmail === proxyParentEmail || proxyParentEmail?.includes('admin'));
+  const myChildren = studentRecords.filter(r => isAdmin || r.data?.parent_email === user?.email);
   
   const activeStudent = selectedChildId 
     ? myChildren.find(c => c.id === selectedChildId) 
-    : (myChildren[0] || mappedStudents[0]);
+    : myChildren[0];
 
-  const { data: documents = [] } = useQuery({
-    queryKey: ["student-docs", activeStudent?.id],
-    queryFn: () => powerSync.getAll('SELECT * FROM school_notices WHERE company_id = ?', [companyId]),
-    enabled: !!activeStudent?.id});
-
-  const createDocMutation = useMutation({
-    mutationFn: async (data) => powerSync.execute('INSERT INTO school_notices (id, company_id, created_at) VALUES (uuid(), ?, datetime(\'now\'))', [companyId]),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["student-docs", activeStudent?.id] });
-      toast.success("Document uploaded successfully");
-      setShowUpload(false);
-    }});
-
-  const handleUploadSubmit = (docData) => {
-    createDocMutation.mutate({
-      ...docData,
-      company_id: activeStudent?.company_id,
-      client_id: activeStudent?.id,
-      client_name: activeStudent?.name,
-      uploaded_by: 'Parent/Guardian',
-      shared_with_client: true});
-  };
-
-  const mappedExams = exams.map(r => ({
-    id: r.id,
-    ...r.data
-  })).slice(0, 3);
-
-  if (isStudentsLoading && companyId) {
+  if (isStudentsLoading) {
     return <div className="py-12 flex justify-center"><div className="text-[var(--primary)] font-semibold animate-pulse text-lg">{t("loading", "Loading Family Data...")}</div></div>;
   }
 
-  if (mappedStudents.length === 0) {
+  if (myChildren.length === 0) {
     return (
-      <div className="py-16 text-center max-w-lg mx-auto bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8">
+      <div className="py-16 text-center max-w-lg mx-auto bg-[var(--color-surface-0)] border-[0.5px] border-primary/40 rounded-[var(--radius-xl)] p-8">
         <User className="w-16 h-16 mx-auto mb-4 text-[var(--color-text-tertiary)]" />
-        <p className="font-display font-semibold text-2xl text-[var(--color-text-primary)] mb-2 tracking-tight tracking-[-0.02em]">No Profiles Linked</p>
-        <p className="font-medium text-[var(--color-text-secondary)] text-sm">Ensure your email is linked to a student in the directory.</p>
+        <p className="font-display font-semibold text-2xl text-[var(--color-text-primary)] mb-2">No Profiles Linked</p>
+        <p className="font-medium text-[var(--color-text-secondary)] text-sm">Ensure your email ({user?.email}) is linked to a student in the directory.</p>
       </div>
     );
   }
 
-  const feeStatus = activeStudent.feeStatus || 'Owing';
-  const balance = feeStatus === 'Paid' ? 0 : (feeStatus === 'Partial' ? 800 : 1200);
+  const childId = activeStudent.id;
+  const childClassName = activeStudent.data?.class_name || activeStudent.data?.class;
 
-  let attendancePct = 0;
+  const childAttendance = attendanceRecords.filter(r => r.data?.records?.some(rec => rec.student_id === childId));
+  const childGrades = gradeRecords.filter(r => r.data?.student_id === childId);
+  const childFees = feeRecords.filter(r => r.data?.student_id === childId);
+  const childNotices = noticeRecords.filter(r => !r.data?.class_name || r.data?.class_name === 'All' || r.data?.class_name === childClassName);
+  const childExams = examRecords.filter(r => r.data?.class_name === childClassName);
+
+  // Stats
+  let totalDays = childAttendance.length;
+  let presentDays = childAttendance.filter(att => att.data?.records?.find(rec => rec.student_id === childId)?.status === 'Present').length;
+  let attendancePct = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+  
   let averageGrade = 'N/A';
-  let studentGrades = [];
-
-  if (activeStudent) {
-    let present = 0, totalDays = 0;
-    attendanceRecords.forEach(att => {
-      const rec = att.data?.records?.find(r => r.studentId === activeStudent.studentId);
-      if (rec) {
-        totalDays++;
-        if (rec.status === 'Present') present++;
-      }
-    });
-    if (totalDays > 0) attendancePct = Math.round((present / totalDays) * 100);
-
-    studentGrades = gradeRecords.filter(g => g.data?.studentName === activeStudent.name);
-    if (studentGrades.length > 0) {
-      const totalScore = studentGrades.reduce((sum, g) => sum + (g.data?.score || 0), 0);
-      const totalMax = studentGrades.reduce((sum, g) => sum + (g.data?.maxScore || 100), 0);
-      const pct = totalMax > 0 ? (totalScore / totalMax) * 100 : 0;
-      if (pct >= 90) averageGrade = 'A';
-      else if (pct >= 80) averageGrade = 'B';
-      else if (pct >= 70) averageGrade = 'C';
-      else if (pct >= 60) averageGrade = 'D';
-      else averageGrade = 'F';
-    }
+  if (childGrades.length > 0) {
+    const totalScore = childGrades.reduce((sum, g) => sum + (Number(g.data?.score) || 0), 0);
+    const totalMax = childGrades.reduce((sum, g) => sum + (Number(g.data?.max_score) || 100), 0);
+    const pct = totalMax > 0 ? (totalScore / totalMax) * 100 : 0;
+    if (pct >= 90) averageGrade = 'A';
+    else if (pct >= 80) averageGrade = 'B';
+    else if (pct >= 70) averageGrade = 'C';
+    else if (pct >= 60) averageGrade = 'D';
+    else averageGrade = 'F';
   }
+
+  const totalFees = childFees.reduce((sum, f) => sum + (Number(f.data?.amount) || 0), 0);
+  const totalPaid = childFees.reduce((sum, f) => sum + (Number(f.data?.amount_paid) || 0), 0);
+  const balance = totalFees - totalPaid;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto">
       {/* Header & Nav */}
       <div className="border-b border-primary/40 pb-4 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="font-display font-semibold text-[var(--text-3xl)] text-[var(--color-text-primary)] tracking-tight tracking-[-0.02em]">
+          <h1 className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-tight">
             Family <span className="text-[var(--primary)]">Portal</span>
           </h1>
           <p className="text-[var(--color-text-secondary)] font-medium mt-1 text-sm">Managing records for your dependents.</p>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-          {['dashboard', 'academics', 'finance', 'communications'].map((tab) => (
+          {['dashboard', 'attendance', 'grades', 'fees', 'notices', 'exams'].map((tab) => (
             <button key={tab} onClick={() => setActiveTab(tab)} className={`flex items-center gap-2 px-5 py-2.5 font-semibold text-sm transition-colors rounded-full whitespace-nowrap ${activeTab === tab ? 'bg-[var(--primary)] text-white' : 'bg-transparent text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-1)] hover:text-[var(--primary)]'}`}>
-              {tab === 'dashboard' && <LayoutDashboard className="w-4 h-4" />}
-              {tab === 'academics' && <GraduationCap className="w-4 h-4" />}
-              {tab === 'finance' && <CreditCard className="w-4 h-4" />}
-              {tab === 'communications' && <Bell className="w-4 h-4" />}
               <span className="capitalize">{tab}</span>
             </button>
           ))}
@@ -154,7 +97,7 @@ export default function ParentPortal() {
       {/* Child Selector */}
       {myChildren.length > 1 && (
         <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          <span className="text-xs font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] whitespace-nowrap px-2 tracking-[0.04em]">Viewing:</span>
+          <span className="text-xs font-semibold text-[var(--color-text-tertiary)] uppercase tracking-widest px-2">Viewing:</span>
           {myChildren.map(child => (
             <button
               key={child.id}
@@ -164,153 +107,99 @@ export default function ParentPortal() {
               }`}
             >
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold ${activeStudent?.id === child.id ? 'bg-[var(--primary)] text-white' : 'bg-[var(--color-surface-2)] text-[var(--color-text-tertiary)]'}`}>
-                {child.name.substring(0,2).toUpperCase()}
+                {(child.data?.name || child.data?.first_name || 'ST').substring(0,2).toUpperCase()}
               </div>
-              {child.name}
+              {child.data?.name || `${child.data?.first_name} ${child.data?.last_name}`}
             </button>
           ))}
         </div>
       )}
 
       {/* Child Profile Card */}
-      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-primary/40 rounded-xl p-8 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
         <User className="absolute -right-8 -top-8 w-48 h-48 text-[var(--primary)] opacity-5 pointer-events-none" />
-        <div className="w-24 h-24 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] text-3xl font-semibold shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 relative z-10 tracking-[-0.02em]">
-          {activeStudent.name?.substring(0, 2).toUpperCase()}
+        <div className="w-24 h-24 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] text-3xl font-semibold shrink-0 border-[0.5px] border-[var(--primary)]/20 relative z-10">
+          {(activeStudent.data?.name || activeStudent.data?.first_name || 'ST').substring(0, 2).toUpperCase()}
         </div>
         <div className="text-center md:text-left flex-1 relative z-10">
-          <h2 className="text-3xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-3 tracking-[-0.02em]">{activeStudent.name}</h2>
+          <h2 className="text-3xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-3">
+            {activeStudent.data?.name || `${activeStudent.data?.first_name} ${activeStudent.data?.last_name}`}
+          </h2>
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-            <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full tracking-[0.04em]">{activeStudent.class}</span>
-            <span className="bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] px-3 py-1 text-xs font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-primary/10 tracking-[0.04em]">ID: {activeStudent.studentId}</span>
+            <span className="bg-[var(--primary)]/10 text-[var(--primary)] px-3 py-1 text-xs font-semibold uppercase tracking-widest rounded-full">{childClassName || 'No Class'}</span>
+            <span className="bg-[var(--color-surface-2)] text-[var(--color-text-secondary)] px-3 py-1 text-xs font-semibold uppercase tracking-widest rounded-full border-[0.5px] border-primary/10">ID: {activeStudent.data?.student_id || activeStudent.id.substring(0,8)}</span>
           </div>
         </div>
-        <div className="shrink-0 flex flex-col items-center md:items-end gap-2 bg-[var(--color-surface-1)] p-5 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 w-full md:w-auto relative z-10">
-          <span className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] tracking-[0.04em]">Term Balance</span>
-          <div className="text-3xl font-display font-semibold text-[var(--color-text-primary)] mb-1 tracking-[-0.02em]">${balance.toLocaleString()}</div>
-          <span className={`text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] px-2.5 py-1 rounded-full ${
-            feeStatus === 'Paid' ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' :
-            feeStatus === 'Partial' ? 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'
-          }`}>{feeStatus}</span>
+        <div className="shrink-0 flex flex-col items-center md:items-end gap-2 bg-[var(--color-surface-1)] p-5 rounded-lg border-[0.5px] border-primary/20 w-full md:w-auto relative z-10">
+          <span className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-widest">Balance</span>
+          <div className="text-3xl font-display font-semibold text-[var(--color-text-primary)] mb-1">${balance.toLocaleString()}</div>
+          <span className={`text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full ${
+            balance <= 0 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'
+          }`}>{balance <= 0 ? 'Cleared' : 'Owing'}</span>
         </div>
       </div>
 
       {activeTab === 'dashboard' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="col-span-1 lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                <div className="flex items-center gap-3 mb-4 relative z-10">
-                  <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, transparent)' }}>
-                    <CheckCircle className="w-6 h-6 text-[var(--primary)]" />
-                  </div>
-                  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("attendance", "Attendance")}</h3>
-                </div>
-                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-text-primary)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{attendancePct}%</p>
-                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10 tracking-[0.04em]">Present for the term</p>
-              </div>
-              
-              <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col justify-center relative overflow-hidden stat-card-premium hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                <div className="flex items-center gap-3 mb-4 relative z-10">
-                  <div className="w-12 h-12 rounded-md-[var(--radius-lg)] flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-info) 15%, transparent)' }}>
-                    <BookOpen className="w-6 h-6 text-[var(--color-info)]" />
-                  </div>
-                  <h3 className="font-semibold text-[var(--color-text-primary)] text-sm">{t("performance", "Performance")}</h3>
-                </div>
-                <p className="text-[var(--text-3xl)] font-display font-semibold text-[var(--color-info)] mb-1 relative z-10 tracking-tight tracking-[-0.02em]">{averageGrade}</p>
-                <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] relative z-10 tracking-[0.04em]">Term Report Card</p>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-[var(--color-surface-0)] border-[0.5px] border-primary/40 rounded-xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <CheckCircle className="w-6 h-6 text-[var(--primary)]" />
+              <h3 className="font-semibold text-lg">Attendance</h3>
             </div>
-
-            <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
-              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)]">
-                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[var(--primary)]" /> Upcoming Scheduled Exams
-                </h3>
-              </div>
-              <div className="divide-y divide-primary/10">
-                {mappedExams.map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 p-5 hover:bg-[var(--color-surface-2)] transition-colors">
-                    <div className="w-20 shrink-0 text-center font-semibold text-[var(--primary)] bg-[var(--primary)]/10 rounded-md-[var(--radius-md)] py-1.5 text-xs tracking-[0.04em]">
-                      {item.time}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-[var(--color-text-primary)]">{item.subject}</p>
-                      <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 tracking-[0.04em]">{item.venue}</p>
-                    </div>
-                  </div>
-                ))}
-                {mappedExams.length === 0 && <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">No exams scheduled.</div>}
-              </div>
-            </div>
+            <p className="text-4xl font-semibold mb-1">{attendancePct}%</p>
+            <p className="text-sm text-[var(--color-text-secondary)]">Present for the term</p>
           </div>
-
-          <div className="col-span-1 space-y-6">
-            <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
-              <div className="p-5 border-b border-primary/20 bg-[var(--color-surface-1)] flex justify-between items-center">
-                <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[var(--primary)]" /> Documents
-                </h3>
-                <Button variant="outline" size="sm" className="h-8 rounded-full border-primary/30 text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white" onClick={() => setShowUpload(true)}>
-                  <Upload className="w-3.5 h-3.5 mr-1.5" /> Upload
-                </Button>
-              </div>
-              <div className="divide-y divide-primary/10">
-                {documents.length === 0 ? (
-                  <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">No documents found.</div>
-                ) : documents.map(doc => (
-                  <div key={doc.id} className="p-4 flex items-center justify-between hover:bg-[var(--color-surface-2)] transition-colors">
-                    <div>
-                      <p className="font-medium text-[var(--color-text-primary)] text-sm mb-0.5">{doc.name}</p>
-                      <p className="text-xs text-[var(--color-text-secondary)] tracking-[0.04em]">{format(new Date(doc.created_date), "MMM d, yyyy")} • {doc.category?.replace('_', ' ')}</p>
-                    </div>
-                    {doc.file_url && (
-                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-md-[var(--radius-md)] bg-[var(--color-surface-1)] flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
-                        <Download className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                ))}
-              </div>
+          <div className="bg-[var(--color-surface-0)] border-[0.5px] border-primary/40 rounded-xl p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <BookOpen className="w-6 h-6 text-[var(--color-info)]" />
+              <h3 className="font-semibold text-lg">Performance</h3>
             </div>
+            <p className="text-4xl font-semibold text-[var(--color-info)] mb-1">{averageGrade}</p>
+            <p className="text-sm text-[var(--color-text-secondary)]">Average Grade</p>
           </div>
         </div>
       )}
 
-      {activeTab === 'academics' && (
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
-          <div className="p-6 border-b border-primary/20 bg-[var(--color-surface-1)]">
-            <h3 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">Academic Transcript</h3>
-          </div>
-          {studentGrades.length === 0 ? (
-             <div className="py-16 text-center text-[var(--color-text-secondary)] text-sm">No grades recorded yet.</div>
-          ) : (
+      {activeTab === 'attendance' && (
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-xl p-6">
+          <h3 className="text-xl font-semibold mb-4">Attendance Records</h3>
+          {childAttendance.length === 0 ? <p className="text-[var(--color-text-secondary)]">No attendance records found.</p> : (
+            <div className="divide-y divide-primary/10">
+              {childAttendance.map(att => {
+                const rec = att.data?.records?.find(r => r.student_id === childId);
+                return (
+                  <div key={att.id} className="py-3 flex justify-between items-center">
+                    <span className="font-medium">{att.data?.date}</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${rec?.status === 'Present' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{rec?.status}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'grades' && (
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-xl p-6">
+          <h3 className="text-xl font-semibold mb-4">Academic Transcript</h3>
+          {childGrades.length === 0 ? <p className="text-[var(--color-text-secondary)]">No grades found.</p> : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-[var(--color-surface-1)]/50 border-b border-primary/20">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-[var(--color-surface-1)] border-b border-primary/20">
                   <tr>
-                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">Exam/Assignment</th>
-                    <th className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">Subject</th>
-                    <th className="px-6 py-4 text-right text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">Score</th>
+                    <th className="px-4 py-3 font-semibold">Subject</th>
+                    <th className="px-4 py-3 font-semibold">Exam/Type</th>
+                    <th className="px-4 py-3 font-semibold text-right">Score</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-primary/10">
-                  {studentGrades.map(g => {
-                    const score = g.data?.score || 0;
-                    const max = g.data?.maxScore || 100;
-                    const pct = Math.round((score/max)*100);
-                    return (
-                      <tr key={g.id} className="hover:bg-[var(--color-surface-2)] transition-colors">
-                        <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.data?.examName}</td>
-                        <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.data?.subject}</td>
-                        <td className="px-6 py-4 text-right">
-                          <span className={`inline-flex items-center font-semibold text-xs px-2.5 py-1 rounded-full ${pct >= 50 ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'}`}>
-                            {score} / {max} ({pct}%)
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {childGrades.map(g => (
+                    <tr key={g.id}>
+                      <td className="px-4 py-3">{g.data?.subject}</td>
+                      <td className="px-4 py-3">{g.data?.exam_name || g.data?.type}</td>
+                      <td className="px-4 py-3 text-right font-medium">{g.data?.score} / {g.data?.max_score || 100}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -318,45 +207,59 @@ export default function ParentPortal() {
         </div>
       )}
 
-      {activeTab === 'finance' && (
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-16 text-center">
-          <div className="w-20 h-20 mx-auto rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
-            <CreditCard className="w-10 h-10 text-[var(--primary)]" />
-          </div>
-          <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-2 tracking-[-0.02em]">Fee Statements</h3>
-          <p className="text-[var(--color-text-secondary)] text-sm mb-8">No recent transactions or invoices found.</p>
-          {balance > 0 && (
-            <div className="mt-8 p-8 border-[0.5px] border-black/9 dark:border-white/8 border-[var(--color-destructive)]/30 rounded-md-[var(--radius-xl)] bg-[var(--color-destructive)]/5 max-w-md mx-auto">
-              <p className="text-[11px] font-semibold text-[var(--color-destructive)] uppercase tracking-[var(--tracking-widest)] mb-2 tracking-[0.04em]">Outstanding Balance</p>
-              <p className="text-4xl font-display font-semibold text-[var(--color-destructive)] mb-6 tracking-[-0.02em]">${balance.toLocaleString()}</p>
-              <Button className="w-full bg-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/90 text-white rounded-full">
-                Pay Now <ArrowRight className="w-4 h-4 ml-2"/>
-              </Button>
+      {activeTab === 'fees' && (
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-xl p-6">
+          <h3 className="text-xl font-semibold mb-4">Fee Statements</h3>
+          {childFees.length === 0 ? <p className="text-[var(--color-text-secondary)]">No fee records found.</p> : (
+            <div className="space-y-4">
+              {childFees.map(f => (
+                <div key={f.id} className="p-4 border rounded-lg flex justify-between items-center bg-[var(--color-surface-1)]">
+                  <div>
+                    <h4 className="font-semibold">{f.data?.fee_type || 'Tuition Fee'}</h4>
+                    <p className="text-sm text-[var(--color-text-secondary)]">Due: {f.data?.due_date}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">${f.data?.amount}</p>
+                    <p className="text-sm text-green-600">Paid: ${f.data?.amount_paid || 0}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
       )}
 
-      {activeTab === 'communications' && (
-        <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-16 text-center">
-          <div className="w-20 h-20 mx-auto rounded-full bg-[var(--primary)]/10 flex items-center justify-center mb-6">
-            <Bell className="w-10 h-10 text-[var(--primary)]" />
-          </div>
-          <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-2 tracking-[-0.02em]">Announcements</h3>
-          <p className="text-[var(--color-text-secondary)] text-sm mb-8">You have no new messages from administration.</p>
-          <Button variant="outline" className="border-primary/40 text-[var(--primary)] rounded-full hover:bg-[var(--primary)] hover:text-white px-8">
-            Contact Office
-          </Button>
+      {activeTab === 'notices' && (
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-xl p-6">
+          <h3 className="text-xl font-semibold mb-4">Notices & Announcements</h3>
+          {childNotices.length === 0 ? <p className="text-[var(--color-text-secondary)]">No notices at this time.</p> : (
+            <div className="space-y-4">
+              {childNotices.map(n => (
+                <div key={n.id} className="p-4 border border-primary/20 rounded-lg bg-[var(--color-surface-1)]">
+                  <h4 className="font-semibold text-lg">{n.data?.title}</h4>
+                  <p className="text-xs text-[var(--color-text-secondary)] mb-2">{n.data?.date}</p>
+                  <p className="text-sm">{n.data?.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      {showUpload && (
-        <UploadDocumentDialog
-          isOpen={showUpload}
-          onClose={() => setShowUpload(false)}
-          onUpload={handleUploadSubmit}
-          isUploading={createDocMutation.isPending}
-        />
+      {activeTab === 'exams' && (
+        <div className="bg-[var(--color-surface-0)] border border-primary/40 rounded-xl p-6">
+          <h3 className="text-xl font-semibold mb-4">Upcoming Exams</h3>
+          {childExams.length === 0 ? <p className="text-[var(--color-text-secondary)]">No exams scheduled.</p> : (
+            <div className="divide-y divide-primary/10">
+              {childExams.map(ex => (
+                <div key={ex.id} className="py-3">
+                  <p className="font-semibold text-[var(--primary)]">{ex.data?.subject}</p>
+                  <p className="text-sm text-[var(--color-text-secondary)]">Date: {ex.data?.date} | Time: {ex.data?.time} | Venue: {ex.data?.venue}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

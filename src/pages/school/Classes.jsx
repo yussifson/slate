@@ -1,148 +1,221 @@
-import { useTranslation } from "react-i18next";
-import { useState } from 'react';
-import { BookOpen, Users, Search, Plus, Trash2, Layers, MoreVertical, Hash, LayoutGrid } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { BookOpen, Users, Search, Plus, Trash2, Edit, MoreVertical, LayoutGrid, X } from 'lucide-react';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { toast } from 'react-hot-toast';
-import { useCompanyId } from "@/hooks/useCompanyId";
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { motion } from 'framer-motion';
 
+const LEVEL_OPTIONS = ['KG', 'Primary', 'JHS'];
+const PREDEFINED_CLASSES = {
+  'KG': ['KG 1', 'KG 2'],
+  'Primary': ['Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6'],
+  'JHS': ['JHS 1 (Basic 7)', 'JHS 2 (Basic 8)', 'JHS 3 (Basic 9)']
+};
+
 export default function Classes() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
+  
+  const { data: classRecords = [], isLoading: isClassesLoading } = useIndustryRecords('school_class');
+  const { data: teacherRecords = [] } = useIndustryRecords('school_teacher');
+  const { data: studentRecords = [] } = useIndustryRecords('school_student');
+  
+  const mutate = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
+
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [viewDetails, setViewDetails] = useState(null);
-  const [viewMode, setViewMode] = useState('grid');
-
-  const queryClient = useQueryClient();
-  const { data: records = [], isLoading: isDbLoading } = useQuery({ 
-    queryKey: ["cases", companyId], 
-    queryFn: () => powerSync.execute('SELECT * FROM school_classes WHERE company_id = ?', [companyId]).then(r => r.rows._array), 
-    enabled: !!companyId 
-  });
-  
-  const mutateClass = useMutation({
-    mutationFn: async (data) => powerSync.execute('INSERT INTO school_classes (id, company_id, name, subject, room_number, schedule, created_at) VALUES (uuid(), ?, ?, ?, ?, ?, datetime(\'now\'))', [companyId, data.name, data.subject, data.room, data.schedule]),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cases", companyId] })
-  });
-
-  const deleteClass = useMutation({
-    mutationFn: async (id) => powerSync.execute('DELETE FROM school_classes WHERE id = ?', [id]),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["cases", companyId] })
-  });
 
   const [formData, setFormData] = useState({
-    name: '', subject: '', teacher: 'Mr. John Doe', room: '', schedule: '', courses: '', allowSelfRegistration: false
+    name: '',
+    level: 'Primary',
+    room: '',
+    capacity: '',
+    class_teacher: '',
+    subject: '',
+    academic_year: new Date().getFullYear().toString(),
+    status: 'Active'
   });
 
-  const classesData = records.map(r => {
-    return { 
-      id: r.id, 
-      name: r.name || 'Untitled Class', 
-      subject: r.subject || 'General', 
-      teacher: r.teacher_id || 'Unassigned', 
-      room: r.room_number || 'TBD', 
-      schedule: r.schedule || 'TBD', 
-      students: 0, 
-      courses: '', 
-      allowSelfRegistration: !!r.allow_self_registration, 
-      stage: r.status || 'active' 
-    };
-  });
+  const classes = useMemo(() => classRecords.map(r => ({ id: r.id, ...r.data })), [classRecords]);
+  const teachers = useMemo(() => teacherRecords.map(r => ({ id: r.id, ...r.data })), [teacherRecords]);
 
-  const handleCreateClass = () => {
-    if (!companyId) return toast.error("Workspace not loaded.");
-    if (!formData.name.trim() || !formData.subject.trim()) return toast.error("Please enter a class name and subject");
-    const payload = { company_id: companyId, title: formData.name, case_type: formData.subject, assigned_staff_name: formData.teacher, status: 'active', stage: 'primary', description: JSON.stringify({ room: formData.room || 'TBD', schedule: formData.schedule || 'TBD', students: 0, courses: formData.courses || '', allowSelfRegistration: formData.allowSelfRegistration }) };
-    if (editingId) mutateClass.mutate({ id: editingId, ...payload }, { onSuccess: () => { toast.success("Updated!"); setShowModal(false); setEditingId(null); } });
-    else mutateClass.mutate(payload, { onSuccess: () => { toast.success("Created!"); setShowModal(false); } });
+  const studentCountForClass = (className) => studentRecords.filter(r => r.data?.class_name === className).length;
+
+  const filteredClasses = useMemo(() => {
+    return classes.filter(c => 
+      c.name?.toLowerCase().includes(search.toLowerCase()) || 
+      c.class_teacher?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [classes, search]);
+
+  const handleOpenAdd = () => {
+    setFormData({
+      name: PREDEFINED_CLASSES['Primary'][0],
+      level: 'Primary',
+      room: '',
+      capacity: '40',
+      class_teacher: '',
+      subject: '',
+      academic_year: new Date().getFullYear().toString(),
+      status: 'Active'
+    });
+    setEditingId(null);
+    setShowModal(true);
   };
 
-  const handleDeleteClass = () => {
+  const handleOpenEdit = (cls) => {
+    setFormData({
+      name: cls.name || '',
+      level: cls.level || 'Primary',
+      room: cls.room || '',
+      capacity: cls.capacity || '',
+      class_teacher: cls.class_teacher || '',
+      subject: cls.subject || '',
+      academic_year: cls.academic_year || new Date().getFullYear().toString(),
+      status: cls.status || 'Active'
+    });
+    setEditingId(cls.id);
+    setShowModal(true);
+  };
+
+  const handleSave = () => {
+    if (!formData.name || !formData.level) {
+      return toast.error("Class name and level are required");
+    }
+
+    const payload = { ...formData };
+    
+    mutate.mutate(
+      {
+        id: editingId,
+        recordType: 'school_class',
+        payload
+      },
+      {
+        onSuccess: () => {
+          toast.success(editingId ? "Class updated successfully" : "Class created successfully");
+          setShowModal(false);
+        },
+        onError: () => {
+          toast.error("Failed to save class");
+        }
+      }
+    );
+  };
+
+  const handleDelete = () => {
     if (!deleteTargetId) return;
-    deleteClass.mutate(deleteTargetId, { onSuccess: () => { toast.success("Removed!"); setDeleteTargetId(null); } });
+    deleteRecord.mutate(
+      { id: deleteTargetId, recordType: 'school_class' },
+      {
+        onSuccess: () => {
+          toast.success("Class deleted");
+          setDeleteTargetId(null);
+        },
+        onError: () => {
+          toast.error("Failed to delete class");
+          setDeleteTargetId(null);
+        }
+      }
+    );
   };
 
-  const filtered = classesData.filter(c => c.name?.toLowerCase().includes(search.toLowerCase()) || c.teacher?.toLowerCase().includes(search.toLowerCase()));
+  const handleLevelChange = (level) => {
+    setFormData(prev => ({
+      ...prev,
+      level,
+      name: PREDEFINED_CLASSES[level][0] // Reset to first available name for the new level
+    }));
+  };
 
   return (
     <div className="space-y-6 font-dmsans p-4 bg-[#F0F4FF] dark:bg-blue-900/20 min-h-screen">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-emerald-600 p-8 border-4 border-emerald-900 text-white">
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 bg-emerald-600 p-8 border-4 border-emerald-900 text-white shadow-lg">
         <div>
-          <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-emerald-400 inline-block pb-2 mb-4 tracking-[-0.02em] tracking-[0.04em]">{t("classes_subjects", "Class Roster")}</h1>
-          <p className="text-emerald-100 font-semibold uppercase tracking-wider tracking-[0.04em]">Manage students, cohorts, and subjects</p>
+          <h1 className="text-4xl font-black uppercase tracking-widest border-b-4 border-emerald-400 inline-block pb-2 mb-4">Classes & Cohorts</h1>
+          <p className="text-emerald-100 font-semibold uppercase tracking-wider">Manage class configurations and capacities</p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-6">
           <div className="text-right">
-            <p className="text-sm font-black text-emerald-300 uppercase tracking-widest tracking-[0.04em]">Total Classes</p>
-            <p className="text-3xl font-black tracking-[-0.02em]">{classesData.length}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm font-black text-emerald-300 uppercase tracking-widest tracking-[0.04em]">Capacity</p>
-            <p className="text-3xl font-black tracking-[-0.02em]">{classesData.reduce((a,c)=>a+c.students,0)}</p>
+            <p className="text-sm font-black text-emerald-300 uppercase tracking-widest">Total Classes</p>
+            <p className="text-4xl font-black">{classes.length}</p>
           </div>
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border-2 border-emerald-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-white border-2 border-emerald-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
-          <Input placeholder="Search classes..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 rounded-none shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none font-semibold focus-visible:ring-emerald-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
+          <Input 
+            placeholder="Search classes or teachers..." 
+            value={search} 
+            onChange={e => setSearch(e.target.value)} 
+            className="pl-10 bg-[#F0F4FF] dark:bg-blue-900/20 border-emerald-200 focus-visible:ring-emerald-500 font-semibold text-emerald-900 h-12" 
+          />
         </div>
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <Button onClick={() => setShowModal(true)} className="gap-2 bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none border-2 border-emerald-800 rounded-none font-semibold uppercase tracking-[0.04em]">
-            <Plus className="w-4 h-4" /> {t("add_class", "New Class")}
-          </Button>
-        </div>
+        <Button onClick={handleOpenAdd} className="bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md border-2 border-emerald-800 rounded-none font-black uppercase tracking-widest h-12 px-6">
+          <Plus className="w-5 h-5 mr-2" /> New Class
+        </Button>
       </motion.div>
 
-      {isDbLoading ? (
-        <div className="py-12 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold uppercase tracking-[0.04em]">Loading classes...</div>
+      {isClassesLoading ? (
+        <div className="flex items-center justify-center py-20 text-emerald-800 font-bold uppercase tracking-widest animate-pulse">Loading Classes...</div>
+      ) : filteredClasses.length === 0 ? (
+        <div className="py-20 text-center text-gray-500 font-medium">No classes found. Add your first class!</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filtered.map(c => (
-            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} key={c.id} className="bg-white border-2 border-emerald-300 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-none p-5 relative group flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+          {filteredClasses.map(c => (
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} key={c.id} className="bg-white border-2 border-emerald-300 p-5 relative group flex flex-col hover:shadow-xl transition-all duration-200">
               <div className="absolute top-4 right-4 z-10">
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild><Button variant="ghost" className="h-8 w-8 p-0 rounded-none hover:bg-emerald-100"><MoreVertical className="w-4 h-4 text-emerald-800"/></Button></DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-white border-2 border-emerald-300 rounded-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                    <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none" onClick={() => setViewDetails(c)}>View Roster</DropdownMenuItem>
-                    <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none" onClick={() => { setEditingId(c.id); setFormData({name: c.name, subject: c.subject, teacher: c.teacher, room: c.room, schedule: c.schedule, courses: c.courses||'', allowSelfRegistration: !!c.allowSelfRegistration}); setShowModal(true); }}>Edit</DropdownMenuItem>
-                    <DropdownMenuItem className="text-red-700 font-black rounded-none" onClick={() => setDeleteTargetId(c.id)}>Delete</DropdownMenuItem>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0 rounded-none hover:bg-emerald-100">
+                      <MoreVertical className="w-5 h-5 text-emerald-800"/>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="bg-white border-2 border-emerald-300 rounded-none">
+                    <DropdownMenuItem className="font-semibold text-emerald-800 rounded-none cursor-pointer" onClick={() => handleOpenEdit(c)}>
+                      <Edit className="w-4 h-4 mr-2" /> Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-700 font-black rounded-none cursor-pointer" onClick={() => setDeleteTargetId(c.id)}>
+                      <Trash2 className="w-4 h-4 mr-2" /> Delete
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <div className="w-12 h-12 bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center mb-4">
-                <Users className="w-6 h-6 text-[#1E3A8A] dark:text-blue-400" />
-              </div>
-              <h3 className="font-black text-2xl text-emerald-900 leading-none mb-1 tracking-[-0.02em]">{c.name}</h3>
-              <p className="text-xs font-semibold text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest mb-4 tracking-[0.04em]">{c.subject}</p>
               
-              <div className="space-y-2 mb-6 flex-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-emerald-800">Teacher:</span>
-                  <span className="font-medium text-[#1E3A8A] dark:text-blue-400">{c.teacher}</span>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center">
+                  <LayoutGrid className="w-6 h-6 text-[#1E3A8A]" />
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-emerald-800">Room:</span>
-                  <span className="font-medium text-[#1E3A8A] dark:text-blue-400">{c.room}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-emerald-800">Capacity:</span>
-                  <span className="font-black text-emerald-900 bg-emerald-100 px-2 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-300">{c.students}</span>
+                <div>
+                  <h3 className="font-black text-2xl text-emerald-900 leading-none">{c.name}</h3>
+                  <span className="inline-block mt-1 px-2 py-0.5 bg-[#1E3A8A] text-white text-[10px] font-black uppercase tracking-widest">{c.level}</span>
                 </div>
               </div>
-              <Button onClick={() => setViewDetails(c)} variant="outline" className="w-full bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-300 font-black text-emerald-800 uppercase rounded-none hover:bg-emerald-600 hover:text-white transition-colors tracking-[0.04em]">
-                Open Roster
-              </Button>
+              
+              <div className="space-y-3 mb-6 flex-1 pt-4 border-t-2 border-emerald-100">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-bold text-emerald-800 flex items-center gap-2"><Users className="w-4 h-4"/> Enrolled:</span>
+                  <span className="font-black text-emerald-900 bg-emerald-100 px-2 py-0.5 border border-emerald-300">
+                    {studentCountForClass(c.name)} {c.capacity ? `/ ${c.capacity}` : ''}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-bold text-emerald-800">Teacher:</span>
+                  <span className="font-medium text-[#1E3A8A]">{c.class_teacher || 'Unassigned'}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-bold text-emerald-800">Room:</span>
+                  <span className="font-medium text-[#1E3A8A]">{c.room || 'TBD'}</span>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -150,31 +223,88 @@ export default function Classes() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/60 backdrop-blur-sm p-4">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white border-4 border-emerald-500 w-full max-w-md p-6 space-y-4 rounded-none max-h-[90vh] overflow-y-auto hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-            <h2 className="text-xl font-black text-emerald-900 uppercase tracking-wider border-b-2 border-emerald-200 pb-2 tracking-[0.04em]">{editingId ? 'Edit Class' : 'Add Class'}</h2>
-            <div className="space-y-4">
-              <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Class Name</label><Input value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
-              <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Subject</label><Input value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
-              <div>
-                <label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Teacher</label>
-                <select value={formData.teacher} onChange={e => setFormData({...formData, teacher: e.target.value})} className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 px-3 py-2 text-sm font-semibold text-emerald-900 rounded-none focus:outline-none">
-                  {['Mr. John Doe','Mrs. Jane Smith','Mr. Kwesi Asante'].map(t=><option key={t}>{t}</option>)}
+          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white border-4 border-emerald-500 w-full max-w-lg p-6 space-y-6 rounded-none max-h-[90vh] overflow-y-auto relative">
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-emerald-800 hover:bg-emerald-100 p-1">
+              <X className="w-6 h-6" />
+            </button>
+            <h2 className="text-2xl font-black text-emerald-900 uppercase tracking-wider border-b-4 border-emerald-200 pb-2">
+              {editingId ? 'Edit Class' : 'Add New Class'}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="col-span-1 md:col-span-2">
+                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Educational Level</label>
+                <select 
+                  value={formData.level} 
+                  onChange={e => handleLevelChange(e.target.value)} 
+                  className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-emerald-900 rounded-none focus:outline-none focus:border-emerald-500 h-11"
+                >
+                  {LEVEL_OPTIONS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Room</label><Input value={formData.room} onChange={e => setFormData({...formData, room: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
-                <div><label className="text-xs font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest tracking-[0.04em]">Schedule</label><Input value={formData.schedule} onChange={e => setFormData({...formData, schedule: e.target.value})} className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] dark:bg-blue-900/20 rounded-none font-semibold" /></div>
+
+              <div>
+                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Class Name</label>
+                <select 
+                  value={formData.name} 
+                  onChange={e => setFormData({...formData, name: e.target.value})} 
+                  className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-emerald-900 rounded-none focus:outline-none focus:border-emerald-500 h-11"
+                >
+                  {PREDEFINED_CLASSES[formData.level]?.map(name => <option key={name} value={name}>{name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Class Teacher</label>
+                <select 
+                  value={formData.class_teacher} 
+                  onChange={e => setFormData({...formData, class_teacher: e.target.value})} 
+                  className="mt-1 w-full border-2 border-emerald-200 bg-[#F0F4FF] px-3 py-2.5 text-sm font-bold text-emerald-900 rounded-none focus:outline-none focus:border-emerald-500 h-11"
+                >
+                  <option value="">-- Unassigned --</option>
+                  {teachers.map(t => <option key={t.id} value={t.full_name || t.name}>{t.full_name || t.name}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Room Number/Name</label>
+                <Input 
+                  value={formData.room} 
+                  onChange={e => setFormData({...formData, room: e.target.value})} 
+                  className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] rounded-none font-semibold text-emerald-900 h-11" 
+                  placeholder="e.g. Room 101"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-black text-[#1E3A8A] uppercase tracking-widest">Capacity</label>
+                <Input 
+                  type="number"
+                  value={formData.capacity} 
+                  onChange={e => setFormData({...formData, capacity: e.target.value})} 
+                  className="mt-1 border-2 border-emerald-200 bg-[#F0F4FF] rounded-none font-semibold text-emerald-900 h-11" 
+                  placeholder="e.g. 40"
+                />
               </div>
             </div>
-            <div className="flex gap-4 pt-4 border-t-2 border-emerald-200">
-              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-semibold text-emerald-800 hover:bg-[#F0F4FF] dark:bg-blue-900/20 uppercase tracking-[0.04em]" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button className="flex-1 rounded-none bg-[#1E3A8A] hover:bg-[#172554] text-white shadow-md shadow-[#1E3A8A]/20 transition-all hover:-translate-y-0.5 rounded-xl font-semibold font-black uppercase border-2 border-emerald-800 tracking-[0.04em]" onClick={handleCreateClass}>Save</Button>
+
+            <div className="flex gap-4 pt-6 border-t-4 border-emerald-200">
+              <Button variant="outline" className="flex-1 rounded-none border-2 border-emerald-300 font-bold text-emerald-800 hover:bg-[#F0F4FF] uppercase tracking-widest h-12" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button className="flex-1 rounded-none bg-[#1E3A8A] hover:bg-[#172554] text-white font-black uppercase tracking-widest border-2 border-emerald-800 h-12" onClick={handleSave} disabled={mutate.isPending}>
+                {mutate.isPending ? 'Saving...' : 'Save Class'}
+              </Button>
             </div>
           </motion.div>
         </div>
       )}
 
-      <ConfirmationModal isOpen={deleteTargetId !== null} onClose={() => setDeleteTargetId(null)} onConfirm={handleDeleteClass} title="Disband Class" message="Permanently delete this cohort?" />
+      <ConfirmationModal 
+        isOpen={deleteTargetId !== null} 
+        onClose={() => setDeleteTargetId(null)} 
+        onConfirm={handleDelete} 
+        title="Delete Class" 
+        message="Are you sure you want to permanently delete this class? This cannot be undone." 
+      />
     </div>
   );
 }

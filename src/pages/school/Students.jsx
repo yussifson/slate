@@ -1,17 +1,16 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { Users, GraduationCap, Plus, UserCheck, AlertCircle, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
-import { useQuery } from "@tanstack/react-query";
 import { toast } from 'react-hot-toast';
 import { useCompanyId } from "@/hooks/useCompanyId";
 import { Button } from '@/components/ui/button';
-import SchoolAPI from '@/api/SchoolAPI';
 import PageHeader from '@/components/school/PageHeader';
 import StatCard from '@/components/school/StatCard';
 import ListingPage from '@/components/school/ListingPage';
 import ModalForm from '@/components/school/ModalForm';
 import { motion } from 'framer-motion';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 
 export default function Students() {
   const { t } = useTranslation();
@@ -21,41 +20,55 @@ export default function Students() {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    phone: '',
-    class: '',
+    gender: 'Male',
+    dob: '',
+    class_name: '',
+    level: 'Primary',
+    student_id: '',
+    parent_name: '',
+    parent_phone: '',
+    parent_email: '',
+    address: '',
     status: 'Active',
-    enrollmentDate: new Date().toISOString().split('T')[0]
+    enrollment_date: new Date().toISOString().split('T')[0]
   });
 
-  // Fetch students
-  const { data: students = [], isLoading: studentsLoading, refetch } = useQuery({
-    queryKey: ['students', companyId],
-    queryFn: async () => {
-      if (!companyId) return [];
-      return await SchoolAPI.getStudents(companyId);
-    },
-    enabled: !!companyId
-  });
+  const { data: rawStudents = [], isLoading: studentsLoading } = useIndustryRecords('school_student');
+  const { data: rawClasses = [] } = useIndustryRecords('school_class');
+  
+  const mutate = useMutateIndustryRecord();
+  const deleteRecord = useDeleteIndustryRecord();
 
-  // Fetch statistics
-  const { data: stats = { total: 0, active: 0 } } = useQuery({
-    queryKey: ['studentStats', companyId],
-    queryFn: async () => {
-      if (!companyId) return { total: 0, active: 0 };
-      return await SchoolAPI.getStudentStats(companyId);
-    },
-    enabled: !!companyId
-  });
+  const students = useMemo(() => {
+    return rawStudents.map(r => ({ id: r.id, status: r.status, ...r.data }));
+  }, [rawStudents]);
+
+  const classes = useMemo(() => {
+    return rawClasses.map(r => r.data.name).filter(Boolean);
+  }, [rawClasses]);
+
+  const stats = useMemo(() => {
+    const active = students.filter(s => s.status === 'Active').length;
+    const kg = students.filter(s => s.level === 'KG').length;
+    const primary = students.filter(s => s.level === 'Primary').length;
+    const jhs = students.filter(s => s.level === 'JHS').length;
+    return { total: students.length, active, kg, primary, jhs };
+  }, [students]);
 
   const handleAddNew = () => {
     setFormData({
       name: '',
-      email: '',
-      phone: '',
-      class: '',
+      gender: 'Male',
+      dob: '',
+      class_name: '',
+      level: 'Primary',
+      student_id: 'STU-' + Date.now().toString(36).toUpperCase(),
+      parent_name: '',
+      parent_phone: '',
+      parent_email: '',
+      address: '',
       status: 'Active',
-      enrollmentDate: new Date().toISOString().split('T')[0]
+      enrollment_date: new Date().toISOString().split('T')[0]
     });
     setEditingId(null);
     setShowForm(true);
@@ -64,11 +77,17 @@ export default function Students() {
   const handleEdit = (student) => {
     setFormData({
       name: student.name || '',
-      email: student.email || '',
-      phone: student.phone || '',
-      class: student.class || '',
+      gender: student.gender || 'Male',
+      dob: student.dob || '',
+      class_name: student.class_name || '',
+      level: student.level || 'Primary',
+      student_id: student.student_id || '',
+      parent_name: student.parent_name || '',
+      parent_phone: student.parent_phone || '',
+      parent_email: student.parent_email || '',
+      address: student.address || '',
       status: student.status || 'Active',
-      enrollmentDate: student.enrollment_date || new Date().toISOString().split('T')[0]
+      enrollment_date: student.enrollment_date || new Date().toISOString().split('T')[0]
     });
     setEditingId(student.id);
     setShowForm(true);
@@ -77,31 +96,36 @@ export default function Students() {
   const handleDelete = async (student) => {
     if (!confirm(`Delete ${student.name}? This cannot be undone.`)) return;
     try {
-      await SchoolAPI.deleteStudent(companyId, student.id, user.id);
+      await deleteRecord.mutateAsync({ id: student.id, recordType: 'school_student' });
       toast.success('Student deleted');
-      refetch();
     } catch (e) {
-      toast.error(e.message || 'Failed to delete student');
+      toast.error('Failed to delete student');
     }
   };
 
   const handleSubmit = async () => {
-    if (!formData.name || !formData.class) {
+    if (!formData.name || !formData.class_name) {
       toast.error('Name and class are required');
       return;
     }
     try {
+      const payload = {
+        recordType: 'school_student',
+        payload: formData,
+        status: formData.status,
+        searchText: `${formData.name} ${formData.student_id} ${formData.class_name}`
+      };
+
       if (editingId) {
-        await SchoolAPI.updateStudent(companyId, editingId, formData, user.id);
+        await mutate.mutateAsync({ id: editingId, ...payload });
         toast.success('Student updated');
       } else {
-        await SchoolAPI.addStudent(companyId, formData, user.id);
+        await mutate.mutateAsync(payload);
         toast.success('Student added');
       }
       setShowForm(false);
-      refetch();
     } catch (e) {
-      toast.error(e.message || 'Failed to save student');
+      toast.error('Failed to save student');
     }
   };
 
@@ -110,10 +134,10 @@ export default function Students() {
   };
 
   const columns = [
+    { header: 'Student ID', accessorKey: 'student_id' },
     { header: 'Name', accessorKey: 'name' },
-    { header: 'Email', accessorKey: 'email' },
-    { header: 'Phone', accessorKey: 'phone' },
-    { header: 'Class', accessorKey: 'class' },
+    { header: 'Level', accessorKey: 'level' },
+    { header: 'Class', accessorKey: 'class_name' },
     { 
       header: 'Status', 
       accessorKey: 'status',
@@ -131,10 +155,39 @@ export default function Students() {
   ];
 
   const formFields = [
+    { name: 'student_id', label: 'Student ID', type: 'text', required: true, readOnly: true },
     { name: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g., John Smith' },
-    { name: 'email', label: 'Email Address', type: 'email', placeholder: 'john@example.com' },
-    { name: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+1234567890' },
-    { name: 'class', label: 'Class/Grade', type: 'text', required: true, placeholder: 'e.g., Grade 9A' },
+    { 
+      name: 'gender', 
+      label: 'Gender', 
+      type: 'select',
+      options: [
+        { value: 'Male', label: 'Male' },
+        { value: 'Female', label: 'Female' }
+      ]
+    },
+    { name: 'dob', label: 'Date of Birth', type: 'date' },
+    { 
+      name: 'level', 
+      label: 'Level', 
+      type: 'select',
+      options: [
+        { value: 'KG', label: 'KG' },
+        { value: 'Primary', label: 'Primary' },
+        { value: 'JHS', label: 'JHS' }
+      ]
+    },
+    { 
+      name: 'class_name', 
+      label: 'Class/Grade', 
+      type: 'select', 
+      required: true,
+      options: classes.map(c => ({ value: c, label: c }))
+    },
+    { name: 'parent_name', label: 'Parent Name', type: 'text', placeholder: 'e.g., Jane Smith' },
+    { name: 'parent_phone', label: 'Parent Phone', type: 'tel', placeholder: '+1234567890' },
+    { name: 'parent_email', label: 'Parent Email', type: 'email', placeholder: 'parent@example.com' },
+    { name: 'address', label: 'Address', type: 'text', placeholder: 'Home Address' },
     { 
       name: 'status', 
       label: 'Status', 
@@ -142,16 +195,15 @@ export default function Students() {
       options: [
         { value: 'Active', label: 'Active' },
         { value: 'Graduated', label: 'Graduated' },
-        { value: 'Suspended', label: 'Suspended' }
+        { value: 'Inactive', label: 'Inactive' }
       ]
     },
-    { name: 'enrollmentDate', label: 'Enrollment Date', type: 'date' }
+    { name: 'enrollment_date', label: 'Enrollment Date', type: 'date' }
   ];
 
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Page Header */}
         <PageHeader
           icon={Users}
           title="Students Directory"
@@ -170,32 +222,37 @@ export default function Students() {
           ]}
         />
 
-        {/* Statistics Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <StatCard
             icon={Users}
             label="Total Students"
-            value={stats.total || 0}
-            description="All enrolled students"
+            value={stats.total}
+            description="All enrolled"
             color="emerald"
           />
           <StatCard
             icon={UserCheck}
             label="Active Students"
-            value={stats.active || 0}
-            description="Currently enrolled"
+            value={stats.active}
+            description="Currently active"
             color="blue"
           />
           <StatCard
-            icon={TrendingUp}
-            label="Enrollment Rate"
-            value={`${stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}%`}
-            description="Active vs Total"
+            icon={GraduationCap}
+            label="Primary"
+            value={stats.primary}
+            description="Primary students"
             color="orange"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="JHS"
+            value={stats.jhs}
+            description="JHS students"
+            color="purple"
           />
         </div>
 
-        {/* Students Listing */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -207,10 +264,11 @@ export default function Students() {
             onAdd={handleAddNew}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            searchPlaceholder="Search by name, email, or phone..."
+            searchPlaceholder="Search by name or student ID..."
             filterOptions={{
-              class: [...new Set(students.map(s => s.class).filter(Boolean))],
-              status: ['Active', 'Graduated', 'Suspended']
+              level: ['KG', 'Primary', 'JHS'],
+              class_name: classes,
+              status: ['Active', 'Graduated', 'Inactive']
             }}
             emptyIcon={Users}
             emptyMessage="No students yet. Create your first student record to get started."
@@ -218,7 +276,6 @@ export default function Students() {
         </motion.div>
       </div>
 
-      {/* Add/Edit Form Modal */}
       <ModalForm
         open={showForm}
         onOpenChange={setShowForm}

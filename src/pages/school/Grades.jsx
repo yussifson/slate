@@ -1,153 +1,177 @@
 import { useTranslation } from "react-i18next";
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Award, Search, Plus, Trash2, TrendingUp, BarChart3, CheckCircle, MoreVertical, FileSpreadsheet } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Link } from 'react-router-dom';
-import AddOptionInline from "@/components/shared/AddOptionInline";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { useCompanyId } from '@/hooks/useCompanyId';
 
-const SUBJECTS = ['Mathematics', 'Science', 'English', 'History', 'Chemistry', 'Physics', 'Geography', 'ICT'];
+const SUBJECTS = [
+  'Mathematics', 'English', 'Science', 'Social Studies', 
+  'ICT', 'Ghanaian Language', 'French', 
+  'Religious & Moral Education', 'Physical Education', 'Creative Arts'
+];
+
+const TERMS = ['Term 1', 'Term 2', 'Term 3'];
 
 function calcGrade(score, maxScore) {
   const pct = maxScore > 0 ? (score / maxScore) * 100 : 0;
-  if (pct >= 90) return 'A';
-  if (pct >= 80) return 'B';
-  if (pct >= 70) return 'C';
-  if (pct >= 60) return 'D';
+  if (pct >= 80) return 'A';
+  if (pct >= 65) return 'B';
+  if (pct >= 50) return 'C';
+  if (pct >= 40) return 'D';
   return 'F';
 }
 
+function getGradeRemarks(grade) {
+  switch(grade) {
+    case 'A': return 'Excellent';
+    case 'B': return 'Very Good';
+    case 'C': return 'Good';
+    case 'D': return 'Pass';
+    default: return 'Fail';
+  }
+}
+
 const GRADE_COLORS = {
-  A: 'bg-[var(--primary)]/10 text-[var(--primary)]',
-  B: 'bg-[var(--color-info)]/10 text-[var(--color-info)]',
-  C: 'bg-[var(--color-success)]/10 text-[var(--color-success)]',
-  D: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]',
-  F: 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]'};
+  A: 'bg-[var(--color-success)]/10 text-[var(--color-success)]', // green
+  B: 'bg-[var(--color-info)]/10 text-[var(--color-info)]',       // blue
+  C: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)]', // yellow/amber
+  D: 'bg-[#f97316]/10 text-[#f97316]',                           // orange
+  F: 'bg-[var(--color-destructive)]/10 text-[var(--color-destructive)]' // red
+};
 
 const defaultForm = {
-  studentName: '', className: 'Grade 9A', subject: 'Mathematics', examName: '', date: new Date().toISOString().split('T')[0], score: '', maxScore: '100'};
+  student_id: '',
+  student_name: '',
+  class_name: '',
+  subject: SUBJECTS[0],
+  exam_name: '',
+  term: TERMS[0],
+  score: '',
+  max_score: '100',
+  remarks: '',
+  date: new Date().toISOString().split('T')[0]
+};
 
 export default function Grades() {
   const { t } = useTranslation();
-  const companyId = useCompanyId();
+  
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState('All');
+  const [filterSubject, setFilterSubject] = useState('All');
+  const [filterTerm, setFilterTerm] = useState('All');
+  
   const [showModal, setShowModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [viewDetails, setViewDetails] = useState(null);
   const [formData, setFormData] = useState(defaultForm);
 
-  const { data: dbRecords = [], isLoading } = useIndustryRecords('grade');
+  const { data: gradesData = [], isLoading } = useIndustryRecords('school_grade');
+  const { data: studentsData = [] } = useIndustryRecords('school_student');
+  const { data: classesData = [] } = useIndustryRecords('school_class');
+  const { data: examsData = [] } = useIndustryRecords('school_exam');
+
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  const { data: studentRecords = [] } = useQuery({
-    queryKey: ['clients', companyId],
-    queryFn: () => base44.entities.Client.filter({ company_id: companyId, type: 'student' }),
-    enabled: !!companyId
-  });
+  const classList = useMemo(() => classesData.map(c => c.data?.name).filter(Boolean), [classesData]);
+  const examList = useMemo(() => examsData.map(e => e.data?.name).filter(Boolean), [examsData]);
+  
+  const availableStudents = useMemo(() => {
+    return studentsData
+      .map(s => ({ id: s.id, name: `${s.data?.first_name || ''} ${s.data?.last_name || ''}`.trim(), className: s.data?.current_class }))
+      .filter(s => !formData.class_name || s.className === formData.class_name);
+  }, [studentsData, formData.class_name]);
 
-  const { data: classRecords = [] } = useQuery({
-    queryKey: ['cases', companyId],
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
-    enabled: !!companyId
-  });
-
-  const CLASS_LIST = classRecords.length > 0 ? [...new Set(classRecords.map(r => r.title))] : ['Grade 7B', 'Grade 8C', 'Grade 9A'];
-
-  const { data: examsData = [] } = useIndustryRecords('exam');
-  const uniqueExams = [...new Set(examsData.map(r => r.data?.subject).filter(Boolean))];
-
-  const availableStudents = studentRecords.filter(r => {
-    let extra = {};
-    try { extra = JSON.parse(r.notes || '{}'); } catch(e) {}
-    return extra.class === formData.className;
-  }).map(r => ({ id: r.id, name: r.name || 'Unknown' }));
-
-  const grades = dbRecords.map(r => ({
-    id: r.id,
-    status: r.status || 'Active',
-    ...r.data}));
+  const grades = gradesData.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
 
   const filtered = grades.filter(g => {
-    const matchClass = filterClass === 'All' || g.className === filterClass;
+    const matchClass = filterClass === 'All' || g.class_name === filterClass;
+    const matchSubject = filterSubject === 'All' || g.subject === filterSubject;
+    const matchTerm = filterTerm === 'All' || g.term === filterTerm;
     const q = search.toLowerCase();
-    const matchSearch = !q || g.studentName?.toLowerCase().includes(q) || g.examName?.toLowerCase().includes(q) || g.subject?.toLowerCase().includes(q);
-    return matchClass && matchSearch;
+    const matchSearch = !q || 
+      g.student_name?.toLowerCase().includes(q) || 
+      g.exam_name?.toLowerCase().includes(q) || 
+      g.subject?.toLowerCase().includes(q);
+    return matchClass && matchSubject && matchTerm && matchSearch;
   });
 
-  const scores = grades.map(g => (g.maxScore > 0 ? (g.score / g.maxScore) * 100 : 0));
+  const scores = filtered.map(g => (g.max_score > 0 ? (g.score / g.max_score) * 100 : 0));
   const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
   const highScore = scores.length > 0 ? Math.round(Math.max(...scores)) : 0;
   const lowScore = scores.length > 0 ? Math.round(Math.min(...scores)) : 0;
   const passRate = scores.length > 0 ? Math.round((scores.filter(s => s >= 50).length / scores.length) * 100) : 0;
 
+  const handleStudentSelect = (studentId) => {
+    const student = availableStudents.find(s => s.id === studentId);
+    if (student) {
+      setFormData(prev => ({ ...prev, student_id: student.id, student_name: student.name }));
+    } else {
+      setFormData(prev => ({ ...prev, student_id: '', student_name: '' }));
+    }
+  };
+
   const handleAdd = () => {
-    if (!formData.studentName.trim()) return toast.error('Student name is required.');
-    if (!formData.examName.trim()) return toast.error('Exam name is required.');
+    if (!formData.student_id) return toast.error('Student is required.');
+    if (!formData.class_name) return toast.error('Class is required.');
+    if (!formData.exam_name) return toast.error('Exam is required.');
+    
     const score = parseFloat(formData.score);
-    const maxScore = parseFloat(formData.maxScore);
+    const maxScore = parseFloat(formData.max_score);
     if (isNaN(score) || isNaN(maxScore) || maxScore <= 0) return toast.error('Please enter valid score values.');
     if (score > maxScore) return toast.error('Score cannot exceed max score.');
 
     const grade = calcGrade(score, maxScore);
-    const payload = {
-      studentName: formData.studentName.trim(),
-      className: formData.className,
-      subject: formData.subject,
-      examName: formData.examName.trim(),
-      date: formData.date,
-      score,
-      maxScore,
-      grade};
+    const remarks = formData.remarks || getGradeRemarks(grade);
 
-    if (editingId) {
-      mutateRecord.mutate({
-        id: editingId,
-        recordType: 'grade',
-        payload,
-        status: 'active',
-        searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`}, {
-        onSuccess: () => {
-          toast.success('Grade entry updated!');
-          setShowModal(false);
-          setEditingId(null);
-          setFormData(defaultForm);
-        },
-        onError: (err) => toast.error('Failed: ' + err.message)});
-    } else {
-      mutateRecord.mutate({
-        recordType: 'grade',
-        payload,
-        status: 'active',
-        searchText: `${formData.studentName} ${formData.className} ${formData.subject} ${formData.examName}`}, {
-        onSuccess: () => {
-          toast.success('Grade entry recorded!');
-          setShowModal(false);
-          setFormData(defaultForm);
-        },
-        onError: (err) => toast.error('Failed: ' + err.message)});
-    }
+    const payload = {
+      student_id: formData.student_id,
+      student_name: formData.student_name,
+      class_name: formData.class_name,
+      subject: formData.subject,
+      exam_name: formData.exam_name,
+      term: formData.term,
+      score,
+      max_score: maxScore,
+      grade,
+      remarks,
+      date: formData.date
+    };
+
+    const searchString = `${formData.student_name} ${formData.class_name} ${formData.subject} ${formData.exam_name} ${formData.term}`;
+
+    mutateRecord.mutate({
+      id: editingId || undefined,
+      recordType: 'school_grade',
+      payload,
+      status: 'active',
+      searchText: searchString
+    }, {
+      onSuccess: () => {
+        toast.success(editingId ? 'Grade entry updated!' : 'Grade entry recorded!');
+        setShowModal(false);
+        setEditingId(null);
+        setFormData(defaultForm);
+      },
+      onError: (err) => toast.error('Failed: ' + err.message)
+    });
   };
 
   const handleDelete = () => {
     if (!deleteTargetId) return;
-    deleteRecord.mutate({ id: deleteTargetId, recordType: 'grade' }, {
+    deleteRecord.mutate({ id: deleteTargetId, recordType: 'school_grade' }, {
       onSuccess: () => { toast.success('Grade record deleted.'); setDeleteTargetId(null); },
-      onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null); }});
+      onError: (err) => { toast.error('Failed: ' + err.message); setDeleteTargetId(null); }
+    });
   };
 
-  const liveGrade = calcGrade(parseFloat(formData.score) || 0, parseFloat(formData.maxScore) || 100);
+  const liveGrade = calcGrade(parseFloat(formData.score) || 0, parseFloat(formData.max_score) || 100);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-7xl mx-auto">
@@ -203,7 +227,7 @@ export default function Grades() {
       </div>
 
       {/* Filters */}
-      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col sm:flex-row gap-4 items-center justify-between">
+      <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] p-6 flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative flex-1 w-full max-w-md">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)]" />
           <Input
@@ -213,18 +237,31 @@ export default function Grades() {
             className="pl-12 rounded-full border-primary/30 bg-[var(--color-surface-1)] h-11"
           />
         </div>
-        <div className="flex gap-2 flex-wrap items-center overflow-x-auto scrollbar-hide">
-          {['All', ...CLASS_LIST].map(c => (
-            <button
-              key={c}
-              onClick={() => setFilterClass(c)}
-              className={`px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors rounded-full ${
-                filterClass === c ? 'bg-[var(--primary)]/10 text-[var(--primary)]' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-2)]'
-              }`}
-            >
-              {c}
-            </button>
-          ))}
+        <div className="flex gap-2 flex-wrap items-center">
+          <select 
+            value={filterTerm} 
+            onChange={e => setFilterTerm(e.target.value)}
+            className="h-10 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="All">All Terms</option>
+            {TERMS.map(t => <option key={t} value={t}>{t}</option>)}
+          </select>
+          <select 
+            value={filterClass} 
+            onChange={e => setFilterClass(e.target.value)}
+            className="h-10 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="All">All Classes</option>
+            {classList.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <select 
+            value={filterSubject} 
+            onChange={e => setFilterSubject(e.target.value)}
+            className="h-10 rounded-full border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="All">All Subjects</option>
+            {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
         </div>
       </div>
 
@@ -232,7 +269,7 @@ export default function Grades() {
       <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] overflow-hidden">
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="py-12 text-center text-[var(--primary)] font-semibold">{t("loading_grade_records", "Loading grade records...")}</div>
+            <div className="py-12 text-center text-[var(--primary)] font-semibold">{t("loading", "Loading...")}</div>
           ) : filtered.length === 0 ? (
             <div className="py-16 text-center bg-[var(--color-surface-1)] border-t border-primary/20">
               <FileSpreadsheet className="w-12 h-12 mx-auto mb-4 text-[var(--color-text-tertiary)]" />
@@ -243,7 +280,7 @@ export default function Grades() {
             <table className="w-full text-sm">
               <thead className="bg-[var(--color-surface-1)]/50 border-b border-primary/20">
                 <tr>
-                  {['Student', 'Class', 'Subject', 'Exam', 'Date', 'Score', 'Grade', ''].map(h => (
+                  {['Student', 'Class', 'Term', 'Subject', 'Exam', 'Score', 'Grade', 'Remarks', ''].map(h => (
                     <th key={h} className="px-6 py-4 text-left text-[11px] uppercase tracking-[var(--tracking-widest)] font-semibold text-[var(--color-text-tertiary)] tracking-[0.04em]">{h}</th>
                   ))}
                 </tr>
@@ -251,19 +288,20 @@ export default function Grades() {
               <tbody className="divide-y divide-primary/10">
                 {filtered.map((g) => (
                   <tr key={g.id} className="hover:bg-[var(--color-surface-2)] transition-colors">
-                    <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.studentName}</td>
-                    <td className="px-6 py-4 font-medium text-[var(--color-text-secondary)]">{g.className}</td>
+                    <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">{g.student_name}</td>
+                    <td className="px-6 py-4 font-medium text-[var(--color-text-secondary)]">{g.class_name}</td>
+                    <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.term}</td>
                     <td className="px-6 py-4 text-[var(--color-text-secondary)]">{g.subject}</td>
-                    <td className="px-6 py-4 text-[var(--color-text-primary)] font-medium">{g.examName}</td>
-                    <td className="px-6 py-4 text-[var(--color-text-secondary)] text-xs tracking-[0.04em]">{g.date}</td>
+                    <td className="px-6 py-4 text-[var(--color-text-primary)] font-medium">{g.exam_name}</td>
                     <td className="px-6 py-4 font-semibold text-[var(--color-text-primary)]">
-                      {g.score} <span className="text-[var(--color-text-tertiary)] text-xs font-normal tracking-[0.04em]">/ {g.maxScore}</span>
+                      {g.score} <span className="text-[var(--color-text-tertiary)] text-xs font-normal tracking-[0.04em]">/ {g.max_score}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center justify-center px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[var(--tracking-widest)] rounded-full ${GRADE_COLORS[g.grade] || 'bg-[var(--color-surface-2)] text-[var(--color-text-secondary)]'}`}>
                         {g.grade}
                       </span>
                     </td>
+                    <td className="px-6 py-4 text-[var(--color-text-secondary)] truncate max-w-[150px]" title={g.remarks}>{g.remarks}</td>
                     <td className="px-6 py-4 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -276,7 +314,16 @@ export default function Grades() {
                           <DropdownMenuItem className="cursor-pointer" onClick={() => {
                             setEditingId(g.id);
                             setFormData({
-                              studentName: g.studentName, className: g.className, subject: g.subject, examName: g.examName, date: g.date, score: g.score, maxScore: g.maxScore
+                              student_id: g.student_id,
+                              student_name: g.student_name,
+                              class_name: g.class_name,
+                              subject: g.subject,
+                              exam_name: g.exam_name,
+                              term: g.term,
+                              score: g.score,
+                              max_score: g.max_score,
+                              remarks: g.remarks,
+                              date: g.date
                             });
                             setShowModal(true);
                           }}>{t("edit", "Edit")}</DropdownMenuItem>
@@ -295,76 +342,88 @@ export default function Grades() {
       {/* Add Grade Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 font-sans">
-          <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] w-full max-w-md p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl">
+          <div className="bg-[var(--color-surface-0)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-md-[var(--radius-xl)] w-full max-w-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-xl">
             <h2 className="text-xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight">
-              {editingId ? 'Edit Entry' : 'Quick Add'}
+              {editingId ? 'Edit Grade Entry' : 'Quick Add Grade'}
             </h2>
             <div className="space-y-4">
-              <div>
-                <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">{t("student_name", "Student Name")}</label>
-                <select
-                  value={formData.studentName}
-                  onChange={e => setFormData({ ...formData, studentName: e.target.value })}
-                  className="w-full flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] dark:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10"
-                >
-                  <option value="">{t("select_student", "Select Student...")}</option>
-                  {availableStudents.map(s => (
-                    <option key={s.id} value={s.name}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">{t("class", "Class")}</label>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Class</label>
                   <select
-                    value={formData.className}
-                    onChange={e => setFormData({ ...formData, className: e.target.value })}
-                    className="w-full flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] dark:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    value={formData.class_name}
+                    onChange={e => setFormData({ ...formData, class_name: e.target.value, student_id: '', student_name: '' })}
+                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
-                    {CLASS_LIST.map(c => <option key={c}>{c}</option>)}
+                    <option value="">Select Class...</option>
+                    {classList.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">{t("subject", "Subject")}</label>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Student</label>
+                  <select
+                    value={formData.student_id}
+                    onChange={e => handleStudentSelect(e.target.value)}
+                    disabled={!formData.class_name}
+                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
+                  >
+                    <option value="">Select Student...</option>
+                    {availableStudents.map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Term</label>
+                  <select
+                    value={formData.term}
+                    onChange={e => setFormData({ ...formData, term: e.target.value })}
+                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    {TERMS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Exam Name</label>
+                  <select
+                    value={formData.exam_name}
+                    onChange={e => setFormData({ ...formData, exam_name: e.target.value })}
+                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <option value="">Select Exam...</option>
+                    {examList.map(e => <option key={e} value={e}>{e}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Subject</label>
                   <select
                     value={formData.subject}
                     onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] dark:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200 ease-out hover:border-primary/40 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                    className="flex h-10 w-full rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-[#71717a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
-                    {SUBJECTS.map(s => <option key={s}>{s}</option>)}
+                    {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
+                <div>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Date</label>
+                  <Input
+                    type="date"
+                    value={formData.date}
+                    onChange={e => setFormData({ ...formData, date: e.target.value })}
+                    className="rounded-md-[var(--radius-lg)]"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">{t("exam_name", "Exam Name")}</label>
-                <Select value={formData.examName} onValueChange={(v) => setFormData({ ...formData, examName: v })}>
-                  <SelectTrigger className="rounded-md-[var(--radius-lg)]"><SelectValue placeholder="Select Exam..." /></SelectTrigger>
-                  <SelectContent className="rounded-md-[var(--radius-lg)] bg-[var(--color-surface-0)] border-primary/20">
-                    {uniqueExams.map(e => <SelectItem key={e} value={e} className="cursor-pointer">{e}</SelectItem>)}
-                    <AddOptionInline
-                      onAdd={(v) => {
-                        mutateRecord.mutate({
-                          recordType: 'exam', payload: { subject: v, class: formData.className, date: formData.date, time: '09:00 AM', duration: '2 Hours', venue: 'TBD' }, status: 'Upcoming', searchText: `${v} ${formData.className} TBD`
-                        });
-                        setFormData({ ...formData, examName: v });
-                      }}
-                      placeholder="New exam..."
-                    />
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">{t("date", "Date")}</label>
-                <Input
-                  type="date"
-                  value={formData.date}
-                  onChange={e => setFormData({ ...formData, date: e.target.value })}
-                  className="rounded-md-[var(--radius-lg)]"
-                />
-              </div>
+
               <div className="grid grid-cols-2 gap-4 bg-[var(--color-surface-1)] p-4 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 rounded-md-[var(--radius-lg)]">
                 <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 text-center tracking-[0.04em]">{t("score", "Score")}</label>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 text-center tracking-[0.04em]">Score</label>
                   <Input
                     type="number"
                     value={formData.score}
@@ -374,27 +433,39 @@ export default function Grades() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 text-center tracking-[0.04em]">{t("max_score", "Max")}</label>
+                  <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 text-center tracking-[0.04em]">Max Score</label>
                   <Input
                     type="number"
-                    value={formData.maxScore}
-                    onChange={e => setFormData({ ...formData, maxScore: e.target.value })}
+                    value={formData.max_score}
+                    onChange={e => setFormData({ ...formData, max_score: e.target.value })}
                     className="rounded-md-[var(--radius-lg)] text-center font-semibold text-lg h-12"
                     placeholder="100"
                   />
                 </div>
               </div>
+
               {formData.score !== '' && (
                 <div className="flex items-center justify-center gap-3 py-3 bg-[var(--color-surface-2)] rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <span className="text-xs font-semibold text-[var(--color-text-secondary)] tracking-[0.04em]">{t("grade", "Grade:")}</span>
+                  <span className="text-xs font-semibold text-[var(--color-text-secondary)] tracking-[0.04em]">Grade:</span>
                   <span className={`inline-flex items-center justify-center px-3 py-1 font-semibold text-base rounded-full ${GRADE_COLORS[liveGrade]}`}>
                     {liveGrade}
                   </span>
                   <span className="text-sm font-medium text-[var(--color-text-tertiary)]">
-                    ({formData.maxScore > 0 ? Math.round((parseFloat(formData.score) / parseFloat(formData.maxScore)) * 100) : 0}%)
+                    ({formData.max_score > 0 ? Math.round((parseFloat(formData.score) / parseFloat(formData.max_score)) * 100) : 0}%)
                   </span>
                 </div>
               )}
+
+              <div>
+                <label className="text-xs font-semibold text-[var(--color-text-secondary)] block mb-1.5 tracking-[0.04em]">Remarks (Optional)</label>
+                <Input
+                  value={formData.remarks}
+                  onChange={e => setFormData({ ...formData, remarks: e.target.value })}
+                  placeholder={getGradeRemarks(liveGrade)}
+                  className="rounded-md-[var(--radius-lg)]"
+                />
+              </div>
+
             </div>
             <div className="flex gap-3 pt-4">
               <Button variant="outline" className="flex-1 rounded-full border-primary/30" onClick={() => { setShowModal(false); setEditingId(null); setFormData(defaultForm); }} disabled={mutateRecord.isPending}>
@@ -424,38 +495,43 @@ export default function Grades() {
           {viewDetails && (
             <div className="mt-8 space-y-4">
               <div className="bg-[var(--color-surface-1)] p-6 rounded-md-[var(--radius-xl)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/20">
-                <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-1 tracking-[-0.02em]">{viewDetails.studentName}</h3>
-                <p className="text-[var(--primary)] font-semibold text-sm">{viewDetails.examName}</p>
+                <h3 className="text-2xl font-display font-semibold text-[var(--color-text-primary)] tracking-tight mb-1 tracking-[-0.02em]">{viewDetails.student_name}</h3>
+                <p className="text-[var(--primary)] font-semibold text-sm">{viewDetails.exam_name}</p>
+                <p className="text-[var(--color-text-secondary)] text-sm">{viewDetails.term}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("class", "Class")}</p>
-                  <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.className}</p>
+                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Class</p>
+                  <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.class_name}</p>
                 </div>
                 <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("subject", "Subject")}</p>
+                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Subject</p>
                   <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.subject}</p>
                 </div>
                 <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
-                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("date", "Date")}</p>
+                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Date</p>
                   <p className="font-semibold text-[var(--color-text-primary)]">{viewDetails.date}</p>
                 </div>
-                <div className="bg-[var(--primary)]/10 p-4 rounded-md-[var(--radius-lg)] flex flex-col justify-center text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20">
-                  <p className="text-[11px] font-semibold uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("grade", "Grade")}</p>
+                <div className="bg-[var(--color-surface-1)] p-4 rounded-md-[var(--radius-lg)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/10">
+                  <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Remarks</p>
+                  <p className="font-semibold text-[var(--color-text-primary)] truncate" title={viewDetails.remarks}>{viewDetails.remarks}</p>
+                </div>
+                <div className="bg-[var(--primary)]/10 p-4 rounded-md-[var(--radius-lg)] flex flex-col justify-center text-[var(--primary)] border-[0.5px] border-black/9 dark:border-white/8 border-[var(--primary)]/20 col-span-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">Grade</p>
                   <p className="font-semibold text-3xl tracking-[-0.02em]">{viewDetails.grade}</p>
                 </div>
                 <div className="bg-[var(--color-surface-0)] p-6 rounded-md-[var(--radius-xl)] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 col-span-2 flex justify-between items-center shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm">
                   <div>
                     <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("score", "Score")}</p>
                     <p className="font-display font-semibold text-3xl text-[var(--color-text-primary)] tracking-[-0.02em]">
-                      {viewDetails.score} <span className="text-[var(--color-text-secondary)] text-xl font-medium">/ {viewDetails.maxScore}</span>
+                      {viewDetails.score} <span className="text-[var(--color-text-secondary)] text-xl font-medium">/ {viewDetails.max_score}</span>
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-[11px] font-semibold text-[var(--color-text-tertiary)] uppercase tracking-[var(--tracking-widest)] mb-1 tracking-[0.04em]">{t("pct", "Percent")}</p>
                     <p className="font-display font-semibold text-3xl text-[var(--primary)] tracking-[-0.02em]">
-                      {viewDetails.maxScore > 0 ? Math.round((viewDetails.score / viewDetails.maxScore) * 100) : 0}%
+                      {viewDetails.max_score > 0 ? Math.round((viewDetails.score / viewDetails.max_score) * 100) : 0}%
                     </p>
                   </div>
                 </div>

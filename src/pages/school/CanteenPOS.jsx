@@ -1,180 +1,381 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Coffee, ShoppingCart, Plus, Minus, CreditCard, Pizza, Apple, Clock, Utensils } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import { ShoppingCart, Plus, Minus, Trash2, CreditCard, Clock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { useAuth } from "@/lib/AuthContext";
-import { toast } from "react-hot-toast";
-import { motion, AnimatePresence } from 'framer-motion';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import toast from 'react-hot-toast';
 
 export default function CanteenPOS() {
-  const { t } = useTranslation();
-  const companyId = useCompanyId();
-  const { session } = useAuth();
-  const queryClient = useQueryClient();
-  const [cart, setCart] = useState({});
+  // Data hooks
+  const { data: menuItems = [], isLoading: loadingMenu } = useIndustryRecords('school_canteen_item');
+  const { data: sales = [], isLoading: loadingSales } = useIndustryRecords('school_canteen_sale');
+  const { mutateAsync: saveRecord } = useMutateIndustryRecord();
+  const { mutateAsync: deleteRecord } = useDeleteIndustryRecord();
 
-  const { data: menu = [] } = useQuery({
-    queryKey: ['school_canteen_item', companyId],
-    queryFn: async () => {
-      const items = await base44.getEntities('school_canteen_item', companyId);
-      return items.map(item => ({
-        id: item.id,
-        name: item.title,
-        price: item.data?.price || 0,
-        icon: Utensils // Fallback icon
-      }));
-    },
-    enabled: !!companyId
+  // POS State
+  const [cart, setCart] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [customerName, setCustomerName] = useState('');
+
+  // Menu Management State
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
+  const [editingMenuItemId, setEditingMenuItemId] = useState(null);
+  const [menuData, setMenuData] = useState({
+    name: '',
+    category: 'Main Meal',
+    price: 0,
+    available: true,
+    description: ''
   });
 
-  const { data: orderHistory = [] } = useQuery({
-    queryKey: ['school_canteen_order', companyId],
-    queryFn: async () => {
-      const all = await base44.getEntities('school_canteen_order', companyId);
-      return all.filter(o => o.client_id === session?.user?.id).sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-    },
-    enabled: !!companyId && !!session?.user?.id
-  });
+  // Derived POS values
+  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todaySales = sales.filter(s => s.data?.date === todayStr);
+  const todayRevenue = todaySales.reduce((sum, s) => sum + (Number(s.data?.total) || 0), 0);
 
-  const placeOrder = useMutation({
-    mutationFn: (total) => {
-      return base44.createEntity({
-        company_id: companyId,
-        case_type: 'school_canteen_order',
-        client_id: session?.user?.id,
-        title: `Canteen Order - $${total.toFixed(2)}`,
-        status: 'completed',
-        data: { items: cart, total }
+  // POS Functions
+  const addToCart = (item) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.item_id === item.id);
+      if (existing) {
+        return prev.map(i => i.item_id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
+      }
+      return [...prev, { item_id: item.id, item_name: item.data.name, price: Number(item.data.price), quantity: 1 }];
+    });
+  };
+
+  const updateQuantity = (itemId, delta) => {
+    setCart(prev => prev.map(i => {
+      if (i.item_id === itemId) {
+        const newQ = i.quantity + delta;
+        return newQ > 0 ? { ...i, quantity: newQ } : i;
+      }
+      return i;
+    }).filter(i => i.quantity > 0));
+  };
+
+  const removeFromCart = (itemId) => {
+    setCart(prev => prev.filter(i => i.item_id !== itemId));
+  };
+
+  const handleCheckout = async () => {
+    if (cart.length === 0) return toast.error('Cart is empty');
+    
+    const payload = {
+      items: cart,
+      total: cartTotal,
+      payment_method: paymentMethod,
+      customer_name: customerName,
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    try {
+      await saveRecord({
+        recordType: 'school_canteen_sale',
+        payload,
+        searchText: `${customerName} ${paymentMethod}`,
+        status: 'Completed'
       });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['school_canteen_order', companyId] });
-      setCart({});
-      toast.success("Payment successful! Order placed.");
+      toast.success('Sale completed successfully!');
+      setCart([]);
+      setCustomerName('');
+    } catch (err) {
+      toast.error('Failed to complete sale');
     }
-  });
+  };
 
-  const addToCart = (id) => setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
-  const removeFromCart = (id) => setCart(prev => {
-    const newCart = { ...prev };
-    if (newCart[id] > 1) newCart[id]--; else delete newCart[id];
-    return newCart;
-  });
+  // Menu Management Functions
+  const openMenuModal = (record = null) => {
+    if (record) {
+      setEditingMenuItemId(record.id);
+      setMenuData({
+        name: record.data.name || '',
+        category: record.data.category || 'Main Meal',
+        price: Number(record.data.price) || 0,
+        available: record.data.available ?? true,
+        description: record.data.description || ''
+      });
+    } else {
+      setEditingMenuItemId(null);
+      setMenuData({
+        name: '',
+        category: 'Main Meal',
+        price: 0,
+        available: true,
+        description: ''
+      });
+    }
+    setIsMenuModalOpen(true);
+  };
 
-  const total = Object.entries(cart).reduce((sum, [id, qty]) => {
-    const item = menu.find(m => m.id === id);
-    return sum + (item ? item.price * qty : 0);
-  }, 0);
+  const saveMenuItem = async () => {
+    if (!menuData.name || menuData.price <= 0) {
+      return toast.error('Name and valid price required');
+    }
+    try {
+      await saveRecord({
+        id: editingMenuItemId,
+        recordType: 'school_canteen_item',
+        payload: menuData,
+        searchText: `${menuData.name} ${menuData.category}`,
+        status: menuData.available ? 'Active' : 'Inactive'
+      });
+      toast.success('Menu item saved');
+      setIsMenuModalOpen(false);
+    } catch (e) {
+      toast.error('Error saving item');
+    }
+  };
+
+  const deleteMenuItem = async (id) => {
+    if (window.confirm('Delete this menu item?')) {
+      try {
+        await deleteRecord({ id, recordType: 'school_canteen_item' });
+        toast.success('Item deleted');
+      } catch (e) {
+        toast.error('Error deleting item');
+      }
+    }
+  };
+
+  if (loadingMenu || loadingSales) {
+    return <div className="p-8 text-center text-gray-500">Loading Canteen POS...</div>;
+  }
 
   return (
-    <div className="space-y-6 pb-20 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 font-dmsans bg-[#f4fdf8] min-h-screen p-4 md:p-8 text-slate-900">
-      <div className="flex-1 space-y-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-black text-emerald-900 tracking-tight uppercase flex items-center gap-3 tracking-[-0.02em] tracking-[0.04em]">
-              <Coffee className="w-10 h-10 text-[#1E3A8A] dark:text-blue-400" /> Canteen POS
-            </h1>
-            <p className="text-[#1E3A8A] dark:text-blue-400 font-medium text-lg mt-1">Touch-optimized quick checkout</p>
-          </div>
+    <div className="p-6 h-screen flex flex-col max-w-7xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Canteen POS</h1>
+          <p className="text-gray-600">Manage sales and menu items.</p>
         </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-          {menu.map(item => (
-            <motion.div whileTap={{ scale: 0.95 }} key={item.id} onClick={() => addToCart(item.id)} className="bg-white border-4 border-emerald-900 p-4 cursor-pointer hover:bg-[#F0F4FF] dark:bg-blue-900/20 transition-colors group select-none flex flex-col items-center text-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-              <div className="w-16 h-16 bg-emerald-100 border-2 border-emerald-900 text-emerald-900 flex items-center justify-center mb-4 group-hover:rotate-12 transition-transform">
-                <item.icon className="w-8 h-8" />
-              </div>
-              <h3 className="font-black text-lg mb-2 text-emerald-900 uppercase leading-tight line-clamp-2 tracking-[0.04em]">{item.name}</h3>
-              <div className="mt-auto pt-2 w-full flex justify-between items-center">
-                <span className="font-black text-[#1E3A8A] dark:text-blue-400 text-xl">${item.price.toFixed(2)}</span>
-                <div className="w-8 h-8 bg-emerald-900 flex items-center justify-center text-white">
-                  <Plus className="w-5 h-5" />
-                </div>
-              </div>
-            </motion.div>
-          ))}
-          {menu.length === 0 && (
-            <div className="col-span-full py-20 text-center border-4 border-dashed border-emerald-900 bg-[#F0F4FF] dark:bg-blue-900/20">
-              <Utensils className="w-16 h-16 mx-auto mb-4 text-emerald-300" />
-              <p className="font-black text-2xl text-emerald-900 uppercase tracking-[-0.02em] tracking-[0.04em]">Menu Empty</p>
-            </div>
-          )}
+        <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+          <CreditCard className="h-5 w-5" /> Today's Revenue: GHS {todayRevenue.toFixed(2)}
         </div>
+      </div>
 
-        {orderHistory.length > 0 && (
-          <div className="bg-[#F0F4FF] dark:bg-blue-900/20 border-4 border-emerald-900 p-6">
-            <h3 className="text-xl font-black mb-6 flex items-center gap-2 text-emerald-900 uppercase tracking-widest tracking-[0.04em]"><Clock className="w-6 h-6 text-[#1E3A8A] dark:text-blue-400" /> History</h3>
-            <div className="space-y-4">
-              {orderHistory.slice(0, 3).map(o => (
-                <div key={o.id} className="flex justify-between items-center p-4 bg-white border-2 border-emerald-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                  <div className="font-black text-emerald-900">{o.title}</div>
-                  <div className="text-sm font-semibold text-[#1E3A8A] dark:text-blue-400 border-2 border-emerald-200 px-2 py-1">{new Date(o.created_at).toLocaleDateString()}</div>
+      <Tabs defaultValue="pos" className="flex-1 flex flex-col min-h-0">
+        <TabsList className="mb-4">
+          <TabsTrigger value="pos">Point of Sale</TabsTrigger>
+          <TabsTrigger value="menu">Menu Management</TabsTrigger>
+          <TabsTrigger value="history">Sales History</TabsTrigger>
+        </TabsList>
+
+        {/* POS TAB */}
+        <TabsContent value="pos" className="flex-1 flex gap-6 min-h-0 m-0">
+          {/* Menu Grid */}
+          <div className="flex-1 bg-white p-4 rounded-xl shadow-sm border border-gray-200 overflow-y-auto">
+            <h2 className="font-bold text-lg mb-4">Menu Items</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {menuItems.filter(i => i.data?.available).map(item => (
+                <div 
+                  key={item.id} 
+                  onClick={() => addToCart(item)}
+                  className="bg-gray-50 border border-gray-200 p-4 rounded-lg cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all flex flex-col justify-between h-32"
+                >
+                  <span className="font-semibold text-gray-800 line-clamp-2">{item.data.name}</span>
+                  <div className="flex justify-between items-end mt-2">
+                    <span className="text-xs text-gray-500">{item.data.category}</span>
+                    <span className="font-bold text-indigo-600">GHS {Number(item.data.price).toFixed(2)}</span>
+                  </div>
                 </div>
               ))}
+              {menuItems.length === 0 && <p className="text-gray-500 col-span-full">No menu items available. Add some in Menu Management.</p>}
             </div>
           </div>
-        )}
-      </div>
 
-      <div className="w-full lg:w-[400px] shrink-0">
-        <div className="bg-emerald-900 border-4 border-emerald-900 p-6 sticky top-6 text-emerald-50 flex flex-col h-[calc(100vh-3rem)]">
-          <div className="flex items-center gap-4 mb-8 border-b-2 border-emerald-700 pb-6">
-            <div className="w-12 h-12 bg-emerald-500/10 flex items-center justify-center text-white">
-              <ShoppingCart className="w-6 h-6" />
+          {/* Cart Sidebar */}
+          <div className="w-96 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
+            <div className="p-4 border-b border-gray-100 bg-gray-50 rounded-t-xl flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5 text-indigo-600" />
+              <h2 className="font-bold text-lg">Current Order</h2>
             </div>
-            <h2 className="text-3xl font-black uppercase tracking-tight text-white tracking-[-0.02em] tracking-[0.04em]">Current Ticket</h2>
-          </div>
-
-          <div className="space-y-4 mb-8 overflow-y-auto flex-1 pr-2 custom-scrollbar">
-            <AnimatePresence>
-              {Object.entries(cart).length === 0 ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col items-center justify-center text-[#1E3A8A] dark:text-blue-400 py-12">
-                  <ShoppingCart className="w-16 h-16 mb-4 opacity-50" />
-                  <p className="font-black text-xl uppercase tracking-widest tracking-[0.04em]">Ticket Empty</p>
-                </motion.div>
+            
+            <div className="flex-1 p-4 overflow-y-auto space-y-3">
+              {cart.length === 0 ? (
+                <p className="text-center text-gray-500 mt-10">Cart is empty</p>
               ) : (
-                Object.entries(cart).map(([id, qty]) => {
-                  const item = menu.find(m => m.id === id);
-                  if (!item) return null;
-                  return (
-                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} key={id} className="flex flex-col bg-white text-emerald-900 border-2 border-emerald-900 p-3 relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="font-black text-lg leading-tight w-2/3 uppercase tracking-[0.04em]">{item.name}</div>
-                        <div className="text-xl text-[#1E3A8A] dark:text-blue-400 font-black">${(item.price * qty).toFixed(2)}</div>
-                      </div>
-                      <div className="flex items-center justify-between border-t-2 border-emerald-100 pt-3">
-                        <span className="text-xs font-black text-emerald-400 uppercase tracking-widest tracking-[0.04em]">${item.price.toFixed(2)} EACH</span>
-                        <div className="flex items-center bg-emerald-100 border-2 border-emerald-900">
-                          <button onClick={() => removeFromCart(id)} className="w-10 h-10 flex items-center justify-center hover:bg-emerald-200 active:bg-emerald-300 transition-colors"><Minus className="w-5 h-5 text-emerald-900" /></button>
-                          <span className="font-black text-lg w-10 text-center bg-white h-10 flex items-center justify-center border-x-2 border-emerald-900 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">{qty}</span>
-                          <button onClick={() => addToCart(id)} className="w-10 h-10 flex items-center justify-center hover:bg-emerald-200 active:bg-emerald-300 transition-colors"><Plus className="w-5 h-5 text-emerald-900" /></button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  );
-                })
+                cart.map(item => (
+                  <div key={item.item_id} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+                    <div className="flex-1">
+                      <p className="font-semibold text-sm truncate pr-2">{item.item_name}</p>
+                      <p className="text-xs text-gray-500">GHS {item.price.toFixed(2)}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.item_id, -1)}>
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="text-sm font-bold w-4 text-center">{item.quantity}</span>
+                      <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.item_id, 1)}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 text-red-500 ml-1" onClick={() => removeFromCart(item.item_id)}>
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))
               )}
-            </AnimatePresence>
-          </div>
-
-          <div className="border-t-4 border-emerald-700 pt-6 mt-auto">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-emerald-300 font-black uppercase tracking-widest text-lg tracking-[0.04em]">Total Due</span>
-              <span className="text-4xl font-black text-white tracking-[-0.02em]">${total.toFixed(2)}</span>
             </div>
-            <Button 
-              disabled={total === 0 || placeOrder.isPending}
-              onClick={() => placeOrder.mutate(total)}
-              className="w-full h-20 rounded-none bg-emerald-500/10 hover:bg-emerald-400 text-emerald-900 font-black text-2xl uppercase tracking-widest border-2 border-white transition-colors disabled:opacity-50 disabled:bg-emerald-800 disabled:text-[#1E3A8A] dark:text-blue-400 disabled:border-emerald-700 tracking-[-0.02em] tracking-[0.04em]"
-            >
-              <CreditCard className="w-8 h-8 mr-3" /> Pay Now
+
+            <div className="p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl space-y-4">
+              <div className="flex justify-between items-center text-lg font-bold">
+                <span>Total:</span>
+                <span className="text-indigo-600">GHS {cartTotal.toFixed(2)}</span>
+              </div>
+              
+              <div className="space-y-2">
+                <Input 
+                  placeholder="Customer Name (Optional)" 
+                  value={customerName}
+                  onChange={e => setCustomerName(e.target.value)}
+                  className="bg-white"
+                />
+                <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                  <SelectTrigger className="bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Cash">Cash</SelectItem>
+                    <SelectItem value="Mobile Money">Mobile Money</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold h-12"
+                onClick={handleCheckout}
+                disabled={cart.length === 0}
+              >
+                Complete Sale
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* MENU MANAGEMENT TAB */}
+        <TabsContent value="menu" className="flex-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200 overflow-y-auto m-0">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-lg">Menu Items</h2>
+            <Button onClick={() => openMenuModal()} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+              <Plus className="h-4 w-4 mr-2" /> Add Item
             </Button>
           </div>
-        </div>
-      </div>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="p-3 font-medium text-gray-500">Name</th>
+                <th className="p-3 font-medium text-gray-500">Category</th>
+                <th className="p-3 font-medium text-gray-500">Price</th>
+                <th className="p-3 font-medium text-gray-500">Status</th>
+                <th className="p-3 font-medium text-gray-500 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {menuItems.map(item => (
+                <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-3 font-medium">{item.data.name}</td>
+                  <td className="p-3 text-sm text-gray-600">{item.data.category}</td>
+                  <td className="p-3 font-medium">GHS {Number(item.data.price).toFixed(2)}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${item.data.available ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {item.data.available ? 'Available' : 'Unavailable'}
+                    </span>
+                  </td>
+                  <td className="p-3 text-right">
+                    <Button variant="ghost" size="sm" onClick={() => openMenuModal(item)}>Edit</Button>
+                    <Button variant="ghost" size="sm" className="text-red-600" onClick={() => deleteMenuItem(item.id)}>Delete</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TabsContent>
+
+        {/* SALES HISTORY TAB */}
+        <TabsContent value="history" className="flex-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200 overflow-y-auto m-0">
+          <h2 className="font-bold text-lg mb-4">Recent Sales</h2>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="p-3 font-medium text-gray-500">Date/Time</th>
+                <th className="p-3 font-medium text-gray-500">Customer</th>
+                <th className="p-3 font-medium text-gray-500">Items</th>
+                <th className="p-3 font-medium text-gray-500">Payment</th>
+                <th className="p-3 font-medium text-gray-500 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sales.slice().reverse().map(sale => (
+                <tr key={sale.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-3 text-sm">
+                    <div className="font-medium">{sale.data.date}</div>
+                    <div className="text-gray-500 flex items-center gap-1"><Clock className="h-3 w-3"/>{sale.data.time}</div>
+                  </td>
+                  <td className="p-3 text-sm">{sale.data.customer_name || 'Walk-in'}</td>
+                  <td className="p-3 text-sm text-gray-600 max-w-xs truncate">
+                    {sale.data.items?.map(i => `${i.quantity}x ${i.item_name}`).join(', ')}
+                  </td>
+                  <td className="p-3 text-sm">
+                    <span className="bg-gray-100 px-2 py-1 rounded text-xs font-medium">{sale.data.payment_method}</span>
+                  </td>
+                  <td className="p-3 text-right font-bold text-indigo-600">
+                    GHS {Number(sale.data.total).toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TabsContent>
+      </Tabs>
+
+      {/* Menu Item Modal */}
+      <Dialog open={isMenuModalOpen} onOpenChange={setIsMenuModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingMenuItemId ? 'Edit Item' : 'Add Menu Item'}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Item Name</Label>
+              <Input value={menuData.name} onChange={e => setMenuData({...menuData, name: e.target.value})} placeholder="e.g. Jollof Rice" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Category</Label>
+                <Select value={menuData.category} onValueChange={v => setMenuData({...menuData, category: v})}>
+                  <SelectTrigger><SelectValue/></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Main Meal">Main Meal</SelectItem>
+                    <SelectItem value="Snack">Snack</SelectItem>
+                    <SelectItem value="Drink">Drink</SelectItem>
+                    <SelectItem value="Fruit">Fruit</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Price (GHS)</Label>
+                <Input type="number" step="0.5" value={menuData.price} onChange={e => setMenuData({...menuData, price: Number(e.target.value)})} />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="available" checked={menuData.available} onChange={e => setMenuData({...menuData, available: e.target.checked})} className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <Label htmlFor="available">Item is currently available</Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsMenuModalOpen(false)}>Cancel</Button>
+            <Button onClick={saveMenuItem}>Save Item</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
