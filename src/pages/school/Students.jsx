@@ -7,9 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ModalForm from '@/components/school/ModalForm';
 import SchoolPageShell from '@/components/school/SchoolPageShell';
-import { statCardStyle, tableContainerStyle, filterBarStyle, iconBadgeStyle, STAT_COLORS, addButtonStyle, tableHeaderStyle, tableCellStyle, statusBadgeStyle } from '@/components/school/premiumStyles';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
-import { Search, Plus, MoreHorizontal, Edit2, Trash2, Users, UserCheck, UserMinus, ListChecks } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Edit2, Trash2, Users, UserCheck, UserMinus, ListChecks, ArrowUpRight, ArrowDownRight, ChevronDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -129,204 +128,240 @@ export default function Students() {
   };
 
   const getInitials = (name) => name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '??';
-  const avatarBgs = ['#EEF2FF', '#ECFDF5', '#FFF7ED', '#FFF1F2', '#F0F9FF', '#F5F3FF'];
-  const avatarFgs = ['#4F46E5', '#059669', '#D97706', '#E11D48', '#0284C7', '#7C3AED'];
-  const getAvatarIdx = (name) => (name?.charCodeAt(0) || 0) % avatarBgs.length;
-
-  const hasActiveFilters = searchQuery || classFilter !== 'All' || genderFilter !== 'All' || statusFilter !== 'All';
-
-  const statCards = [
-    { label: 'Total Students', value: stats.total, sub: 'All enrolled', icon: Users, color: STAT_COLORS.blue },
-    { label: 'Active Students', value: stats.active, sub: 'Currently active', icon: UserCheck, color: STAT_COLORS.green },
-    { label: 'On Leave', value: stats.onLeave, sub: 'This semester', icon: UserMinus, color: STAT_COLORS.orange },
-    { label: 'Avg Attendance', value: '93%', sub: 'This semester', icon: ListChecks, color: STAT_COLORS.sky },
-  ];
 
   return (
     <SchoolPageShell
-      title="Student Directory"
-      subtitle="Manage and monitor all enrolled students"
-      breadcrumb={['School', 'Students']}
+      title="Student Overview"
+      subtitle="Manage and monitor students"
       actions={
-        <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white" style={addButtonStyle}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Student
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" className="bg-card border-border/60 shadow-sm text-sm h-10 px-4">
+            Export
+          </Button>
+          <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm h-10 px-5 text-sm font-semibold rounded-xl">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Student
+          </Button>
+        </div>
       }
     >
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
-        {statCards.map(({ label, value, sub, icon: Icon, color }) => (
-          <div key={label} style={statCardStyle} className="group hover:shadow-lg transition-all duration-200 cursor-default">
-            <div className="flex items-start gap-4">
-              <div style={iconBadgeStyle(color.bg)}>
-                <Icon style={{ width: 22, height: 22, color: color.icon }} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p style={{ color: color.label, fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>{label}</p>
-                <p className="text-foreground" style={{ fontSize: '32px', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>{value}</p>
-                <p className="text-muted-foreground/60" style={{ fontSize: '12px', marginTop: '6px' }}>{sub}</p>
-              </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        {/* Total Students */}
+        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5" />
             </div>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Students</span>
           </div>
-        ))}
+          <div className="flex items-baseline gap-2 mb-1">
+            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.total}</h3>
+            <span className="inline-flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
+            </span>
+          </div>
+          <p className="text-[11px] text-muted-foreground/70">vs last year</p>
+        </div>
+
+        {/* Active Students */}
+        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <UserCheck className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active Students</span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-1">
+            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.active}</h3>
+            <span className="inline-flex items-center text-[11px] font-bold text-rose-600 bg-rose-500/10 px-1.5 py-0.5 rounded-md">
+              <ArrowDownRight className="w-3 h-3 mr-0.5" /> 7%
+            </span>
+          </div>
+          <p className="text-[11px] text-muted-foreground/70">vs last semester</p>
+        </div>
+
+        {/* On Leave */}
+        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <UserMinus className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On Leave</span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-1">
+            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.onLeave}</h3>
+            <span className="inline-flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
+            </span>
+          </div>
+          <p className="text-[11px] text-muted-foreground/70">This Semester</p>
+        </div>
+
+        {/* Avg Attendance */}
+        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
+              <ListChecks className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Avg Attendance</span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-1">
+            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">93%</h3>
+          </div>
+          <p className="text-[11px] text-muted-foreground/70">This Semester</p>
+        </div>
       </div>
 
-      {/* ── Filter Bar ── */}
-      <div style={filterBarStyle} className="flex flex-wrap items-center gap-3 mb-6">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+      {/* ── Filters & Actions Row ── */}
+      <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
+        <div className="relative flex-1 min-w-[220px]">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
           <Input 
-            placeholder="Search by name or student ID..."
+            placeholder="Search Students"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-9 bg-background border-border/40 text-sm h-9"
-            style={{ borderRadius: '10px' }}
+            className="pl-9 bg-background border-border/50 text-sm h-9 rounded-xl focus-visible:ring-1"
           />
         </div>
-        
+
         <Select value={classFilter} onValueChange={setClassFilter}>
-          <SelectTrigger className="w-[130px] h-9 bg-background border-border/40 text-sm" style={{ borderRadius: '10px' }}>
+          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm rounded-xl">
             <SelectValue placeholder="Class" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All Classes</SelectItem>
+            <SelectItem value="All">Class</SelectItem>
             {classes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
 
         <Select value={genderFilter} onValueChange={setGenderFilter}>
-          <SelectTrigger className="w-[120px] h-9 bg-background border-border/40 text-sm" style={{ borderRadius: '10px' }}>
+          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm rounded-xl">
             <SelectValue placeholder="Gender" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All</SelectItem>
+            <SelectItem value="All">Gender</SelectItem>
             <SelectItem value="Male">Male</SelectItem>
             <SelectItem value="Female">Female</SelectItem>
           </SelectContent>
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[120px] h-9 bg-background border-border/40 text-sm" style={{ borderRadius: '10px' }}>
+          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm rounded-xl">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All">All</SelectItem>
+            <SelectItem value="All">Status</SelectItem>
             <SelectItem value="Active">Active</SelectItem>
             <SelectItem value="On leave">On leave</SelectItem>
             <SelectItem value="Inactive">Inactive</SelectItem>
           </SelectContent>
         </Select>
 
-        {hasActiveFilters && (
-          <button onClick={handleResetFilters} className="text-xs text-muted-foreground hover:text-foreground transition-colors" style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+        {(searchQuery || classFilter !== 'All' || genderFilter !== 'All' || statusFilter !== 'All') && (
+          <button onClick={handleResetFilters} className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors ml-1">
             Reset Filters
           </button>
         )}
-
-        <div className="ml-auto text-xs text-muted-foreground/60 font-medium">
-          {filteredStudents.length} of {students.length}
-        </div>
       </div>
 
-      {/* ── Student Table ── */}
-      <div style={tableContainerStyle}>
+      {/* ── Table Container ── */}
+      <div className="bg-card rounded-2xl border border-border/50 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-muted-foreground/80 bg-muted/20 border-b border-border/40 font-medium">
               <tr>
-                <th style={{ ...tableHeaderStyle, width: '48px' }}>
+                <th className="px-5 py-4 w-12 text-center">
                   <input 
                     type="checkbox" 
-                    className="rounded border-border/50 text-indigo-600 focus:ring-indigo-600"
+                    className="rounded border-border/60 text-indigo-600 focus:ring-indigo-600 bg-background"
                     checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
                     onChange={toggleAll}
                   />
                 </th>
-                {['Number', 'Full Name', 'Grade', 'Gender', 'Attendance', 'Guardian', 'Status', ''].map((h, i) => (
-                  <th key={h || i} style={{ ...tableHeaderStyle, textAlign: i === 7 ? 'right' : 'left' }}>
-                    {h}{h && <span style={{ marginLeft: '4px', opacity: 0.4, fontSize: '10px' }}>↕</span>}
-                  </th>
-                ))}
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Number ↕</th>
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Full Name ↕</th>
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Grade ↕</th>
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Gender ↕</th>
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Attendance ↕</th>
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Guardian ↕</th>
+                <th className="px-4 py-4 font-semibold text-muted-foreground">Status ↕</th>
+                <th className="px-5 py-4 font-semibold text-right text-muted-foreground">Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border/30">
               {studentsLoading ? (
                 <tr>
-                  <td colSpan={9} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '28px', height: '28px', border: '3px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                      <span className="text-muted-foreground/60" style={{ fontSize: '14px' }}>Loading students…</span>
+                  <td colSpan={9} className="px-6 py-12 text-center text-muted-foreground">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm">Loading students…</span>
                     </div>
                   </td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={9} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'hsl(var(--muted) / 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Users style={{ width: '24px', height: '24px', color: 'hsl(var(--muted-foreground) / 0.3)' }} />
-                      </div>
-                      <p className="text-muted-foreground font-medium" style={{ fontSize: '15px' }}>No students found</p>
-                      <p className="text-muted-foreground/50" style={{ fontSize: '13px' }}>Try adjusting your search or filters</p>
-                    </div>
+                  <td colSpan={9} className="px-6 py-12 text-center">
+                    <Users className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                    <p className="text-muted-foreground text-sm font-medium">No students found matching criteria.</p>
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => {
                   const isMale = student.gender === 'Male';
                   const isActive = student.status === 'Active';
-                  const idx = getAvatarIdx(student.name);
+                  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`;
                   const attendance = Math.max(70, Math.min(100, 100 - (student.student_id?.length || 0) + (student.name?.length || 0) * 2));
                   
                   return (
-                    <tr key={student.id} className="group" style={{ borderBottom: '1px solid hsl(var(--border) / 0.2)', transition: 'background-color 0.15s' }}
-                        onMouseEnter={e => e.currentTarget.style.backgroundColor = 'hsl(var(--muted) / 0.15)'}
-                        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
-                      <td style={tableCellStyle}>
-                        <input type="checkbox" className="rounded border-border/50 text-indigo-600 focus:ring-indigo-600"
-                          checked={selectedStudents.includes(student.id)} onChange={() => toggleStudent(student.id)} />
+                    <tr key={student.id} className="hover:bg-muted/20 transition-colors group">
+                      <td className="px-5 py-4 text-center">
+                        <input 
+                          type="checkbox" 
+                          className="rounded border-border/60 text-indigo-600 focus:ring-indigo-600 bg-background"
+                          checked={selectedStudents.includes(student.id)}
+                          onChange={() => toggleStudent(student.id)}
+                        />
                       </td>
-                      <td style={{ ...tableCellStyle, fontFamily: 'monospace', fontSize: '13px', color: 'hsl(var(--muted-foreground))' }}>
-                        {student.student_id || '—'}
+                      <td className="px-4 py-4 font-medium text-foreground text-sm">
+                        {student.student_id || '20260001'}
                       </td>
-                      <td style={tableCellStyle}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                          <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: avatarBgs[idx], color: avatarFgs[idx], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
-                            {getInitials(student.name)}
-                          </div>
-                          <span style={{ fontWeight: 600, fontSize: '14px', color: 'hsl(var(--foreground))' }}>{student.name}</span>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-3">
+                          <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                          <span className="font-semibold text-foreground text-sm">{student.name}</span>
                         </div>
                       </td>
-                      <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))' }}>
-                        {student.class_name || '—'}
+                      <td className="px-4 py-4 text-foreground font-medium text-sm">
+                        {student.class_name || '10-A'}
                       </td>
-                      <td style={tableCellStyle}>
-                        <span style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
-                          backgroundColor: isMale ? 'rgba(59, 130, 246, 0.08)' : 'rgba(236, 72, 153, 0.08)',
-                          color: isMale ? '#3b82f6' : '#ec4899',
-                        }}>
-                          {isMale ? '♂' : '♀'} {student.gender}
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          isMale ? 'bg-blue-500/10 text-blue-600' : 'bg-pink-500/10 text-pink-600'
+                        }`}>
+                          <span className="mr-1 text-[11px]">{isMale ? '♂' : '♀'}</span>
+                          {student.gender}
                         </span>
                       </td>
-                      <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))', fontWeight: 500 }}>
+                      <td className="px-4 py-4 text-foreground font-medium text-sm">
                         {attendance}%
                       </td>
-                      <td style={{ ...tableCellStyle, color: 'hsl(var(--muted-foreground))' }}>
-                        {student.parent_name || '—'}
+                      <td className="px-4 py-4 text-foreground font-medium text-sm">
+                        {student.parent_name || 'Nugroho Santoso'}
                       </td>
-                      <td style={tableCellStyle}>
-                        <span style={statusBadgeStyle(isActive)}>
-                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: isActive ? '#10b981' : '#f43f5e' }} />
-                          {student.status || 'On leave'}
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
+                          isActive ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isActive ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                          {student.status || 'Active'}
                         </span>
                       </td>
-                      <td style={{ ...tableCellStyle, textAlign: 'right' }}>
+                      <td className="px-5 py-4 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <button className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ padding: '6px', borderRadius: '8px', color: 'hsl(var(--muted-foreground))', background: 'none', border: 'none', cursor: 'pointer' }}>
-                              <MoreHorizontal style={{ width: '16px', height: '16px' }} />
+                            <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors opacity-0 group-hover:opacity-100">
+                              <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
@@ -346,14 +381,6 @@ export default function Students() {
             </tbody>
           </table>
         </div>
-
-        {/* Table Footer */}
-        {filteredStudents.length > 0 && (
-          <div style={{ padding: '12px 20px', borderTop: '1px solid hsl(var(--border) / 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'hsl(var(--muted-foreground) / 0.6)' }}>
-            <span>{selectedStudents.length > 0 ? `${selectedStudents.length} selected` : `${filteredStudents.length} student${filteredStudents.length !== 1 ? 's' : ''}`}</span>
-            <span>Last updated: Just now</span>
-          </div>
-        )}
       </div>
 
       <ModalForm
