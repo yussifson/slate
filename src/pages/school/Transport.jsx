@@ -1,15 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { Bus, Search, Plus, Map, MoreVertical, Users, MapPin, Navigation, Phone, Clock } from 'lucide-react';
+import { Bus, Search, Plus, MapPin, MoreHorizontal, Users, Navigation, Phone, Clock, Map } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCompanyId } from '@/hooks/useCompanyId';
-import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
+import SchoolPageShell from '@/components/school/SchoolPageShell';
 
 export default function Transport() {
   const { t } = useTranslation();
@@ -22,234 +20,189 @@ export default function Transport() {
   const mutateRecord = useMutateIndustryRecord();
   const deleteRecord = useDeleteIndustryRecord();
 
-  const [formData, setFormData] = useState({
-    route_name: '', vehicle: '', driver_name: '', driver_phone: '', capacity: '', morning_departure: '', afternoon_return: '', stops: ''
-  });
+  const [formData, setFormData] = useState({ route_name: '', vehicle: '', driver_name: '', driver_phone: '', capacity: '', morning_departure: '', afternoon_return: '', stops: '' });
 
-  const routes = records.map(r => ({
-    id: r.id,
-    ...r.data
-  }));
-
-  const getStudentCount = (routeName) => {
-    return students.filter(s => s.data.transport_route === routeName).length;
-  };
-
-  const filtered = routes.filter(r =>
-    r.route_name?.toLowerCase().includes(search.toLowerCase()) || 
-    r.driver_name?.toLowerCase().includes(search.toLowerCase())
-  );
+  const routes = records.map(r => ({ id: r.id, ...r.data }));
+  const getStudentCount = (routeName) => students.filter(s => s.data.transport_route === routeName).length;
+  const filtered = routes.filter(r => r.route_name?.toLowerCase().includes(search.toLowerCase()) || r.driver_name?.toLowerCase().includes(search.toLowerCase()));
 
   const handleSave = () => {
     if (!formData.route_name || !formData.vehicle) return toast.error("Route and vehicle required");
-    
-    const payload = {
-      route_name: formData.route_name,
-      vehicle: formData.vehicle,
-      driver_name: formData.driver_name,
-      driver_phone: formData.driver_phone,
-      capacity: parseInt(formData.capacity) || 0,
-      current_occupancy: getStudentCount(formData.route_name),
-      morning_departure: formData.morning_departure,
-      afternoon_return: formData.afternoon_return,
-      stops: formData.stops,
-      status: 'Active'
-    };
-
+    const payload = { route_name: formData.route_name, vehicle: formData.vehicle, driver_name: formData.driver_name, driver_phone: formData.driver_phone, capacity: parseInt(formData.capacity) || 0, current_occupancy: getStudentCount(formData.route_name), morning_departure: formData.morning_departure, afternoon_return: formData.afternoon_return, stops: formData.stops, status: 'Active' };
     if (editingId) {
-      mutateRecord.mutate({
-        id: editingId, recordType: 'school_transport', payload, status: 'active',
-        searchText: `${formData.route_name} ${formData.driver_name} ${formData.vehicle}`
-      }, {
-        onSuccess: () => { toast.success("Route updated"); setShowModal(false); setEditingId(null); }
-      });
+      mutateRecord.mutate({ id: editingId, recordType: 'school_transport', payload, status: 'active', searchText: `${formData.route_name} ${formData.driver_name} ${formData.vehicle}` }, { onSuccess: () => { toast.success("Route updated"); setShowModal(false); setEditingId(null); } });
     } else {
-      mutateRecord.mutate({
-        recordType: 'school_transport', payload, status: 'active',
-        searchText: `${formData.route_name} ${formData.driver_name} ${formData.vehicle}`
-      }, {
-        onSuccess: () => { toast.success("Route saved"); setShowModal(false); }
-      });
+      mutateRecord.mutate({ recordType: 'school_transport', payload, status: 'active', searchText: `${formData.route_name} ${formData.driver_name} ${formData.vehicle}` }, { onSuccess: () => { toast.success("Route saved"); setShowModal(false); } });
     }
   };
 
+  const totalStudents = routes.reduce((sum, r) => sum + getStudentCount(r.route_name), 0);
+
   return (
-    <div className="space-y-8 font-dmsans p-4 md:p-8 bg-[#f4fdf8] min-h-screen text-slate-900 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
+    <SchoolPageShell
+      title="Transport Fleet"
+      subtitle="Manage routes, vehicles, and student assignments"
+      breadcrumb={['School', 'Transport']}
+      actions={
+        <Button onClick={() => { setFormData({ route_name: '', vehicle: '', driver_name: '', driver_phone: '', capacity: '', morning_departure: '', afternoon_return: '', stops: '' }); setEditingId(null); setShowModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+          <Plus className="w-4 h-4 mr-2" /> Add Route
+        </Button>
+      }
+    >
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        {[
+          { label: 'Active Routes', value: routes.length, icon: Navigation, color: 'bg-indigo-500/10 text-indigo-600' },
+          { label: 'Students Assigned', value: totalStudents, icon: Users, color: 'bg-sky-500/10 text-sky-600' },
+          { label: 'Total Vehicles', value: routes.length, icon: Bus, color: 'bg-amber-500/10 text-amber-600' },
+        ].map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}><Icon className="w-5 h-5" /></div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
+              <p className="text-2xl font-bold text-foreground mt-0.5">{value}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-        <div>
-          <h1 className="text-4xl font-black text-emerald-900 tracking-tight uppercase flex items-center gap-3 tracking-[-0.02em] tracking-[0.04em]">
-            <Navigation className="w-10 h-10 text-[#1E3A8A] dark:text-blue-400" />
-            {t("transport_fleet", "Transport Fleet")}
-          </h1>
-          <p className="text-[#1E3A8A] dark:text-blue-400 font-medium text-lg mt-1">{t("manage_school_buses", "Manage routes and assign students")}</p>
-        </div>
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button onClick={() => { setFormData({route_name: '', vehicle: '', driver_name: '', driver_phone: '', capacity: '', morning_departure: '', afternoon_return: '', stops: ''}); setShowModal(true); }} className="gap-2 bg-emerald-500/10 hover:bg-emerald-600 text-white rounded-none border-2 border-emerald-900 font-semibold px-6 py-6 text-lg transition-all hover:translate-y-[2px] hover:translate-x-[2px]">
-            <Plus className="w-6 h-6" /> {t("add_route", "Add Route")}
-          </Button>
-        </motion.div>
-      </div>
-      
-      <div className="border-2 border-emerald-900 bg-white p-4 flex flex-col md:flex-row gap-4 items-center relative z-10 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="w-16 h-16 bg-amber-300 border-2 border-emerald-900 flex items-center justify-center text-emerald-900 shrink-0">
-          <Bus className="w-8 h-8" />
-        </div>
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E3A8A] dark:text-blue-400" />
-          <Input placeholder="Search routes or drivers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-12 bg-[#F0F4FF] dark:bg-blue-900/20 border-2 border-emerald-900 rounded-none h-16 text-xl font-medium focus-visible:ring-0 focus-visible:border-emerald-600 placeholder:text-emerald-400 w-full" />
+      {/* Search */}
+      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 mb-6">
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input placeholder="Search routes or drivers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-border/50 h-9 text-sm" />
         </div>
       </div>
 
+      {/* Route Cards */}
       {isLoading ? (
-        <div className="py-20 text-center text-[#1E3A8A] dark:text-blue-400 font-semibold text-xl uppercase animate-pulse relative z-10 tracking-[0.04em]">{t("loading", "Loading Routes...")}</div>
+        <div className="flex items-center justify-center py-20 text-muted-foreground">Loading routes...</div>
       ) : filtered.length === 0 ? (
-        <div className="py-20 text-center border-2 border-dashed border-emerald-900 bg-emerald-100 relative z-10">
-          <Map className="w-16 h-16 mx-auto mb-4 text-emerald-300" />
-          <p className="font-black text-2xl text-emerald-900 uppercase tracking-[-0.02em] tracking-[0.04em]">{t("no_routes", "No Routes Active")}</p>
+        <div className="bg-card rounded-xl border border-dashed border-border py-16 text-center">
+          <Map className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-muted-foreground font-medium">No routes found</p>
+          <button onClick={() => setShowModal(true)} className="text-sm text-indigo-600 hover:underline mt-2">Add your first route →</button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10 mt-8">
-          <AnimatePresence>
-            {filtered.map((r, i) => {
-              const studentCount = getStudentCount(r.route_name);
-              const capacity = parseInt(r.capacity) || 1;
-              const fillPercentage = Math.min(100, Math.round((studentCount / capacity) * 100));
-
-              return (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} key={r.id} className="bg-amber-100 border-2 border-emerald-900 p-6 group relative transition-all flex flex-col justify-between hover:translate-y-[4px] hover:translate-x-[4px]">
-                  <div className="absolute top-4 right-4 z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {filtered.map((r, i) => {
+            const studentCount = getStudentCount(r.route_name);
+            const capacity = parseInt(r.capacity) || 1;
+            const fillPct = Math.min(100, Math.round((studentCount / capacity) * 100));
+            return (
+              <motion.div key={r.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="bg-card rounded-xl border border-border/50 shadow-sm hover:shadow-md transition-all overflow-hidden">
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Bus className="w-5 h-5 text-indigo-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-foreground">{r.route_name}</h3>
+                        <p className="text-xs text-muted-foreground">{r.vehicle}</p>
+                      </div>
+                    </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-10 w-10 p-0 border-2 border-transparent group-hover:border-emerald-900 group-hover:bg-amber-200 rounded-none transition-all">
-                          <MoreVertical className="h-5 w-5 text-emerald-900" />
-                        </Button>
+                        <button className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-muted transition-colors"><MoreHorizontal className="w-4 h-4" /></button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48 border-2 border-emerald-900 rounded-none p-0 bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                        <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-emerald-100 focus:text-emerald-900 p-3" onClick={() => {
-                          setEditingId(r.id);
-                          setFormData({ route_name: r.route_name, vehicle: r.vehicle, driver_name: r.driver_name, driver_phone: r.driver_phone, capacity: r.capacity, morning_departure: r.morning_departure, afternoon_return: r.afternoon_return, stops: r.stops });
-                          setShowModal(true);
-                        }}>{t("edit", "Edit Route")}</DropdownMenuItem>
-                        <DropdownMenuItem className="font-semibold cursor-pointer rounded-none focus:bg-red-100 focus:text-red-900 text-red-600 p-3" onClick={() => {
-                          if (window.confirm("Cancel this route?")) deleteRecord.mutate({ id: r.id, recordType: 'school_transport' });
-                        }}>{t("delete", "Delete Route")}</DropdownMenuItem>
+                      <DropdownMenuContent align="end" className="w-36">
+                        <DropdownMenuItem onClick={() => { setEditingId(r.id); setFormData({ route_name: r.route_name, vehicle: r.vehicle, driver_name: r.driver_name, driver_phone: r.driver_phone, capacity: r.capacity, morning_departure: r.morning_departure, afternoon_return: r.afternoon_return, stops: r.stops }); setShowModal(true); }}>Edit Route</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => { if (window.confirm("Delete this route?")) deleteRecord.mutate({ id: r.id, recordType: 'school_transport' }); }}>Delete Route</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-16 h-16 border-2 border-emerald-900 bg-white flex items-center justify-center hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-                      <MapPin className="w-8 h-8 text-red-500" />
-                    </div>
-                    <div>
-                      <h3 className="font-black text-emerald-900 text-2xl mb-1 uppercase tracking-tight leading-tight tracking-[-0.02em] tracking-[0.04em]">{r.route_name}</h3>
-                      <div className="inline-block bg-emerald-900 text-white px-3 py-1 text-xs font-black uppercase tracking-widest border-2 border-emerald-900 tracking-[0.04em]">
-                        {r.vehicle || 'NO PLATE'}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4 mt-4 bg-white border-2 border-emerald-900 p-4">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-emerald-900" />
+
+                  <div className="space-y-3 bg-muted/20 rounded-xl p-4 border border-border/50">
+                    {/* Occupancy */}
+                    <div className="flex items-center gap-3">
+                      <Users className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                       <div className="flex-1">
-                        <div className="flex justify-between text-xs font-bold mb-1">
-                          <span>{studentCount} Students Assigned</span>
-                          <span>{r.capacity} PAX</span>
+                        <div className="flex justify-between text-xs font-medium mb-1.5">
+                          <span className="text-muted-foreground">{studentCount} students</span>
+                          <span className={`font-semibold ${fillPct > 90 ? 'text-rose-600' : 'text-foreground'}`}>{fillPct}%</span>
                         </div>
-                        <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                          <div className={`h-full ${fillPercentage > 90 ? 'bg-red-500' : 'bg-emerald-500'}`} style={{ width: `${fillPercentage}%` }}></div>
+                        <div className="w-full bg-muted rounded-full h-1.5">
+                          <div className={`h-1.5 rounded-full ${fillPct > 90 ? 'bg-rose-500' : 'bg-indigo-500'}`} style={{ width: `${fillPct}%` }} />
                         </div>
                       </div>
+                      <span className="text-xs text-muted-foreground">{r.capacity} cap</span>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4 border-t-2 border-emerald-900 pt-4">
+                    
+                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border/50">
                       <div>
-                        <p className="text-[10px] font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest leading-none">Driver Info</p>
-                        <p className="font-bold text-emerald-900">{r.driver_name || 'Unassigned'}</p>
-                        {r.driver_phone && <p className="text-xs text-gray-600 flex items-center gap-1 mt-1"><Phone className="w-3 h-3"/> {r.driver_phone}</p>}
+                        <p className="text-xs text-muted-foreground">Driver</p>
+                        <p className="text-sm font-semibold text-foreground">{r.driver_name || 'Unassigned'}</p>
+                        {r.driver_phone && <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3" />{r.driver_phone}</p>}
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest leading-none">Schedule</p>
-                        <p className="text-sm font-bold text-emerald-900 flex items-center gap-1 mt-1"><Clock className="w-3 h-3"/> {r.morning_departure} - {r.afternoon_return}</p>
+                        <p className="text-xs text-muted-foreground">Schedule</p>
+                        <p className="text-sm font-semibold text-foreground flex items-center gap-1"><Clock className="w-3 h-3 text-amber-500" />{r.morning_departure} – {r.afternoon_return}</p>
                       </div>
                     </div>
-
-                    <div className="border-t-2 border-emerald-900 pt-4">
-                      <p className="text-[10px] font-black text-[#1E3A8A] dark:text-blue-400 uppercase tracking-widest leading-none mb-1">Stops</p>
-                      <p className="text-sm font-medium text-emerald-900">{r.stops || 'No stops defined'}</p>
-                    </div>
+                    
+                    {r.stops && (
+                      <div className="pt-2 border-t border-border/50">
+                        <p className="text-xs text-muted-foreground flex items-center gap-1 mb-1"><MapPin className="w-3 h-3" /> Stops</p>
+                        <p className="text-xs text-foreground">{r.stops}</p>
+                      </div>
+                    )}
                   </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       )}
 
+      {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-emerald-900/80 backdrop-blur-sm p-4">
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-amber-50 border-4 border-emerald-900 w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-3xl font-black text-emerald-900 mb-6 uppercase tracking-tight flex items-center gap-3 tracking-[-0.02em] tracking-[0.04em]">
-              <Navigation className="w-8 h-8" />
-              {editingId ? 'Edit Route' : 'Add Route'}
-            </h2>
-            
-            <div className="space-y-4 font-dmsans grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("route_name", "Route Name")}</label>
-                <Input value={formData.route_name} onChange={e => setFormData({...formData, route_name: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="e.g. Route A - Accra Central" />
-              </div>
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("vehicle", "Vehicle Details")}</label>
-                <Input value={formData.vehicle} onChange={e => setFormData({...formData, vehicle: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="Bus GH-1234-20" />
-              </div>
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">{t("capacity", "Capacity")}</label>
-                <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="40" />
-              </div>
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">Driver Name</label>
-                <Input value={formData.driver_name} onChange={e => setFormData({...formData, driver_name: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="Driver Name" />
-              </div>
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">Driver Phone</label>
-                <Input value={formData.driver_phone} onChange={e => setFormData({...formData, driver_phone: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="+233..." />
-              </div>
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">Morning Departure</label>
-                <Input value={formData.morning_departure} onChange={e => setFormData({...formData, morning_departure: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="06:30" />
-              </div>
-              <div>
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">Afternoon Return</label>
-                <Input value={formData.afternoon_return} onChange={e => setFormData({...formData, afternoon_return: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="15:30" />
-              </div>
-              <div className="col-span-2">
-                <label className="text-xs font-black text-emerald-900 uppercase tracking-widest mb-2 block tracking-[0.04em]">Stops</label>
-                <Input value={formData.stops} onChange={e => setFormData({...formData, stops: e.target.value})} className="h-14 font-semibold border-2 border-emerald-900 rounded-none bg-white" placeholder="Stop 1, Stop 2..." />
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-5 flex-shrink-0">
+              <h2 className="text-lg font-bold text-white">{editingId ? 'Edit Route' : 'Add Route'}</h2>
             </div>
-            
-            <div className="flex gap-4 pt-8">
-              <Button variant="outline" className="flex-1 h-14 border-2 border-emerald-900 bg-white text-emerald-900 font-black uppercase tracking-widest rounded-none" onClick={() => setShowModal(false)}>{t("cancel", "Cancel")}</Button>
-              <Button className="flex-1 h-14 bg-[#1E3A8A] text-white font-black uppercase tracking-widest rounded-none border-2 border-emerald-900" onClick={handleSave}>
-                {mutateRecord.isPending ? 'Saving...' : 'Save Route'}
-              </Button>
+            <div className="p-6 overflow-y-auto grid grid-cols-2 gap-4 flex-1">
+              <div className="col-span-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Route Name *</label>
+                <Input value={formData.route_name} onChange={e => setFormData({...formData, route_name: e.target.value})} className="mt-1.5 h-10" placeholder="e.g. Route A - Accra Central" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Vehicle *</label>
+                <Input value={formData.vehicle} onChange={e => setFormData({...formData, vehicle: e.target.value})} className="mt-1.5 h-10" placeholder="Bus GH-1234-20" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Capacity</label>
+                <Input type="number" value={formData.capacity} onChange={e => setFormData({...formData, capacity: e.target.value})} className="mt-1.5 h-10" placeholder="40" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Driver Name</label>
+                <Input value={formData.driver_name} onChange={e => setFormData({...formData, driver_name: e.target.value})} className="mt-1.5 h-10" placeholder="Driver Name" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Driver Phone</label>
+                <Input value={formData.driver_phone} onChange={e => setFormData({...formData, driver_phone: e.target.value})} className="mt-1.5 h-10" placeholder="+233..." />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Morning Departure</label>
+                <Input value={formData.morning_departure} onChange={e => setFormData({...formData, morning_departure: e.target.value})} className="mt-1.5 h-10" placeholder="06:30" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Afternoon Return</label>
+                <Input value={formData.afternoon_return} onChange={e => setFormData({...formData, afternoon_return: e.target.value})} className="mt-1.5 h-10" placeholder="15:30" />
+              </div>
+              <div className="col-span-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Stops</label>
+                <Input value={formData.stops} onChange={e => setFormData({...formData, stops: e.target.value})} className="mt-1.5 h-10" placeholder="Stop 1, Stop 2..." />
+              </div>
+              <div className="col-span-2 flex gap-3 pt-2">
+                <Button variant="outline" className="flex-1 h-10" onClick={() => setShowModal(false)}>Cancel</Button>
+                <Button className="flex-1 h-10 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleSave}>{mutateRecord.isPending ? 'Saving...' : 'Save Route'}</Button>
+              </div>
             </div>
           </motion.div>
         </div>
       )}
-    </div>
+    </SchoolPageShell>
   );
 }
