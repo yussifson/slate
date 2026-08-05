@@ -928,11 +928,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
             className={cn(
               "flex items-center rounded-xl text-sm transition-all duration-200 relative font-medium",
               collapsed
-                ? "justify-center mx-auto w-10 h-10 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20"
+                ? isActive
+                  ? "justify-center mx-auto w-9 h-9 bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
+                  : "justify-center mx-auto w-9 h-9 text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40"
                 : "gap-3 px-3 py-2 pr-8",
-              isActive
+              !collapsed && (isActive
                 ? "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 font-bold border-l-4 border-emerald-500 pl-2.5"
-                : "text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40"
+                : "text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40")
             )}
           >
             <span className="relative flex-shrink-0 flex items-center justify-center">
@@ -1158,15 +1160,15 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   </div>
   );
 return (
- <>
-   {/* Desktop sidebar - Floating Pill Sidebar matching Reference Design */}
-   <aside className={cn(
-     "hidden md:flex flex-col h-[calc(100vh-1.5rem)] sticky top-3 my-3 ml-3 rounded-3xl border border-black/10 dark:border-white/10 shadow-xl transition-all duration-300 relative z-20 overflow-hidden",
-     "bg-white text-slate-800 dark:bg-[#0c1a13] dark:text-emerald-50",
-     isCollapsed ? "w-[68px] min-w-[68px] max-w-[68px]" : "w-[240px] min-w-[240px] max-w-[240px]"
-   )}>
-     {renderNavContent(isCollapsed)}
-   </aside>
+    <>
+      {/* Desktop sidebar - Full height sidebar matching reference design */}
+      <aside className={cn(
+        "hidden md:flex flex-col h-full sticky top-0 border-r border-black/10 dark:border-white/10 transition-all duration-300 relative z-20 overflow-hidden",
+        "bg-white text-slate-800 dark:bg-[#0c1a13] dark:text-emerald-50",
+        isCollapsed ? "w-[64px] min-w-[64px] max-w-[64px]" : "w-[240px] min-w-[240px] max-w-[240px]"
+      )}>
+        {renderNavContent(isCollapsed)}
+      </aside>
 
  <Dialog open={!!renameData} onOpenChange={(open) => !open && setRenameData(null)}>
  <DialogContent className="sm:max-w-[425px]">
