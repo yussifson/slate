@@ -42,7 +42,6 @@ export default function Students() {
   const students = useMemo(() => rawStudents.map(r => ({ id: r.id, status: r.status, ...r.data })), [rawStudents]);
   const classes = useMemo(() => rawClasses.map(r => r.data.name).filter(Boolean), [rawClasses]);
 
-  // Real attendance rate calculation across all attendance records
   const attendanceRate = useMemo(() => {
     if (!rawAttendance.length) return 100;
     let totalCheckins = 0;
@@ -405,6 +404,7 @@ export default function Students() {
       <ModalForm
         open={showForm} onOpenChange={setShowForm}
         title={editingId ? 'Edit Student' : 'Add New Student'}
+        isEditing={!!editingId}
         fields={formFields} formData={formData}
         onChange={handleFormChange} onSubmit={handleSubmit}
         submitText={editingId ? 'Update Student' : 'Add Student'}
