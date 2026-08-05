@@ -141,103 +141,53 @@ export default function Parents() {
         </Button>
       }
     >
-      {/* ── Top-Line Clean Stat Cards (Reference Tickets.ID Style) ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {/* Stat 1: Total Parents */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                <Users className="w-4 h-4" />
+      {/* ── Stat Cards (Transport Fleet Pill Style) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        {[
+          { label: 'Total Parents', value: stats.total, icon: Users, theme: 'blue' },
+          { label: 'Linked Students', value: stats.linked, icon: Heart, theme: 'rose' },
+          { label: 'Primary Guardians', value: stats.emergency, icon: ShieldCheck, theme: 'green' },
+          { label: 'Family Coverage', value: `${stats.activeCoverage}%`, icon: UserCheck, theme: 'violet' },
+        ].map(({ label, value, icon: Icon, theme }) => {
+          const styles = {
+            blue: {
+              card: 'bg-blue-50/30 dark:bg-blue-950/10 border-blue-100/60 dark:border-blue-900/20',
+              iconBg: 'bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30',
+              iconColor: 'text-blue-600 dark:text-blue-400'
+            },
+            green: {
+              card: 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-100/60 dark:border-emerald-900/20',
+              iconBg: 'bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30',
+              iconColor: 'text-emerald-600 dark:text-emerald-400'
+            },
+            rose: {
+              card: 'bg-rose-50/30 dark:bg-rose-950/10 border-rose-100/60 dark:border-rose-900/20',
+              iconBg: 'bg-rose-50/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100/30',
+              iconColor: 'text-rose-600 dark:text-rose-400'
+            },
+            violet: {
+              card: 'bg-violet-50/30 dark:bg-violet-950/10 border-violet-100/60 dark:border-violet-900/20',
+              iconBg: 'bg-violet-50/80 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-100/30',
+              iconColor: 'text-violet-600 dark:text-violet-400'
+            }
+          };
+          const themeStyle = styles[theme] || styles.blue;
+          return (
+            <div 
+              key={label}
+              className={`border rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group ${themeStyle.card}`}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+              <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${themeStyle.iconBg}`}>
+                <Icon className={`w-5 h-5 ${themeStyle.iconColor}`} />
               </div>
-              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Total Parents</span>
-            </div>
-            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
-          </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.total}</h3>
-            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +2.9%
-              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">vs last yr</span>
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Stat 2: Linked Students */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
-                <Heart className="w-4 h-4" />
+              <div>
+                <p className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{value}</p>
+                <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">{label}</p>
               </div>
-              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Linked Students</span>
             </div>
-            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
-          </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.linked}</h3>
-            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +5.4%
-              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">this term</span>
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Stat 3: Primary Guardians */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Primary Guardians</span>
-            </div>
-            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
-          </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.emergency}</h3>
-            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 98%
-              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">verified</span>
-            </span>
-          </div>
-        </motion.div>
-
-        {/* Stat 4: Family Coverage */}
-        <motion.div 
-          whileHover={{ y: -2 }}
-          transition={{ duration: 0.15 }}
-          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center">
-                <UserCheck className="w-4 h-4" />
-              </div>
-              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Family Coverage</span>
-            </div>
-            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
-          </div>
-          <div className="flex items-baseline justify-between mt-3">
-            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.activeCoverage}%</h3>
-            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +2.9%
-              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">this week</span>
-            </span>
-          </div>
-        </motion.div>
+          );
+        })}
       </div>
 
       {/* ── Filter Bar ── */}
