@@ -59,14 +59,20 @@ export default function Grades() {
   const classList = useMemo(() => classesData.map(c => c.data?.name || c.data?.class_name).filter(Boolean), [classesData]);
   const examList = useMemo(() => examsData.map(e => e.data?.name).filter(Boolean), [examsData]);
   
-  const availableStudents = useMemo(() => {
+  const allStudents = useMemo(() => {
     return studentsData.map(s => {
       const sData = s.data || {};
       const fullName = sData.name || `${sData.first_name || ''} ${sData.last_name || ''}`.trim() || 'Unnamed Student';
       const className = sData.class_name || sData.current_class || '';
       return { id: s.id, name: fullName, className };
-    }).filter(s => !formData.class_name || s.className === formData.class_name);
-  }, [studentsData, formData.class_name]);
+    });
+  }, [studentsData]);
+
+  const availableStudents = useMemo(() => {
+    if (!formData.class_name) return allStudents;
+    const filtered = allStudents.filter(s => s.className === formData.class_name);
+    return filtered.length > 0 ? filtered : allStudents;
+  }, [allStudents, formData.class_name]);
 
   const grades = gradesData.map(r => ({ id: r.id, status: r.status || 'Active', ...r.data }));
   const filtered = grades.filter(g => {
@@ -85,7 +91,7 @@ export default function Grades() {
   const passRate = scores.length > 0 ? Math.round((scores.filter(s => s >= 50).length / scores.length) * 100) : 0;
 
   const handleStudentSelect = (studentId) => {
-    const student = availableStudents.find(s => s.id === studentId);
+    const student = allStudents.find(s => s.id === studentId);
     if (student) setFormData(prev => ({ ...prev, student_id: student.id, student_name: student.name }));
     else setFormData(prev => ({ ...prev, student_id: '', student_name: '' }));
   };
@@ -229,7 +235,7 @@ export default function Grades() {
         </div>
       </div>
 
-      {/* Add/Edit Modal Header & Styling Match */}
+      {/* Add/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-card border border-border/40 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
@@ -249,14 +255,14 @@ export default function Grades() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Class *</label>
-                  <select value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value, student_id: '', student_name: ''})} className={`mt-1.5 ${inputCls}`}>
+                  <select value={formData.class_name} onChange={e => setFormData({...formData, class_name: e.target.value})} className={`mt-1.5 ${inputCls}`}>
                     <option value="">Select Class...</option>
                     {classList.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Student *</label>
-                  <select value={formData.student_id} onChange={e => handleStudentSelect(e.target.value)} disabled={!formData.class_name} className={`mt-1.5 ${inputCls} disabled:opacity-50`}>
+                  <select value={formData.student_id} onChange={e => handleStudentSelect(e.target.value)} className={`mt-1.5 ${inputCls}`}>
                     <option value="">Select Student...</option>
                     {availableStudents.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
