@@ -1148,13 +1148,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
- <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer">
+          <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer">
  <LogOut className="w-4 h-4 mr-2" />
  Log out
  </DropdownMenuItem>
  </DropdownMenuContent>
- </DropdownMenu>
- </div>
+  </DropdownMenu>
+  </div>
+
 return (
  <>
    {/* Desktop sidebar - Floating Pill Sidebar matching Reference Design */}
