@@ -378,10 +378,10 @@ export default function Students() {
                           <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${gradColor} flex items-center justify-center text-[11px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.06)] flex-shrink-0`}>
                             {initials}
                           </div>
-                          <span className="font-bold text-slate-850 dark:text-zinc-105 text-sm">{student.name}</span>
+                          <span className="font-bold text-slate-800 dark:text-zinc-100 text-sm">{student.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-650 dark:text-zinc-350 font-bold text-sm">
+                      <td className="px-6 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
                         {student.class_name || '—'}
                       </td>
                       <td className="px-6 py-4">
@@ -392,10 +392,10 @@ export default function Students() {
                           {student.gender}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-650 dark:text-zinc-350 font-bold text-sm">
+                      <td className="px-6 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
                         {stats.attendanceRate}%
                       </td>
-                      <td className="px-6 py-4 text-slate-650 dark:text-zinc-350 font-bold text-sm">
+                      <td className="px-6 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
                         {student.parent_name || '—'}
                       </td>
                       <td className="px-6 py-4">
