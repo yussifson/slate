@@ -159,94 +159,101 @@ export default function Students() {
         </div>
       }
     >
-      {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* Total Students */}
+      {/* ── Stat Cards (Compact Top-Line Reference Style) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {/* Stat 1: Total Students */}
         <motion.div 
-          whileHover={{ scale: 1.018, y: -2 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-blue-100/50 dark:hover:border-blue-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-100/20 dark:from-blue-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
-            <Users className="w-5 h-5" />
-          </div>
-          <div>
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.total}</h3>
-              {stats.total > 0 && (
-                <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-100/40 px-2 py-0.5 rounded-full">
-                  <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
-                </span>
-              )}
+              <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <Users className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Total Students</span>
             </div>
-            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Total Students</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">vs last year</p>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.total}</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +4%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">vs last yr</span>
+            </span>
           </div>
         </motion.div>
 
-        {/* Active Students */}
+        {/* Stat 2: Active Students */}
         <motion.div 
-          whileHover={{ scale: 1.018, y: -2 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-emerald-100/50 dark:hover:border-emerald-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-100/20 dark:from-emerald-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
-            <UserCheck className="w-5 h-5" />
-          </div>
-          <div>
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.active}</h3>
-              {stats.active > 0 && (
-                <span className="inline-flex items-center text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-100/40 px-2 py-0.5 rounded-full">
-                  <ArrowDownRight className="w-3 h-3 mr-0.5" /> 7%
-                </span>
-              )}
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <UserCheck className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Active Students</span>
             </div>
-            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Active Students</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">vs last semester</p>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.active}</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 96%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">active</span>
+            </span>
           </div>
         </motion.div>
 
-        {/* On Leave */}
+        {/* Stat 3: On Leave */}
         <motion.div 
-          whileHover={{ scale: 1.018, y: -2 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-rose-100/50 dark:hover:border-rose-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-rose-100/20 dark:from-rose-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
-            <UserMinus className="w-5 h-5" />
-          </div>
-          <div>
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.onLeave}</h3>
-              {stats.onLeave > 0 && (
-                <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-100/40 px-2 py-0.5 rounded-full">
-                  <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
-                </span>
-              )}
+              <div className="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                <UserMinus className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">On Leave</span>
             </div>
-            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">On Leave</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">This Semester</p>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.onLeave}</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-rose-600 dark:text-rose-400">
+              <ArrowDownRight className="w-3 h-3 mr-0.5" /> -7%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">this term</span>
+            </span>
           </div>
         </motion.div>
 
-        {/* Avg Attendance */}
+        {/* Stat 4: Avg Attendance */}
         <motion.div 
-          whileHover={{ scale: 1.018, y: -2 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-violet-100/50 dark:hover:border-violet-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-violet-100/20 dark:from-violet-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-2xl bg-violet-50/70 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
-            <ListChecks className="w-5 h-5" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                <ListChecks className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Avg Attendance</span>
+            </div>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
           </div>
-          <div>
-            <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.attendanceRate}%</h3>
-            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Avg Attendance</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">This Semester</p>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.attendanceRate}%</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +2.1%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">this sem</span>
+            </span>
           </div>
         </motion.div>
       </div>

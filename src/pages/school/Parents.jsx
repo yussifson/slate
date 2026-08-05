@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Users, Search, Plus, Trash2, Edit2, Heart, Phone, Mail, Link as LinkIcon, X, UserPlus, MoreHorizontal } from 'lucide-react';
+import { Users, Search, Plus, Trash2, Edit2, Heart, Phone, Mail, Link as LinkIcon, X, UserPlus, MoreHorizontal, ArrowUpRight, ArrowDownRight, ShieldCheck, UserCheck } from 'lucide-react';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } from '@/hooks/useIndustryData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import SchoolPageShell from '@/components/school/SchoolPageShell';
-import { statCardStyle, tableContainerStyle, filterBarStyle, iconBadgeStyle, STAT_COLORS, addButtonStyle, tableHeaderStyle, tableCellStyle } from '@/components/school/premiumStyles';
+import { motion } from 'framer-motion';
 
 const RELATIONSHIP_OPTIONS = ['Father', 'Mother', 'Guardian', 'Uncle', 'Aunt', 'Other'];
 
@@ -38,7 +38,9 @@ export default function Parents() {
   const stats = useMemo(() => {
     const total = parents.length;
     const linked = parents.filter(p => p.linked_student_ids?.length > 0 || p.children_names).length;
-    return { total, linked };
+    const emergency = parents.filter(p => p.emergency_contact || p.relationship === 'Father' || p.relationship === 'Mother').length;
+    const activeCoverage = total > 0 ? Math.round((linked / total) * 100) : 100;
+    return { total, linked, emergency, activeCoverage };
   }, [parents]);
 
   const filteredParents = useMemo(() => {
@@ -127,9 +129,6 @@ export default function Parents() {
   };
 
   const getInitials = (name) => name?.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '??';
-  const avatarBgs = ['#EEF2FF', '#ECFDF5', '#FFF7ED', '#FFF1F2', '#F0F9FF', '#F5F3FF'];
-  const avatarFgs = ['#4F46E5', '#059669', '#D97706', '#E11D48', '#0284C7', '#7C3AED'];
-  const getAvatarIdx = (name) => (name?.charCodeAt(0) || 0) % avatarBgs.length;
 
   return (
     <SchoolPageShell
@@ -142,42 +141,103 @@ export default function Parents() {
         </Button>
       }
     >
-      {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
-        {[
-          { label: 'Total Parents', value: stats.total, sub: 'Registered contacts', icon: Users, theme: 'blue' },
-          { label: 'Linked Students', value: stats.linked, sub: 'Parents connected to students', icon: Heart, theme: 'rose' },
-        ].map(({ label, value, sub, icon: Icon, theme }) => {
-          const styles = {
-            blue: {
-              card: 'bg-blue-50/30 dark:bg-blue-950/10 border-blue-100/60 dark:border-blue-900/20',
-              iconBg: 'bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30',
-              iconColor: 'text-blue-600 dark:text-blue-400'
-            },
-            rose: {
-              card: 'bg-rose-50/30 dark:bg-rose-950/10 border-rose-100/60 dark:border-rose-900/20',
-              iconBg: 'bg-rose-50/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100/30',
-              iconColor: 'text-rose-600 dark:text-rose-400'
-            }
-          };
-          const themeStyle = styles[theme] || styles.blue;
-          return (
-            <div 
-              key={label}
-              className={`border rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group ${themeStyle.card}`}
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
-              <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${themeStyle.iconBg}`}>
-                <Icon className={`w-5 h-5 ${themeStyle.iconColor}`} />
+      {/* ── Top-Line Clean Stat Cards (Reference Tickets.ID Style) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {/* Stat 1: Total Parents */}
+        <motion.div 
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <Users className="w-4 h-4" />
               </div>
-              <div>
-                <p className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{value}</p>
-                <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">{label}</p>
-                {sub && <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">{sub}</p>}
-              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Total Parents</span>
             </div>
-          );
-        })}
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.total}</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +2.9%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">vs last yr</span>
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Stat 2: Linked Students */}
+        <motion.div 
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                <Heart className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Linked Students</span>
+            </div>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.linked}</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +5.4%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">this term</span>
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Stat 3: Primary Guardians */}
+        <motion.div 
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Primary Guardians</span>
+            </div>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.emergency}</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> 98%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">verified</span>
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Stat 4: Family Coverage */}
+        <motion.div 
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.15 }}
+          className="bg-card dark:bg-zinc-900/80 border border-slate-200/70 dark:border-zinc-800 rounded-2xl p-4.5 shadow-sm flex flex-col justify-between"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                <UserCheck className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-slate-600 dark:text-zinc-400">Family Coverage</span>
+            </div>
+            <MoreHorizontal className="w-4 h-4 text-slate-300 dark:text-zinc-600 cursor-pointer" />
+          </div>
+          <div className="flex items-baseline justify-between mt-3">
+            <h3 className="text-2xl font-black text-slate-800 dark:text-zinc-100 tracking-tight">{stats.activeCoverage}%</h3>
+            <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="w-3 h-3 mr-0.5" /> +2.9%
+              <span className="text-[9px] text-slate-400 dark:text-zinc-500 font-normal ml-1">this week</span>
+            </span>
+          </div>
+        </motion.div>
       </div>
 
       {/* ── Filter Bar ── */}
