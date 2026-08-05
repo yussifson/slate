@@ -87,7 +87,7 @@ export default function Library() {
       subtitle="Manage school library books and inventory"
       breadcrumb={['School', 'Library']}
       actions={
-        <Button onClick={() => { setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '' }); setEditingId(null); setShowModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm h-10 px-5 text-sm font-medium">
+        <Button onClick={() => { setFormData({ title: '', author: '', isbn: '', category: 'Science', total: 10, cover_url: '' }); setEditingId(null); setShowModal(true); }} className="bg-[#0066fe] hover:bg-[#0055d4] text-white border-0 shadow-lg shadow-[#0066fe]/15 rounded-full px-6 h-10 text-sm font-semibold transition-all hover:scale-[1.02] hover:-translate-y-0.5">
           <Plus className="w-4 h-4 mr-2" /> Add Book
         </Button>
       }
@@ -95,31 +95,58 @@ export default function Library() {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
         {[
-          { label: 'Total Books', value: totalCopies, icon: Book, color: 'bg-indigo-500/10 text-indigo-600' },
-          { label: 'Available', value: totalAvailable, icon: BookOpen, color: 'bg-emerald-500/10 text-emerald-600' },
-          { label: 'Borrowed', value: totalBorrowed, icon: Clock, color: 'bg-amber-500/10 text-amber-600' },
-        ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 shadow-sm flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${color}`}><Icon className="w-5 h-5" /></div>
-            <div>
-              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</p>
-              <p className="text-2xl font-bold text-foreground mt-0.5">{value}</p>
+          { label: 'Total Books', value: totalCopies, icon: Book, theme: 'blue' },
+          { label: 'Available', value: totalAvailable, icon: BookOpen, theme: 'green' },
+          { label: 'Borrowed', value: totalBorrowed, icon: Clock, theme: 'orange' },
+        ].map(({ label, value, icon: Icon, theme }) => {
+          const styles = {
+            blue: {
+              card: 'bg-blue-50/30 dark:bg-blue-950/10 border-blue-100/60 dark:border-blue-900/20',
+              iconBg: 'bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30',
+              iconColor: 'text-blue-600 dark:text-blue-400'
+            },
+            green: {
+              card: 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-100/60 dark:border-emerald-900/20',
+              iconBg: 'bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30',
+              iconColor: 'text-emerald-600 dark:text-emerald-400'
+            },
+            orange: {
+              card: 'bg-amber-50/30 dark:bg-amber-950/10 border-amber-100/60 dark:border-amber-900/20',
+              iconBg: 'bg-amber-50/80 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-100/30',
+              iconColor: 'text-amber-600 dark:text-amber-400'
+            }
+          };
+          const themeStyle = styles[theme] || styles.blue;
+          return (
+            <div 
+              key={label}
+              className={`border rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group ${themeStyle.card}`}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+              <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${themeStyle.iconBg}`}>
+                <Icon className={`w-5 h-5 ${themeStyle.iconColor}`} />
+              </div>
+              <div>
+                <p className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{value}</p>
+                <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">{label}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Tabs + Search */}
-      <div className="bg-card border border-border/50 rounded-xl shadow-sm p-4 mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex rounded-lg bg-muted/50 p-1 gap-1">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
+        <div className="flex items-center gap-4 flex-wrap flex-1">
+          <div className="flex rounded-xl bg-slate-50 dark:bg-zinc-800/60 p-1 gap-1 border border-slate-100/50 dark:border-zinc-850">
             {['catalog', 'issued'].map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors capitalize ${activeTab === tab ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>{tab === 'catalog' ? 'Book Catalog' : 'Issued Books'}</button>
+              <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all capitalize ${activeTab === tab ? 'bg-white dark:bg-zinc-900 shadow-sm text-[#0066fe]' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-350'}`}>{tab === 'catalog' ? 'Book Catalog' : 'Issued Books'}</button>
             ))}
           </div>
           <div className="relative flex-1 min-w-48">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-border/50 h-9 text-sm" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Input placeholder="Search catalog..." value={search} onChange={e => setSearch(e.target.value)}
+              className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all" />
           </div>
         </div>
       </div>

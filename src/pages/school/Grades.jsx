@@ -126,7 +126,7 @@ export default function Grades() {
       title="Grades & Transcript"
       subtitle="Record and manage student exam results"
       actions={
-        <Button onClick={() => { setEditingId(null); setFormData(defaultForm); setShowModal(true); }} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm h-10 px-5 text-sm font-semibold">
+        <Button onClick={() => { setEditingId(null); setFormData(defaultForm); setShowModal(true); }} className="bg-[#0066fe] hover:bg-[#0055d4] text-white border-0 shadow-lg shadow-[#0066fe]/15 rounded-full px-6 h-10 text-sm font-semibold transition-all hover:scale-[1.02] hover:-translate-y-0.5">
           <Plus className="w-4 h-4 mr-2" /> Quick Add
         </Button>
       }
@@ -134,28 +134,58 @@ export default function Grades() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
         {[
-          { label: 'Average', value: `${avgScore}%`, icon: BarChart3, color: 'bg-indigo-500/10 text-indigo-600' },
-          { label: 'Highest', value: `${highScore}%`, icon: TrendingUp, color: 'bg-emerald-500/10 text-emerald-600' },
-          { label: 'Lowest', value: `${lowScore}%`, icon: Award, color: 'bg-amber-500/10 text-amber-600' },
-          { label: 'Pass Rate', value: `${passRate}%`, icon: CheckCircle, color: 'bg-sky-500/10 text-sky-600' },
-        ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}><Icon className="w-5 h-5" /></div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</p>
+          { label: 'Average Score', value: `${avgScore}%`, icon: BarChart3, theme: 'blue' },
+          { label: 'Highest Score', value: `${highScore}%`, icon: TrendingUp, theme: 'green' },
+          { label: 'Lowest Score', value: `${lowScore}%`, icon: Award, theme: 'rose' },
+          { label: 'Pass Rate', value: `${passRate}%`, icon: CheckCircle, theme: 'violet' },
+        ].map(({ label, value, icon: Icon, theme }) => {
+          const styles = {
+            blue: {
+              card: 'bg-blue-50/30 dark:bg-blue-950/10 border-blue-100/60 dark:border-blue-900/20',
+              iconBg: 'bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30',
+              iconColor: 'text-blue-600 dark:text-blue-400'
+            },
+            green: {
+              card: 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-100/60 dark:border-emerald-900/20',
+              iconBg: 'bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30',
+              iconColor: 'text-emerald-600 dark:text-emerald-400'
+            },
+            rose: {
+              card: 'bg-rose-50/30 dark:bg-rose-950/10 border-rose-100/60 dark:border-rose-900/20',
+              iconBg: 'bg-rose-50/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100/30',
+              iconColor: 'text-rose-600 dark:text-rose-400'
+            },
+            violet: {
+              card: 'bg-violet-50/30 dark:bg-violet-950/10 border-violet-100/60 dark:border-violet-900/20',
+              iconBg: 'bg-violet-50/80 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-100/30',
+              iconColor: 'text-violet-600 dark:text-violet-400'
+            }
+          };
+          const themeStyle = styles[theme] || styles.blue;
+          return (
+            <div 
+              key={label}
+              className={`border rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col justify-between relative overflow-hidden group ${themeStyle.card}`}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${themeStyle.iconBg}`}><Icon className={`w-5 h-5 ${themeStyle.iconColor}`} /></div>
+                <p className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest">{label}</p>
+              </div>
+              <p className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{value}</p>
             </div>
-            <p className="text-3xl font-extrabold text-foreground tracking-tight">{value}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Filters */}
-      <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
-          <Input placeholder="Search by student, subject, or exam..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background border-border/50 h-9 text-sm rounded-xl" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Input placeholder="Search by student, subject, or exam..." value={search} onChange={e => setSearch(e.target.value)}
+            className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all" />
         </div>
-        <select value={filterTerm} onChange={e => setFilterTerm(e.target.value)} className="h-9 rounded-xl border border-border/50 bg-background px-3 text-sm">
+        <select value={filterTerm} onChange={e => setFilterTerm(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-850 px-3 text-sm text-slate-700 dark:text-zinc-300 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
           <option value="All">All Terms</option>{TERMS.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
         <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="h-9 rounded-xl border border-border/50 bg-background px-3 text-sm">

@@ -119,60 +119,82 @@ export default function Classes() {
       subtitle="Manage class structure, room allocations, and class teachers"
       breadcrumb={['School', 'Classes']}
       actions={
-        <Button onClick={handleOpenAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white" style={addButtonStyle}>
+        <Button onClick={handleOpenAdd} className="bg-[#0066fe] hover:bg-[#0055d4] text-white border-0 shadow-lg shadow-[#0066fe]/15 rounded-full px-6 h-10 text-sm font-semibold transition-all hover:scale-[1.02] hover:-translate-y-0.5">
           <Plus className="w-4 h-4 mr-2" /> Add Class
         </Button>
       }
     >
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         {[
-          { label: 'Total Classes', value: stats.totalClasses, sub: 'Active class sections', icon: BookOpen, color: STAT_COLORS.blue },
-          { label: 'Total Students', value: stats.totalStudents, sub: 'Enrolled in classes', icon: Users, color: STAT_COLORS.green },
-          { label: 'Grade Levels', value: stats.levels, sub: 'Educational stages', icon: LayoutGrid, color: STAT_COLORS.orange },
-        ].map(({ label, value, sub, icon: Icon, color }) => (
-          <div key={label} style={statCardStyle} className="group hover:shadow-lg transition-all duration-200">
-            <div className="flex items-start gap-4">
-              <div style={iconBadgeStyle(color.bg)}>
-                <Icon style={{ width: 22, height: 22, color: color.icon }} />
+          { label: 'Total Classes', value: stats.totalClasses, sub: 'Active class sections', icon: BookOpen, theme: 'blue' },
+          { label: 'Total Students', value: stats.totalStudents, sub: 'Enrolled in classes', icon: Users, theme: 'green' },
+          { label: 'Grade Levels', value: stats.levels, sub: 'Educational stages', icon: LayoutGrid, theme: 'orange' },
+        ].map(({ label, value, sub, icon: Icon, theme }) => {
+          const styles = {
+            blue: {
+              card: 'bg-blue-50/30 dark:bg-blue-950/10 border-blue-100/60 dark:border-blue-900/20',
+              iconBg: 'bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30',
+              iconColor: 'text-blue-600 dark:text-blue-400'
+            },
+            green: {
+              card: 'bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-100/60 dark:border-emerald-900/20',
+              iconBg: 'bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30',
+              iconColor: 'text-emerald-600 dark:text-emerald-400'
+            },
+            orange: {
+              card: 'bg-amber-50/30 dark:bg-amber-950/10 border-amber-100/60 dark:border-amber-900/20',
+              iconBg: 'bg-amber-50/80 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-100/30',
+              iconColor: 'text-amber-600 dark:text-amber-400'
+            }
+          };
+          const themeStyle = styles[theme] || styles.blue;
+          return (
+            <div 
+              key={label}
+              className={`border rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group ${themeStyle.card}`}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+              <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${themeStyle.iconBg}`}>
+                <Icon className={`w-5 h-5 ${themeStyle.iconColor}`} />
               </div>
-              <div className="flex-1">
-                <p style={{ color: color.label, fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>{label}</p>
-                <p className="text-foreground" style={{ fontSize: '32px', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>{value}</p>
-                <p className="text-muted-foreground/60" style={{ fontSize: '12px', marginTop: '6px' }}>{sub}</p>
+              <div>
+                <p className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{value}</p>
+                <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">{label}</p>
+                {sub && <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">{sub}</p>}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ── Filter Bar ── */}
-      <div style={filterBarStyle} className="flex flex-wrap items-center gap-3 mb-6">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input placeholder="Search classes or teachers..." value={search} onChange={e => setSearch(e.target.value)}
-            className="pl-9 bg-background border-border/40 text-sm h-9" style={{ borderRadius: '10px' }} />
+            className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all" />
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {['All', ...LEVEL_OPTIONS].map(l => (
-            <button key={l} onClick={() => setLevelFilter(l)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${levelFilter === l ? 'bg-indigo-600 text-white' : 'bg-muted/50 text-muted-foreground hover:bg-muted'}`}>
+            <button key={l} onClick={() => setLevelFilter(l)} className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${levelFilter === l ? 'bg-[#0066fe] text-white shadow-sm' : 'bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-500 dark:text-zinc-400'}`}>
               {l}
             </button>
           ))}
         </div>
-        <div className="ml-auto text-xs text-muted-foreground/60 font-medium">{filteredClasses.length} classes</div>
+        <div className="ml-auto text-xs text-slate-400 dark:text-zinc-500 font-bold">{filteredClasses.length} classes</div>
       </div>
 
       {/* ── Class Cards Grid ── */}
       {isClassesLoading ? (
-        <div className="flex items-center justify-center py-20 text-muted-foreground">
-          <div style={{ width: '28px', height: '28px', border: '3px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        <div className="flex items-center justify-center py-20 text-slate-400">
+          <div className="w-6 h-6 border-2 border-[#0066fe] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredClasses.length === 0 ? (
-        <div className="bg-card rounded-2xl border border-dashed border-border/60 py-16 text-center">
-          <BookOpen className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground font-medium">No classes found</p>
-          <button onClick={handleOpenAdd} className="text-sm text-indigo-600 hover:underline mt-2">Create your first class →</button>
+        <div className="bg-white dark:bg-zinc-900 rounded-[2.2rem] border border-dashed border-slate-200 dark:border-zinc-800 py-16 text-center shadow-[0_24px_64px_rgba(0,0,0,0.02)]">
+          <BookOpen className="w-10 h-10 text-slate-300 dark:text-zinc-700 mx-auto mb-3" />
+          <p className="text-slate-400 dark:text-zinc-500 text-sm font-semibold">No classes found</p>
+          <button onClick={handleOpenAdd} className="text-xs font-bold text-[#0066fe] hover:text-[#0055d4] transition-colors mt-2 block mx-auto">Create your first class →</button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -181,41 +203,41 @@ export default function Classes() {
             const capacity = parseInt(c.capacity) || 40;
             const fillPct = Math.min(100, Math.round((enrolled / capacity) * 100));
             return (
-              <motion.div key={c.id} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="bg-card rounded-2xl border border-border/40 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden group">
-                <div className="p-5">
+              <motion.div key={c.id} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 relative overflow-hidden group flex flex-col justify-between">
+                <div>
                   <div className="flex items-start justify-between mb-4">
-                    <div style={iconBadgeStyle('rgba(99, 102, 241, 0.08)')}>
-                      <BookOpen style={{ width: 20, height: 20, color: '#6366f1' }} />
+                    <div className="w-10 h-10 rounded-xl bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+                      <BookOpen className="w-5 h-5 text-[#0066fe]" />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-50 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 border border-slate-200/40 dark:border-zinc-700/40">
                         {c.level}
                       </span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-muted transition-colors opacity-0 group-hover:opacity-100">
+                          <button className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors opacity-0 group-hover:opacity-100">
                             <MoreHorizontal className="w-4 h-4" />
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-36">
-                          <DropdownMenuItem onClick={() => handleOpenEdit(c)}><Edit2 className="w-3.5 h-3.5 mr-2" /> Edit</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(c.id)} className="text-destructive focus:text-destructive"><Trash2 className="w-3.5 h-3.5 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuContent align="end" className="rounded-xl">
+                          <DropdownMenuItem onClick={() => handleOpenEdit(c)} className="cursor-pointer font-medium text-xs"><Edit2 className="w-3.5 h-3.5 mr-2" /> Edit Details</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setDeleteTargetId(c.id)} className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-900/20 cursor-pointer font-medium text-xs"><Trash2 className="w-3.5 h-3.5 mr-2" /> Delete Record</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </div>
                   </div>
 
-                  <h3 className="font-bold text-foreground text-lg mb-1">{c.name}</h3>
-                  <p className="text-xs text-muted-foreground mb-4">{c.class_teacher ? `Teacher: ${c.class_teacher}` : 'No teacher assigned'}</p>
+                  <h3 className="font-bold text-slate-800 dark:text-zinc-150 text-base mb-1 tracking-tight">{c.name}</h3>
+                  <p className="text-xs text-slate-400 dark:text-zinc-500 mb-4 font-semibold">{c.class_teacher ? `Teacher: ${c.class_teacher}` : 'No teacher assigned'}</p>
+                </div>
 
-                  <div className="space-y-2 pt-3 border-t border-border/30">
-                    <div className="flex justify-between text-xs font-medium">
-                      <span className="text-muted-foreground">Enrolled Students</span>
-                      <span className="text-foreground font-semibold">{enrolled} / {capacity}</span>
-                    </div>
-                    <div className="w-full bg-muted/50 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-indigo-600 h-full rounded-full transition-all duration-300" style={{ width: `${fillPct}%` }} />
-                    </div>
+                <div className="space-y-2 pt-4 border-t border-slate-100/50 dark:border-zinc-800/40 mt-3">
+                  <div className="flex justify-between text-xs font-bold">
+                    <span className="text-slate-400 dark:text-zinc-500">Enrolled Students</span>
+                    <span className="text-slate-700 dark:text-zinc-300">{enrolled} / {capacity}</span>
+                  </div>
+                  <div className="w-full bg-slate-50 dark:bg-zinc-800/60 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-[#0066fe] h-full rounded-full transition-all duration-500" style={{ width: `${fillPct}%` }} />
                   </div>
                 </div>
               </motion.div>

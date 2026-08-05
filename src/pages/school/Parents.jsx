@@ -137,136 +137,157 @@ export default function Parents() {
       subtitle="Manage emergency contacts and student family relationships"
       breadcrumb={['School', 'Parents & Guardians']}
       actions={
-        <Button onClick={handleOpenAdd} className="bg-indigo-600 hover:bg-indigo-700 text-white" style={addButtonStyle}>
+        <Button onClick={handleOpenAdd} className="bg-[#0066fe] hover:bg-[#0055d4] text-white border-0 shadow-lg shadow-[#0066fe]/15 rounded-full px-6 h-10 text-sm font-semibold transition-all hover:scale-[1.02] hover:-translate-y-0.5">
           <UserPlus className="w-4 h-4 mr-2" /> Add Parent
         </Button>
       }
     >
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
         {[
-          { label: 'Total Parents', value: stats.total, sub: 'Registered contacts', icon: Users, color: STAT_COLORS.blue },
-          { label: 'Linked Students', value: stats.linked, sub: 'Parents connected to students', icon: Heart, color: STAT_COLORS.rose },
-        ].map(({ label, value, sub, icon: Icon, color }) => (
-          <div key={label} style={statCardStyle} className="group hover:shadow-lg transition-all duration-200">
-            <div className="flex items-start gap-4">
-              <div style={iconBadgeStyle(color.bg)}>
-                <Icon style={{ width: 22, height: 22, color: color.icon }} />
+          { label: 'Total Parents', value: stats.total, sub: 'Registered contacts', icon: Users, theme: 'blue' },
+          { label: 'Linked Students', value: stats.linked, sub: 'Parents connected to students', icon: Heart, theme: 'rose' },
+        ].map(({ label, value, sub, icon: Icon, theme }) => {
+          const styles = {
+            blue: {
+              card: 'bg-blue-50/30 dark:bg-blue-950/10 border-blue-100/60 dark:border-blue-900/20',
+              iconBg: 'bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30',
+              iconColor: 'text-blue-600 dark:text-blue-400'
+            },
+            rose: {
+              card: 'bg-rose-50/30 dark:bg-rose-950/10 border-rose-100/60 dark:border-rose-900/20',
+              iconBg: 'bg-rose-50/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100/30',
+              iconColor: 'text-rose-600 dark:text-rose-400'
+            }
+          };
+          const themeStyle = styles[theme] || styles.blue;
+          return (
+            <div 
+              key={label}
+              className={`border rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group ${themeStyle.card}`}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+              <div className={`w-12 h-12 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300 ${themeStyle.iconBg}`}>
+                <Icon className={`w-5 h-5 ${themeStyle.iconColor}`} />
               </div>
-              <div className="flex-1">
-                <p style={{ color: color.label, fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>{label}</p>
-                <p className="text-foreground" style={{ fontSize: '32px', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>{value}</p>
-                <p className="text-muted-foreground/60" style={{ fontSize: '12px', marginTop: '6px' }}>{sub}</p>
+              <div>
+                <p className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{value}</p>
+                <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">{label}</p>
+                {sub && <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">{sub}</p>}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ── Filter Bar ── */}
-      <div style={filterBarStyle} className="flex flex-wrap items-center gap-3 mb-6">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
             placeholder="Search by name, phone, or child..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="pl-9 bg-background border-border/40 text-sm h-9"
-            style={{ borderRadius: '10px' }}
+            className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all"
           />
         </div>
         {search && (
-          <button onClick={() => setSearch('')} className="text-xs text-muted-foreground hover:text-foreground transition-colors" style={{ textDecoration: 'underline', textUnderlineOffset: '3px' }}>Clear</button>
+          <button onClick={() => setSearch('')} className="text-xs font-bold text-[#0066fe] hover:text-[#0055d4] transition-colors ml-2">Clear</button>
         )}
-        <div className="ml-auto text-xs text-muted-foreground/60 font-medium">{filteredParents.length} parents</div>
+        <div className="ml-auto text-xs text-slate-400 dark:text-zinc-500 font-bold">{filteredParents.length} parents</div>
       </div>
 
       {/* ── Table ── */}
-      <div style={tableContainerStyle}>
+      <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.2rem] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
+          <table className="w-full text-sm text-left">
+            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 bg-slate-50/50 dark:bg-zinc-850/50 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
               <tr>
                 {['Parent Name', 'Contact', 'Relationship', 'Linked Children', ''].map((h, i) => (
-                  <th key={h || i} style={{ ...tableHeaderStyle, textAlign: i === 4 ? 'right' : 'left' }}>{h}</th>
+                  <th key={h || i} className={`px-5 py-4.5 font-bold ${i === 4 ? 'text-right' : 'text-left'}`}>{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100/70 dark:divide-zinc-800/60">
               {isParentsLoading ? (
-                <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: '28px', height: '28px', border: '3px solid #6366f1', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                    <span className="text-muted-foreground/60" style={{ fontSize: '14px' }}>Loading parents…</span>
-                  </div>
-                </td></tr>
-              ) : filteredParents.length === 0 ? (
-                <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', padding: '60px 20px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ width: '48px', height: '48px', borderRadius: '14px', backgroundColor: 'hsl(var(--muted) / 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Users style={{ width: '24px', height: '24px', color: 'hsl(var(--muted-foreground) / 0.3)' }} />
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-6 h-6 border-2 border-[#0066fe] border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm font-semibold mt-1">Loading parents…</span>
                     </div>
-                    <p className="text-muted-foreground font-medium" style={{ fontSize: '15px' }}>No parents found</p>
-                    <button onClick={handleOpenAdd} style={{ fontSize: '13px', color: '#6366f1', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '3px' }}>Add your first parent record →</button>
-                  </div>
-                </td></tr>
+                  </td>
+                </tr>
+              ) : filteredParents.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <Users className="w-10 h-10 text-slate-300 dark:text-zinc-700 mx-auto mb-3" />
+                    <p className="text-slate-400 dark:text-zinc-500 text-sm font-semibold">No parents found</p>
+                    <button onClick={handleOpenAdd} className="text-xs font-bold text-[#0066fe] hover:text-[#0055d4] transition-colors mt-2 block mx-auto">Add your first parent record →</button>
+                  </td>
+                </tr>
               ) : filteredParents.map(parent => {
-                const idx = getAvatarIdx(parent.name);
+                const initials = getInitials(parent.name);
+                const colors = [
+                  'from-blue-400 to-indigo-500 text-blue-50 shadow-blue-500/10',
+                  'from-emerald-400 to-teal-500 text-emerald-50 shadow-emerald-500/10',
+                  'from-amber-400 to-orange-500 text-amber-50 shadow-amber-500/10',
+                  'from-pink-400 to-rose-500 text-pink-50 shadow-pink-500/10',
+                  'from-purple-400 to-violet-500 text-purple-50 shadow-purple-500/10',
+                ];
+                const colorIndex = (parent.name || 'P').charCodeAt(0) % colors.length;
+                const gradColor = colors[colorIndex];
+                
                 return (
-                  <tr key={parent.id} className="group" style={{ borderBottom: '1px solid hsl(var(--border) / 0.2)', transition: 'background-color 0.15s' }}
-                      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'hsl(var(--muted) / 0.15)'}
-                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
-                    <td style={tableCellStyle}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: avatarBgs[idx], color: avatarFgs[idx], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
-                          {getInitials(parent.name)}
+                  <tr key={parent.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors group">
+                    <td className="px-5 py-4.5">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8.5 h-8.5 rounded-full bg-gradient-to-br ${gradColor} flex items-center justify-center text-[11px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.06)] flex-shrink-0`}>
+                          {initials}
                         </div>
                         <div>
-                          <p style={{ fontWeight: 600, fontSize: '14px', color: 'hsl(var(--foreground))' }}>{parent.name}</p>
-                          <p style={{ fontSize: '12px', color: 'hsl(var(--muted-foreground) / 0.6)' }}>{parent.occupation || 'N/A'}</p>
+                          <p className="font-bold text-slate-800 dark:text-zinc-200 text-sm">{parent.name}</p>
+                          <p className="text-xs text-slate-400 dark:text-zinc-500 mt-0.5 font-medium">{parent.occupation || 'N/A'}</p>
                         </div>
                       </div>
                     </td>
-                    <td style={tableCellStyle}>
+                    <td className="px-5 py-4.5">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <Phone className="w-3 h-3 text-muted-foreground/60" /> {parent.phone}
+                        <div className="flex items-center gap-1.5 text-xs text-slate-700 dark:text-zinc-300 font-medium">
+                          <Phone className="w-3 h-3 text-slate-400" /> {parent.phone}
                         </div>
                         {parent.email && (
-                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
-                            <Mail className="w-3 h-3 text-muted-foreground/60" /> {parent.email}
+                          <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400">
+                            <Mail className="w-3 h-3 text-slate-400" /> {parent.email}
                           </div>
                         )}
                       </div>
                     </td>
-                    <td style={tableCellStyle}>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
-                        backgroundColor: 'rgba(99, 102, 241, 0.08)', color: '#6366f1'
-                      }}>
-                        <Heart className="w-3 h-3" /> {parent.relationship}
+                    <td className="px-5 py-4.5">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50/80 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100/30 dark:border-blue-850/30">
+                        <Heart className="w-3 h-3 mr-1" /> {parent.relationship}
                       </span>
                     </td>
-                    <td style={tableCellStyle}>
+                    <td className="px-5 py-4.5">
                       {parent.children_names ? (
                         <div className="flex items-center gap-1.5">
-                          <LinkIcon className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
-                          <span className="text-xs text-foreground font-medium">{parent.children_names}</span>
+                          <LinkIcon className="w-3.5 h-3.5 text-[#0066fe] flex-shrink-0" />
+                          <span className="text-xs text-slate-700 dark:text-zinc-300 font-bold">{parent.children_names}</span>
                         </div>
                       ) : (
-                        <span className="text-xs text-muted-foreground/50 italic">Not linked</span>
+                        <span className="text-xs text-slate-400 dark:text-zinc-500 font-medium italic">Not linked</span>
                       )}
                     </td>
-                    <td style={{ ...tableCellStyle, textAlign: 'right' }}>
+                    <td className="px-6 py-4.5 text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="opacity-0 group-hover:opacity-100 transition-opacity" style={{ padding: '6px', borderRadius: '8px', color: 'hsl(var(--muted-foreground))', background: 'none', border: 'none', cursor: 'pointer' }}>
-                            <MoreHorizontal style={{ width: '16px', height: '16px' }} />
+                          <button className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors opacity-0 group-hover:opacity-100">
+                            <MoreHorizontal className="w-4 h-4" />
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-36">
-                          <DropdownMenuItem onClick={() => handleOpenEdit(parent)}><Edit2 className="w-3.5 h-3.5 mr-2" /> Edit</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setDeleteTargetId(parent.id)} className="text-destructive focus:text-destructive"><Trash2 className="w-3.5 h-3.5 mr-2" /> Delete</DropdownMenuItem>
+                        <DropdownMenuContent align="end" className="rounded-xl">
+                          <DropdownMenuItem onClick={() => handleOpenEdit(parent)} className="cursor-pointer font-medium text-xs"><Edit2 className="w-3.5 h-3.5 mr-2" /> Edit Details</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setDeleteTargetId(parent.id)} className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-900/20 cursor-pointer font-medium text-xs"><Trash2 className="w-3.5 h-3.5 mr-2" /> Delete Record</DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>

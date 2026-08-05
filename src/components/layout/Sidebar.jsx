@@ -1155,7 +1155,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </DropdownMenuContent>
   </DropdownMenu>
   </div>
-
+  </div>
+  );
 return (
  <>
    {/* Desktop sidebar - Floating Pill Sidebar matching Reference Design */}

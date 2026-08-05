@@ -217,17 +217,17 @@ export default function StudentProfile() {
                 </h3>
 
                 <div className="mb-6 grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-muted/20 rounded-xl border border-border/30">
-                    <div className="text-xs text-muted-foreground mb-1">Total Billed</div>
-                    <div className="text-lg font-bold text-foreground">GHS {totalFees.toFixed(2)}</div>
+                  <div className="p-4 bg-blue-50/30 dark:bg-blue-950/15 rounded-xl border border-blue-100/50 dark:border-blue-900/30">
+                    <div className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider mb-1">Total Billed</div>
+                    <div className="text-lg font-extrabold text-slate-800 dark:text-zinc-150">GHS {totalFees.toFixed(2)}</div>
                   </div>
-                  <div className="p-4 bg-muted/20 rounded-xl border border-border/30">
-                    <div className="text-xs text-muted-foreground mb-1">Total Paid</div>
-                    <div className="text-lg font-bold text-emerald-600">GHS {paidFees.toFixed(2)}</div>
+                  <div className="p-4 bg-emerald-50/30 dark:bg-emerald-950/15 rounded-xl border border-emerald-100/50 dark:border-emerald-900/30">
+                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider mb-1">Total Paid</div>
+                    <div className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">GHS {paidFees.toFixed(2)}</div>
                   </div>
-                  <div className="p-4 bg-muted/20 rounded-xl border border-border/30">
-                    <div className="text-xs text-muted-foreground mb-1">Outstanding</div>
-                    <div className={`text-lg font-bold ${balance > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>GHS {balance.toFixed(2)}</div>
+                  <div className={`p-4 rounded-xl border ${balance > 0 ? 'bg-rose-50/30 dark:bg-rose-950/15 border-rose-100/50 dark:border-rose-900/30' : 'bg-emerald-50/30 dark:bg-emerald-950/15 border-emerald-100/50 dark:border-emerald-900/30'}`}>
+                    <div className={`text-xs font-bold uppercase tracking-wider mb-1 ${balance > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>Outstanding</div>
+                    <div className={`text-lg font-extrabold ${balance > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>GHS {balance.toFixed(2)}</div>
                   </div>
                 </div>
 
