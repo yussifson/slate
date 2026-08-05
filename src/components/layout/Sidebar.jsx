@@ -877,9 +877,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  await (async () => { const _payload = {status: newStatus}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE module_definitions SET ${_keys.map(k => k+' = ?').join(', ')} WHERE id = ?`, [..._vals, id]);})();
 };
 
- const renderNavContent = (collapsed) => (
- <div className="flex flex-col h-full bg-sidebar overflow-x-hidden">
- <div className={cn("py-5 border-b border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 flex items-center transition-all", collapsed ? "px-4 justify-center" : "px-5 gap-3")}>
+  const renderNavContent = (collapsed) => (
+    <div className="flex flex-col h-full bg-white dark:bg-[#0c1a13] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
+      <div className={cn("py-4 border-b border-black/5 dark:border-white/10 flex items-center transition-all", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>
      <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
@@ -921,36 +921,38 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
      const isVideoCallItem = item.path === '/board' || item.label?.toLowerCase().includes('video');
      const showLiveDot = isVideoCallItem && !!activeRoomUrl;
      return (
-       <div key={item.path} className="relative group">
-         <Link
-           to={item.path}
-           title={collapsed ? t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
-           className={cn(
-             "flex items-center rounded-xl text-sm transition-all duration-200 relative",
-             collapsed ? "justify-center p-2.5 mx-auto w-10 h-10 hover:bg-sidebar-accent hover:shadow-sm" : "gap-3 px-3 py-2 pr-8",
-             isActive
-               ? "bg-primary text-primary-foreground font-semibold shadow-md shadow-primary/20 scale-[0.98]"
-               : "text-sidebar-foreground/70 font-medium hover:text-sidebar-foreground hover:bg-sidebar-accent"
-           )}
-         >
-           <span className="relative flex-shrink-0">
-             <IconComp className={cn("transition-all", collapsed ? "w-5 h-5" : "w-4 h-4", isActive && "text-primary-foreground")} />
-             {showLiveDot && (
-               <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
-               </span>
-             )}
-           </span>
-           {!collapsed && (
-             <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
-               <span className="whitespace-nowrap truncate">{t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
-               {item.status === 'draft' && (
-                 <span className="text-[9px] font-bold uppercase tracking-[0.05em] bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md ml-auto">Draft</span>
-               )}
-             </div>
-           )}
-         </Link>
+        <div key={item.path} className="relative group my-0.5">
+          <Link
+            to={item.path}
+            title={collapsed ? t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label) : undefined}
+            className={cn(
+              "flex items-center rounded-xl text-sm transition-all duration-200 relative font-medium",
+              collapsed
+                ? "justify-center mx-auto w-10 h-10 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20"
+                : "gap-3 px-3 py-2 pr-8",
+              isActive
+                ? "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 font-bold border-l-4 border-emerald-500 pl-2.5"
+                : "text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40"
+            )}
+          >
+            <span className="relative flex-shrink-0 flex items-center justify-center">
+              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive && "text-emerald-600 dark:text-emerald-400")} />
+              {showLiveDot && (
+                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                </span>
+              )}
+            </span>
+            {!collapsed && (
+              <div className="flex items-center gap-2 overflow-hidden flex-1 animate-in fade-in duration-200">
+                <span className="whitespace-nowrap truncate">{t((item.label || '').toLowerCase().replace(/\s+/g, '_'), item.label)}</span>
+                {item.status === 'draft' && (
+                  <span className="text-[9px] font-bold uppercase tracking-[0.05em] bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-md ml-auto">Draft</span>
+                )}
+              </div>
+            )}
+          </Link>
          
          {!collapsed && (
            <div className={cn("absolute right-2 top-1/2 -translate-y-1/2 transition-opacity", openMenuId === (item.id || item.path) ? "opacity-100 z-50" : "opacity-0 group-hover:opacity-100 z-10")}>
@@ -1091,7 +1093,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-sidebar-border-[0.5px] border-black/9 dark:border-white/8 bg-sidebar">
+ <div className="mt-auto p-3 border-t border-black/5 dark:border-white/10 bg-slate-50/50 dark:bg-[#08120d]">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
@@ -1153,19 +1155,16 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </DropdownMenuContent>
  </DropdownMenu>
  </div>
-
- </div>
- );
-
- return (
+return (
  <>
- {/* Desktop sidebar - Strictly hidden on mobile */}
- <aside className={cn(
- "hidden md:flex flex-col h-full sticky top-0 border-r-2 border-r-primary/30 transition-all duration-300 relative z-[1] bg-sidebar",
- isCollapsed ? "w-[80px] min-w-[80px] max-w-[80px]" : "w-[256px] min-w-[256px] max-w-[256px]"
- )}>
- {renderNavContent(isCollapsed)}
- </aside>
+   {/* Desktop sidebar - Floating Pill Sidebar matching Reference Design */}
+   <aside className={cn(
+     "hidden md:flex flex-col h-[calc(100vh-1.5rem)] sticky top-3 my-3 ml-3 rounded-3xl border border-black/10 dark:border-white/10 shadow-xl transition-all duration-300 relative z-20 overflow-hidden",
+     "bg-white text-slate-800 dark:bg-[#0c1a13] dark:text-emerald-50",
+     isCollapsed ? "w-[68px] min-w-[68px] max-w-[68px]" : "w-[240px] min-w-[240px] max-w-[240px]"
+   )}>
+     {renderNavContent(isCollapsed)}
+   </aside>
 
  <Dialog open={!!renameData} onOpenChange={(open) => !open && setRenameData(null)}>
  <DialogContent className="sm:max-w-[425px]">
