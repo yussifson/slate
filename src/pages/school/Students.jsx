@@ -11,6 +11,7 @@ import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord } 
 import { Search, Plus, MoreHorizontal, Edit2, Trash2, Users, UserCheck, UserMinus, ListChecks, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { motion } from 'framer-motion';
 
 export default function Students() {
   const { t } = useTranslation();
@@ -159,11 +160,15 @@ export default function Students() {
       }
     >
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {/* Total Students */}
-        <div className="bg-blue-50/30 dark:bg-blue-950/10 border border-blue-100/60 dark:border-blue-900/20 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+        <motion.div 
+          whileHover={{ scale: 1.018, y: -2 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-blue-100/50 dark:hover:border-blue-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+        >
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-100/20 dark:from-blue-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-[1.25rem] bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
             <Users className="w-5 h-5" />
           </div>
           <div>
@@ -175,15 +180,19 @@ export default function Students() {
                 </span>
               )}
             </div>
-            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Total Students</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">vs last year</p>
+            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Total Students</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">vs last year</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Active Students */}
-        <div className="bg-emerald-50/30 dark:bg-emerald-950/10 border border-emerald-100/60 dark:border-emerald-900/20 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+        <motion.div 
+          whileHover={{ scale: 1.018, y: -2 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-emerald-100/50 dark:hover:border-emerald-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+        >
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-100/20 dark:from-emerald-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-[1.25rem] bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
             <UserCheck className="w-5 h-5" />
           </div>
           <div>
@@ -195,15 +204,19 @@ export default function Students() {
                 </span>
               )}
             </div>
-            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Active Students</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">vs last semester</p>
+            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Active Students</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">vs last semester</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* On Leave */}
-        <div className="bg-rose-50/30 dark:bg-rose-950/10 border border-rose-100/60 dark:border-rose-900/20 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+        <motion.div 
+          whileHover={{ scale: 1.018, y: -2 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-rose-100/50 dark:hover:border-rose-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+        >
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-rose-100/20 dark:from-rose-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-[1.25rem] bg-rose-50/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
             <UserMinus className="w-5 h-5" />
           </div>
           <div>
@@ -215,52 +228,56 @@ export default function Students() {
                 </span>
               )}
             </div>
-            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">On Leave</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">This Semester</p>
+            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">On Leave</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">This Semester</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Avg Attendance */}
-        <div className="bg-violet-50/30 dark:bg-violet-950/10 border border-violet-100/60 dark:border-violet-900/20 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+        <motion.div 
+          whileHover={{ scale: 1.018, y: -2 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100/80 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_16px_36px_rgba(0,0,0,0.015)] hover:shadow-[0_24px_48px_rgba(0,0,0,0.035)] hover:border-violet-100/50 dark:hover:border-violet-900/20 transition-colors flex items-center gap-5 relative overflow-hidden group"
+        >
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-violet-100/20 dark:from-violet-900/5 to-transparent rounded-full pointer-events-none" />
-          <div className="w-12 h-12 rounded-[1.25rem] bg-violet-50/80 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+          <div className="w-12 h-12 rounded-2xl bg-violet-50/70 dark:bg-violet-950/40 text-violet-600 dark:text-violet-400 border border-violet-100/20 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
             <ListChecks className="w-5 h-5" />
           </div>
           <div>
             <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.attendanceRate}%</h3>
-            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Avg Attendance</p>
-            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">This Semester</p>
+            <p className="text-[11px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Avg Attendance</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-semibold">This Semester</p>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* ── Filters & Actions Row ── */}
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
+      <div className="bg-card/85 dark:bg-zinc-900/70 backdrop-blur-md border border-slate-100/70 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_36px_rgba(0,0,0,0.015)] flex flex-wrap items-center gap-3 mb-6">
         <div className="relative flex-1 min-w-[220px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
             placeholder="Search Students"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all"
+            className="pl-11 bg-slate-50/50 hover:bg-slate-100/40 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/80 border-slate-200/60 dark:border-zinc-700/60 text-sm h-11 rounded-full focus-visible:ring-2 focus-visible:ring-[#0066fe]/80 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
           />
         </div>
 
         <Select value={classFilter} onValueChange={setClassFilter}>
-          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[140px] h-11 bg-white/60 dark:bg-zinc-800/60 hover:bg-slate-50/80 dark:hover:bg-zinc-800/80 border-slate-200/60 dark:border-zinc-700 text-sm rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Class" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-2xl">
             <SelectItem value="All">All Classes</SelectItem>
             {classes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
 
         <Select value={genderFilter} onValueChange={setGenderFilter}>
-          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[140px] h-11 bg-white/60 dark:bg-zinc-800/60 hover:bg-slate-50/80 dark:hover:bg-zinc-800/80 border-slate-200/60 dark:border-zinc-700 text-sm rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Gender" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-2xl">
             <SelectItem value="All">All Genders</SelectItem>
             <SelectItem value="Male">Male</SelectItem>
             <SelectItem value="Female">Female</SelectItem>
@@ -268,10 +285,10 @@ export default function Students() {
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[140px] h-11 bg-white/60 dark:bg-zinc-800/60 hover:bg-slate-50/80 dark:hover:bg-zinc-800/80 border-slate-200/60 dark:border-zinc-700 text-sm rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-2xl">
             <SelectItem value="All">All Statuses</SelectItem>
             <SelectItem value="Active">Active</SelectItem>
             <SelectItem value="On leave">On leave</SelectItem>
@@ -280,49 +297,49 @@ export default function Students() {
         </Select>
 
         {(searchQuery || classFilter !== 'All' || genderFilter !== 'All' || statusFilter !== 'All') && (
-          <button onClick={handleResetFilters} className="text-xs font-bold text-[#0066fe] hover:text-[#0055d4] transition-colors ml-2">
+          <button onClick={handleResetFilters} className="text-xs font-bold text-[#0066fe] hover:text-[#0055d4] transition-colors ml-2 bg-blue-50/50 hover:bg-blue-50 dark:bg-blue-950/20 px-4 h-11 rounded-full border border-blue-100/30">
             Reset Filters
           </button>
         )}
       </div>
 
       {/* ── Table Container ── */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.2rem] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.02)]">
+      <div className="bg-card/75 dark:bg-zinc-900/60 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[2.2rem] overflow-hidden shadow-[0_24px_48px_rgba(0,0,0,0.015)]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 bg-slate-50/50 dark:bg-zinc-800/60 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
+            <thead className="text-[11px] font-bold text-slate-400 dark:text-zinc-400 bg-slate-50/40 dark:bg-zinc-800/30 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
               <tr>
-                <th className="px-5 py-4.5 w-12 text-center">
+                <th className="px-6 py-5 w-12 text-center">
                   <input 
                     type="checkbox" 
-                    className="rounded-md border-slate-350 dark:border-zinc-650 text-[#0066fe] focus:ring-[#0066fe] bg-white dark:bg-zinc-800 w-4 h-4 cursor-pointer"
+                    className="rounded border-slate-300 dark:border-zinc-700 text-[#0066fe] focus:ring-[#0066fe] bg-white dark:bg-zinc-800 w-4 h-4 cursor-pointer"
                     checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
                     onChange={toggleAll}
                   />
                 </th>
-                <th className="px-5 py-4.5 font-bold">Number ↕</th>
-                <th className="px-5 py-4.5 font-bold">Full Name ↕</th>
-                <th className="px-5 py-4.5 font-bold">Grade ↕</th>
-                <th className="px-5 py-4.5 font-bold">Gender ↕</th>
-                <th className="px-5 py-4.5 font-bold">Attendance ↕</th>
-                <th className="px-5 py-4.5 font-bold">Guardian ↕</th>
-                <th className="px-5 py-4.5 font-bold">Status ↕</th>
-                <th className="px-6 py-4.5 font-bold text-right">Action</th>
+                <th className="px-6 py-5 font-bold">Number ↕</th>
+                <th className="px-6 py-5 font-bold">Full Name ↕</th>
+                <th className="px-6 py-5 font-bold">Grade ↕</th>
+                <th className="px-6 py-5 font-bold">Gender ↕</th>
+                <th className="px-6 py-5 font-bold">Attendance ↕</th>
+                <th className="px-6 py-5 font-bold">Guardian ↕</th>
+                <th className="px-6 py-5 font-bold">Status ↕</th>
+                <th className="px-6 py-5 font-bold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100/70 dark:divide-zinc-800/60">
+            <tbody className="divide-y divide-slate-100/40 dark:divide-zinc-800/30">
               {studentsLoading ? (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan={9} className="px-6 py-16 text-center text-slate-400">
                     <div className="flex flex-col items-center gap-2">
                       <div className="w-6 h-6 border-2 border-[#0066fe] border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-sm font-semibold mt-1">Loading students…</span>
+                      <span className="text-sm font-semibold mt-2">Loading students…</span>
                     </div>
                   </td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center">
+                  <td colSpan={9} className="px-6 py-16 text-center">
                     <Users className="w-10 h-10 text-slate-300 dark:text-zinc-700 mx-auto mb-3" />
                     <p className="text-slate-400 dark:text-zinc-500 text-sm font-semibold">No students found matching criteria.</p>
                   </td>
@@ -344,46 +361,46 @@ export default function Students() {
                   const gradColor = colors[colorIndex];
                   
                   return (
-                    <tr key={student.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors group">
-                      <td className="px-5 py-4 text-center">
+                    <tr key={student.id} className="hover:bg-slate-50/40 dark:hover:bg-zinc-800/20 transition-all duration-200 group">
+                      <td className="px-6 py-4 text-center">
                         <input 
                           type="checkbox" 
-                          className="rounded-md border-slate-350 dark:border-zinc-650 text-[#0066fe] focus:ring-[#0066fe] bg-white dark:bg-zinc-800 w-4 h-4 cursor-pointer"
+                          className="rounded border-slate-300 dark:border-zinc-700 text-[#0066fe] focus:ring-[#0066fe] bg-white dark:bg-zinc-800 w-4 h-4 cursor-pointer"
                           checked={selectedStudents.includes(student.id)}
                           onChange={() => toggleStudent(student.id)}
                         />
                       </td>
-                      <td className="px-5 py-4 font-bold text-slate-800 dark:text-zinc-200 text-sm">
+                      <td className="px-6 py-4 font-bold text-slate-800 dark:text-zinc-200 text-sm">
                         {student.student_id || '—'}
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className={`w-8.5 h-8.5 rounded-full bg-gradient-to-br ${gradColor} flex items-center justify-center text-[11px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.06)] flex-shrink-0`}>
+                          <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${gradColor} flex items-center justify-center text-[11px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.06)] flex-shrink-0`}>
                             {initials}
                           </div>
-                          <span className="font-bold text-slate-800 dark:text-zinc-200 text-sm">{student.name}</span>
+                          <span className="font-bold text-slate-850 dark:text-zinc-105 text-sm">{student.name}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
+                      <td className="px-6 py-4 text-slate-650 dark:text-zinc-350 font-bold text-sm">
                         {student.class_name || '—'}
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
-                          isMale ? 'bg-blue-50/80 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100/30 dark:border-blue-850/30' : 'bg-pink-50/80 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border border-pink-100/30 dark:border-pink-850/30'
+                          isMale ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20' : 'bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20'
                         }`}>
                           <span className="mr-1 text-[11px] font-medium">{isMale ? '♂' : '♀'}</span>
                           {student.gender}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
+                      <td className="px-6 py-4 text-slate-650 dark:text-zinc-350 font-bold text-sm">
                         {stats.attendanceRate}%
                       </td>
-                      <td className="px-5 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
+                      <td className="px-6 py-4 text-slate-650 dark:text-zinc-350 font-bold text-sm">
                         {student.parent_name || '—'}
                       </td>
-                      <td className="px-5 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                          isActive ? 'bg-emerald-50/80 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30 dark:border-emerald-850/30' : student.status === 'On leave' ? 'bg-amber-50/80 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100/30 dark:border-amber-850/30' : 'bg-rose-50/80 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-100/30 dark:border-rose-850/30'
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
+                          isActive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : student.status === 'On leave' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                         }`}>
                           <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isActive ? 'bg-emerald-500' : student.status === 'On leave' ? 'bg-amber-500' : 'bg-rose-500'}`}></span>
                           {student.status || 'Active'}
