@@ -148,10 +148,10 @@ export default function Students() {
       subtitle="Manage and monitor students"
       actions={
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-card border-border/60 shadow-sm text-sm h-10 px-4">
+          <Button variant="outline" className="bg-white dark:bg-zinc-800/80 hover:bg-slate-50 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 border border-slate-200/80 dark:border-zinc-700 rounded-full font-semibold px-5 h-10 text-sm shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             Export
           </Button>
-          <Button onClick={handleAddNew} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm h-10 px-5 text-sm font-semibold rounded-xl">
+          <Button onClick={handleAddNew} className="bg-[#0066fe] hover:bg-[#0055d4] text-white border-0 shadow-lg shadow-[#0066fe]/15 rounded-full px-6 h-10 text-sm font-semibold transition-all hover:scale-[1.02] hover:-translate-y-0.5">
             <Plus className="w-4 h-4 mr-2" />
             Add Student
           </Button>
@@ -161,116 +161,118 @@ export default function Students() {
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {/* Total Students */}
-        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
-              <Users className="w-5 h-5" />
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-[1.25rem] bg-blue-50/80 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+            <Users className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.total}</h3>
+              {stats.total > 0 && (
+                <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-100/40 px-2 py-0.5 rounded-full">
+                  <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
+                </span>
+              )}
             </div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Students</span>
+            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Total Students</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">vs last year</p>
           </div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.total}</h3>
-            {stats.total > 0 && (
-              <span className="inline-flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
-                <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
-              </span>
-            )}
-          </div>
-          <p className="text-[11px] text-muted-foreground/70">vs last year</p>
         </div>
 
         {/* Active Students */}
-        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
-              <UserCheck className="w-5 h-5" />
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-[1.25rem] bg-emerald-50/80 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+            <UserCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.active}</h3>
+              {stats.active > 0 && (
+                <span className="inline-flex items-center text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-100/40 px-2 py-0.5 rounded-full">
+                  <ArrowDownRight className="w-3 h-3 mr-0.5" /> 7%
+                </span>
+              )}
             </div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active Students</span>
+            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Active Students</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">vs last semester</p>
           </div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.active}</h3>
-            {stats.active > 0 && (
-              <span className="inline-flex items-center text-[11px] font-bold text-rose-600 bg-rose-500/10 px-1.5 py-0.5 rounded-md">
-                <ArrowDownRight className="w-3 h-3 mr-0.5" /> 7%
-              </span>
-            )}
-          </div>
-          <p className="text-[11px] text-muted-foreground/70">vs last semester</p>
         </div>
 
         {/* On Leave */}
-        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
-              <UserMinus className="w-5 h-5" />
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-[1.25rem] bg-rose-50/80 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+            <UserMinus className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.onLeave}</h3>
+              {stats.onLeave > 0 && (
+                <span className="inline-flex items-center text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-100/40 px-2 py-0.5 rounded-full">
+                  <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
+                </span>
+              )}
             </div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">On Leave</span>
+            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">On Leave</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">This Semester</p>
           </div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.onLeave}</h3>
-            {stats.onLeave > 0 && (
-              <span className="inline-flex items-center text-[11px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
-                <ArrowUpRight className="w-3 h-3 mr-0.5" /> 4%
-              </span>
-            )}
-          </div>
-          <p className="text-[11px] text-muted-foreground/70">This Semester</p>
         </div>
 
         {/* Avg Attendance */}
-        <div className="bg-card rounded-2xl border border-border/50 p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] transition-all">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center flex-shrink-0">
-              <ListChecks className="w-5 h-5" />
-            </div>
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Avg Attendance</span>
+        <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800/80 rounded-[2.2rem] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.02),0_1px_3px_rgba(0,0,0,0.01)] hover:-translate-y-1 hover:shadow-[0_32px_64px_rgba(0,0,0,0.04)] transition-all duration-300 flex items-center gap-5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-slate-50/50 dark:from-zinc-800/10 to-transparent rounded-full pointer-events-none" />
+          <div className="w-12 h-12 rounded-[1.25rem] bg-violet-50/80 dark:bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-100/30 flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 duration-300">
+            <ListChecks className="w-5 h-5" />
           </div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h3 className="text-3xl font-extrabold text-foreground tracking-tight">{stats.attendanceRate}%</h3>
+          <div>
+            <h3 className="text-3xl font-extrabold text-slate-800 dark:text-zinc-100 tracking-tight leading-none">{stats.attendanceRate}%</h3>
+            <p className="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-widest mt-2">Avg Attendance</p>
+            <p className="text-[10px] text-slate-400/80 dark:text-zinc-500/80 mt-1 font-medium">This Semester</p>
           </div>
-          <p className="text-[11px] text-muted-foreground/70">This Semester</p>
         </div>
       </div>
 
       {/* ── Filters & Actions Row ── */}
-      <div className="bg-card border border-border/50 rounded-2xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
         <div className="relative flex-1 min-w-[220px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
             placeholder="Search Students"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-9 bg-background border-border/50 text-sm h-9 rounded-xl focus-visible:ring-1"
+            className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all"
           />
         </div>
 
         <Select value={classFilter} onValueChange={setClassFilter}>
-          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm rounded-xl">
+          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Class" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">Class</SelectItem>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="All">All Classes</SelectItem>
             {classes.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
 
         <Select value={genderFilter} onValueChange={setGenderFilter}>
-          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm rounded-xl">
+          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Gender" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">Gender</SelectItem>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="All">All Genders</SelectItem>
             <SelectItem value="Male">Male</SelectItem>
             <SelectItem value="Female">Female</SelectItem>
           </SelectContent>
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[120px] h-9 bg-background border-border/50 text-sm rounded-xl">
+          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="All">Status</SelectItem>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="All">All Statuses</SelectItem>
             <SelectItem value="Active">Active</SelectItem>
             <SelectItem value="On leave">On leave</SelectItem>
             <SelectItem value="Inactive">Inactive</SelectItem>
@@ -278,116 +280,128 @@ export default function Students() {
         </Select>
 
         {(searchQuery || classFilter !== 'All' || genderFilter !== 'All' || statusFilter !== 'All') && (
-          <button onClick={handleResetFilters} className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors ml-1">
+          <button onClick={handleResetFilters} className="text-xs font-bold text-[#0066fe] hover:text-[#0055d4] transition-colors ml-2">
             Reset Filters
           </button>
         )}
       </div>
 
       {/* ── Table Container ── */}
-      <div className="bg-card rounded-2xl border border-border/50 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+      <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.2rem] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground/80 bg-muted/20 border-b border-border/40 font-medium">
+            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 bg-slate-50/50 dark:bg-zinc-850/50 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
               <tr>
-                <th className="px-5 py-4 w-12 text-center">
+                <th className="px-5 py-4.5 w-12 text-center">
                   <input 
                     type="checkbox" 
-                    className="rounded border-border/60 text-indigo-600 focus:ring-indigo-600 bg-background"
+                    className="rounded-md border-slate-350 dark:border-zinc-650 text-[#0066fe] focus:ring-[#0066fe] bg-white dark:bg-zinc-800 w-4 h-4 cursor-pointer"
                     checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
                     onChange={toggleAll}
                   />
                 </th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Number ↕</th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Full Name ↕</th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Grade ↕</th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Gender ↕</th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Attendance ↕</th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Guardian ↕</th>
-                <th className="px-4 py-4 font-semibold text-muted-foreground">Status ↕</th>
-                <th className="px-5 py-4 font-semibold text-right text-muted-foreground">Action</th>
+                <th className="px-5 py-4.5 font-bold">Number ↕</th>
+                <th className="px-5 py-4.5 font-bold">Full Name ↕</th>
+                <th className="px-5 py-4.5 font-bold">Grade ↕</th>
+                <th className="px-5 py-4.5 font-bold">Gender ↕</th>
+                <th className="px-5 py-4.5 font-bold">Attendance ↕</th>
+                <th className="px-5 py-4.5 font-bold">Guardian ↕</th>
+                <th className="px-5 py-4.5 font-bold">Status ↕</th>
+                <th className="px-6 py-4.5 font-bold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/30">
+            <tbody className="divide-y divide-slate-100/70 dark:divide-zinc-800/60">
               {studentsLoading ? (
                 <tr>
-                  <td colSpan={9} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={9} className="px-6 py-12 text-center text-slate-400">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-sm">Loading students…</span>
+                      <div className="w-6 h-6 border-2 border-[#0066fe] border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm font-semibold mt-1">Loading students…</span>
                     </div>
                   </td>
                 </tr>
               ) : filteredStudents.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-6 py-12 text-center">
-                    <Users className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
-                    <p className="text-muted-foreground text-sm font-medium">No students found matching criteria.</p>
+                    <Users className="w-10 h-10 text-slate-300 dark:text-zinc-700 mx-auto mb-3" />
+                    <p className="text-slate-400 dark:text-zinc-500 text-sm font-semibold">No students found matching criteria.</p>
                   </td>
                 </tr>
               ) : (
                 filteredStudents.map((student) => {
                   const isMale = student.gender === 'Male';
                   const isActive = student.status === 'Active';
-                  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=random`;
+                  const initials = `${student.name?.split(' ')[0]?.charAt(0) || ''}${student.name?.split(' ')[1]?.charAt(0) || ''}`.toUpperCase() || 'S';
+                  
+                  const colors = [
+                    'from-blue-400 to-indigo-500 text-blue-50 shadow-blue-500/10',
+                    'from-emerald-400 to-teal-500 text-emerald-50 shadow-emerald-500/10',
+                    'from-amber-400 to-orange-500 text-amber-50 shadow-amber-500/10',
+                    'from-pink-400 to-rose-500 text-pink-50 shadow-pink-500/10',
+                    'from-purple-400 to-violet-500 text-purple-50 shadow-purple-500/10',
+                  ];
+                  const colorIndex = (student.name || 'S').charCodeAt(0) % colors.length;
+                  const gradColor = colors[colorIndex];
                   
                   return (
-                    <tr key={student.id} className="hover:bg-muted/20 transition-colors group">
+                    <tr key={student.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors group">
                       <td className="px-5 py-4 text-center">
                         <input 
                           type="checkbox" 
-                          className="rounded border-border/60 text-indigo-600 focus:ring-indigo-600 bg-background"
+                          className="rounded-md border-slate-350 dark:border-zinc-650 text-[#0066fe] focus:ring-[#0066fe] bg-white dark:bg-zinc-800 w-4 h-4 cursor-pointer"
                           checked={selectedStudents.includes(student.id)}
                           onChange={() => toggleStudent(student.id)}
                         />
                       </td>
-                      <td className="px-4 py-4 font-medium text-foreground text-sm">
+                      <td className="px-5 py-4 font-bold text-slate-800 dark:text-zinc-200 text-sm">
                         {student.student_id || '—'}
                       </td>
-                      <td className="px-4 py-4">
+                      <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                          <span className="font-semibold text-foreground text-sm">{student.name}</span>
+                          <div className={`w-8.5 h-8.5 rounded-full bg-gradient-to-br ${gradColor} flex items-center justify-center text-[11px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.06)] flex-shrink-0`}>
+                            {initials}
+                          </div>
+                          <span className="font-bold text-slate-800 dark:text-zinc-200 text-sm">{student.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-foreground font-medium text-sm">
+                      <td className="px-5 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
                         {student.class_name || '—'}
                       </td>
-                      <td className="px-4 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                          isMale ? 'bg-blue-500/10 text-blue-600' : 'bg-pink-500/10 text-pink-600'
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${
+                          isMale ? 'bg-blue-50/80 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100/30 dark:border-blue-850/30' : 'bg-pink-50/80 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border border-pink-100/30 dark:border-pink-850/30'
                         }`}>
-                          <span className="mr-1 text-[11px]">{isMale ? '♂' : '♀'}</span>
+                          <span className="mr-1 text-[11px] font-medium">{isMale ? '♂' : '♀'}</span>
                           {student.gender}
                         </span>
                       </td>
-                      <td className="px-4 py-4 text-foreground font-medium text-sm">
+                      <td className="px-5 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
                         {stats.attendanceRate}%
                       </td>
-                      <td className="px-4 py-4 text-foreground font-medium text-sm">
+                      <td className="px-5 py-4 text-slate-700 dark:text-zinc-300 font-bold text-sm">
                         {student.parent_name || '—'}
                       </td>
-                      <td className="px-4 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                          isActive ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          isActive ? 'bg-emerald-50/80 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100/30 dark:border-emerald-850/30' : student.status === 'On leave' ? 'bg-amber-50/80 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100/30 dark:border-amber-850/30' : 'bg-rose-50/80 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border border-rose-100/30 dark:border-rose-850/30'
                         }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isActive ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                          <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isActive ? 'bg-emerald-500' : student.status === 'On leave' ? 'bg-amber-500' : 'bg-rose-500'}`}></span>
                           {student.status || 'Active'}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-right">
+                      <td className="px-6 py-4 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <button className="text-muted-foreground hover:text-foreground p-1.5 rounded-lg hover:bg-muted transition-colors opacity-0 group-hover:opacity-100">
+                            <button className="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors opacity-0 group-hover:opacity-100">
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEdit(student)}>
-                              <Edit2 className="w-4 h-4 mr-2" /> Edit
+                          <DropdownMenuContent align="end" className="rounded-xl">
+                            <DropdownMenuItem onClick={() => handleEdit(student)} className="cursor-pointer font-medium text-xs">
+                              <Edit2 className="w-3.5 h-3.5 mr-2" /> Edit Details
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleDelete(student)} className="text-destructive focus:text-destructive">
-                              <Trash2 className="w-4 h-4 mr-2" /> Delete
+                            <DropdownMenuItem onClick={() => handleDelete(student)} className="text-rose-600 focus:text-rose-600 focus:bg-rose-50 dark:focus:bg-rose-900/20 cursor-pointer font-medium text-xs">
+                              <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete Student
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
