@@ -168,13 +168,13 @@ export default function Teachers() {
             className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all" />
         </div>
         <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-          <SelectTrigger className="w-[140px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[140px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Department" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">{departments.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[125px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[125px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
@@ -194,7 +194,7 @@ export default function Teachers() {
       <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.2rem] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 bg-slate-50/50 dark:bg-zinc-850/50 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
+            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 bg-slate-50/50 dark:bg-zinc-800/60 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
               <tr>
                 {['Staff Member', 'Position', 'Department', 'Subject', 'Class', 'Status', ''].map((h, i) => (
                   <th key={h || i} className={`px-5 py-4.5 font-bold ${i === 6 ? 'text-right' : 'text-left'}`}>{h}</th>

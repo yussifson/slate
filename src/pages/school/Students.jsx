@@ -247,7 +247,7 @@ export default function Students() {
         </div>
 
         <Select value={classFilter} onValueChange={setClassFilter}>
-          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Class" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
@@ -257,7 +257,7 @@ export default function Students() {
         </Select>
 
         <Select value={genderFilter} onValueChange={setGenderFilter}>
-          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Gender" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
@@ -268,7 +268,7 @@ export default function Students() {
         </Select>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[130px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
@@ -290,7 +290,7 @@ export default function Students() {
       <div className="bg-white dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 rounded-[2.2rem] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-500 bg-slate-50/50 dark:bg-zinc-850/50 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
+            <thead className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 bg-slate-50/50 dark:bg-zinc-800/60 border-b border-slate-100/80 dark:border-zinc-800/80 uppercase tracking-widest">
               <tr>
                 <th className="px-5 py-4.5 w-12 text-center">
                   <input 

@@ -185,14 +185,14 @@ export default function Grades() {
           <Input placeholder="Search by student, subject, or exam..." value={search} onChange={e => setSearch(e.target.value)}
             className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all" />
         </div>
-        <select value={filterTerm} onChange={e => setFilterTerm(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-850 px-3 text-sm text-slate-700 dark:text-zinc-300 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
-          <option value="All">All Terms</option>{TERMS.map(t => <option key={t} value={t}>{t}</option>)}
+        <select value={filterTerm} onChange={e => setFilterTerm(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+          <option value="All" className="dark:bg-zinc-900">All Terms</option>{TERMS.map(t => <option key={t} value={t} className="dark:bg-zinc-900">{t}</option>)}
         </select>
-        <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="h-9 rounded-xl border border-border/50 bg-background px-3 text-sm">
-          <option value="All">All Classes</option>{classList.map(c => <option key={c} value={c}>{c}</option>)}
+        <select value={filterClass} onChange={e => setFilterClass(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+          <option value="All" className="dark:bg-zinc-900">All Classes</option>{classList.map(c => <option key={c} value={c} className="dark:bg-zinc-900">{c}</option>)}
         </select>
-        <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-9 rounded-xl border border-border/50 bg-background px-3 text-sm">
-          <option value="All">All Subjects</option>{SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+        <select value={filterSubject} onChange={e => setFilterSubject(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+          <option value="All" className="dark:bg-zinc-900">All Subjects</option>{SUBJECTS.map(s => <option key={s} value={s} className="dark:bg-zinc-900">{s}</option>)}
         </select>
         <div className="ml-auto text-xs text-muted-foreground/60 font-medium">{filtered.length} entries</div>
       </div>

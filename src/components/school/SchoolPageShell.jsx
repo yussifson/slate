@@ -7,10 +7,9 @@ import { motion } from 'framer-motion';
 export default function SchoolPageShell({ title, subtitle, actions, children }) {
   return (
     <div
-      className="min-h-screen text-foreground font-sans"
+      className="min-h-screen text-foreground font-sans bg-background"
       style={{
-        backgroundColor: 'hsl(var(--background))',
-        backgroundImage: `radial-gradient(circle, hsl(var(--foreground) / 0.08) 1px, transparent 1px)`,
+        backgroundImage: `radial-gradient(circle, hsl(var(--foreground) / 0.12) 1px, transparent 1px)`,
         backgroundSize: '24px 24px',
       }}
     >

@@ -181,17 +181,17 @@ export default function FeeManagement() {
 
           {/* Filters */}
           <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-slate-100 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center gap-3 mb-6">
-            <select value={ledgerTerm} onChange={e => setLedgerTerm(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-850 px-3 text-sm text-slate-700 dark:text-zinc-300 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
-              <option>Term 1</option><option>Term 2</option><option>Term 3</option>
+            <select value={ledgerTerm} onChange={e => setLedgerTerm(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+              <option className="dark:bg-zinc-900">Term 1</option><option className="dark:bg-zinc-900">Term 2</option><option className="dark:bg-zinc-900">Term 3</option>
             </select>
-            <select value={ledgerAcademicYear} onChange={e => setLedgerAcademicYear(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-850 px-3 text-sm text-slate-700 dark:text-zinc-300 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
-              <option>2024/2025</option><option>2023/2024</option><option>2025/2026</option>
+            <select value={ledgerAcademicYear} onChange={e => setLedgerAcademicYear(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+              <option className="dark:bg-zinc-900">2024/2025</option><option className="dark:bg-zinc-900">2023/2024</option><option className="dark:bg-zinc-900">2025/2026</option>
             </select>
-            <select value={ledgerClass} onChange={e => setLedgerClass(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-850 px-3 text-sm text-slate-700 dark:text-zinc-300 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
-              <option value="All">All Classes</option>{classList.map(c => <option key={c} value={c}>{c}</option>)}
+            <select value={ledgerClass} onChange={e => setLedgerClass(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+              <option value="All" className="dark:bg-zinc-900">All Classes</option>{classList.map(c => <option key={c} value={c} className="dark:bg-zinc-900">{c}</option>)}
             </select>
-            <select value={ledgerStatus} onChange={e => setLedgerStatus(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-850 px-3 text-sm text-slate-700 dark:text-zinc-300 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
-              <option value="All">All Statuses</option><option>Paid</option><option>Partial</option><option>Owing</option>
+            <select value={ledgerStatus} onChange={e => setLedgerStatus(e.target.value)} className="h-10 rounded-xl border border-slate-200/60 dark:border-zinc-700 bg-white/60 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 px-3 text-sm text-slate-700 dark:text-zinc-200 shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all hover:bg-slate-50/80">
+              <option value="All" className="dark:bg-zinc-900">All Statuses</option><option className="dark:bg-zinc-900">Paid</option><option className="dark:bg-zinc-900">Partial</option><option className="dark:bg-zinc-900">Owing</option>
             </select>
             <div className="relative flex-1 min-w-40">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />

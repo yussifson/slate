@@ -141,13 +141,13 @@ export default function Discipline() {
             className="pl-10 bg-slate-50/50 hover:bg-slate-50 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border-slate-200/50 dark:border-zinc-700/50 text-sm h-10 rounded-xl focus-visible:ring-1 focus-visible:ring-[#0066fe] transition-all" />
         </div>
         <Select value={severityFilter} onValueChange={setSeverityFilter}>
-          <SelectTrigger className="w-[150px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[150px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Severity" />
           </SelectTrigger>
           <SelectContent className="rounded-xl"><SelectItem value="All">All Severities</SelectItem><SelectItem value="Minor">Minor</SelectItem><SelectItem value="Moderate">Moderate</SelectItem><SelectItem value="Severe">Severe</SelectItem></SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px] h-10 bg-white/60 dark:bg-zinc-850 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
+          <SelectTrigger className="w-[150px] h-10 bg-white/60 dark:bg-zinc-800/80 hover:bg-slate-50/80 dark:hover:bg-zinc-800 border-slate-200/60 dark:border-zinc-700 text-sm rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.01)] transition-all">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent className="rounded-xl"><SelectItem value="All">All Statuses</SelectItem><SelectItem value="Open">Open</SelectItem><SelectItem value="Under Review">Under Review</SelectItem><SelectItem value="Resolved">Resolved</SelectItem></SelectContent>
