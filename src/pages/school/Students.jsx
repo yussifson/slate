@@ -261,12 +261,12 @@ export default function Students() {
       {/* ── Filters & Actions Row ── */}
       <div className="bg-card/85 dark:bg-zinc-900/70 backdrop-blur-md border border-slate-100/70 dark:border-zinc-800/80 rounded-[1.75rem] p-5 shadow-[0_16px_36px_rgba(0,0,0,0.015)] flex flex-wrap items-center gap-3 mb-6">
         <div className="relative flex-1 min-w-[220px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           <Input 
-            placeholder="Search Students"
+            placeholder="Search Students..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="pl-11 bg-slate-50/50 hover:bg-slate-100/40 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/80 border-slate-200/60 dark:border-zinc-700/60 text-sm h-11 rounded-full focus-visible:ring-2 focus-visible:ring-[#0066fe]/80 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
+            className="pl-12 pr-4 bg-slate-50/50 hover:bg-slate-100/40 dark:bg-zinc-800/50 dark:hover:bg-zinc-800/80 border-slate-200/60 dark:border-zinc-700/60 text-sm h-11 rounded-full focus-visible:ring-2 focus-visible:ring-[#0066fe]/80 transition-all shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
           />
         </div>
 
