@@ -1155,6 +1155,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </DropdownMenuContent>
   </DropdownMenu>
   </div>
+  </div>
   );
 return (
  <>
