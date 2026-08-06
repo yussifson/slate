@@ -876,31 +876,45 @@ export const AuthProvider = ({ children }) => {
       const targetAccount = accounts.find(a => a.id === targetAccountId);
       
       if (targetAccount && targetAccount.access_token) {
-        // Instead of calling setSession which hits the network and fails if the token was rotated elsewhere,
-        // we manually overwrite the local storage token and reload the app so Supabase initializes with it.
-        const sessionVal = {
-          access_token: targetAccount.access_token,
-          refresh_token: targetAccount.refresh_token,
-          user: {
-            id: targetAccount.id,
-            email: targetAccount.email,
-            user_metadata: {
-              full_name: targetAccount.full_name,
-              avatar_url: targetAccount.avatar_url
-            }
-          }
-        };
-
-        const projectId = import.meta.env.VITE_SUPABASE_URL.split('//')[1].split('.')[0];
-        localStorage.setItem(`sb-${projectId}-auth-token`, JSON.stringify(sessionVal));
-        
-        // Remove the cached profile so it's forced to re-fetch the new account's profile
+        // Clear cached profile & onboarding industry so re-fetch happens for the target account
         localStorage.removeItem('slate_cached_user');
-        
-        // Reload to let the app initialize with the newly swapped account
+        localStorage.removeItem('slate_onboarding_industry');
+
+        // Update target account last_active timestamp
+        targetAccount.last_active = new Date().toISOString();
+        const updatedAccounts = accounts.map(a => a.id === targetAccountId ? targetAccount : a);
+        localStorage.setItem('optavel_saved_accounts', JSON.stringify(updatedAccounts));
+
+        // Formally set session in Supabase JS Client so memory, storage keys, and auth listeners sync to target account
+        const { data, error } = await supabase.auth.setSession({
+          access_token: targetAccount.access_token,
+          refresh_token: targetAccount.refresh_token
+        });
+
+        if (error || !data?.session) {
+          // If setSession fails (e.g. refresh token expired), try with access_token fallback
+          const sessionVal = {
+            access_token: targetAccount.access_token,
+            refresh_token: targetAccount.refresh_token,
+            user: {
+              id: targetAccount.id,
+              email: targetAccount.email,
+              user_metadata: {
+                full_name: targetAccount.full_name,
+                avatar_url: targetAccount.avatar_url
+              }
+            }
+          };
+
+          const url = import.meta.env.VITE_SUPABASE_URL || '';
+          const projectId = url.split('//')[1]?.split('.')[0] || 'app';
+          localStorage.setItem(`sb-${projectId}-auth-token`, JSON.stringify(sessionVal));
+        }
+
+        // Force a page reload so PowerSync, React Query, and AuthContext re-initialize with the target account
         window.location.reload();
       } else {
-        throw new Error("No tokens found for account");
+        throw new Error("No tokens found for target account");
       }
     } catch (e) {
       console.warn("Failed to switch account transparently, forcing login...", e);
