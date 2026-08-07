@@ -1086,7 +1086,7 @@ export default function RecordVideo() {
         };
 
         ws.onerror = (err) => {
-          // Silently ignore websocket errors as local fallback handles it seamlessly
+          // Silently ignore websocket errors as local recording handles it seamlessly
           stopPingInterval();
         };
 
@@ -1101,25 +1101,8 @@ export default function RecordVideo() {
           if (attemptsLeft > 0 && (isRecordingRef.current || wsEndRequestedRef.current)) {
             wsIsReconnectingRef.current = true;
             wsReconnectAttemptsRef.current++;
-            
-            // Auto-pause if we disconnected during active recording
-            if (isRecordingRef.current && !isPaused && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-              mediaRecorderRef.current.pause();
-              setIsPaused(true);
-              toast({ title: 'Network Disconnected', description: 'Recording automatically paused. Reconnecting...', variant: 'destructive' });
-            }
-
             const delay = Math.min(1000 * Math.pow(2, wsReconnectAttemptsRef.current - 1), 15000);
-            // Reconnecting silently
             setTimeout(() => connectWS(true), delay);
-          } else {
-            // WebSocket permanently failed after max reconnect attempts.
-            // If still recording, pause it so user can manually resume when network returns.
-            if (isRecordingRef.current && !isPaused && mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-              mediaRecorderRef.current.pause();
-              setIsPaused(true);
-              toast({ title: 'Connection Lost', description: 'Recording paused. Click Resume when network returns.', variant: 'destructive' });
-            }
           }
         };
       };
@@ -1757,27 +1740,23 @@ export default function RecordVideo() {
           </>
         )}
 
-        {/* COUNTDOWN OVERLAY */}
+        {/* ── SLEEK MINIMALIST COUNTDOWN OVERLAY ── */}
         {countdown !== null && countdown > 0 && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/60 dark:bg-background/80 backdrop-blur-2xl m-0 p-0 border-0">
-            <div className="relative flex items-center justify-center w-48 h-48">
-              {/* Inner glow pulsating */}
-              <div className="absolute inset-0 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 blur-2xl animate-pulse" />
-              
-              {/* Expanding ping ring */}
-              <div className="absolute inset-0 rounded-full border-[2px] border-emerald-500/40 animate-ping" style={{ animationDuration: '1s' }} />
-              
-              {/* Outer spinning dashed ring */}
-              <div className="absolute -inset-4 rounded-full border-[2px] border-dashed border-emerald-400/50 animate-[spin_4s_linear_infinite]" />
-              
-              {/* Solid circle with glassy background */}
-              <div className="relative w-full h-full flex items-center justify-center rounded-full bg-white/40 dark:bg-card/40 backdrop-blur-md border border-white/50 dark:border-white/10 shadow-[0_8px_32px_rgba(16,185,129,0.3)]">
-                {/* Number */}
-                <div key={countdown} className="text-8xl md:text-9xl font-black text-emerald-600 dark:text-white drop-shadow-md animate-in zoom-in duration-300">
-                  {countdown}
-                </div>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-md transition-all duration-300">
+            <motion.div 
+              key={countdown}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.1, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="flex items-center gap-4 bg-zinc-900/90 dark:bg-zinc-900/95 border border-white/10 px-8 py-5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+            >
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-extrabold text-white tracking-tight">{countdown}</span>
+                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Get Ready</span>
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
 
