@@ -744,6 +744,7 @@ export default function RecordVideo() {
     const success = await prepareStreamsAndPip();
     setIsPreparingStream(false);
     if (success) {
+      setPhase('recording');
       if (pipPromise) startPip(pipPromise);
       setCountdown(5);
     }
