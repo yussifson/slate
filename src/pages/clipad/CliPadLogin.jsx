@@ -47,8 +47,16 @@ export default function CliPadLogin() {
     if (!email || !password) return;
     setLoading(true);
     try {
-      // Check for multiple workspaces
-      const { data: userWorkspaces, error: rpcError } = await supabase.rpc('get_user_workspaces_by_email', { lookup_email: email });
+      // Check for multiple workspaces safely (RPC optional)
+      let userWorkspaces = null;
+      let rpcError = null;
+      try {
+        const res = await supabase.rpc('get_user_workspaces_by_email', { lookup_email: email });
+        userWorkspaces = res.data;
+        rpcError = res.error;
+      } catch (err) {
+        rpcError = err;
+      }
       
       if (!rpcError && userWorkspaces && userWorkspaces.length > 1) {
         setWorkspaces(userWorkspaces);

@@ -120,7 +120,7 @@ export default function RecordVideo() {
     const initDraft = async () => {
       if (id && user) {
         // First check cloud for an existing draft with this ID
-        const { data: cloudDraft } = await supabase.from('clipad_videos').select('*').eq('id', id).single();
+        const { data: cloudDraft } = await supabase.from('clipad_videos').select('*').eq('id', id).maybeSingle();
         if (cloudDraft) {
           setTitle(cloudDraft.title || '');
           setDescription(cloudDraft.description || '');
