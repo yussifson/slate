@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   Camera, Monitor, Mic, MicOff, CheckCircle,
   Play, Pause, AlertCircle, RefreshCw, XCircle, ArrowLeft,
