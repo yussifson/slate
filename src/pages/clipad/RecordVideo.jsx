@@ -1156,26 +1156,21 @@ export default function RecordVideo() {
         let endAttempts = 0;
         const waitAndEnd = () => {
           endAttempts++;
-          if (pendingChunks.length > 0 || (wsRef.current?.bufferedAmount || 0) > 0) {
-            setTimeout(waitAndEnd, 300);
+          if (pendingChunks.length > 0 && (wsRef.current?.bufferedAmount || 0) > 0) {
+            setTimeout(waitAndEnd, 200);
             return;
           }
           if (wsRef.current?.readyState === WebSocket.OPEN) {
             wsRef.current.send(JSON.stringify({ type: 'END' }));
             // uploadDeadline will be cleared in ws.onmessage SUCCESS/ERROR handlers
-          } else if (wsIsReconnectingRef.current && endAttempts < 30) {
-            // Still reconnecting — END will be sent after reconnect (handled in onopen)
-            setTimeout(waitAndEnd, 500);
           } else {
-            // Fix #1 — Permanent WS failure: auto-fallback to TUS resumable upload
+            // Instant Fallback: If WS is closed or sleeping, skip timeout and fallback directly to review
             clearTimeout(uploadDeadline);
             const blob = new Blob(chunksRef.current, { type: 'video/webm' });
             const url = URL.createObjectURL(blob);
             setVideoBlob(blob);
             setRecordingUrl(url);
-            toast({ title: 'Switching to direct upload…', description: 'Relay server unavailable — uploading directly. Please wait.', variant: 'default' });
             setPhase('review');
-            setTimeout(() => uploadRecording(blob), 100);
           }
         };
         waitAndEnd();

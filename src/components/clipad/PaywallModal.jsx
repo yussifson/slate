@@ -70,7 +70,7 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
         >
           {/* Header Graphic */}
           <div className="relative shrink-0 h-24 overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600">
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+            <div className="absolute inset-0 opacity-20 mix-blend-overlay bg-[radial-gradient(#rgba(255,255,255,0.15)_1px,transparent_1px)] [background-size:16px_16px]"></div>
             <div className="absolute flex items-center justify-center w-16 h-16 transform -translate-x-1/2 bg-white rounded-full shadow-lg left-1/2 -bottom-8 dark:bg-card">
               <Sparkles className="w-8 h-8 text-indigo-500" />
             </div>
