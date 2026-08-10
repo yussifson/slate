@@ -285,15 +285,42 @@ export default function CliPadDashboard() {
     setIsCreatingMeeting(true);
     try {
       const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType, companyId: user?.company_id || user?.user_metadata?.company_id };
+      const roomName = generateShortId();
       if (privacyType === 'public') {
-        payload.roomName = generateShortId();
+        payload.roomName = roomName;
       }
-      const { data, error } = await supabase.functions.invoke('create-daily-room', { body: payload });
-      if (error) throw error;
-      const url = `/join/${data.name || data.roomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
+      
+      let roomData = null;
+      try {
+        const { data, error } = await supabase.functions.invoke('create-daily-room', { body: payload });
+        if (!error && (data?.name || data?.roomName)) {
+          roomData = data;
+        }
+      } catch (e) {
+        console.warn('Edge Function create-daily-room failed, using direct client room fallback:', e);
+      }
+
+      const targetRoomName = roomData?.name || roomData?.roomName || roomName;
+
+      // Ensure room record is present in video_rooms table
+      const dbId = crypto.randomUUID();
+      const companyId = user?.company_id || user?.user_metadata?.company_id || null;
+      await supabase.from('video_rooms').insert({
+        id: dbId,
+        company_id: companyId,
+        daily_room_name: targetRoomName,
+        daily_room_url: roomData?.url || `https://slate.daily.co/${targetRoomName}`,
+        privacy_type: privacyType || 'public',
+        host_id: user?.id || null,
+        status: 'active',
+        meeting_type: 'instant'
+      }).catch(() => {});
+
+      const url = `/join/${targetRoomName}` + (spaceId ? `?spaceId=${spaceId}` : '');
       navigate(url);
     } catch (err) {
       console.error('Failed to create meeting:', err);
+      toast({ title: 'Could not create meeting', description: err?.message || 'Please try again.', variant: 'destructive' });
     } finally {
       setIsCreatingMeeting(false);
     }
