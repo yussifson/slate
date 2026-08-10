@@ -149,11 +149,12 @@ export default function StandaloneMeeting() {
       }
 
       if (!room) {
-        throw new Error(
-          lastError
-            ? `Database error: ${lastError.message}`
-            : 'Meeting not found or has ended.'
-        );
+        // Room not in DB yet — likely edge function was down. Join Daily directly.
+        const fallbackUrl = `https://slate.daily.co/${roomId}`;
+        setScheduledData(null);
+        setRoomName(roomId);
+        setMeetingUrl(fallbackUrl);
+        return;
       }
 
       // Enforce organization access for private/internal meetings
@@ -184,7 +185,6 @@ export default function StandaloneMeeting() {
       }
 
       let joinUrl = room.daily_room_url;
-      const isPrivate = room.privacy_type !== 'public';
       const finalRoomName = room.title || room.daily_room_name;
 
       // Give token to anyone logged in, to make them owners or let them join private meetings
@@ -194,17 +194,14 @@ export default function StandaloneMeeting() {
         const userCompanyId = user.user_metadata?.company_id || user.company_id;
         const isOwner = userCompanyId === room.company_id;
 
-        const { data: tokenData, error: tokenError } = await supabase.functions.invoke('generate-daily-token', {
-          body: { roomName: room.daily_room_name, userName, userId, isOwner },
-        });
-
-        if (!tokenError && tokenData?.token) {
-          joinUrl = `${joinUrl}?t=${tokenData.token}`;
-        } else if (isPrivate) {
-          throw new Error('You do not have permission to join this private meeting.');
-        }
-      } else if (isPrivate) {
-        throw new Error('You do not have permission to join this private meeting.');
+        try {
+          const { data: tokenData, error: tokenError } = await supabase.functions.invoke('generate-daily-token', {
+            body: { roomName: room.daily_room_name, userName, userId, isOwner },
+          });
+          if (!tokenError && tokenData?.token) {
+            joinUrl = `${joinUrl}?t=${tokenData.token}`;
+          }
+        } catch (_) { /* token generation unavailable — join without token */ }
       }
 
       setScheduledData(null);

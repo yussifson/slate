@@ -781,44 +781,39 @@ export default function MeetLandingPage() {
 
       {/* Share Link Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md p-0 border-none shadow-2xl rounded-2xl overflow-hidden bg-white">
+        <DialogContent className="sm:max-w-lg p-0 border border-white/10 dark:border-white/10 shadow-2xl rounded-3xl overflow-hidden bg-white dark:bg-[#1a1f2e]">
           <DialogTitle className="sr-only">Meeting Link Created</DialogTitle>
           <DialogDescription className="sr-only">Your meeting link is ready to be copied.</DialogDescription>
           
-          <div className="relative w-full bg-gradient-to-b from-primary/10 to-transparent p-8 md:p-10 text-center flex flex-col items-center">
-            {/* Sparkles Background */}
-            <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-              <Sparkles className="w-32 h-32 text-primary transform rotate-12" />
-            </div>
-
+          <div className="p-8 md:p-10 text-center flex flex-col items-center">
             {/* Icon */}
-            <div className="w-16 h-16 bg-primary text-foreground rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/30 shrink-0">
-              <Video className="w-8 h-8" />
+            <div className="w-16 h-16 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-6">
+              <Video className="w-8 h-8 text-emerald-500" />
             </div>
 
             {/* Text */}
-            <h2 className="text-2xl font-semibold text-slate-900 mb-2 tracking-tight">Here's your meeting link</h2>
-            <p className="text-slate-500 mb-8 max-w-sm text-sm leading-relaxed">
-              Copy this link and send it to people you want to meet with. Save it so you can use it later.
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">Your meeting is ready</h2>
+            <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm text-sm leading-relaxed">
+              Share this link with anyone you'd like to invite. They can join from any browser.
             </p>
 
             {/* Link Box */}
-            <div className="w-full bg-white backdrop-blur-sm border border-slate-200 rounded-2xl p-4 text-left shadow-sm">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Join Link</p>
-              <div className="flex items-center gap-2">
-                <div className="flex-1 min-w-0 bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-200 overflow-hidden">
-                  <span className="text-sm text-primary font-medium truncate block w-full">{laterLink}</span>
+            <div className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-4">
+              <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2 text-left">Meeting Link</p>
+              <div className="flex items-center gap-3">
+                <div className="flex-1 min-w-0 bg-white dark:bg-white/5 px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                  <span className="text-sm text-slate-700 dark:text-slate-200 font-mono truncate block w-full select-all">{laterLink}</span>
                 </div>
                 <Button
                   type="button"
-                  className="rounded-xl shrink-0 gap-2 bg-primary hover:bg-primary/90 text-foreground shadow-md shadow-primary/20 transition-all hover:scale-105 px-4"
+                  className="rounded-xl shrink-0 gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold shadow-lg shadow-emerald-500/20 transition-all px-5 py-3 h-auto"
                   onClick={() => {
                     navigator.clipboard.writeText(laterLink);
                     toast({ title: 'Copied!', description: 'Meeting link copied to clipboard.' });
                   }}
                 >
                   <Copy className="h-4 w-4" />
-                  Copy
+                  Copy Link
                 </Button>
               </div>
             </div>
@@ -827,7 +822,7 @@ export default function MeetLandingPage() {
             <Button
               onClick={() => setIsDialogOpen(false)}
               variant="ghost"
-              className="mt-6 w-full sm:w-auto px-10 text-slate-500 hover:text-slate-700 hover:bg-slate-100:bg-slate-800 rounded-full"
+              className="mt-6 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white text-sm font-medium"
             >
               Done
             </Button>

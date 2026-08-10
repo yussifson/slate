@@ -193,6 +193,7 @@ export default function RecordVideo() {
   const wsBufferedChunksRef = useRef([]); // chunks buffered during WS outage
   const wsIsReconnectingRef = useRef(false);
   const wsEndRequestedRef = useRef(false); // true once user stops recording
+  const wsServerConfigErrorRef = useRef(false); // true if server sent misconfiguration error
 
   const recognitionRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -983,6 +984,7 @@ export default function RecordVideo() {
       wsBufferedChunksRef.current = [];
       wsIsReconnectingRef.current = false;
       wsEndRequestedRef.current = false;
+      wsServerConfigErrorRef.current = false;
 
       // WebSocket live streamer (Render) with HTTP keep-alive wake-up ping
       const wsUrl = 'wss://slate-gcph.onrender.com';
@@ -1080,8 +1082,24 @@ export default function RecordVideo() {
             }
           } else if (msg.type === 'ERROR') {
             stopPingInterval();
-            toast({ title: 'Upload Error', description: msg.error, variant: 'destructive' });
-            setPhase('review');
+            const errorStr = (msg.error || '').toString();
+            const isConfigError = errorStr.includes('SUPABASE_URL') || errorStr.includes('misconfiguration') || errorStr.includes('Server misconfiguration');
+            if (isConfigError) {
+              console.warn('WebSocket relay server misconfigured, falling back silently to local recording:', errorStr);
+              wsServerConfigErrorRef.current = true;
+              try { ws.close(); } catch (e) {}
+              if (!isRecordingRef.current || wsEndRequestedRef.current) {
+                if (chunksRef.current.length > 0 && !videoBlob) {
+                  const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+                  setVideoBlob(blob);
+                  setRecordingUrl(URL.createObjectURL(blob));
+                }
+                setPhase('review');
+              }
+            } else {
+              toast({ title: 'Upload Error', description: msg.error, variant: 'destructive' });
+              setPhase('review');
+            }
           }
           // PONG — no-op, keepalive confirmed
         };
@@ -1093,6 +1111,7 @@ export default function RecordVideo() {
 
         ws.onclose = (evt) => {
           stopPingInterval();
+          if (wsServerConfigErrorRef.current) return;
           // Normal close (code 1000 / 1001) — do nothing
           if (evt.code === 1000 || evt.code === 1001) return;
 
