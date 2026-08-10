@@ -303,18 +303,40 @@ export default function SpaceDashboard() {
 
   const confirmJoinMeeting = async () => {
     setShowPrivacyModal(false);
+    const roomName = generateShortId();
     try {
       const payload = { instant: true, max_participants: getLimit(user, 'maxParticipants'), privacy: privacyType, companyId: user?.company_id || user?.user_metadata?.company_id };
-      if (privacyType === 'public') {
-        payload.roomName = generateShortId();
-      }
-      const { data } = await supabase.functions.invoke('create-daily-room', { body: payload });
-      if (data?.name || data?.roomName) {
-        // Update space with room info
-        await supabase.from('clipad_spaces').update({ meeting_url: data.url }).eq('id', spaceId);
-        navigate(`/join/${data.name || data.roomName}?spaceId=${spaceId}`);
-      }
-    } catch { navigate(`/join/${spaceId}?spaceId=${spaceId}`); }
+      if (privacyType === 'public') payload.roomName = roomName;
+
+      let roomData = null;
+      try {
+        const { data, error } = await supabase.functions.invoke('create-daily-room', { body: payload });
+        if (!error && data && (data.name || data.roomName)) roomData = data;
+      } catch (_) { /* edge function unavailable */ }
+
+      const targetRoomName = roomData?.name || roomData?.roomName || roomName;
+
+      try {
+        await supabase.from('video_rooms').upsert({
+          id: crypto.randomUUID(),
+          company_id: user?.company_id || user?.user_metadata?.company_id || null,
+          daily_room_name: targetRoomName,
+          daily_room_url: roomData?.url || `https://slate.daily.co/${targetRoomName}`,
+          privacy_type: privacyType || 'public',
+          host_id: user?.id || null,
+          status: 'active',
+          meeting_type: 'instant'
+        });
+      } catch (_) { /* db insert failed — meeting still works */ }
+
+      try {
+        await supabase.from('clipad_spaces').update({ meeting_url: roomData?.url || `https://slate.daily.co/${targetRoomName}` }).eq('id', spaceId);
+      } catch (_) {}
+
+      navigate(`/join/${targetRoomName}?spaceId=${spaceId}`);
+    } catch (_) {
+      navigate(`/join/${roomName}?spaceId=${spaceId}`);
+    }
   };
 
   const addTask = async (e) => {

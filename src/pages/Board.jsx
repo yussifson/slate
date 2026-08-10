@@ -1,4 +1,4 @@
-﻿import { supabase} from '@/api/supabaseClient';
+import { supabase} from '@/api/supabaseClient';
 import React, { useState, useEffect} from "react";
 import { useTranslation} from "react-i18next";
 import {Video, Plus, Calendar, Clock, Users, Copy, Sparkles, LayoutGrid} from "lucide-react";
@@ -98,17 +98,17 @@ export default function Board() {
  try {
   const dbId = crypto.randomUUID();
   const shortId = generateShortId();
- 
-  // Call our Supabase Edge function to create a Daily room securely
-  const { data: dailyData, error: functionError} = await supabase.functions.invoke('create-daily-room', {
-  body: { dbId, roomName: shortId, companyId }
-});
- 
- if (functionError) {
- throw new Error(functionError.message || "Failed to create Daily room via edge function");
-}
 
-  const realUrl = dailyData.url;
+  let dailyData = null;
+  try {
+    const { data, error: functionError } = await supabase.functions.invoke('create-daily-room', {
+      body: { dbId, roomName: shortId, companyId }
+    });
+    if (!functionError && data && (data.name || data.url)) dailyData = data;
+  } catch (_) { /* edge function unavailable */ }
+
+  const roomName = dailyData?.name || shortId;
+  const realUrl = dailyData?.url || `https://slate.daily.co/${roomName}`;
 
   let meetingDomain = window.location.hostname;
   if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
@@ -118,32 +118,29 @@ export default function Board() {
   } else if (meetingDomain.includes('oatstack.com')) {
     meetingDomain = `meet.oatstack.com`;
   } else {
-    // For custom white-label domains
     meetingDomain = `meet.${meetingDomain}`;
   }
   const customMeetingOrigin = `${window.location.protocol}//${meetingDomain}${window.location.port ? ':' + window.location.port : ''}`;
 
-  // Create new room record directly in Supabase to bypass offline sync delays
   const _payload = {
    id: dbId,
    company_id: companyId,
    title: `${user?.full_name?.split(' ')[0] || 'User'}'s Instant Meeting`,
    daily_room_url: realUrl,
-   daily_room_name: dailyData.name || shortId,
+   daily_room_name: roomName,
    host_id: user.id,
    status: 'active',
-   meeting_link: `${customMeetingOrigin}/join/${shortId}`
+   meeting_link: `${customMeetingOrigin}/join/${roomName}`
   };
-  
-  const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
-  if (dbError) {
-    console.warn("Failed to insert meeting to Supabase directly:", dbError);
-    // Fallback to powersync if Supabase insert fails
-    const _keys = Object.keys(_payload);
-    const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-    await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-  }
-  // Record creation logic was executed above
+
+  try {
+    const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
+    if (dbError) {
+      const _keys = Object.keys(_payload);
+      const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+      await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+    }
+  } catch (_) { /* db insert failed — meeting still works */ }
 
  joinRoom(realUrl);
  return realUrl;

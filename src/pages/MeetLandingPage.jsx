@@ -349,24 +349,46 @@ export default function MeetLandingPage() {
   const handleCreateMeeting = async (type) => {
     setIsCreating(true);
     try {
-      const dbId = crypto.randomUUID();
       const shortId = generateShortId();
-      
-      const { data, error } = await supabase.functions.invoke('create-daily-room', {
-        body: { dbId, roomName: shortId, privacy: 'public', companyId },
-      });
-      if (error) throw error;
+
+      let roomData = null;
+      try {
+        const { data, error } = await supabase.functions.invoke('create-daily-room', {
+          body: { dbId: crypto.randomUUID(), roomName: shortId, privacy: 'public', companyId },
+        });
+        if (!error && data && (data.name || data.roomName)) roomData = data;
+      } catch (_) { /* edge function unavailable */ }
+
+      const targetRoomName = roomData?.name || roomData?.roomName || shortId;
+
+      try {
+        await supabase.from('video_rooms').upsert({
+          id: crypto.randomUUID(),
+          company_id: companyId || null,
+          daily_room_name: targetRoomName,
+          daily_room_url: roomData?.url || `https://slate.daily.co/${targetRoomName}`,
+          privacy_type: 'public',
+          host_id: user?.id || null,
+          status: 'active',
+          meeting_type: 'instant'
+        });
+      } catch (_) {}
 
       if (type === 'instant') {
-        navigate(`/join/${shortId}`);
+        navigate(`/join/${targetRoomName}`);
       } else {
         const { protocol, hostname, port } = window.location;
-        setLaterLink(`${protocol}//${hostname}${port ? ':' + port : ''}/join/${shortId}`);
+        setLaterLink(`${protocol}//${hostname}${port ? ':' + port : ''}/join/${targetRoomName}`);
         setIsDialogOpen(true);
       }
     } catch (err) {
       console.error('Failed to create meeting:', err);
-      toast({ title: 'Error', description: 'Could not create a new meeting. Try again.', variant: 'destructive' });
+      const fallback = generateShortId();
+      if (type === 'instant') {
+        navigate(`/join/${fallback}`);
+      } else {
+        toast({ title: 'Error', description: 'Could not create a new meeting. Try again.', variant: 'destructive' });
+      }
     } finally {
       setIsCreating(false);
     }

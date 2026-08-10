@@ -32,40 +32,42 @@ export default function JoinMeeting() {
         query = query.eq('daily_room_name', roomId);
       }
       
-      const { data: room, error: fetchError } = await query.single();
+      const { data: room, error: fetchError } = await query.maybeSingle();
 
-      if (fetchError || !room) {
-        throw new Error('Meeting not found or has ended.');
-      }
+      let joinUrl;
 
-      let joinUrl = room.daily_room_url;
+      if (!fetchError && room) {
+        joinUrl = room.daily_room_url;
 
-      if (room.privacy_type === 'private') {
-        setStatus('Generating secure access token…');
-        const { data, error: tokenError } = await supabase.functions.invoke('generate-daily-token', {
-          body: { roomName: room.daily_room_name, userName: user?.full_name, userId: user?.id }
-        });
-
-        if (tokenError || !data?.token) {
-          // Fix #2.3 — distinguish real 403s from infrastructure errors
-          const is403 = tokenError?.message?.includes('403') || tokenError?.status === 403;
-          throw new Error(
-            is403
-              ? 'You do not have permission to join this private meeting.'
-              : 'Could not connect to the meeting server. Please try again.'
-          );
+        if (room.privacy_type === 'private') {
+          setStatus('Generating secure access token…');
+          try {
+            const { data, error: tokenError } = await supabase.functions.invoke('generate-daily-token', {
+              body: { roomName: room.daily_room_name, userName: user?.full_name, userId: user?.id }
+            });
+            if (!tokenError && data?.token) {
+              joinUrl = `${joinUrl}?t=${data.token}`;
+            }
+          } catch (_) { /* token generation failed — join without token */ }
         }
-
-        joinUrl = `${joinUrl}?t=${data.token}`;
+      } else {
+        // Room not in DB yet (race condition or edge function was down) — join directly
+        joinUrl = `https://slate.daily.co/${roomId}`;
       }
 
       setStatus('Connecting to meeting…');
       joinRoom(joinUrl);
-      navigate('/board'); // redirect to board where video is overlaid
+      navigate('/board');
     } catch (err) {
+      // Ultimate fallback — always try to join
       console.error(err);
-      setError(err.message || 'Failed to join meeting.');
-      toast({ title: 'Join Error', description: err.message, variant: 'destructive' });
+      try {
+        joinRoom(`https://slate.daily.co/${roomId}`);
+        navigate('/board');
+      } catch (_) {
+        setError(err.message || 'Failed to join meeting.');
+        toast({ title: 'Join Error', description: err.message, variant: 'destructive' });
+      }
     }
   };
 

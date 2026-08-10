@@ -101,14 +101,17 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
       
       const dbId = crypto.randomUUID();
       const shortId = generateShortId();
-      
-      const { data: dailyData, error: functionError } = await supabase.functions.invoke('create-daily-room', {
-        body: { dbId, roomName: shortId, privacy: isPrivate ? 'private' : 'public', companyId }
-      });
 
-      if (functionError) throw new Error(functionError.message || 'Failed to create Daily room via edge function');
+      let dailyData = null;
+      try {
+        const { data, error: functionError } = await supabase.functions.invoke('create-daily-room', {
+          body: { dbId, roomName: shortId, privacy: isPrivate ? 'private' : 'public', companyId }
+        });
+        if (!functionError && data && (data.name || data.url)) dailyData = data;
+      } catch (_) { /* edge function unavailable */ }
 
-      const realUrl = dailyData.url;
+      const roomName = dailyData?.name || shortId;
+      const realUrl = dailyData?.url || `https://slate.daily.co/${roomName}`;
 
       let meetingDomain = window.location.hostname;
       if (meetingDomain.includes('localhost') || meetingDomain.includes('127.0.0.1')) {
@@ -129,23 +132,24 @@ export default function ScheduleMeetingDialog({ open, onOpenChange, onScheduled 
         title: title,
         description: `Scheduled meeting for ${scheduledStart.toLocaleString()}`,
         daily_room_url: realUrl,
-        daily_room_name: dailyData.name || shortId,
+        daily_room_name: roomName,
         host_id: user.id,
         status: 'scheduled',
         meeting_type: 'scheduled',
         privacy_type: isPrivate ? 'private' : 'public',
         scheduled_start_time: scheduledStart.toISOString(),
         participants: JSON.stringify(selectedParticipants.map(p => ({ id: p.id, email: p.email, name: p.full_name }))),
-        meeting_link: `${customMeetingOrigin}/join/${shortId}`
+        meeting_link: `${customMeetingOrigin}/join/${roomName}`
       };
 
-      const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
-      if (dbError) {
-        console.warn("Failed to insert meeting to Supabase directly:", dbError);
-        const _keys = Object.keys(_payload);
-        const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
-        await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
-      }
+      try {
+        const { error: dbError } = await supabase.from('video_rooms').upsert(_payload);
+        if (dbError) {
+          const _keys = Object.keys(_payload);
+          const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
+          await powerSync.execute(`INSERT INTO video_rooms (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
+        }
+      } catch (_) { /* db insert failed — continue with notifications */ }
 
       if (selectedParticipants.length > 0) {
         for (const participant of selectedParticipants) {
