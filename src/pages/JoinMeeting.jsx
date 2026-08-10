@@ -52,7 +52,7 @@ export default function JoinMeeting() {
         }
       } else {
         // Room not in DB yet (race condition or edge function was down) — join directly
-        joinUrl = `https://slate.daily.co/${roomId}`;
+        joinUrl = `https://optavel.daily.co/${roomId}`;
       }
 
       setStatus('Connecting to meeting…');
@@ -62,7 +62,7 @@ export default function JoinMeeting() {
       // Ultimate fallback — always try to join
       console.error(err);
       try {
-        joinRoom(`https://slate.daily.co/${roomId}`);
+        joinRoom(`https://optavel.daily.co/${roomId}`);
         navigate('/board');
       } catch (_) {
         setError(err.message || 'Failed to join meeting.');

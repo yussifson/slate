@@ -150,7 +150,7 @@ export default function StandaloneMeeting() {
 
       if (!room) {
         // Room not in DB yet — likely edge function was down. Join Daily directly.
-        const fallbackUrl = `https://slate.daily.co/${roomId}`;
+        const fallbackUrl = `https://optavel.daily.co/${roomId}`;
         setScheduledData(null);
         setRoomName(roomId);
         setMeetingUrl(fallbackUrl);
