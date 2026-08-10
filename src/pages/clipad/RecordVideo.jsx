@@ -1145,72 +1145,22 @@ export default function RecordVideo() {
       
       recorder.onstop = async () => {
         stopEverything();
-        // Force save final recording state to IDB for recovery
         if (chunksRef.current.length > 0) {
           saveRecordingState(id, chunksRef.current, true);
         } else {
           setPhase('setup');
           return;
         }
-        setPhase('uploading');
-        setUploadProgress(10);
-        wsEndRequestedRef.current = true;
-
-        // Fix #1 — Extended to 5 minutes so large videos (30–50 MB+) have enough time
-        // for two network hops (client → Render → Supabase) even on slow connections.
-        const uploadDeadline = setTimeout(() => {
-          console.warn('Upload deadline exceeded — auto-falling back to TUS resumable upload');
-          clearTimeout(uploadDeadline);
-          const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-          setVideoBlob(blob);
-          const url = URL.createObjectURL(blob);
-          setRecordingUrl(url);
-          // Automatically trigger TUS/direct upload rather than just showing review
-          toast({ title: 'Switching to direct upload…', description: 'Cloud relay timed out — uploading directly. Please wait.', variant: 'default' });
-          setPhase('review'); // review phase reveals the Save button which calls uploadRecording()
-          // Give React one tick to render the blob before triggering upload
-          setTimeout(() => uploadRecording(blob), 100);
-        }, 300000); // 5 minutes
-
-        // Flush any remaining buffered chunks before signalling END
-        let endAttempts = 0;
-        const waitAndEnd = () => {
-          endAttempts++;
-          if (pendingChunks.length > 0 && (wsRef.current?.bufferedAmount || 0) > 0) {
-            setTimeout(waitAndEnd, 200);
-            return;
-          }
-          if (wsRef.current?.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify({ type: 'END' }));
-            // uploadDeadline will be cleared in ws.onmessage SUCCESS/ERROR handlers
-          } else {
-            // Instant Fallback: If WS is closed or sleeping, skip timeout and fallback directly to review
-            clearTimeout(uploadDeadline);
-            const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            setVideoBlob(blob);
-            setRecordingUrl(url);
-            setPhase('review');
-          }
-        };
-        waitAndEnd();
-
-        // Patch ws.onmessage to clear the deadline when upload succeeds or errors
-        const originalOnMessage = wsRef.current?.onmessage;
-        if (wsRef.current) {
-          wsRef.current.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'SUCCESS' || msg.type === 'ERROR') {
-              clearTimeout(uploadDeadline);
-            }
-            if (originalOnMessage) originalOnMessage(event);
-          };
-        }
+        
+        // Finalize local recording blob and go straight to review for direct client-side upload
+        const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+        setVideoBlob(blob);
+        setRecordingUrl(URL.createObjectURL(blob));
+        setPhase('review');
       };
 
 
-      // Initial connection
-      connectWS(false);
+      // Live WS connection completely removed to rely on robust local recording + client-side direct TUS upload
       recorder.start(1000); // 1-second chunks
 
       setPhase('recording');
