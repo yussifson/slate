@@ -56,7 +56,7 @@ export const VIRTUAL_BACKGROUNDS = [
 // Fix #17: EMOJIS constant outside component — avoids recreation on every render
 const EMOJIS = ['👍', '❤️', '👏', '😂', '🎉', '🔥'];
 
-function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId}) {
+function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBackground, spaceId, initialAudio = true, initialVideo = true }) {
   const navigate = useNavigate();
   const { t} = useTranslation();
   const { user } = useAuth();
@@ -240,8 +240,13 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
    setJoined(true);
    setIsReconnecting(false);
    if (!daily) return;
+   // Enforce the pre-join mic/camera choices — Daily sometimes ignores startAudioOff/startVideoOff
+   // so we explicitly set them after joining to guarantee the intended state.
+   Promise.all([
+     daily.setLocalAudio(initialAudio).catch(() => {}),
+     daily.setLocalVideo(initialVideo).catch(() => {}),
+   ]);
    // Fix #8/#9: Apply adaptive send settings AFTER joining (not before)
-   // This ensures simulcast layers actually work for low-bandwidth users
    daily.updateSendSettings({
      video: {
        encodings: {
@@ -253,7 +258,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
    }).catch(e => console.warn('updateSendSettings failed:', e));
    // Only attempt cloud transcription — silent failure is fine if not enabled
    daily.startTranscription().catch(() => {});
-  }, [daily]));
+  }, [daily, initialAudio, initialVideo]));
 
   // Fix #18: Reuse a single AudioContext instead of creating one per sound
   const playSound = (type) => {
@@ -365,11 +370,26 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
  }, []));
 
  // Fix #4: Use both the joinedRef (no stale closure) AND Daily's live meetingState()
+ // Also check local participant presence as a 3rd check for the race window
+ // between join() resolving and joined-meeting event firing.
  const ensureJoined = () => {
-   if (joinedRef.current || (daily && daily.meetingState() === 'joined-meeting')) return true;
+   if (joinedRef.current) return true;
+   if (daily && daily.meetingState() === 'joined-meeting') {
+     // Sync state if Daily says we're joined but state hasn't updated yet
+     if (!joinedRef.current) { setJoined(true); joinedRef.current = true; }
+     return true;
+   }
+   // Also accept if local participant already exists (post-join, pre-event)
+   try {
+     const local = daily && daily.participants()?.local;
+     if (local) {
+       if (!joinedRef.current) { setJoined(true); joinedRef.current = true; }
+       return true;
+     }
+   } catch (_) {}
    toast({
      title: 'Connecting…',
-     description: 'Wait until the call has connected before using camera or mic.'
+     description: 'Your camera and mic will be available once the call connects.'
    });
    return false;
  };
@@ -1667,9 +1687,7 @@ export default function VideoRoom({ roomUrl, userName, token, initialAudio = tru
 
  return (
   <DailyProvider callObject={daily}>
-   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} initialBackground={initialBackground} spaceId={spaceId} />
+   <VideoRoomInner roomUrl={roomUrl} onLeave={onLeave} isPipMode={isPipMode} togglePipMode={togglePipMode} initialBackground={initialBackground} spaceId={spaceId} initialAudio={initialAudio} initialVideo={initialVideo} />
   </DailyProvider>
  );
 }
-
-
