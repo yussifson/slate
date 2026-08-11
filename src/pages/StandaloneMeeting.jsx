@@ -184,7 +184,11 @@ export default function StandaloneMeeting() {
         }
       }
 
-      let joinUrl = room.daily_room_url;
+      // Sanitize legacy slate.daily.co URLs — always use optavel.daily.co
+      let joinUrl = (room.daily_room_url || '').replace(
+        /https?:\/\/slate\.daily\.co\//gi,
+        'https://optavel.daily.co/'
+      ) || `https://optavel.daily.co/${room.daily_room_name}`;
       const finalRoomName = room.title || room.daily_room_name;
 
       // Give token to anyone logged in, to make them owners or let them join private meetings
@@ -373,9 +377,15 @@ export default function StandaloneMeeting() {
       roomName={roomName}
       userName={user ? user.full_name : guestName}
       onToast={toast}
-      onLeave={() => {
+      onLeave={(savedMeetingId) => {
+        // If VideoRoom saved a DB record, use its UUID; otherwise fall back to roomId
+        const targetId = savedMeetingId || roomId;
         const base = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';
-        navigate(`${base}/save-meeting/${roomId}`);
+        if (targetId) {
+          navigate(`${base}/save-meeting/${targetId}`);
+        } else {
+          navigate(`${base}/` || '/dashboard');
+        }
       }}
       spaceId={spaceId}
     />

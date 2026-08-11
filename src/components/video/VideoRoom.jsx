@@ -324,7 +324,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 
  useDailyEvent('left-meeting', useCallback(() => {
   setJoined(false);
-  onLeave();
+  onLeave(null);
 }, [onLeave]));
 
  useDailyEvent('participant-left', useCallback((ev) => {
@@ -558,21 +558,26 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
           daily.leave();
           const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad' : '';
           if (insertedMeeting) {
+            // Always navigate to save page using the real UUID from the DB record
             navigate(`${basePath}/save-meeting/${insertedMeeting.id}${spaceId ? `?spaceId=${spaceId}` : ''}`);
           } else {
-            // Fix #11 — insert failed; go to dashboard with a clear error instead of blank Board
-            toast({ title: 'Meeting ended', description: 'Could not save meeting record. Please try again.', variant: 'destructive' });
-            navigate(basePath || '/dashboard');
+            // Insert failed — let the caller (e.g. StandaloneMeeting) decide where to go
+            toast({ title: 'Meeting ended', description: 'Could not save record. Please check your connection.', variant: 'destructive' });
+            if (onLeave) onLeave(null);
           }
           return;
         }
       } catch (e) {
         console.error('Failed to save meeting record:', e);
+        // On unexpected error, still call onLeave so the UI isn't stuck
+        daily.leave();
+        if (onLeave) onLeave(null);
+        return;
       }
     }
     
     daily.leave();
-    if (onLeave) onLeave();
+    if (onLeave) onLeave(null);
   };
 
  // Fix #7: Real-time transcription — cross-browser (Chrome + Firefox fallback)
@@ -724,9 +729,20 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
 
   {/* Recording Status Indicator */}
   {isRecording && (
-    <div className="absolute top-4 left-4 z-50 bg-red-600/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full font-bold text-xs shadow-lg flex items-center gap-2 animate-pulse border border-red-500/30 tracking-wide">
-      <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-      {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+    <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
+      {/* Premium minimalist recording indicator */}
+      <div className="flex items-center gap-2.5 bg-black/60 backdrop-blur-xl border border-white/10 text-white px-4 py-2 rounded-full shadow-2xl">
+        {/* Pulsing dot */}
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+        </span>
+        {/* Timer */}
+        <span className="font-mono text-sm font-medium tracking-widest tabular-nums">
+          {Math.floor(recordingSeconds / 60).toString().padStart(2, '0')}:{(recordingSeconds % 60).toString().padStart(2, '0')}
+        </span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400 opacity-90">REC</span>
+      </div>
     </div>
   )}
 
@@ -1136,7 +1152,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         mediaRecorderRef.current.stop();
         setIsRecording(false);
-        toast({ title: 'Recording Stopped', description: 'Processing and saving the recording to Supabase...' });
+        toast({ title: 'Recording Stopped', description: 'Processing and saving your recording to the secure cloud...' });
       }
     } else {
       try {

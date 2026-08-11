@@ -31,14 +31,36 @@ export default function SaveMeetingPage() {
   useEffect(() => {
     async function load() {
       try {
-        const { data, error } = await supabase
-          .from('clipad_meeting_records')
-          .select('*')
-          .eq('id', id)
-          .maybeSingle();
+        // Detect if id is a UUID or a short Daily room name (e.g. "y-zh5-1dh")
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
-        if (error) {
-          console.warn("DB fetch failed, falling back:", error);
+        let data = null;
+        let fetchError = null;
+
+        if (isUUID) {
+          // Standard path: query by primary key
+          const { data: d, error: e } = await supabase
+            .from('clipad_meeting_records')
+            .select('*')
+            .eq('id', id)
+            .maybeSingle();
+          data = d;
+          fetchError = e;
+        } else {
+          // Fallback: id is a Daily room name — query by room name column
+          const { data: d, error: e } = await supabase
+            .from('clipad_meeting_records')
+            .select('*')
+            .eq('daily_room_name', id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          data = d;
+          fetchError = e;
+        }
+
+        if (fetchError) {
+          console.warn("DB fetch failed, falling back:", fetchError);
         }
 
         if (data) {
@@ -47,16 +69,16 @@ export default function SaveMeetingPage() {
           setVisibility(data.visibility || 'internal');
           setIsLocked(data.is_locked || false);
           if (data.is_locked) {
-              setLockType('manual');
+            setLockType('manual');
           }
           if (data.unlock_at) {
-              setLockType('scheduled');
-              const d = new Date(data.unlock_at);
-              setUnlockDate(d.toISOString().split('T')[0]);
-              setUnlockTime(d.toTimeString().slice(0, 5));
+            setLockType('scheduled');
+            const d = new Date(data.unlock_at);
+            setUnlockDate(d.toISOString().split('T')[0]);
+            setUnlockTime(d.toTimeString().slice(0, 5));
           }
         } else {
-          // If no meeting record exists in DB (offline orEdge Function failed), generate safe mock data so user can still see details or download/save locally
+          // No record found — create a safe placeholder so the user can still save
           const mockMeeting = {
             id: id,
             title: `Meeting - ${new Date().toLocaleDateString()}`,
@@ -68,7 +90,7 @@ export default function SaveMeetingPage() {
         }
       } catch (err) {
         console.error(err);
-        toast({ title: 'Warning', description: 'Could not fetch database record. You can still save locally.', variant: 'default' });
+        toast({ title: 'Warning', description: 'Could not fetch record. You can still publish your meeting.', variant: 'default' });
       } finally {
         setLoading(false);
       }
