@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { writeOrgEvent } from '@/lib/clipadIntelligence';
 
 export default function SaveMeetingPage() {
-  const { id } = useParams(); // meeting ID
+  const { id } = useParams(); // meeting ID (UUID) or Daily room name (short ID)
   const [searchParams] = useSearchParams();
   const spaceId = searchParams.get('spaceId');
   const navigate = useNavigate();
@@ -28,17 +28,18 @@ export default function SaveMeetingPage() {
   const [unlockDate, setUnlockDate] = useState('');
   const [unlockTime, setUnlockTime] = useState('');
 
+  // Helper: is this string a valid UUID?
+  const isValidUUID = (str) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
   useEffect(() => {
     async function load() {
       try {
-        // Detect if id is a UUID or a short Daily room name (e.g. "y-zh5-1dh")
-        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-
         let data = null;
         let fetchError = null;
 
-        if (isUUID) {
-          // Standard path: query by primary key
+        if (isValidUUID(id)) {
+          // Standard: query by UUID primary key
           const { data: d, error: e } = await supabase
             .from('clipad_meeting_records')
             .select('*')
@@ -47,7 +48,7 @@ export default function SaveMeetingPage() {
           data = d;
           fetchError = e;
         } else {
-          // Fallback: id is a Daily room name — query by room name column
+          // Fallback: id is a short Daily room name — query by room name column
           const { data: d, error: e } = await supabase
             .from('clipad_meeting_records')
             .select('*')
@@ -60,17 +61,15 @@ export default function SaveMeetingPage() {
         }
 
         if (fetchError) {
-          console.warn("DB fetch failed, falling back:", fetchError);
+          console.warn('DB fetch failed:', fetchError);
         }
 
         if (data) {
           setMeeting(data);
-          setTitle(data.title || data.meeting_title || `Meeting - ${new Date().toLocaleDateString()}`);
+          setTitle(data.title || data.meeting_title || `Meeting — ${new Date().toLocaleDateString()}`);
           setVisibility(data.visibility || 'internal');
           setIsLocked(data.is_locked || false);
-          if (data.is_locked) {
-            setLockType('manual');
-          }
+          if (data.is_locked) setLockType('manual');
           if (data.unlock_at) {
             setLockType('scheduled');
             const d = new Date(data.unlock_at);
@@ -78,25 +77,26 @@ export default function SaveMeetingPage() {
             setUnlockTime(d.toTimeString().slice(0, 5));
           }
         } else {
-          // No record found — create a safe placeholder so the user can still save
-          const mockMeeting = {
-            id: id,
-            title: `Meeting - ${new Date().toLocaleDateString()}`,
+          // No record yet — create a placeholder so user can still publish
+          const placeholder = {
+            id: isValidUUID(id) ? id : null,
+            daily_room_name: id,
+            title: `Meeting — ${new Date().toLocaleDateString()}`,
             visibility: 'internal',
             created_at: new Date().toISOString()
           };
-          setMeeting(mockMeeting);
-          setTitle(mockMeeting.title);
+          setMeeting(placeholder);
+          setTitle(placeholder.title);
         }
       } catch (err) {
         console.error(err);
-        toast({ title: 'Warning', description: 'Could not fetch record. You can still publish your meeting.', variant: 'default' });
+        toast({ title: 'Warning', description: 'Could not load meeting details. You can still publish.', variant: 'default' });
       } finally {
         setLoading(false);
       }
     }
     if (id) load();
-  }, [id, navigate, toast]);
+  }, [id, toast]);
 
   const handleSave = async () => {
     if (!title.trim()) {
@@ -123,32 +123,46 @@ export default function SaveMeetingPage() {
     try {
       const updateData = {
         title: title.trim(),
-        visibility: visibility,
+        visibility,
         is_locked: finalIsLocked,
         unlock_at: finalUnlockAt,
         ended_at: new Date().toISOString()
       };
 
-      const { data, error } = await supabase
-        .from('clipad_meeting_records')
-        .update(updateData)
-        .eq('id', id)
-        .select();
+      const companyId = user?.company_id || user?.user_metadata?.company_id || null;
+      let saved = false;
 
-      if (error || !data || data.length === 0) {
-        // Fallback: If update failed or row doesn't exist, upsert/insert the record
-        const insertData = {
-          id: id,
-          ...updateData,
-          daily_room_name: meeting?.daily_room_name || id,
-          host_id: user?.id || null,
-          company_id: user?.company_id || null,
-          space_id: spaceId || null,
-          started_at: meeting?.started_at || new Date().toISOString()
-        };
+      // Only attempt update-by-pk when id is a valid UUID
+      if (isValidUUID(id)) {
+        const { data, error } = await supabase
+          .from('clipad_meeting_records')
+          .update(updateData)
+          .eq('id', id)
+          .select();
+        if (!error && data && data.length > 0) saved = true;
+      }
+
+      if (!saved) {
+        // id is a short room name OR update matched no rows — upsert with a valid UUID
+        const stableId =
+          (meeting?.id && isValidUUID(meeting.id))
+            ? meeting.id
+            : crypto.randomUUID();
+
         const { error: insertError } = await supabase
           .from('clipad_meeting_records')
-          .upsert(insertData);
+          .upsert(
+            {
+              id: stableId,
+              ...updateData,
+              daily_room_name: meeting?.daily_room_name || id,
+              host_id: user?.id || null,
+              company_id: companyId,
+              space_id: spaceId || null,
+              started_at: meeting?.started_at || new Date().toISOString()
+            },
+            { onConflict: 'id' }
+          );
         if (insertError) throw insertError;
       }
 
@@ -167,13 +181,16 @@ export default function SaveMeetingPage() {
         });
       } catch (_) {}
 
-      toast({ title: 'Meeting Saved', description: 'Your meeting record has been updated.' });
+      toast({ title: 'Meeting Saved ✓', description: 'Your meeting record has been published.' });
       navigate(`/clipad/meeting/${id}`);
     } catch (err) {
-      console.error(err);
-      toast({ title: 'Save Error', description: err.message || 'Failed to save to database. Redirecting anyway.', variant: 'destructive' });
-      // Fallback navigation so the user is never stuck on a broken screen
-      navigate('/clipad');
+      console.error('SaveMeetingPage handleSave error:', err);
+      toast({
+        title: 'Save Error',
+        description: 'Could not save to secure cloud. Please try again.',
+        variant: 'destructive'
+      });
+      // Don't redirect — let the user retry
     } finally {
       setSaving(false);
     }
@@ -198,11 +215,11 @@ export default function SaveMeetingPage() {
         </div>
 
         <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-slate-200 dark:border-border p-8 space-y-8">
-          
+
           {/* Title */}
           <div>
             <label className="block text-sm font-semibold text-slate-700 dark:text-foreground mb-2">Meeting Title</label>
-            <Input 
+            <Input
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="e.g. Q3 Roadmap Planning"
@@ -247,8 +264,8 @@ export default function SaveMeetingPage() {
                 </div>
               </div>
             </div>
-          
-          {lockType === 'scheduled' && (
+
+            {lockType === 'scheduled' && (
               <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
@@ -263,9 +280,9 @@ export default function SaveMeetingPage() {
           </div>
 
           <div className="pt-6 border-t border-slate-100 dark:border-border flex justify-between items-center">
-             <div className="text-sm text-slate-500 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-500" /> AI is processing the transcript in the background
-             </div>
+            <div className="text-sm text-slate-500 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-500" /> AI is processing the transcript in the background
+            </div>
             <Button onClick={handleSave} disabled={saving} className="bg-primary text-white rounded-full px-8">
               {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
               Publish Meeting

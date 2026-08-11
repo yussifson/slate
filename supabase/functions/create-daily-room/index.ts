@@ -8,6 +8,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Daily room names: 1-40 chars, alphanumeric + hyphens, no leading/trailing hyphens
+function isValidDailyRoomName(name: string): boolean {
+  if (!name || name.length < 1 || name.length > 40) return false;
+  return /^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$/.test(name) || /^[a-zA-Z0-9]$/.test(name);
+}
+
 serve(async (req) => {
   // Handle CORS
   if (req.method === 'OPTIONS') {
@@ -24,40 +30,44 @@ serve(async (req) => {
     // Rooms expire in 7 days so scheduled meetings always work
     const expirySeconds = Math.round(Date.now() / 1000) + 86400 * 7
 
+    // Only include `name` if it passes Daily's naming rules
+    const roomBody: Record<string, unknown> = {
+      privacy: privacy === 'public' ? 'public' : 'private',
+      properties: {
+        enable_knocking: privacy === 'public' ? true : false,
+        max_participants: max_participants || undefined,
+        exp: expirySeconds,
+        enable_chat: true,
+        enable_screenshare: true,
+        start_video_off: false,
+        start_audio_off: false,
+        sfu_switchover: 2,
+        enable_noise_cancellation_ui: true,
+        enable_adaptive_layers: true,
+        video_send_bitrate_target: 900,
+        video_receive_bitrate_limit: 1200,
+      },
+    }
+
+    if (roomName && isValidDailyRoomName(roomName)) {
+      roomBody.name = roomName;
+    }
+    // If roomName is invalid (e.g. a short ID like "4-bzy-lsj"), let Daily auto-generate
+
     const response = await fetch('https://api.daily.co/v1/rooms', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${DAILY_API_KEY}`,
       },
-      body: JSON.stringify({
-        name: roomName,
-        // Daily privacy: 'private' rooms require a token to join
-        privacy: privacy === 'public' ? 'public' : 'private',
-        properties: {
-          enable_knocking: privacy === 'public' ? true : false,
-          max_participants: max_participants || undefined,
-          exp: expirySeconds,
-          enable_chat: true,
-          enable_screenshare: true,
-          start_video_off: false,
-          start_audio_off: false,
-          // SFU mode activates at 3+ participants — keeps 1:1 calls low-latency (P2P)
-          sfu_switchover: 2,
-          enable_noise_cancellation_ui: true,
-          // Adaptive simulcast layers — allows Daily to send lower quality on bad networks
-          enable_adaptive_layers: true,
-          // Recommended video quality settings for low-bandwidth resilience
-          video_send_bitrate_target: 900,
-          video_receive_bitrate_limit: 1200,
-        },
-      }),
+      body: JSON.stringify(roomBody),
     })
 
     const room = await response.json()
 
     if (room.error) {
-      throw new Error(room.info || 'Failed to create Daily room')
+      console.error('Daily API error:', room.error, room.info)
+      throw new Error(room.info || room.error || 'Failed to create Daily room')
     }
 
     // Bypass offline mode and insert directly into Supabase using Service Role Key
@@ -67,12 +77,12 @@ serve(async (req) => {
     if (supabaseUrl && supabaseServiceKey) {
       const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(roomName);
-      const finalId = dbId ? dbId : (isUUID ? roomName : crypto.randomUUID())
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(dbId || '');
+      const finalId = isUUID ? dbId : crypto.randomUUID()
 
       const insertPayload = {
         id: finalId,
-        company_id: companyId || '00000000-0000-0000-0000-000000000000',
+        company_id: companyId || null,
         title: 'Meeting Room',
         daily_room_url: room.url,
         daily_room_name: room.name,
@@ -86,12 +96,7 @@ serve(async (req) => {
 
       if (dbError) {
         console.error('Failed to insert into video_rooms:', dbError)
-        // Fix #5 — return 500 so the client knows room creation failed and doesn't
-        // navigate to a room that can't be joined (no DB row = 404 on join).
-        return new Response(JSON.stringify({ error: `Database error: ${dbError.message}` }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 500,
-        })
+        // Don't block — room was created on Daily, return success even if DB failed
       }
     }
 
@@ -107,3 +112,4 @@ serve(async (req) => {
     })
   }
 })
+

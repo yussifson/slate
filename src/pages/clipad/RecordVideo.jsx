@@ -1705,21 +1705,34 @@ export default function RecordVideo() {
           </>
         )}
 
-        {/* ── SLEEK MINIMALIST COUNTDOWN OVERLAY ── */}
+        {/* ── PREMIUM COUNTDOWN OVERLAY ── */}
         {countdown !== null && countdown > 0 && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-md transition-all duration-300">
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <motion.div 
               key={countdown}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.1, opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="flex items-center gap-4 bg-zinc-900/90 dark:bg-zinc-900/95 border border-white/10 px-8 py-5 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-2xl"
+              initial={{ scale: 0.6, opacity: 0, y: 8 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 1.2, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+              className="flex flex-col items-center gap-3"
             >
-              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-extrabold text-white tracking-tight">{countdown}</span>
-                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Get Ready</span>
+              {/* Big number */}
+              <div className="relative flex items-center justify-center w-28 h-28">
+                {/* Outer ring pulse */}
+                <div className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping" style={{ animationDuration: '1s' }} />
+                <div className="absolute inset-0 rounded-full border border-primary/20" />
+                {/* Number */}
+                <span className="text-7xl font-black text-white tabular-nums tracking-tight" style={{ textShadow: '0 0 40px hsl(var(--primary) / 0.6)' }}>
+                  {countdown}
+                </span>
+              </div>
+              {/* Label */}
+              <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-black/40 backdrop-blur border border-white/10">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: 'hsl(var(--primary))' }} />
+                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: 'hsl(var(--primary))' }} />
+                </span>
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Get Ready</span>
               </div>
             </motion.div>
           </div>
