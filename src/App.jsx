@@ -1365,9 +1365,13 @@ function ProtectedRoute() {
 }
 
 function SuperAdminRoute() {
-  const { user } = useAuth();
-  // Protect super admin routes
-  if (user?.role !== 'super_admin') {
+  const { user, isLoadingAuth } = useAuth();
+  // Wait for auth to finish loading before deciding — prevents flash-redirect
+  // when the user object hasn't been hydrated yet from Supabase.
+  if (isLoadingAuth) return null;
+  // Check both top-level role and user_metadata.role (set during sign-up)
+  const role = user?.role || user?.user_metadata?.role;
+  if (role !== 'super_admin') {
     return <Navigate to="/" replace />;
   }
   return <Outlet />;
@@ -1474,6 +1478,8 @@ function App() {
                             <Route path="/risk" element={<PredictiveRisk />} />
                             <Route path="/pulse" element={<OrgHealthPulse />} />
                             <Route path="/cross-space" element={<CrossSpaceIntelligence />} />
+                            <Route path="/admin" element={<SuperAdminDashboard />} />
+                            <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
                           </Route>
                         </Route>
                       <Route path="*" element={<Navigate to="/" replace />} />
