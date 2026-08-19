@@ -1,7 +1,7 @@
 -- Migration for CliPad Support System
 CREATE TABLE IF NOT EXISTS public.clipad_support_requests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
     user_email TEXT,
     subject TEXT,
     message TEXT NOT NULL,

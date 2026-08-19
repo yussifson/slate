@@ -2,11 +2,11 @@
 
 CREATE TABLE IF NOT EXISTS public.support_chats (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     user_name TEXT,
     user_email TEXT,
     status TEXT DEFAULT 'ai_handling' CHECK (status IN ('ai_handling', 'escalated', 'admin_joined', 'resolved')),
-    admin_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+    admin_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS public.support_messages (
 
 CREATE TABLE IF NOT EXISTS public.support_callbacks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     user_name TEXT,
     user_email TEXT,
     phone_number TEXT NOT NULL,
     reason TEXT NOT NULL,
     preferred_time TEXT,
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'contacted', 'resolved')),
-    admin_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+    admin_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

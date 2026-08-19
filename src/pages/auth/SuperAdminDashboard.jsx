@@ -4,8 +4,10 @@ import {
   MessageSquare, Phone, Database, Settings, ShieldCheck, TerminalSquare, AlertCircle, PanelLeftClose, PanelLeftOpen, Check
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 export default function SuperAdminDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
@@ -326,7 +328,7 @@ export default function SuperAdminDashboard() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
+                          <button onClick={() => navigate('/admin/users')} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
                         </td>
                       </tr>
                     )) : (
@@ -359,12 +361,17 @@ export default function SuperAdminDashboard() {
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{c.industry_type || 'General'}</td>
                         <td className="px-6 py-4 text-sm">
-                          <span className="px-2 py-1 rounded bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 text-xs font-medium">
-                            Enterprise
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            c.subscription_plan === 'enterprise' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
+                            c.subscription_plan === 'professional' || c.subscription_plan === 'firm_plus' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                            c.subscription_plan === 'starter' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                            'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                          }`}>
+                            {c.subscription_plan ? c.subscription_plan.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Free'}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
+                          <button onClick={() => navigate('/admin/firms')} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
                         </td>
                       </tr>
                     )) : (
