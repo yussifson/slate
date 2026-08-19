@@ -1479,6 +1479,8 @@ function App() {
                             <Route path="/pulse" element={<OrgHealthPulse />} />
                             <Route path="/cross-space" element={<CrossSpaceIntelligence />} />
                             <Route path="/admin" element={<SuperAdminDashboard />} />
+                            <Route path="/admin/firms" element={<AdminFirms />} />
+                            <Route path="/admin/users" element={<AdminUsers />} />
                             <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
                           </Route>
                         </Route>
@@ -1505,6 +1507,8 @@ function App() {
                            <Route path="/docs" element={<AccountDocs />} />
                            <Route path="/tutorials" element={<AccountTutorials />} />
                            <Route path="/admin" element={<SuperAdminDashboard />} />
+                           <Route path="/admin/firms" element={<AdminFirms />} />
+                           <Route path="/admin/users" element={<AdminUsers />} />
                            {/* Catch all for inner layout routes that don't exist */}
                            <Route path="*" element={<Navigate to="/" replace />} />
                         </Route>

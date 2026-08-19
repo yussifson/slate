@@ -69,7 +69,7 @@ export default function ClipadAdminLayout() {
 
         <div className="p-4 border-t border-border space-y-2">
           <button 
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/clipad')}
             className="flex items-center w-full gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />

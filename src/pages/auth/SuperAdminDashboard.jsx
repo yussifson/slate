@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Users, Building2, Activity, ArrowUpRight, Search, CheckCircle2, ShieldAlert,
-  MessageSquare, Phone, Database, Settings, ShieldCheck, TerminalSquare, AlertCircle, PanelLeftClose, PanelLeftOpen, Check
+  MessageSquare, Phone, Database, Settings, ShieldCheck, TerminalSquare, AlertCircle, PanelLeftClose, PanelLeftOpen, Check,
+  X, ExternalLink, Save
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +20,54 @@ export default function SuperAdminDashboard() {
   const [callbacks, setCallbacks] = useState([]);
   const [clipadSupport, setClipadSupport] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [savingModal, setSavingModal] = useState(false);
+  const [modalSuccessMsg, setModalSuccessMsg] = useState('');
+
+  const handleSaveCompany = async () => {
+    if (!selectedCompany) return;
+    setSavingModal(true);
+    setModalSuccessMsg('');
+    const { error } = await supabase
+      .from('companies')
+      .update({
+        subscription_plan: selectedCompany.subscription_plan,
+        status: selectedCompany.status || 'active',
+        name: selectedCompany.name
+      })
+      .eq('id', selectedCompany.id);
+
+    setSavingModal(false);
+    if (!error) {
+      setCompanies(prev => prev.map(c => c.id === selectedCompany.id ? selectedCompany : c));
+      setModalSuccessMsg('Workspace plan & settings updated!');
+      setTimeout(() => { setSelectedCompany(null); setModalSuccessMsg(''); }, 1200);
+    } else {
+      alert('Failed to update workspace: ' + error.message);
+    }
+  };
+
+  const handleSaveUser = async () => {
+    if (!selectedUser) return;
+    setSavingModal(true);
+    setModalSuccessMsg('');
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        role: selectedUser.role
+      })
+      .eq('id', selectedUser.id);
+
+    setSavingModal(false);
+    if (!error) {
+      setUsers(prev => prev.map(u => u.id === selectedUser.id ? selectedUser : u));
+      setModalSuccessMsg('User role updated!');
+      setTimeout(() => { setSelectedUser(null); setModalSuccessMsg(''); }, 1200);
+    } else {
+      alert('Failed to update user: ' + error.message);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -328,7 +377,7 @@ export default function SuperAdminDashboard() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button onClick={() => navigate('/admin/users')} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
+                          <button onClick={() => setSelectedUser(u)} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
                         </td>
                       </tr>
                     )) : (
@@ -371,7 +420,7 @@ export default function SuperAdminDashboard() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-right">
-                          <button onClick={() => navigate('/admin/firms')} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
+                          <button onClick={() => setSelectedCompany(c)} className="text-sm text-blue-600 dark:text-blue-400 font-medium hover:underline">Manage</button>
                         </td>
                       </tr>
                     )) : (
@@ -516,6 +565,156 @@ export default function SuperAdminDashboard() {
         
         {renderTabContent()}
       </div>
+
+      {/* WORKSPACE MANAGEMENT MODAL */}
+      {selectedCompany && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-card border border-gray-200 dark:border-gray-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-base">Manage Workspace</h3>
+                  <p className="text-xs text-gray-500">{selectedCompany.name}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedCompany(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-lg">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1.5 text-xs uppercase tracking-wider">Company Name</label>
+                <input 
+                  type="text" 
+                  value={selectedCompany.name || ''} 
+                  onChange={e => setSelectedCompany({ ...selectedCompany, name: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-primary outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1.5 text-xs uppercase tracking-wider">Subscription Plan</label>
+                <select 
+                  value={selectedCompany.subscription_plan || 'free'} 
+                  onChange={e => setSelectedCompany({ ...selectedCompany, subscription_plan: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-primary outline-none capitalize"
+                >
+                  <option value="free">Free</option>
+                  <option value="starter">Starter</option>
+                  <option value="professional">Professional</option>
+                  <option value="firm_plus">Firm Plus</option>
+                  <option value="enterprise">Enterprise</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1.5 text-xs uppercase tracking-wider">Workspace Status</label>
+                <select 
+                  value={selectedCompany.status || 'active'} 
+                  onChange={e => setSelectedCompany({ ...selectedCompany, status: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-primary outline-none capitalize"
+                >
+                  <option value="active">Active</option>
+                  <option value="suspended">Suspended</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+            </div>
+
+            {modalSuccessMsg && (
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl text-xs font-medium flex items-center gap-2">
+                <Check className="w-4 h-4" /> {modalSuccessMsg}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
+              <button 
+                onClick={() => { setSelectedCompany(null); navigate('/admin/firms'); }} 
+                className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium"
+              >
+                <ExternalLink className="w-3.5 h-3.5" /> Open Full Firm Controller
+              </button>
+              <div className="flex gap-2">
+                <button onClick={() => setSelectedCompany(null)} className="px-4 py-2 rounded-xl text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  Cancel
+                </button>
+                <button onClick={handleSaveCompany} disabled={savingModal} className="px-4 py-2 rounded-xl text-xs font-medium bg-primary text-white hover:bg-primary/90 transition-colors flex items-center gap-1.5">
+                  <Save className="w-3.5 h-3.5" /> {savingModal ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* USER MANAGEMENT MODAL */}
+      {selectedUser && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-card border border-gray-200 dark:border-gray-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-base">Manage User Access</h3>
+                  <p className="text-xs text-gray-500">{selectedUser.email || selectedUser.first_name || 'User Profile'}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedUser(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-lg">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1.5 text-xs uppercase tracking-wider">User Role</label>
+                <select 
+                  value={selectedUser.role || 'user'} 
+                  onChange={e => setSelectedUser({ ...selectedUser, role: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-primary outline-none capitalize"
+                >
+                  <option value="user">User</option>
+                  <option value="company_admin">Company Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                  <option value="lawyer">Lawyer</option>
+                  <option value="paralegal">Paralegal</option>
+                  <option value="hr">HR</option>
+                  <option value="finance">Finance</option>
+                  <option value="support">Support</option>
+                </select>
+              </div>
+            </div>
+
+            {modalSuccessMsg && (
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl text-xs font-medium flex items-center gap-2">
+                <Check className="w-4 h-4" /> {modalSuccessMsg}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
+              <button 
+                onClick={() => { setSelectedUser(null); navigate('/admin/users'); }} 
+                className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium"
+              >
+                <ExternalLink className="w-3.5 h-3.5" /> Open Full User Manager
+              </button>
+              <div className="flex gap-2">
+                <button onClick={() => setSelectedUser(null)} className="px-4 py-2 rounded-xl text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  Cancel
+                </button>
+                <button onClick={handleSaveUser} disabled={savingModal} className="px-4 py-2 rounded-xl text-xs font-medium bg-primary text-white hover:bg-primary/90 transition-colors flex items-center gap-1.5">
+                  <Save className="w-3.5 h-3.5" /> {savingModal ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
