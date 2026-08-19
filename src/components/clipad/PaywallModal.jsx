@@ -41,9 +41,19 @@ export const PaywallModal = ({ isOpen, onClose, featureName = "This feature", li
             `UPDATE profiles SET subscription_tier = ?, paystack_customer_id = ?, subscription_active_until = ? WHERE id = ?`,
             ['pro', response.reference, nextMonth.toISOString(), user.id]
           );
+
+          if (user?.company_id) {
+            try {
+              await supabase
+                .from('companies')
+                .update({ subscription_plan: 'pro', subscription_status: 'active' })
+                .eq('id', user.company_id);
+            } catch (e) {}
+          }
           
           setIsLoading(false);
           onClose(true); // true indicates successful upgrade
+          window.location.reload();
         } catch (dbError) {
           console.error("Failed to update subscription status:", dbError);
           setError("Payment succeeded but failed to update status. Please contact support.");

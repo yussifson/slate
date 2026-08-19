@@ -630,10 +630,16 @@ export const AuthProvider = ({ children }) => {
         avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',
         clipad_plan: (() => {
+          const role = profile?.role || sessionUser.user_metadata?.role;
+          if (['super_admin', 'admin'].includes(role)) return 'enterprise';
+
+          const planStr = (companyData?.subscription_plan || profile?.subscription_tier || '').toLowerCase().trim();
           const tagName = (companyData?.clipad_pricing_tags?.name || '').toLowerCase().trim();
-          if (tagName.includes('enterprise')) return 'enterprise';
-          if (tagName.includes('pro')) return 'pro';
-          return 'free'; // Default: all companies start on free unless explicitly upgraded
+
+          if (planStr.includes('enterprise') || tagName.includes('enterprise')) return 'enterprise';
+          if (planStr.includes('pro') || planStr.includes('professional') || planStr.includes('firm_plus') || planStr.includes('starter') || tagName.includes('pro')) return 'pro';
+
+          return 'free';
         })(),
         subscription_status: companyData?.subscription_status || 'trial',
         company_status: companyData?.status || 'active',
