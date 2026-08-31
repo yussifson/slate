@@ -21,10 +21,18 @@ export default function SignUp() {
   const isElectron = isDesktopApp();
   const { isAuthenticated, user, profile, isLoadingAuth} = useAuth();
  
- const { baseDomain, currentSubdomain } = getSubdomainAndBase();
- const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
- const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
- const showOptavelButtonOnly = !!currentSubdomain && !isRootAccount && !isLocalhost && !isElectron;
+  const { baseDomain, currentSubdomain, isCustomDomain } = getSubdomainAndBase();
+  const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
+  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const showOptavelButtonOnly = !!currentSubdomain && !isRootAccount && !isLocalhost && !isElectron;
+
+  // Block Sign Up page on tenant subdomains & custom domains (sign up is only accessible on main domain)
+  useEffect(() => {
+    const isMainDomain = !currentSubdomain && !isCustomDomain;
+    if (!isMainDomain && !isElectron) {
+      navigate('/login', { replace: true });
+    }
+  }, [currentSubdomain, isCustomDomain, isElectron, navigate]);
 
   const handleOptavelSSO = () => {
     const idpDomain = isLocalhost ? `http://account.localhost:${window.location.port || '5173'}` : 'https://account.optavel.com';

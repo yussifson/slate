@@ -53,7 +53,7 @@ export default function Login() {
     return LOGIN_QUOTES[Math.floor(Math.random() * LOGIN_QUOTES.length)];
  }, []);
 
- const { currentSubdomain, baseDomain} = getSubdomainAndBase();
+ const { currentSubdomain, baseDomain, isCustomDomain } = getSubdomainAndBase();
  const { isAuthenticated, user, isLoadingAuth} = useAuth();
 
  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
@@ -673,18 +673,20 @@ export default function Login() {
     </Button>
   </form>
 
-  <div className="text-center mt-10">
-    <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
-    {isElectron ? (
-      <Link to="/signup" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-        {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
-      </Link>
-    ) : (
-      <a href={`${getMainAppUrl()}/signup`} className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-        {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
-      </a>
-    )}
-  </div>
+  {(!currentSubdomain && !isCustomDomain) && (
+    <div className="text-center mt-10">
+      <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
+      {isElectron ? (
+        <Link to="/signup" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+          {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+        </Link>
+      ) : (
+        <a href={`${getMainAppUrl()}/signup`} className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+          {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+        </a>
+      )}
+    </div>
+  )}
  </div>
  </div>
 
@@ -692,7 +694,7 @@ export default function Login() {
   <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden p-8">
     <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
-    {(currentSubdomain || branding.name !== 'Slate') ? (
+    {(currentSubdomain || isCustomDomain || branding.name !== 'Slate') ? (
       <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
     ) : (
       <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 lg:p-16 flex flex-col justify-center relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
