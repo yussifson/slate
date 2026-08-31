@@ -320,7 +320,7 @@ export default function Viewings() {
                 console.error('Error creating viewing:', error);
                 toast.error('Failed to schedule viewing');
               }
-            }} className="space-y-4 mt-6">
+            }} className="space-y-4 mt-6 pb-28 sm:pb-6">
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Property ID</label>
                 <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />

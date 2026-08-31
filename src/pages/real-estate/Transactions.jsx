@@ -423,7 +423,7 @@ export default function Transactions() {
               <SheetTitle className="text-2xl font-bold dark:text-white">{editingId ? 'Edit Transaction' : 'New Transaction'}</SheetTitle>
               <SheetDescription className="dark:text-gray-400">Fill in the transaction details below</SheetDescription>
             </SheetHeader>
-            <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+            <form onSubmit={handleSubmit} className="space-y-6 mt-8 pb-28 sm:pb-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Property Address <span className="text-red-500">*</span></label>
                 <Input className="dark:bg-card dark:border-white/10 dark:text-white" value={formData.propertyAddress} onChange={(e) => setFormData({ ...formData, propertyAddress: e.target.value })} required />

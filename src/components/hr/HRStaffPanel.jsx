@@ -109,8 +109,8 @@ function StaffFormDialog({ open, onClose, onSubmit, initialData }) {
       <DialogContent className="max-w-lg">
         <DialogHeader><DialogTitle>{initialData ? "Edit Staff Member" : "Add Staff Member"}</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2"><Label>{t("full_name", "Full Name *")}</Label><Input value={form.full_name} onChange={e => set("full_name", e.target.value)} required /></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="col-span-1 sm:col-span-2"><Label>{t("full_name", "Full Name *")}</Label><Input value={form.full_name} onChange={e => set("full_name", e.target.value)} required /></div>
             <div><Label>{t("email", "Email *")}</Label><Input type="email" value={form.user_email} onChange={e => set("user_email", e.target.value)} required /></div>
             <div><Label>{t("phone", "Phone")}</Label><Input value={form.phone} onChange={e => set("phone", e.target.value)} /></div>
             <div>
@@ -141,7 +141,7 @@ function StaffFormDialog({ open, onClose, onSubmit, initialData }) {
             <div><Label>{t("leave_balance_days", "Leave Balance (days)")}</Label><Input type="number" min="0" value={form.leave_balance} onChange={e => set("leave_balance", Number(e.target.value))} /></div>
             <div><Label>{t("bar_number", "Bar Number")}</Label><Input value={form.bar_number} onChange={e => set("bar_number", e.target.value)} placeholder="For lawyers" /></div>
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border/40 mt-4">
             <Button type="button" variant="outline" onClick={onClose}>{t("cancel", "Cancel")}</Button>
             <Button type="submit">{initialData ? "Update" : "Add"} {t("staff", "Staff")}</Button>
           </div>

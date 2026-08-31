@@ -301,42 +301,42 @@ export default function UnivHREmployee() {
  )}
 
  {isModalOpen&&(
- <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
- <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-xl font-black">{editingId?'Edit Employee':'Add Employee'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5"/></button></div>
- <form onSubmit={save} className="p-5 overflow-y-auto flex-1 custom-scrollbar">
- <div className="grid grid-cols-2 gap-4">
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">First Name *</label><input required type="text" value={form.first_name} onChange={e=>setForm({...form,first_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Last Name *</label><input required type="text" value={form.last_name} onChange={e=>setForm({...form,last_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email *</label><input required type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" disabled={!!editingId} /></div>
- {!editingId && (
-   <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Temp Password *</label><input required type="text" value={password} onChange={e=>setPassword(e.target.value)} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Min 6 characters"/></div>
- )}
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Role / Title</label>
- <select value={form.role_title} onChange={e=>setForm({...form, role_title: e.target.value})} className="w-full h-10 px-3 border border-border rounded-lg bg-background text-sm">
- <option value="">Select Role</option>
- {roles.map(r=><option key={r} value={r}>{r}</option>)}
- </select>
- </div>
- <div>
- <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Department</label>
- <select value={form.department} onChange={e=>setForm({...form, department: e.target.value})} className="w-full h-10 px-3 border border-border rounded-lg bg-background text-sm">
- <option value="">Select Department</option>
- {departments.map(d=><option key={d} value={d}>{d}</option>)}
- </select>
- </div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employment Type</label><select value={form.employment_type} onChange={e=>setForm({...form,employment_type:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Intern</option></select></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Active</option><option>Onboarding</option><option>On Leave</option><option>Terminated</option></select></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Salary ($)</label><input type="number" min="0" value={form.salary} onChange={e=>setForm({...form,salary:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Hire Date</label><input type="date" value={form.hire_date} onChange={e=>setForm({...form,hire_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- </div>
- <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold ">{editingId?'Update':'Add Employee'}</button></div>
- </form>
- </div>
- </div>
- )}
+  <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+  <div className="bg-card w-full max-w-2xl rounded-2xl flex flex-col max-h-[92dvh] sm:max-h-[90vh] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+  <div className="p-4 sm:p-5 border-b border-primary/40 flex justify-between items-center shrink-0"><h2 className="text-lg sm:text-xl font-black">{editingId?'Edit Employee':'Add Employee'}</h2><button onClick={closeModal} className="p-2 bg-muted rounded-full text-[#71717a] dark:text-gray-400"><XCircle className="w-5 h-5"/></button></div>
+  <form onSubmit={save} className="p-4 sm:p-5 pb-28 sm:pb-5 overflow-y-auto flex-1 custom-scrollbar">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">First Name *</label><input required type="text" value={form.first_name} onChange={e=>setForm({...form,first_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Last Name *</label><input required type="text" value={form.last_name} onChange={e=>setForm({...form,last_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Email *</label><input required type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" disabled={!!editingId} /></div>
+  {!editingId && (
+    <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Temp Password *</label><input required type="text" value={password} onChange={e=>setPassword(e.target.value)} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm" placeholder="Min 6 characters"/></div>
+  )}
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Phone</label><input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+  <div>
+  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Role / Title</label>
+  <select value={form.role_title} onChange={e=>setForm({...form, role_title: e.target.value})} className="w-full h-10 px-3 border border-border rounded-lg bg-background text-sm">
+  <option value="">Select Role</option>
+  {roles.map(r=><option key={r} value={r}>{r}</option>)}
+  </select>
+  </div>
+  <div>
+  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1 block">Department</label>
+  <select value={form.department} onChange={e=>setForm({...form, department: e.target.value})} className="w-full h-10 px-3 border border-border rounded-lg bg-background text-sm">
+  <option value="">Select Department</option>
+  {departments.map(d=><option key={d} value={d}>{d}</option>)}
+  </select>
+  </div>
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Employment Type</label><select value={form.employment_type} onChange={e=>setForm({...form,employment_type:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Intern</option></select></div>
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"><option>Active</option><option>Onboarding</option><option>On Leave</option><option>Terminated</option></select></div>
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Salary ($)</label><input type="number" min="0" value={form.salary} onChange={e=>setForm({...form,salary:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Hire Date</label><input type="date" value={form.hire_date} onChange={e=>setForm({...form,hire_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+  </div>
+  <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-primary/40"><button type="button" onClick={closeModal} className="h-10 px-5 bg-muted rounded-xl text-sm font-medium">Cancel</button><button type="submit" className="h-10 px-5 bg-primary text-white rounded-xl text-sm font-semibold ">{editingId?'Update':'Add Employee'}</button></div>
+  </form>
+  </div>
+  </div>
+  )}
  </div>
  );
 }

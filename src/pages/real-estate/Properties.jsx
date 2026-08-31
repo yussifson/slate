@@ -385,7 +385,7 @@ export default function Properties() {
             <SheetDescription>Fill in the property details below</SheetDescription>
           </SheetHeader>
           
-          <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+          <form onSubmit={handleSubmit} className="space-y-4 mt-6 pb-28 sm:pb-6">
             <div>
               <label className="text-sm font-medium">Address</label>
               <Input

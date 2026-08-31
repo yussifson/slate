@@ -348,7 +348,7 @@ export default function Leases() {
             <SheetDescription>Create a new rental agreement for your property.</SheetDescription>
           </SheetHeader>
           
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 pb-28 sm:pb-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Property Address</label>
               <Input
