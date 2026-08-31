@@ -12,6 +12,7 @@ import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
 import { toast} from 'react-hot-toast';
 import SEO from '@/components/seo/SEO';
+import IndustryFeatureShowcase from '@/components/shared/IndustryFeatureShowcase';
 
 
 const LOGIN_QUOTES = [
@@ -154,12 +155,12 @@ export default function Login() {
 
        if (!brandData) {
         console.log("RPC missed, trying direct table query...");
-        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, logo_light_url, tagline').or(`subdomain.ilike.${cleanSub},custom_domain.ilike.${cleanSub}`).maybeSingle();
+        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, logo_light_url, tagline, industry_type').or(`subdomain.ilike.${cleanSub},custom_domain.ilike.${cleanSub}`).maybeSingle();
         
         if (directData) {
           brandData = directData;
         } else {
-          const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, logo_light_url, tagline FROM companies WHERE LOWER(subdomain) = ? OR LOWER(custom_domain) = ? LIMIT 1', [cleanSub, cleanSub]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
+          const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, logo_light_url, tagline, industry_type FROM companies WHERE LOWER(subdomain) = ? OR LOWER(custom_domain) = ? LIMIT 1', [cleanSub, cleanSub]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
           brandData = tableData;
         }
        }
@@ -686,37 +687,40 @@ export default function Login() {
   </div>
  </div>
  </div>
- {/* Right Side: Marketing Visual */}
- <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden">
- {/* Abstract Pattern Background */}
- <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
 
- <div className="relative z-10 w-full max-w-2xl bg-white rounded-md-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 -[0_20px_60px_-15px_rgba(0,0,0,0.05)] p-12 lg:p-16 flex flex-col justify-center relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
- 
- <div className="relative z-10">
- <div className="flex gap-2 mb-8">
- {[1, 2, 3, 4, 5].map(s => {
- return (<svg key={s} className="w-6 h-6 text-amber-400 fill-amber-400 " viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>);
-})}
- </div>
- 
- <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight tracking-[-0.02em]">
- {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
- </p>
- 
- <div className="flex items-center gap-5 pt-8 relative z-10">
- <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl ">
- {randomQuote.initials}
- </div>
- <div>
- <p className="text-xl font-semibold text-slate-900 tracking-tight">{randomQuote.name}</p>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
+  {/* Right Side: Marketing Visual */}
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden p-8">
+    <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
+
+    {(currentSubdomain || branding.name !== 'Slate') ? (
+      <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
+    ) : (
+      <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 lg:p-16 flex flex-col justify-center relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
+        
+        <div className="relative z-10">
+          <div className="flex gap-2 mb-8">
+            {[1, 2, 3, 4, 5].map(s => (
+              <svg key={s} className="w-6 h-6 text-amber-400 fill-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+            ))}
+          </div>
+          
+          <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight tracking-[-0.02em]">
+            {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
+          </p>
+          
+          <div className="flex items-center gap-5 pt-8 relative z-10">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl">
+              {randomQuote.initials}
+            </div>
+            <div>
+              <p className="text-xl font-semibold text-slate-900 tracking-tight">{randomQuote.name}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
   </div>
- );
+  </div>
+  );
 }

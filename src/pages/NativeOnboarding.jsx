@@ -1,27 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Layers, ArrowRight, ChevronRight, Zap } from 'lucide-react';
+import { ShieldCheck, Layers, ArrowRight, ChevronRight, Zap, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { Logo } from '@/components/ui/Logo';
+import { fetchCompanyBrandingFromDomain, cleanLogo } from '@/lib/companyDomainResolver';
 
 export default function NativeOnboarding() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [companyBranding, setCompanyBranding] = useState(null);
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    let active = true;
+    fetchCompanyBrandingFromDomain().then(res => {
+      if (active && res?.company?.name) {
+        setCompanyBranding(res.company);
+      }
+    });
+    return () => { active = false; };
+  }, []);
+
+  const companyName = companyBranding?.name || 'Slate';
+  const customLogoUrl = cleanLogo(companyBranding?.logo_url || companyBranding?.logo_light_url);
 
   const slides = [
     {
       id: 'welcome',
-      icon: <Logo className="w-16 h-16 text-primary drop-shadow-md" />,
-      title: 'Welcome to Slate',
-      description: 'The unified business operating system engineered for modern enterprises.',
+      icon: customLogoUrl ? (
+        <img src={customLogoUrl} alt={companyName} className="w-16 h-16 object-contain drop-shadow-md rounded-xl" />
+      ) : (
+        <Logo className="w-16 h-16 text-primary drop-shadow-md" />
+      ),
+      title: `Welcome to ${companyName}`,
+      description: companyBranding?.tagline || (companyBranding?.name ? `Your unified digital operating workspace.` : 'The unified business operating system engineered for modern enterprises.'),
     },
     {
       id: 'features',
       icon: <Layers className="w-16 h-16 text-primary drop-shadow-md" />,
-      title: 'Built for Scale',
+      title: companyBranding?.name ? `Tailored for ${companyBranding.name}` : 'Built for Scale',
       description: 'Connect your entire workforce with powerful tools, seamless integrations, and real-time insights.',
     },
     {
