@@ -177,25 +177,19 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
  </button>
 
- {/* Center: Page Title / Logo */}
- <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-none max-w-[200px] justify-center">
- {location.pathname === '/' ? (
-   <>
-    {company?.logo_url ? (
-      <img src={company.logo_url} alt={activeCompanyName} className="h-5.5 w-auto object-contain max-w-[130px]" />
-    ) : (
-      <>
-       <div className="w-[18px] h-[18px] bg-primary rounded-[5px] flex items-center justify-center shrink-0">
-         <div className="w-2 h-2 bg-white rounded-sm transform rotate-45" />
-       </div>
-       <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[160px]">{activeCompanyName}</span>
-      </>
-    )}
-   </>
- ) : (
-   <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[150px]">{title}</span>
- )}
- </div>
+  {/* Center: Page Title / Logo */}
+  <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-none max-w-[200px] justify-center">
+  {location.pathname === '/' ? (
+    <>
+     <div className="w-[18px] h-[18px] bg-primary rounded-[5px] flex items-center justify-center shrink-0">
+       <div className="w-2 h-2 bg-white rounded-sm transform rotate-45" />
+     </div>
+     <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[160px]">{activeCompanyName}</span>
+    </>
+  ) : (
+    <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[150px]">{title}</span>
+  )}
+  </div>
 
  {/* Right: Search, AI & Notifications */}
  <div className="flex items-center gap-1">
