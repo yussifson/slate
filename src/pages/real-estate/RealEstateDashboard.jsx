@@ -171,33 +171,40 @@ export default function RealEstateDashboard() {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
       {/* ── Hero Header ── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#10b981] via-[#0d9488] to-[#0284c7] p-8 text-white shadow-lg">
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
-        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
-        <div className="absolute top-4 right-40 w-24 h-24 bg-white/5 rounded-full" />
-        <div className="relative z-10 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-white" />
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#10b981] via-[#0d9488] to-[#0284c7] p-5 sm:p-8 text-white shadow-xl border border-white/10">
+        <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+        <div className="absolute -top-6 -right-6 w-32 sm:w-40 h-32 sm:h-40 bg-white/10 rounded-full blur-xl pointer-events-none" />
+        <div className="absolute -bottom-10 -right-16 w-44 sm:w-56 h-44 sm:h-56 bg-white/5 rounded-full blur-xl pointer-events-none" />
+        <div className="absolute top-4 right-40 w-20 sm:w-24 h-20 sm:h-24 bg-white/5 rounded-full pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 mb-1.5 sm:mb-2">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-md rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border border-white/20 shadow-inner">
+                <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight">{t('real_estate_dashboard', "Real Estate Command")}</h1>
-                <p className="text-emerald-100 text-sm">Welcome back, {user?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Admin'} 👋</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight truncate leading-tight">{t('real_estate_dashboard', "Real Estate Command")}</h1>
+                <p className="text-emerald-100 text-xs sm:text-sm font-medium truncate">Welcome back, {user?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Admin'} 👋</p>
               </div>
             </div>
-            <p className="text-emerald-200 text-xs mt-1">
+            <p className="text-emerald-200/90 text-[11px] sm:text-xs font-medium pl-0.5 mt-1">
               {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
-          <div className="flex gap-2">
+
+          <div className="grid grid-cols-2 sm:flex items-center gap-2.5 w-full sm:w-auto pt-2 sm:pt-0 border-t border-white/10 sm:border-t-0">
             <RunIntelligenceButton vertical="real_estate" />
-            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur gap-2">
-              {isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-4 h-4" />}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleRefresh} 
+              disabled={isRefreshing}
+              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-md gap-2 h-9 text-xs sm:text-sm font-semibold rounded-xl"
+            >
+              {isRefreshing ? <OrbitLoader size="sm" /> : <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
               {isRefreshing ? "Refreshing..." : "Refresh"}
             </Button>
           </div>
