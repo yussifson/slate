@@ -1,11 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Minus, Maximize2, Minimize2, X } from 'lucide-react';
 
+import { useAuth } from '@/lib/AuthContext';
+import { useCompany } from '@/hooks/useCompanyId';
+
 // Show when actually inside Electron app OR when running in electron dev mode
 const isElectron = (typeof window !== 'undefined' && !!window.electronWindow)
   || import.meta.env.MODE === 'electron';
 
 export default function ElectronTitleBar() {
+  const { user } = useAuth();
+  const { company } = useCompany();
+  const activeCompanyName = company?.name || user?.company_name || user?.available_companies?.find(c => c.id === user?.company_id)?.name || "Slate";
   const [isMaximized, setIsMaximized] = useState(false);
 
   const checkMaximized = useCallback(async () => {
@@ -58,7 +64,7 @@ export default function ElectronTitleBar() {
           fontSize: '13px',
           letterSpacing: '-0.01em',
           textShadow: '0 1px 3px rgba(0,0,0,0.2)',
-        }}>Slate</span>
+        }}> {activeCompanyName}</span>
 
         <span style={{
           color: 'rgba(255,255,255,0.9)',
