@@ -170,12 +170,12 @@ export default function Leases() {
           </div>
         </div>
 
-        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        <div className="absolute top-4 right-4 flex gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <Button
             size="icon"
             variant="secondary"
             onClick={() => handleEdit(lease)}
-            className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
+            className="h-8 w-8 bg-white/90 dark:bg-black/90 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
             title="Edit Lease"
           >
             <Edit className="w-4 h-4" />
@@ -184,25 +184,25 @@ export default function Leases() {
             size="icon"
             variant="destructive"
             onClick={() => handleDelete(lease.id)}
-            className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+            className="h-8 w-8 bg-red-100/90 dark:bg-red-900/90 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
             title="Delete Lease"
           >
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6 text-sm flex-1 bg-muted/20 p-4 rounded-2xl border border-border/30 mt-2 relative z-10">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-5 text-xs sm:text-sm flex-1 bg-muted/20 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-border/30 mt-2 relative z-10">
           <div>
-            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Start Date</p>
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">Start Date</p>
             <p className="font-medium text-foreground">{new Date(lease.start_date).toLocaleDateString()}</p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">End Date</p>
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">End Date</p>
             <p className="font-medium text-foreground">{new Date(lease.end_date).toLocaleDateString()}</p>
           </div>
           <div className="col-span-2">
-            <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1">Monthly Rent</p>
-            <p className="font-bold text-primary dark:text-primary/80 text-lg">${Number(lease.monthly_rent || 0).toLocaleString()}</p>
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">Monthly Rent</p>
+            <p className="font-bold text-primary dark:text-primary/80 text-base sm:text-lg">${Number(lease.monthly_rent || 0).toLocaleString()}</p>
           </div>
         </div>
         
@@ -216,32 +216,32 @@ export default function Leases() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Leases</h1>
-            <p className="text-muted-foreground mt-2">Manage rental agreements and tenants</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground">Leases</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage rental agreements and tenants</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
-              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4"
             >
-              <Plus className="w-4 h-4 mr-2" /> Add Lease
+              <Plus className="w-4 h-4 mr-1.5" /> Add Lease
             </Button>
           </div>
         </div>
 
-        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm gap-4 flex-wrap">
-          <div className="relative flex-1 flex items-center min-w-[200px]">
-            <Search className="w-5 h-5 text-muted-foreground mr-2" />
+        <Card className="p-3 sm:p-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex flex-col sm:flex-row items-stretch sm:items-center rounded-2xl sm:rounded-3xl shadow-sm gap-3 sm:gap-4">
+          <div className="relative flex-1 flex items-center min-w-0">
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mr-2 shrink-0" />
             <Input
-              placeholder="Search by property, tenant..."
+              placeholder="Search leases by tenant, property..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-sm sm:text-base flex-1"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>

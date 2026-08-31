@@ -127,28 +127,23 @@ export default function Viewings() {
     <div className="min-h-screen bg-background p-6 transition-all duration-300 ease-in-out">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-              <div className="p-2.5 bg-primary/10 dark:bg-primary/30/30 rounded-xl shadow-sm border border-primary/20 dark:border-primary/40/50">
-                <Calendar className="w-7 h-7 text-primary dark:text-primary/80" />
-              </div>
-              Property Viewings
-            </h1>
-            <p className="text-slate-500 dark:text-muted-foreground mt-2 font-medium">Schedule and track property showings seamlessly</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground">Property Viewings</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Schedule and manage property tours with clients</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['calendar', 'list']} />
-            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0">
-              <Plus className="w-5 h-5 mr-2" /> Schedule Viewing
+            <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4">
+              <Plus className="w-4 h-4 mr-1.5" /> Schedule Viewing
             </Button>
           </div>
         </div>
 
         {/* Views */}
         {view === 'calendar' ? (
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-2">
               <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
                 <CardHeader className="relative p-4 border-b border-slate-100 dark:border-border/50 bg-transparent overflow-hidden">
                   <div className="flex items-center justify-between">
@@ -221,7 +216,7 @@ export default function Viewings() {
                               <span>{viewing.agent_name}</span>
                             </div>
                           </div>
-                          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-white dark:bg-card p-1 rounded-lg shadow-sm">
+                          <div className="absolute top-4 right-4 flex gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-white dark:bg-card p-1 rounded-lg shadow-sm">
                             <Button size="icon" variant="ghost" className="h-6 w-6 hover:bg-primary/5 text-primary dark:hover:bg-primary/30/30" onClick={() => handleEdit(viewing)}>
                               <Edit className="w-3 h-3" />
                             </Button>

@@ -150,29 +150,29 @@ export default function Properties() {
   }
 
   const PropertyCard = ({ property }) => (
-    <div className="group bg-card/40 backdrop-blur-md border border-border/60 rounded-[2rem] p-6 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
+    <div className="group bg-card/40 backdrop-blur-md border border-border/60 rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
       {/* Real Estate Specific Decoration */}
-              <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
+      <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
       
-      <div className="flex items-start justify-between mb-5 relative z-10">
+      <div className="flex items-start justify-between mb-4 sm:mb-5 relative z-10">
         <div className="flex-1 pr-12">
-          <Badge className={`mb-3 uppercase tracking-wider text-[10px] font-extrabold border ${statusColors[property.status?.toLowerCase()] || statusColors.active}`}>
+          <Badge className={`mb-2 sm:mb-3 uppercase tracking-wider text-[10px] font-extrabold border ${statusColors[property.status?.toLowerCase()] || statusColors.active}`}>
             {property.status || 'Active'}
           </Badge>
-          <h3 className="text-2xl font-black text-foreground group-hover:text-primary transition-colors line-clamp-1">{property.address}</h3>
-          <p className="text-sm font-medium text-muted-foreground mt-2 flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-primary/60" /> {property.city}, {property.state} {property.zip_code}
+          <h3 className="text-xl sm:text-2xl font-black text-foreground group-hover:text-primary transition-colors line-clamp-1">{property.address}</h3>
+          <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-1 sm:mt-2 flex items-center gap-1.5 truncate">
+            <MapPin className="w-4 h-4 text-primary/60 shrink-0" /> {property.city}, {property.state} {property.zip_code}
           </p>
         </div>
       </div>
 
-      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-4 right-4 flex gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <Button
           size="icon"
           variant="secondary"
           onClick={() => handleEdit(property)}
-          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-white/90 dark:bg-black/90 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
           title="Edit Property"
         >
           <Edit className="w-4 h-4" />
@@ -192,39 +192,39 @@ export default function Properties() {
               }
             }
           }}
-          className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-red-100/90 dark:bg-red-900/90 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
           title="Delete Property"
         >
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-6 flex-1 relative z-10">
-        <div className="bg-primary/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-primary/10">
-          <BedDouble className="w-5 h-5 text-primary mb-1.5" />
-          <p className="font-bold text-lg leading-none">{property.bedrooms}</p>
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Beds</p>
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5 flex-1 relative z-10">
+        <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-center border border-primary/10">
+          <BedDouble className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-1" />
+          <p className="font-bold text-base sm:text-lg leading-none">{property.bedrooms}</p>
+          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Beds</p>
         </div>
-        <div className="bg-primary/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-primary/10">
-          <Bath className="w-5 h-5 text-primary mb-1.5" />
-          <p className="font-bold text-lg leading-none">{property.bathrooms}</p>
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Baths</p>
+        <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-center border border-primary/10">
+          <Bath className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-1" />
+          <p className="font-bold text-base sm:text-lg leading-none">{property.bathrooms}</p>
+          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Baths</p>
         </div>
-        <div className="bg-primary/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-primary/10">
-          <Square className="w-5 h-5 text-primary mb-1.5" />
-          <p className="font-bold text-lg leading-none">{property.square_feet?.toLocaleString() || 0}</p>
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Sq Ft</p>
+        <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-center border border-primary/10">
+          <Square className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-1" />
+          <p className="font-bold text-base sm:text-lg leading-none truncate max-w-full">{property.square_feet?.toLocaleString() || 0}</p>
+          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Sq Ft</p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-4 border-t border-border/40 mt-auto relative z-10">
-        <div>
-          <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">List Price</p>
-          <p className="font-black text-2xl text-primary flex items-center">
+      <div className="flex items-center justify-between pt-3.5 sm:pt-4 border-t border-border/40 mt-auto relative z-10 gap-2">
+        <div className="min-w-0">
+          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">List Price</p>
+          <p className="font-black text-lg sm:text-2xl text-primary flex items-center truncate">
             ${parseFloat(property.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
           </p>
         </div>
-        <Badge variant="outline" className="bg-background font-bold uppercase text-[10px] px-3 py-1 border-border/50 text-foreground">
+        <Badge variant="outline" className="bg-background font-bold uppercase text-[9px] sm:text-[10px] px-2.5 py-1 border-border/50 text-foreground shrink-0">
           {property.property_type}
         </Badge>
       </div>
@@ -232,36 +232,36 @@ export default function Properties() {
   );
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Properties</h1>
-            <p className="text-muted-foreground mt-2">Manage and track your property listings</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground">Properties</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage and track your property listings</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
-              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4"
             >
-              <Plus className="w-4 h-4 mr-2" /> Add Property
+              <Plus className="w-4 h-4 mr-1.5" /> Add Property
             </Button>
           </div>
         </div>
 
-        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm gap-4 flex-wrap">
-          <div className="relative flex-1 flex items-center min-w-[200px]">
-            <Search className="w-5 h-5 text-muted-foreground mr-2" />
+        <Card className="p-3 sm:p-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex flex-col sm:flex-row items-stretch sm:items-center rounded-2xl sm:rounded-3xl shadow-sm gap-3 sm:gap-4">
+          <div className="relative flex-1 flex items-center min-w-0">
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mr-2 shrink-0" />
             <Input
               placeholder="Search by address, city..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-sm sm:text-base flex-1"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40 border-0 bg-transparent shadow-none focus:ring-0 font-medium">
+            <SelectTrigger className="w-full sm:w-44 border-t sm:border-t-0 border-border/40 sm:border-l pt-2.5 sm:pt-0 sm:pl-4 bg-transparent shadow-none focus:ring-0 font-medium h-9 text-xs sm:text-sm">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>

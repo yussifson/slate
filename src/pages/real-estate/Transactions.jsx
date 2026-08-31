@@ -225,58 +225,58 @@ export default function Transactions() {
   );
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-10">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+        <div className="mb-6 sm:mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-foreground flex items-center gap-3">
-                <div className="p-2.5 bg-primary/10 dark:bg-primary/30/30 rounded-xl border border-primary/20 dark:border-primary/40/50 shadow-sm"><Banknote className="w-7 h-7 text-primary dark:text-primary/80" /></div>
+              <h1 className="text-2xl sm:text-4xl font-bold text-foreground flex items-center gap-2.5 sm:gap-3">
+                <div className="p-2 sm:p-2.5 bg-primary/10 dark:bg-primary/30 rounded-xl border border-primary/20 shrink-0"><Banknote className="w-5 h-5 sm:w-7 sm:h-7 text-primary" /></div>
                 Sales Pipeline
               </h1>
-              <p className="text-muted-foreground mt-2 font-medium">Track property transactions through the sales pipeline</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Track property transactions through the sales pipeline</p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
               <ViewToggle view={view} onViewChange={setView} allowedViews={['kanban', 'list']} />
-              <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 gap-2 rounded-xl transition-all duration-300">
-                <Plus className="w-5 h-5" /> New Transaction
+              <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', sellerName: '', salePrice: 0, closingDate: '', agentName: '', status: 'offer_accepted', notes: '' }); }} className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 gap-1.5 rounded-xl h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4">
+                <Plus className="w-4 h-4" /> New Transaction
               </Button>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <Card className="p-4 sm:p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Transactions</p>
-                    <p className="text-3xl font-bold text-foreground tracking-tight">{stats.total}</p>
+                    <p className="text-muted-foreground text-xs sm:text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Transactions</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{stats.total}</p>
                   </div>
-                  <div className="p-4 bg-primary/10 dark:bg-primary/30/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-7 h-7 text-primary dark:text-primary/80" /></div>
+                  <div className="p-3 sm:p-4 bg-primary/10 dark:bg-primary/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><Banknote className="w-5 h-5 sm:w-7 sm:h-7 text-primary" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-4 sm:p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Value</p>
-                    <p className="text-3xl font-bold text-foreground tracking-tight">${(stats.value / 1000000).toFixed(1)}M</p>
+                    <p className="text-muted-foreground text-xs sm:text-sm font-medium mb-1 group-hover:text-primary transition-colors">Total Value</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">${(stats.value / 1000000).toFixed(1)}M</p>
                   </div>
-                  <div className="p-4 bg-primary/10 dark:bg-primary/30/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><DollarSign className="w-7 h-7 text-primary dark:text-primary/80" /></div>
+                  <div className="p-3 sm:p-4 bg-primary/10 dark:bg-primary/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><DollarSign className="w-5 h-5 sm:w-7 sm:h-7 text-primary" /></div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
+            <Card className="p-4 sm:p-6 bg-white dark:bg-card border border-slate-200/60 dark:border-border rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 relative overflow-hidden group flex flex-col">
               <CardContent className="p-0 flex-1 flex flex-col gap-3 relative z-10 bg-transparent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-muted-foreground text-sm font-medium mb-1 group-hover:text-primary transition-colors">Closed Deals</p>
-                    <p className="text-3xl font-bold text-foreground tracking-tight">{stats.closed}</p>
+                    <p className="text-muted-foreground text-xs sm:text-sm font-medium mb-1 group-hover:text-primary transition-colors">Closed Deals</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">{stats.closed}</p>
                   </div>
-                  <div className="p-4 bg-primary/10 dark:bg-primary/30/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><CheckCircle className="w-7 h-7 text-primary dark:text-primary/80" /></div>
+                  <div className="p-3 sm:p-4 bg-primary/10 dark:bg-primary/30 rounded-2xl group-hover:scale-110 transition-transform duration-300"><CheckCircle className="w-5 h-5 sm:w-7 sm:h-7 text-primary" /></div>
                 </div>
               </CardContent>
             </Card>

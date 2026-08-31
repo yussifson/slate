@@ -160,37 +160,37 @@ export default function Offers() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Offers</h1>
-            <p className="text-muted-foreground mt-2">Track and manage property negotiations</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground">Offers</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Track and manage property negotiations</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }}
-              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4"
             >
-              <Plus className="w-4 h-4 mr-2" /> New Offer
+              <Plus className="w-4 h-4 mr-1.5" /> New Offer
             </Button>
           </div>
         </div>
 
-        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm flex-wrap gap-4">
-          <div className="relative flex-1 flex items-center min-w-[200px]">
-            <Search className="w-5 h-5 text-muted-foreground mr-2" />
+        <Card className="p-3 sm:p-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex flex-col sm:flex-row items-stretch sm:items-center rounded-2xl sm:rounded-3xl shadow-sm gap-3 sm:gap-4">
+          <div className="relative flex-1 flex items-center min-w-0">
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mr-2 shrink-0" />
             <Input
               placeholder="Search by property, buyer..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-sm sm:text-base flex-1"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-40 border-0 bg-transparent shadow-none focus:ring-0 font-medium">
+            <SelectTrigger className="w-full sm:w-44 border-t sm:border-t-0 border-border/40 sm:border-l pt-2.5 sm:pt-0 sm:pl-4 bg-transparent shadow-none focus:ring-0 font-medium h-9 text-xs sm:text-sm">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>

@@ -151,24 +151,24 @@ export default function Clients() {
   };
 
   const ClientCard = ({ client }) => (
-    <div className="group bg-card/60 backdrop-blur-md border border-border/40 rounded-3xl p-6 hover:shadow-2xl hover:border-primary/50 transition-all relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
+    <div className="group bg-card/60 backdrop-blur-md border border-border/40 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:shadow-2xl hover:border-primary/50 transition-all relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
       <div className="absolute bottom-0 right-0 w-32 h-32 bg-primary/10 rounded-tl-[5rem] pointer-events-none z-0 transition-colors duration-500 group-hover:bg-primary/20" />
       
       <div className="flex items-start justify-between mb-4 relative z-10">
         <div className="flex-1 pr-12">
-          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{client.name}</h3>
-          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" /> {client.city || 'Location not set'}
+          <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">{client.name}</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 shrink-0" /> {client.city || 'Location not set'}
           </p>
         </div>
       </div>
 
-      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <div className="absolute top-4 right-4 flex gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <Button
           size="icon"
           variant="secondary"
           onClick={() => handleEdit(client)}
-          className="h-8 w-8 bg-white/80 dark:bg-black/80 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-white/90 dark:bg-black/90 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
           title="Edit Client"
         >
           <Edit className="w-4 h-4" />
@@ -177,17 +177,17 @@ export default function Clients() {
           size="icon"
           variant="destructive"
           onClick={() => handleDelete(client.id)}
-          className="h-8 w-8 bg-red-100/80 dark:bg-red-900/80 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
+          className="h-8 w-8 bg-red-100/90 dark:bg-red-900/90 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
           title="Delete Client"
         >
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
 
-      <div className="space-y-3 text-sm mb-6 flex-1 relative z-10">
+      <div className="space-y-3 text-xs sm:text-sm mb-6 flex-1 relative z-10">
         {client.email && (
           <div className="flex items-center gap-3 text-muted-foreground group/link">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80 group-hover/link:bg-primary group-hover/link:text-white transition-colors">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary shrink-0">
               <Mail className="w-4 h-4" />
             </div>
             <a href={`mailto:${client.email}`} className="font-medium text-foreground/80 group-hover/link:text-primary transition-colors truncate">
@@ -197,7 +197,7 @@ export default function Clients() {
         )}
         {client.phone && (
           <div className="flex items-center gap-3 text-muted-foreground group/link">
-            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30/30 flex items-center justify-center text-primary dark:text-primary/80 group-hover/link:bg-primary group-hover/link:text-white transition-colors">
+            <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/30 flex items-center justify-center text-primary shrink-0">
               <Phone className="w-4 h-4" />
             </div>
             <a href={`tel:${client.phone}`} className="font-medium text-foreground/80 group-hover/link:text-primary transition-colors">
@@ -209,10 +209,10 @@ export default function Clients() {
       
       <div className="mt-auto pt-4 border-t border-border/50 flex items-center justify-between relative z-10">
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${typeColors[client.type] || 'bg-slate-100 text-slate-800 dark:bg-card/30 dark:text-muted-foreground'}`}>
-          {client.type.toUpperCase()}
+          {client.type?.toUpperCase()}
         </span>
         {client.budget > 0 && (
-          <span className="font-extrabold text-primary dark:text-primary/80">
+          <span className="font-extrabold text-sm sm:text-base text-primary dark:text-primary/80">
             ${Number(client.budget).toLocaleString()}
           </span>
         )}
@@ -221,36 +221,36 @@ export default function Clients() {
   );
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">Clients</h1>
-            <p className="text-muted-foreground mt-2">Manage your buyers, sellers, tenants, and landlords effectively.</p>
+            <h1 className="text-2xl sm:text-4xl font-bold text-foreground">Clients</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage your buyers, sellers, tenants, and landlords effectively.</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
             <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
-              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0"
+              className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4"
             >
-              <Plus className="w-4 h-4 mr-2" /> Add Client
+              <Plus className="w-4 h-4 mr-1.5" /> Add Client
             </Button>
           </div>
         </div>
 
-        <Card className="p-2 px-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex items-center rounded-2xl shadow-sm gap-4 flex-wrap">
-          <div className="relative flex-1 flex items-center min-w-[200px]">
-            <Search className="w-5 h-5 text-muted-foreground mr-2" />
+        <Card className="p-3 sm:p-4 mb-6 border border-border/50 bg-card/50 backdrop-blur-md flex flex-col sm:flex-row items-stretch sm:items-center rounded-2xl sm:rounded-3xl shadow-sm gap-3 sm:gap-4">
+          <div className="relative flex-1 flex items-center min-w-0">
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mr-2 shrink-0" />
             <Input
               placeholder="Search clients by name, email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-base flex-1"
+              className="border-0 bg-transparent focus-visible:ring-0 px-0 shadow-none text-sm sm:text-base flex-1"
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-40 border-0 bg-transparent shadow-none focus:ring-0 font-medium">
+            <SelectTrigger className="w-full sm:w-44 border-t sm:border-t-0 border-border/40 sm:border-l pt-2.5 sm:pt-0 sm:pl-4 bg-transparent shadow-none focus:ring-0 font-medium h-9 text-xs sm:text-sm">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
