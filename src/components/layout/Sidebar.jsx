@@ -52,7 +52,7 @@ const ICON_MAP = {
 import { generateText } from '@/lib/cloudflareAI';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useAuth} from "@/lib/AuthContext";
-import { useCompanyId} from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany} from "@/hooks/useCompanyId";
 import { useQuery, useQueryClient} from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
 import { Button} from "@/components/ui/button";
@@ -144,15 +144,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const { activeRoomUrl } = useVideo();
 
-  const { data: companyData } = useQuery({
-    queryKey: ['company', user?.company_id],
-    queryFn: async () => {
-      if (!user?.company_id) return null;
-      const { data } = await powerSync.execute('SELECT * FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0] }));
-      return data;
-    },
-    enabled: !!user?.company_id
-  });
+  const { company: companyData } = useCompany();
 
   const activeIndustry = sessionStorage.getItem('slate_industry_override') 
     || impersonatedCompany?.industry 
