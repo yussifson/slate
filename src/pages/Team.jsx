@@ -173,12 +173,31 @@ export default function Team() {
           let isExistingUser = !!authUserId;
 
           if (!authUserId) {
-            const reg = await base44.auth.register({
-              email: data.user_email,
-              password,
-              company_id: companyId,
-              role: data.role});
-            authUserId = reg?.user?.id;
+            // Try admin_create_user RPC first — this bypasses Supabase Auth email
+            // restrictions (e.g. email allowlists, unconfirmed email blocks) that
+            // cause "email not authorized" errors for company_admin users.
+            const { data: newUserId, error: rpcError } = await supabase.rpc('admin_create_user', {
+              user_email: data.user_email,
+              user_password: password,
+              user_role: data.role,
+              user_company_id: companyId,
+              user_full_name: data.full_name,
+              user_metadata: {}
+            });
+
+            if (!rpcError && newUserId) {
+              authUserId = newUserId;
+            } else {
+              // Fallback to standard signUp if RPC not available
+              console.warn('[Team] admin_create_user RPC failed, falling back to signUp:', rpcError?.message);
+              const reg = await base44.auth.register({
+                email: data.user_email,
+                password,
+                company_id: companyId,
+                role: data.role
+              });
+              authUserId = reg?.user?.id;
+            }
           }
 
           await createMutation.mutateAsync({

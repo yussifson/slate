@@ -320,28 +320,28 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  payroll_officer: ["/", "/employees", "/payroll", "/benefits", "/reports", "/documents", "/chat"],
  employee: ["/", "/leave", "/training", "/org-chart", "/benefits", "/tasks", "/chat"],
 
- support: ["/my-dashboard", "/", "/tasks", "/documents", "/calendar", "/whatsapp", "/email-inbox", "/chat"]
+ support: ["/my-dashboard", "/", "/tasks", "/smart-docs", "/calendar", "/whatsapp", "/email-inbox", "/chat"]
 };
 
  const INDUSTRY_BASE_PERMISSIONS = {
-  law: ["/", "/my-dashboard", "/cases", "/clients", "/documents", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"],
-  software: ["/", "/my-dashboard", "/sprints", "/bugs", "/product-tasks", "/product-docs", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  real_estate: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  hospital: ["/", "/my-dashboard", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  school: ["/", "/my-dashboard", "/classes", "/students", "/attendance", "/grades", "/assignments", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  accounting: ["/", "/my-dashboard", "/invoices", "/billing", "/clients", "/reports", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  insurance: ["/", "/my-dashboard", "/policies", "/claims", "/clients", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  logistics: ["/", "/my-dashboard", "/shipments", "/dispatch", "/fleet", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  retail: ["/", "/my-dashboard", "/retail-dashboard", "/pos", "/retail-inventory", "/products", "/orders", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  hotel: ["/", "/my-dashboard", "/rooms", "/reservations", "/front-desk", "/guests", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  hr: ["/", "/my-dashboard", "/employees", "/team", "/recruitment", "/leave", "/documents", "/tasks", "/email-inbox", "/chat", "/board"],
-  default: ["/", "/my-dashboard", "/documents", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"]
+  law: ["/", "/my-dashboard", "/cases", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"],
+  software: ["/", "/my-dashboard", "/sprints", "/bugs", "/product-tasks", "/product-docs", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  real_estate: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  hospital: ["/", "/my-dashboard", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  school: ["/", "/my-dashboard", "/classes", "/students", "/attendance", "/grades", "/assignments", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  accounting: ["/", "/my-dashboard", "/invoices", "/billing", "/clients", "/reports", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  insurance: ["/", "/my-dashboard", "/policies", "/claims", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  logistics: ["/", "/my-dashboard", "/shipments", "/dispatch", "/fleet", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  retail: ["/", "/my-dashboard", "/retail-dashboard", "/pos", "/retail-inventory", "/products", "/orders", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  hotel: ["/", "/my-dashboard", "/rooms", "/reservations", "/front-desk", "/guests", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  hr: ["/", "/my-dashboard", "/employees", "/team", "/recruitment", "/leave", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  default: ["/", "/my-dashboard", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"]
  };
 
  const FEATURE_PATHS = {
  'Dashboard': ['/'],
  'Access Control': ['/admin/users', '/settings'],
- 'Documents': ['/documents'],
+ 'Smart Docs': ['/smart-docs'],
  'Projects': ['/cases', '/projects'],
  'CRM Leads': ['/leads', '/clients'],
  'Invoices': ['/billing', '/invoices'],
@@ -748,6 +748,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     } else {
       rawNavItems = rawNavItems.map(n => n.path === '/smart-docs' ? { ...n, label: "Smart Docs", icon: "Brain" } : n);
     }
+
+    // Filter out old /documents nav item to maintain ONLY Smart Docs
+    rawNavItems = rawNavItems.filter(n => n.path !== '/documents' && n.label?.toLowerCase() !== 'documents');
 
     // Inject Sites for all industries (Super Admins only)
     if (isSuperAdmin && !rawNavItems.some(n => n.path === '/sites')) {

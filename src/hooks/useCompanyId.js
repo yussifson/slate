@@ -24,15 +24,32 @@ export function useCompany() {
           .from("companies")
           .select("*")
           .eq("id", companyId)
-          .single();
+          .maybeSingle();
         if (error) throw error;
         
-        // Cache for offline
-        await set(cacheKey, data).catch(() => {});
-        return data;
+        if (data) {
+          // Cache for offline
+          await set(cacheKey, data).catch(() => {});
+          return data;
+        }
+
+        // Try PowerSync fallback if online fetch returns null
+        try {
+          const psData = await powerSync.getAll('SELECT * FROM companies WHERE id = ?', [companyId]);
+          if (psData && psData.length > 0) {
+            return psData[0];
+          }
+        } catch (pe) {}
+
+        const cached = await get(cacheKey);
+        return cached || null;
       } catch (err) {
         console.warn("useCompany offline fallback:", err.message);
         try {
+          const psData = await powerSync.getAll('SELECT * FROM companies WHERE id = ?', [companyId]);
+          if (psData && psData.length > 0) {
+            return psData[0];
+          }
           const cached = await get(cacheKey);
           return cached || null;
         } catch (e) {

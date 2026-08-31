@@ -338,10 +338,14 @@ export default function Automations() {
 
   useEffect(() => {
     async function fetchRegistries() {
-      const { data: triggers } = await base44.supabase.from('automation_triggers').select('*').eq('is_active', true);
-      const { data: actions } = await base44.supabase.from('automation_actions').select('*').eq('is_active', true);
-      if (triggers) setTriggerRegistry(triggers);
-      if (actions) setActionRegistry(actions);
+      try {
+        const { data: triggers } = await supabase.from('automation_triggers').select('*').eq('is_active', true);
+        const { data: actions } = await supabase.from('automation_actions').select('*').eq('is_active', true);
+        if (triggers) setTriggerRegistry(triggers);
+        if (actions) setActionRegistry(actions);
+      } catch (e) {
+        console.error("Error fetching automation registries:", e);
+      }
     }
     fetchRegistries();
   }, []);

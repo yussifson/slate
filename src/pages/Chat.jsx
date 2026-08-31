@@ -38,6 +38,7 @@ export default function Chat({ isDockedMode = false }) {
  const [isGroupInfoOpen, setIsGroupInfoOpen] = useState(false);
  const [chatSummary, setChatSummary] = useState(null);
  const [loadingMessages, setLoadingMessages] = useState(false);
+ const [loadingRooms, setLoadingRooms] = useState(false);
  const [isUploading, setIsUploading] = useState(false);
  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
  const [showAttachMenu, setShowAttachMenu] = useState(false);

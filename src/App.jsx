@@ -751,7 +751,7 @@ function PlatformRoutes() {
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
-      <Route path="/documents" element={<UnivDocument />} />
+      <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
       <Route path="/smart-docs" element={<HCMSmartDocs />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />

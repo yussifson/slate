@@ -164,7 +164,7 @@ export const RealEstateAnalytics = {
            'monthly' as metric_period
          FROM univ_re_team_members u
          LEFT JOIN univ_re_properties p ON u.id = p.agent_id AND p.company_id = ?
-         LEFT JOIN univ_re_clients c ON u.id = c.primary_agent_id AND c.company_id = ?
+         LEFT JOIN univ_re_clients c ON u.id = c.assigned_agent AND c.company_id = ?
          LEFT JOIN univ_re_transactions t ON u.id = t.agent_id AND t.company_id = ?
          LEFT JOIN univ_re_commission_details cd ON u.id = cd.agent_id AND cd.company_id = ?
          WHERE u.company_id = ? AND u.role IN ('agent', 'team_lead')

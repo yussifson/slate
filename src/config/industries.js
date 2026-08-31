@@ -39,7 +39,7 @@ export const INDUSTRIES = {
       { label: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
       { label: 'Legal Research', path: '/research', icon: 'BookOpen' },
       { label: 'Conflict Check', path: '/conflict-check', icon: 'Shield' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'Case Outcomes', path: '/outcomes', icon: 'Trophy' },
       { label: 'Email Inbox', path: '/email-inbox', icon: 'Mail' },
       { label: 'WhatsApp', path: '/whatsapp', icon: 'MessageCircle' },
@@ -105,7 +105,7 @@ export const INDUSTRIES = {
       { label: 'Campus Marketplace', path: '/marketplace', icon: 'Store' },
       { label: 'Teacher Evaluations', path: '/teacher-evaluations', icon: 'ClipboardCheck' },
       { label: 'Support Center', path: '/support-center', icon: 'LifeBuoy' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'Tasks', path: '/tasks', icon: 'CheckSquare2' },
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
@@ -426,7 +426,7 @@ export const INDUSTRIES = {
       { label: 'OPD Queue', path: '/queue', icon: 'Users2' },
       { label: 'Staff Roster', path: '/staff-roster', icon: 'CalendarDays' },
       { label: 'Infection Control', path: '/infection-control', icon: 'ShieldAlert' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
@@ -476,7 +476,7 @@ export const INDUSTRIES = {
       { label: 'Guest Requests', path: '/guest-requests', icon: 'BellRing' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },
       { label: 'Staff', path: '/team', icon: 'UserCog' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
@@ -523,7 +523,7 @@ export const INDUSTRIES = {
       { label: 'Prayer Requests', path: '/prayers', icon: 'Star' },
       { label: 'Milestones', path: '/milestones', icon: 'Award' },
       { label: 'Attendance', path: '/attendance', icon: 'CheckSquare' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'Tasks', path: '/tasks', icon: 'CheckSquare2' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
@@ -569,7 +569,7 @@ export const INDUSTRIES = {
       { label: 'Agent Performance', path: '/agent-performance', icon: 'TrendingUp' },
       { label: 'Billing', path: '/billing', icon: 'Receipt' },
       { label: 'Staff', path: '/team', icon: 'UserCog' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
@@ -738,7 +738,7 @@ export const INDUSTRIES = {
       { label: 'Expenses', path: '/expenses', icon: 'Receipt' },
       { label: 'Company Intranet', path: '/intranet', icon: 'Globe' },
       { label: 'Analytics & AI', path: '/hr-analytics', icon: 'BrainCircuit' },
-      { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
       { label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
       { label: 'Reports', path: '/reports', icon: 'BarChart2' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
@@ -987,7 +987,7 @@ export const getIndustryNav = (industryKey, educationLevel) => {
 
   if (industryKey === 'school' && educationLevel && EDUCATION_LEVELS[educationLevel]) {
      const allowedModules = EDUCATION_LEVELS[educationLevel].modules;
-     nav = nav.filter(n => allowedModules.includes(n.path) || n.path === '/' || n.path === '/settings' || n.path === '/integrations' || n.path === '/hr' || n.path === '/documents' || n.path === '/tasks');
+     nav = nav.filter(n => allowedModules.includes(n.path) || n.path === '/' || n.path === '/settings' || n.path === '/integrations' || n.path === '/hr' || n.path === '/smart-docs' || n.path === '/tasks');
   }
   
   // Ensure Email Inbox exists globally across all industries
@@ -1051,7 +1051,7 @@ export const clientNav = [
   { label: 'Team Chat', path: '/chat', icon: 'MessageSquare' },
   { label: 'Video Calls', path: '/board', icon: 'Video' },
   { label: 'Billing', path: '/billing', icon: 'Receipt' },
-  { label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+  { label: 'Smart Docs', path: '/smart-docs', icon: 'Brain' },
   { label: 'Settings', path: '/settings', icon: 'Settings' }
 ];
 
