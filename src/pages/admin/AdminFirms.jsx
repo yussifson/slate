@@ -316,7 +316,8 @@ export default function AdminFirms() {
                           <DropdownMenuContent align="end" className="w-48 max-h-[300px] overflow-y-auto bg-background/95 backdrop-blur-md border-border/50 shadow-xl rounded-xl p-1">
                             <div className="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/50 mb-1">
                               Switch Industry
-                                                       {INDUSTRIES.map(ind => (
+                            </div>
+                            {INDUSTRIES.map(ind => (
                               <DropdownMenuItem 
                                 key={ind}
                                 onClick={async () => {
@@ -346,7 +347,7 @@ export default function AdminFirms() {
                               >
                                 {ind === 'optavel' ? 'OptaVel OS' : ind.charAt(0).toUpperCase() + ind.slice(1)}
                               </DropdownMenuItem>
-                            ))}       ))}
+                            ))}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>
