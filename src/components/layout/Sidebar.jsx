@@ -142,6 +142,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     enabled: !!activeRoleName && !!companyId && !isAdmin
   });
 
+  const { activeRoomUrl } = useVideo();
+
   const { data: companyData } = useQuery({
     queryKey: ['company', user?.company_id],
     queryFn: async () => {
