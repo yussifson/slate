@@ -70,6 +70,7 @@ export default function SmartDocs() {
   const { t } = useTranslation();
   const { sendContract } = useContracts();
   const { user } = useAuth();
+  const { company } = useCompany();
   const companyId = useCompanyId();
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -87,7 +88,7 @@ export default function SmartDocs() {
   const [detailDoc, setDetailDoc]         = useState(null);
 
   const isAdmin = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
-  const industry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
+  const industry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
   const caseTerm = getTerm(industry, "case");
 
   // ── Queries ─────────────────────────────────────────────────────────────────

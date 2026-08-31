@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Users, Building } from 'lucide-react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
-import { useCompanyId } from '@/hooks/useCompanyId';
+import { useCompanyId, useCompany } from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function CustomDepartmentsSettings() {
   const companyId = useCompanyId();
+  const { company } = useCompany();
+  const { user } = useAuth();
   const [departments, setDepartments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ id: '', name: '', description: '' });
@@ -23,7 +26,7 @@ export default function CustomDepartmentsSettings() {
       let predefinedDepts = [];
       try {
         const ind = await import('@/config/industries');
-        const activeIndustry = sessionStorage.getItem('slate_industry_override') || 'law'; // default fallback
+        const activeIndustry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || user?.company_industry || 'law';
         const defaultDepts = ind.INDUSTRIES[activeIndustry]?.departments || ind.INDUSTRIES.law.departments || [];
         predefinedDepts = defaultDepts.map(d => ({
           id: d.value || d.label,

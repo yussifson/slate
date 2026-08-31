@@ -30,10 +30,6 @@ export default function Settings() {
  const { toast} = useToast();
  const queryClient = useQueryClient();
  const companyId = user?.company_id || null;
- const activeIndustry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
- 
- const [activeSection, setActiveSection] = useState("system");
- const [saving, setSaving] = useState(false);
 
   const { data: company} = useQuery({
   queryKey: ["company", companyId],
@@ -45,6 +41,10 @@ export default function Settings() {
   },
   enabled: !!companyId
  });
+
+  const activeIndustry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
+  const [activeSection, setActiveSection] = useState("system");
+  const [saving, setSaving] = useState(false);
 
   const updateCompany = async (data) => {
     if (!company || !companyId) return;

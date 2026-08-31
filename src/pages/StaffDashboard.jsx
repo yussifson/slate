@@ -8,10 +8,18 @@ import SchoolDashboard from "./dashboards/SchoolDashboard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/api/supabaseClient";
 
+import { useCompany } from "@/hooks/useCompanyId";
+
 export default function StaffDashboard() {
   const { user, impersonatedCompany } = useAuth();
+  const { company } = useCompany();
   
-  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') 
+    || impersonatedCompany?.industry 
+    || impersonatedCompany?.industry_type 
+    || company?.industry_type 
+    || user?.company_industry 
+    || 'law';
 
   switch (activeIndustry) {
     case 'optavel':

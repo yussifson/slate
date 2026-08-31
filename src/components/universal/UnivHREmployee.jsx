@@ -29,11 +29,19 @@ const initials = (e) => {
 };
 const statusColor = (s) => s==='Active'?'bg-emerald-50 text-emerald-700 border-emerald-200':s==='Onboarding'?'bg-blue-50 text-blue-700 border-blue-200':'bg-muted text-[#71717a] dark:text-gray-400 border-primary/40';
 
+import { useCompany } from "@/hooks/useCompanyId";
+
 export default function UnivHREmployee() {
  const companyId = useCompanyId();
+ const { company } = useCompany();
  const { user } = useAuth();
  const { impersonatedCompany } = useImpersonation();
- const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+ const activeIndustry = sessionStorage.getItem('slate_industry_override') 
+   || impersonatedCompany?.industry 
+   || impersonatedCompany?.industry_type 
+   || company?.industry_type 
+   || user?.company_industry 
+   || 'law';
  const [view, setView] = useState('Default');
  const [employees, setEmployees] = useState([]);
  const [departments, setDepartments] = useState([]);

@@ -142,54 +142,58 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     enabled: !!activeRoleName && !!companyId && !isAdmin
   });
 
- const { activeRoomUrl} = useVideo();
- const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
- 
- useEffect(() => {
- const fetchDynamicNav = async () => {
- try {
- let query = supabase
- .from('module_definitions')
- .select('id, name, icon, status, industry_type')
- .eq('is_active', true)
- .or(`company_id.eq.${user?.company_id || ''},shared_with.ilike.%${user?.company_id || ''}%`);
- 
- if (!isAdmin) {
- query = query.eq('status', 'published');
-} else {
- query = query.in('status', ['published', 'draft', 'deleted']);
-}
+  const { data: companyData } = useQuery({
+    queryKey: ['company', user?.company_id],
+    queryFn: async () => {
+      if (!user?.company_id) return null;
+      const { data } = await powerSync.execute('SELECT * FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0] }));
+      return data;
+    },
+    enabled: !!user?.company_id
+  });
 
- const { data} = await query;
- const filteredData = (data || []).filter(m => !m.industry_type || m.industry_type === activeIndustry);
- setDynamicModules(filteredData.filter(m => m.status !== 'deleted'));
- setDeletedDynamicModules(filteredData.filter(m => m.status === 'deleted'));
-} catch (err) {
- console.error("Failed to load dynamic nav", err);
-}
-};
- if (user?.company_id) {
- fetchDynamicNav();
- const channel = supabase.channel('sidebar-modules')
- .on('postgres_changes', { event: '*', schema: 'public', table: 'module_definitions'}, () => {
- fetchDynamicNav();
-})
- .subscribe();
- return () => {
- supabase.removeChannel(channel);
-};
-}
-}, [user?.company_id, activeIndustry, isAdmin]);
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') 
+    || impersonatedCompany?.industry 
+    || impersonatedCompany?.industry_type 
+    || companyData?.industry_type 
+    || user?.company_industry 
+    || 'law';
+  
+  useEffect(() => {
+  const fetchDynamicNav = async () => {
+  try {
+  let query = supabase
+  .from('module_definitions')
+  .select('id, name, icon, status, industry_type')
+  .eq('is_active', true)
+  .or(`company_id.eq.${user?.company_id || ''},shared_with.ilike.%${user?.company_id || ''}%`);
+  
+  if (!isAdmin) {
+  query = query.eq('status', 'published');
+ } else {
+  query = query.in('status', ['published', 'draft', 'deleted']);
+ }
 
- const { data: companyData} = useQuery({
- queryKey: ['company', user?.company_id],
- queryFn: async () => {
- if (!user?.company_id) return null;
- const { data} = await powerSync.execute('SELECT * FROM companies WHERE id = ? LIMIT 1', [user.company_id]).then(res => ({ data: res.rows._array[0]}));
- return data;
-},
- enabled: !!user?.company_id
-});
+  const { data } = await query;
+  const filteredData = (data || []).filter(m => !m.industry_type || m.industry_type === activeIndustry);
+  setDynamicModules(filteredData.filter(m => m.status !== 'deleted'));
+  setDeletedDynamicModules(filteredData.filter(m => m.status === 'deleted'));
+ } catch (err) {
+  console.error("Failed to load dynamic nav", err);
+ }
+ };
+  if (user?.company_id) {
+  fetchDynamicNav();
+  const channel = supabase.channel('sidebar-modules')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'module_definitions' }, () => {
+  fetchDynamicNav();
+ })
+  .subscribe();
+  return () => {
+  supabase.removeChannel(channel);
+ };
+ }
+ }, [user?.company_id, activeIndustry, isAdmin]);
 
   const cleanLogo = (url) => {
     if (!url) return url;
@@ -259,8 +263,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  enabled: !!companyId
 });
 
- const activeModules = dbModules || localModules;
- const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
+  const rawActiveModules = dbModules || localModules;
+  const hasMatchingModules = rawActiveModules && (
+    (rawActiveModules.length === 1 && rawActiveModules[0] === '__orbit__') ||
+    industryNav.some(item => rawActiveModules.includes(item.path))
+  );
+  const activeModules = hasMatchingModules ? rawActiveModules : null;
+  const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
  
  const ROLE_PERMISSIONS = {
  // Law Firm Roles

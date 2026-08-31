@@ -12,8 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/components/ui/use-toast';
 
+import { useCompany } from '@/hooks/useCompanyId';
+
 export default function TowerManager() {
   const { user } = useAuth();
+  const { company } = useCompany();
   const { toast } = useToast();
   
   const [towers, setTowers] = useState([]);
@@ -24,7 +27,7 @@ export default function TowerManager() {
   const [newTowerName, setNewTowerName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
 
-  const industry = user?.company_industry || 'law';
+  const industry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || user?.company_industry || 'law';
 
   useEffect(() => {
     fetchTowers();

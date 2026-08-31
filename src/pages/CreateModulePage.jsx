@@ -61,12 +61,18 @@ export default function CreateModulePage({ isBoltOpen: initialBoltOpen = false})
  const navigate = useNavigate();
  const location = useLocation();
  const companyId = useCompanyId();
+ const { company } = useCompany();
  const { user} = useAuth();
  const { toast} = useToast();
 
  const [isBoltOpen, setIsBoltOpen] = useState(initialBoltOpen || location.pathname === '/slate/BOLT');
  const { impersonatedCompany} = useImpersonation();
- const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+ const activeIndustry = sessionStorage.getItem('slate_industry_override') 
+   || impersonatedCompany?.industry 
+   || impersonatedCompany?.industry_type 
+   || company?.industry_type 
+   || user?.company_industry 
+   || 'law';
 
   const getInitialState = () => {
     if (!isEditing) {

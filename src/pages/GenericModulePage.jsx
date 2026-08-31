@@ -32,14 +32,22 @@ const DynamicApprovalView = lazy(() => import("@/components/ui/DynamicApprovalVi
 const DynamicFormWizard = lazy(() => import("@/components/ui/DynamicFormWizard"));
 const DynamicInventoryView = lazy(() => import("@/components/ui/DynamicInventoryView"));
 
+import { useCompany } from "@/hooks/useCompanyId";
+
 export default function GenericModulePage({ title: propTitle, description: propDescription}) {
  const { toast} = useToast();
  const { user} = useAuth();
  const { impersonatedCompany} = useImpersonation();
+ const { company } = useCompany();
  const navigate = useNavigate();
  const path = window.location.pathname;
  
- const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+ const activeIndustry = sessionStorage.getItem('slate_industry_override') 
+   || impersonatedCompany?.industry 
+   || impersonatedCompany?.industry_type 
+   || company?.industry_type 
+   || user?.company_industry 
+   || 'law';
 
  const [moduleDef, setModuleDef] = useState(null);
  const [fieldDefs, setFieldDefs] = useState([]);

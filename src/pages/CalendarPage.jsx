@@ -14,10 +14,12 @@ import { Textarea} from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import PageHeader from "@/components/shared/PageHeader";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday} from "date-fns";
+import { useCompany } from "@/hooks/useCompanyId";
 
 export default function CalendarPage() {
  const { t} = useTranslation();
  const { user} = useAuth();
+ const { company } = useCompany();
  const companyId = user?.company_id;
  const queryClient = useQueryClient();
  const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -28,7 +30,7 @@ export default function CalendarPage() {
  const [showAdminCalendar, setShowAdminCalendar] = useState(true);
  const [showStaffCalendar, setShowStaffCalendar] = useState(true);
 
- const activeIndustry = sessionStorage.getItem("slate_industry_override") || user?.company_industry || "law";
+ const activeIndustry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
 
  const { data: hearings = []} = useQuery({
  queryKey: ["hearings", companyId],

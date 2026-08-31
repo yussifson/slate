@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect, useMemo } from 'react';
 import { powerSync } from "@/api/PowerSyncConnector";
 import { useQuery as usePSQuery } from "@powersync/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +24,7 @@ export default function AdminFirms() {
   const { toast } = useToast();
   const { startImpersonation } = useImpersonation();
   const { notify } = useNotifications();
+  const queryClient = useQueryClient();
 
   const { data: companies = [], isLoading: loadingCompanies } = useQuery({
     queryKey: ['admin_firms_global'],
@@ -315,8 +316,7 @@ export default function AdminFirms() {
                           <DropdownMenuContent align="end" className="w-48 max-h-[300px] overflow-y-auto bg-background/95 backdrop-blur-md border-border/50 shadow-xl rounded-xl p-1">
                             <div className="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/50 mb-1">
                               Switch Industry
-                            </div>
-                            {INDUSTRIES.map(ind => (
+                                                       {INDUSTRIES.map(ind => (
                               <DropdownMenuItem 
                                 key={ind}
                                 onClick={async () => {
@@ -326,6 +326,16 @@ export default function AdminFirms() {
                                     if (error) throw error;
                                     // Also update local PowerSync immediately so UI reflects without waiting for sync
                                     await powerSync.execute('UPDATE companies SET industry_type = ? WHERE id = ?', [ind, c.id]);
+                                    
+                                    // Clear stale active_modules so workspace uses the new industry's default navigation
+                                    try {
+                                      await supabase.from('industry_records').delete().eq('company_id', c.id).eq('record_type', 'active_modules');
+                                      await powerSync.execute("DELETE FROM industry_records WHERE company_id = ? AND record_type = 'active_modules'", [c.id]);
+                                    } catch (e) {}
+                                    localStorage.removeItem(`active_modules_${c.id}`);
+                                    
+                                    queryClient.invalidateQueries();
+                                    
                                     toast({ title: "Industry updated", description: `${c.name} is now a ${ind === 'optavel' ? 'OptaVel OS' : ind} workspace.` });
                                   } catch (err) {
                                     console.error("Failed to update industry:", err);
@@ -336,7 +346,7 @@ export default function AdminFirms() {
                               >
                                 {ind === 'optavel' ? 'OptaVel OS' : ind.charAt(0).toUpperCase() + ind.slice(1)}
                               </DropdownMenuItem>
-                            ))}
+                            ))}       ))}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>

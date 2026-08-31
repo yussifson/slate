@@ -3,7 +3,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { Shield, Plus, Trash2, Edit2, Wand2, Check } from 'lucide-react';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { toast } from 'react-hot-toast';
-import { useCompanyId } from '@/hooks/useCompanyId';
+import { useCompanyId, useCompany } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 import { INDUSTRIES } from '@/config/industries';
 import { generateText } from '@/lib/cloudflareAI';
@@ -12,6 +12,7 @@ import { generateText } from '@/lib/cloudflareAI';
 
 export default function RoleManagementSettings() {
   const companyId = useCompanyId();
+  const { company } = useCompany();
   const { user } = useAuth();
   const [roles, setRoles] = useState([]);
   const [activeRole, setActiveRole] = useState(null);
@@ -20,7 +21,7 @@ export default function RoleManagementSettings() {
   const [formData, setFormData] = useState({ id: '', name: '', description: '' });
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const activeIndustry = sessionStorage.getItem('slate_industry_override') || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') || company?.industry_type || user?.company_industry || 'law';
   const AVAILABLE_FEATURES = (INDUSTRIES[activeIndustry]?.nav || []).map(n => ({
     id: n.path,
     label: n.label,
@@ -31,9 +32,9 @@ export default function RoleManagementSettings() {
   
   useEffect(() => {
     if (companyId && roles.length === 0) {
-      const activeIndustry = sessionStorage.getItem('slate_industry_override') || user?.company_industry || 'law';
+      const activeInd = sessionStorage.getItem('slate_industry_override') || company?.industry_type || user?.company_industry || 'law';
       import('@/config/industries').then(({ INDUSTRIES }) => {
-        const defaultRoles = INDUSTRIES[activeIndustry]?.roles || [];
+        const defaultRoles = INDUSTRIES[activeInd]?.roles || [];
         if (defaultRoles.length > 0) {
           // Check again just to be safe
           powerSync.execute('SELECT count(*) as c FROM platform_roles WHERE company_id = ?', [companyId]).then(res => {

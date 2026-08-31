@@ -2,14 +2,21 @@ import { supabase } from '@/api/supabaseClient';
 import { useState, useEffect } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { INDUSTRIES, getIndustryNav, clientNav } from "@/config/industries";
+import { useCompany } from "@/hooks/useCompanyId";
 
 export function useNavigation(user, impersonatedCompany) {
   const [dynamicModules, setDynamicModules] = useState([]);
   const [allowedPaths, setAllowedPaths] = useState([]);
   const [loadingPermissions, setLoadingPermissions] = useState(true);
+  const { company } = useCompany();
   
   const isAdmin = ["super_admin", "admin", "company_admin", "managing_partner"].includes(user?.role);
-  const activeIndustry = sessionStorage.getItem('slate_industry_override') || impersonatedCompany?.industry || impersonatedCompany?.industry_type || user?.company_industry || 'law';
+  const activeIndustry = sessionStorage.getItem('slate_industry_override') 
+    || impersonatedCompany?.industry 
+    || impersonatedCompany?.industry_type 
+    || company?.industry_type 
+    || user?.company_industry 
+    || 'law';
 
   // 1. Fetch Dynamic Modules (App Builder etc.)
   useEffect(() => {
@@ -91,7 +98,12 @@ export function useNavigation(user, impersonatedCompany) {
   const industryNav = getIndustryNav(activeIndustry);
   
   const savedModulesStr = localStorage.getItem(`active_modules_${user?.company_id}`);
-  const activeModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
+  const rawActiveModules = savedModulesStr ? JSON.parse(savedModulesStr) : null;
+  const hasMatchingModules = rawActiveModules && (
+    (rawActiveModules.length === 1 && rawActiveModules[0] === '__orbit__') ||
+    industryNav.some(item => rawActiveModules.includes(item.path))
+  );
+  const activeModules = hasMatchingModules ? rawActiveModules : null;
   const isOrbitMode = activeModules?.length === 1 && activeModules[0] === '__orbit__';
   
   const filteredCompanyNav = isOrbitMode ? [] : industryNav.filter(item => {
