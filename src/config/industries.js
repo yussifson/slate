@@ -804,7 +804,6 @@ export const INDUSTRIES = {
       { section: 'Intelligence & Analytics', label: 'Market Intelligence', path: '/real-estate/market-data', icon: 'Globe' },
       { label: 'Comparable Properties', path: '/real-estate/comparable-properties', icon: 'Layers' },
       { label: 'Agent Metrics', path: '/real-estate/agent-metrics', icon: 'BarChart2' },
-      { label: 'Client Scoring', path: '/real-estate/client-scoring', icon: 'Target' },
       { label: 'Recommendations', path: '/real-estate/recommendations', icon: 'Brain' },
       
       { section: 'Administration', label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },

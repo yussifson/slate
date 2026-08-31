@@ -427,7 +427,6 @@ const RealEstateMaintenance = React.lazy(() => import('./pages/real-estate/Maint
 const RealEstateCRMLeads = React.lazy(() => import('./pages/real-estate/CRMLeads'));
 const RealEstateAgentMetrics = React.lazy(() => import('./pages/real-estate/AgentMetrics'));
 const RealEstateAuditLog = React.lazy(() => import('./pages/real-estate/AuditLog'));
-const RealEstateClientScoring = React.lazy(() => import('./pages/real-estate/ClientScoring'));
 const RealEstateCommissionRules = React.lazy(() => import('./pages/real-estate/CommissionRules'));
 const RealEstateComparableProperties = React.lazy(() => import('./pages/real-estate/ComparableProperties'));
 const RealEstateContractorReviews = React.lazy(() => import('./pages/real-estate/ContractorReviews'));
@@ -444,7 +443,6 @@ const RealEstateRecommendations = React.lazy(() => import('./pages/real-estate/R
 const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/TeamManagement'));
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
 const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analytics'));
-const RealEstateAgentic = React.lazy(() => import('./pages/real-estate/Agentic'));
 
 // Religion Pages
 const ReligionMembers = React.lazy(() => import('./pages/religion/Members'));
@@ -1062,7 +1060,6 @@ function PlatformRoutes() {
       <Route path="/real-estate/crm-leads" element={<RealEstateCRMLeads />} />
       <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
       <Route path="/real-estate/audit-log" element={<RealEstateAuditLog />} />
-      <Route path="/real-estate/client-scoring" element={<RealEstateClientScoring />} />
       <Route path="/real-estate/commission-rules" element={<RealEstateCommissionRules />} />
       <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
       <Route path="/real-estate/contractor-reviews" element={<RealEstateContractorReviews />} />
@@ -1080,7 +1077,6 @@ function PlatformRoutes() {
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
       <Route path="/real-estate/trust-accounting" element={<RealEstateTrustAccounting />} />
       <Route path="/real-estate/analytics" element={<RealEstateAnalytics />} />
-      <Route path="/real-estate/agentic" element={<RealEstateAgentic />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />
