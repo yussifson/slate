@@ -43,7 +43,7 @@ export function SiteDomainResolver({ children }) {
           return;
         }
 
-        // Query for a published site matching this domain
+        // Query for a published site matching this domain with a 1.5s timeout
         let query = supabase.from('slate_sites').select('id, company_id').eq('is_published', true);
         
         if (isCustomDomain) {
@@ -52,7 +52,10 @@ export function SiteDomainResolver({ children }) {
           query = query.eq('subdomain', currentSubdomain);
         }
 
-        const { data, error } = await query.maybeSingle();
+        const queryPromise = query.maybeSingle();
+        const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: null, error: null }), 1500));
+
+        const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
 
         if (data && !error) {
           setSite(data);

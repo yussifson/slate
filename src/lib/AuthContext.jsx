@@ -138,6 +138,21 @@ export const AuthProvider = ({ children }) => {
         } catch (e) {}
         throw new Error("Not logged in");
       }
+
+      // INSTANT MOBILE HYDRATION: If a valid cached user exists for this session ID,
+      // unblock the UI immediately (< 50ms) so mobile screens load instantly.
+      try {
+        const cachedUserRaw = localStorage.getItem('slate_cached_user');
+        if (cachedUserRaw) {
+          const cachedUser = JSON.parse(cachedUserRaw);
+          if (cachedUser && cachedUser.id === sessionUser.id) {
+            setUser(cachedUser);
+            setIsAuthenticated(true);
+            setAuthChecked(true);
+            setIsLoadingAuth(false);
+          }
+        }
+      } catch (e) {}
       
       // === GLOBALIZATION (i18n) SYNC ===
       // Check if user has a saved language preference from another device
@@ -530,30 +545,40 @@ export const AuthProvider = ({ children }) => {
       let availableCompanies = [];
       try {
         const emailParam = sessionUser.email ? sessionUser.email : '';
-        const __resUA = await powerSync.execute(`SELECT company_id FROM univ_accesscontrols WHERE email LIKE ?`, [emailParam]);
-        const uAccess = __resUA.rows ? (__resUA.rows._array || Array.from(__resUA.rows)) : [];
-        const __resSA = await powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [emailParam]);
-        const sAccess = __resSA.rows ? (__resSA.rows._array || Array.from(__resSA.rows)) : [];
-        const __resPU = await powerSync.execute(`SELECT company_id FROM portal_users WHERE email LIKE ?`, [emailParam]);
-        const pAccess = __resPU.rows ? (__resPU.rows._array || Array.from(__resPU.rows)) : [];
         
-        const cIds = new Set();
-        if (profile?.company_id) cIds.add(profile.company_id);
-        if (companyData?.id) cIds.add(companyData.id);
-        (uAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
-        (sAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
-        (pAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
-        
-        if (cIds.size > 0) {
-          const _cIdsArr = Array.from(cIds);
-          let comps = [];
-          if (_cIdsArr.length > 0) {
-            const _plhdr = _cIdsArr.map(()=>'?').join(',');
-            const __resC = await powerSync.execute(`SELECT id, name, subdomain FROM companies WHERE id IN (${_plhdr})`, _cIdsArr);
-            comps = __resC.rows ? (__resC.rows._array || Array.from(__resC.rows)) : [];
+        // Execute PowerSync queries in parallel with a 2-second timeout limit
+        const fetchWorkspacesPromise = (async () => {
+          const [__resUA, __resSA, __resPU] = await Promise.all([
+            powerSync.execute(`SELECT company_id FROM univ_accesscontrols WHERE email LIKE ?`, [emailParam]).catch(() => ({ rows: [] })),
+            powerSync.execute(`SELECT company_id FROM staff_records WHERE user_email LIKE ?`, [emailParam]).catch(() => ({ rows: [] })),
+            powerSync.execute(`SELECT company_id FROM portal_users WHERE email LIKE ?`, [emailParam]).catch(() => ({ rows: [] }))
+          ]);
+
+          const uAccess = __resUA.rows ? (__resUA.rows._array || Array.from(__resUA.rows)) : [];
+          const sAccess = __resSA.rows ? (__resSA.rows._array || Array.from(__resSA.rows)) : [];
+          const pAccess = __resPU.rows ? (__resPU.rows._array || Array.from(__resPU.rows)) : [];
+
+          const cIds = new Set();
+          if (profile?.company_id) cIds.add(profile.company_id);
+          if (companyData?.id) cIds.add(companyData.id);
+          (uAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
+          (sAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
+          (pAccess || []).forEach(r => r.company_id && cIds.add(r.company_id));
+
+          if (cIds.size > 0) {
+            const _cIdsArr = Array.from(cIds);
+            if (_cIdsArr.length > 0) {
+              const _plhdr = _cIdsArr.map(() => '?').join(',');
+              const __resC = await powerSync.execute(`SELECT id, name, subdomain FROM companies WHERE id IN (${_plhdr})`, _cIdsArr).catch(() => ({ rows: [] }));
+              return __resC.rows ? (__resC.rows._array || Array.from(__resC.rows)) : [];
+            }
           }
-          if (comps) availableCompanies = comps;
-        }
+          return [];
+        })();
+
+        const timeoutPromise = new Promise(resolve => setTimeout(() => resolve([]), 2000));
+        const comps = await Promise.race([fetchWorkspacesPromise, timeoutPromise]);
+        if (comps) availableCompanies = comps;
       } catch(e) {
         console.error("Failed to fetch available workspaces:", e);
       }
