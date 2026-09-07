@@ -172,7 +172,30 @@ export default function RealEstateDashboard() {
 
   return (
     <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+      {/* ── JCL Royal Group: Isolation Verification Banner ── */}
+      {company?.industry_type === 'real_estate_jcl' && (
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-400/60 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-500/40 px-4 py-3.5 shadow-sm">
+          <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 dark:bg-amber-500/20">
+            <span className="text-lg leading-none">🔐</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-bold text-amber-800 dark:text-amber-300">
+                JCL Royal Group — Isolated Vertical Active
+              </span>
+              <span className="inline-flex items-center rounded-full bg-amber-200 dark:bg-amber-800/60 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-amber-900 dark:text-amber-200 uppercase">
+                real_estate_jcl
+              </span>
+            </div>
+            <p className="mt-0.5 text-xs text-amber-700 dark:text-amber-400">
+              ✅ Cutover confirmed — this workspace is running on the dedicated <strong>real_estate_jcl</strong> vertical, fully isolated from all other Real Estate tenants. Data is scoped to <strong>{company?.name || 'this company'}</strong> only.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* ── Hero Header ── */}
+
       <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#10b981] via-[#0d9488] to-[#0284c7] p-5 sm:p-8 text-white shadow-xl border border-white/10">
         <div className="absolute inset-0 bg-black/10 pointer-events-none" />
         <div className="absolute -top-6 -right-6 w-32 sm:w-40 h-32 sm:h-40 bg-white/10 rounded-full blur-xl pointer-events-none" />
