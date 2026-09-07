@@ -228,11 +228,14 @@ function DocumentRenderer({ doc, type }) {
 
 // ─── Main SmartDocumentViewer ────────────────────────────────────────────────
 export default function SmartDocumentViewer({ doc, onClose }) {
+  if (!doc) return null;
+
+  const docName = doc.name || "Document";
   const { toast } = useToast();
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `Hello! I'm your AI document assistant. I'm ready to help you analyze **${doc.name}**.\n\nYou can ask me anything about this document, or use the quick actions below to get started instantly.`
+      content: `Hello! I'm your AI document assistant. I'm ready to help you analyze **${docName}**.\n\nYou can ask me anything about this document, or use the quick actions below to get started instantly.`
     }
   ]);
   const [input, setInput] = useState("");
@@ -247,7 +250,7 @@ export default function SmartDocumentViewer({ doc, onClose }) {
 
   useEffect(() => {
     async function extract() {
-      if (!doc.file_url) return;
+      if (!doc?.file_url) return;
       setIsExtracting(true);
       try {
         if (fileType === 'pdf') {
@@ -273,10 +276,10 @@ export default function SmartDocumentViewer({ doc, onClose }) {
       }
     }
     extract();
-  }, [doc.file_url, fileType]);
+  }, [doc?.file_url, fileType]);
 
   const docContext = `
-Document Name: ${doc.name}
+Document Name: ${docName}
 Category: ${doc.category || "—"}
 Uploaded By: ${doc.uploaded_by || "—"}
 Date: ${doc.filing_date?.split("T")[0] || "—"}

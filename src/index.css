@@ -4,18 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Native Mobile Base Styles */
+/* Base Styles */
 html, body {
   -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
   overscroll-behavior-y: none; /* Prevents pull-to-refresh bounce on body */
   background-color: var(--background);
 }
 
-/* Allow text selection in inputs and textareas */
-input, textarea, [contenteditable="true"] {
+/* Ensure text selection is enabled */
+*, html, body, input, textarea, [contenteditable="true"] {
   -webkit-user-select: auto;
   user-select: auto;
 }

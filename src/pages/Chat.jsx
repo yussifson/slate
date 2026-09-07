@@ -337,11 +337,12 @@ export default function Chat({ isDockedMode = false }) {
     participantProfiles={participantProfiles}
   />
   
-  <SmartDocumentViewer
-    open={!!viewingDoc}
-    onOpenChange={() => setViewingDoc(null)}
-    doc={viewingDoc}
-  />
+  {viewingDoc && (
+    <SmartDocumentViewer
+      doc={viewingDoc}
+      onClose={() => setViewingDoc(null)}
+    />
+  )}
 
  {/* Sidebar - Channels & DMs */}
  <div className={cn(
