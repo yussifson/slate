@@ -243,7 +243,7 @@ BEGIN
     LOOP
         FOR r IN 
             SELECT * FROM public.univ_re_properties 
-            WHERE company_id = jcl_company_id 
+            WHERE company_id::text = jcl_company_id::text 
               AND property_type IN ('land', 'parcel')
         LOOP
             BEGIN
@@ -279,7 +279,7 @@ BEGIN
                 r.id,
                 r.created_at,
                 r.created_at,
-                r.company_id,
+                r.company_id::uuid,
                 COALESCE(features_json->>'parcelName', r.address, 'Land Parcel'),
                 COALESCE(features_json->>'plotNumber', ''),
                 COALESCE(features_json->>'cadastralRef', ''),
@@ -314,7 +314,7 @@ BEGIN
                         phone,
                         email
                     ) VALUES (
-                        r.company_id,
+                        r.company_id::uuid,
                         r.id,
                         COALESCE(owner_item->>'ownerName', 'Owner'),
                         COALESCE(NULLIF(owner_item->>'percentage', '')::numeric, 100),
@@ -342,7 +342,7 @@ BEGIN
                     allocation_status,
                     notes
                 ) VALUES (
-                    r.company_id,
+                    r.company_id::uuid,
                     r.id,
                     COALESCE(alloc_item->>'customerName', 'Client Allocation'),
                     alloc_item->>'customerEmail',
