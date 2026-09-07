@@ -79,8 +79,9 @@ export default function CustomerTimeline({ customerId = null, compact = false })
     try {
       setIsLoading(true);
 
-      const [clientRes, leadActRes, viewingRes, offerRes, txnRes, leaseRes, propRes] = await Promise.all([
+      const [clientRes, leadsRes, leadActRes, viewingRes, offerRes, txnRes, leaseRes, propRes] = await Promise.all([
         powerSync.execute(`SELECT * FROM univ_re_clients WHERE company_id = ? ORDER BY name ASC`, [companyId]),
+        powerSync.execute(`SELECT * FROM univ_re_leads WHERE company_id = ? ORDER BY created_at DESC`, [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute(`SELECT * FROM univ_re_lead_activities WHERE company_id = ? ORDER BY created_at DESC`, [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute(`SELECT * FROM univ_re_viewings WHERE company_id = ? ORDER BY viewing_date DESC`, [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute(`SELECT * FROM univ_re_offers WHERE company_id = ? ORDER BY created_at DESC`, [companyId]).catch(() => ({ rows: [] })),
@@ -90,16 +91,25 @@ export default function CustomerTimeline({ customerId = null, compact = false })
       ]);
 
       const clientList = clientRes.rows._array || Array.from(clientRes.rows || []);
+      const leadsList = leadsRes.rows._array || Array.from(leadsRes.rows || []);
       setClients(clientList);
+
+      const clientNameMap = {};
+      clientList.forEach(c => { clientNameMap[c.id] = c.name; });
+      leadsList.forEach(l => {
+        const fullLeadName = `${l.first_name || ''} ${l.last_name || ''}`.trim() || l.email || 'Prospect Lead';
+        clientNameMap[l.id] = fullLeadName;
+      });
 
       const events = [];
 
       // 1. CRM Lead Activities
       (leadActRes.rows._array || Array.from(leadActRes.rows || [])).forEach(act => {
+        const resolvedName = (act.lead_id ? clientNameMap[act.lead_id] : null) || 'Client Interaction';
         events.push({
           id: `crm_${act.id}`,
           clientId: act.lead_id || '',
-          clientName: act.lead_name || 'Prospect Lead',
+          clientName: resolvedName,
           module: 'crm',
           activityType: act.activity_type || 'activity',
           title: act.subject || `CRM ${act.activity_type || 'Interaction'}`,
@@ -245,18 +255,17 @@ export default function CustomerTimeline({ customerId = null, compact = false })
 
       await powerSync.execute(
         `INSERT INTO univ_re_lead_activities (
-          id, created_at, company_id, lead_id, lead_name, activity_type, subject, description, outcome
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          id, created_at, company_id, lead_id, activity_type, subject, description, outcome
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           newId,
           now,
           companyId,
-          logForm.clientId || 'general',
-          logForm.clientName || 'General Client Interaction',
+          logForm.clientId || null,
           logForm.activityType,
           logForm.title,
-          logForm.description,
-          logForm.outcome
+          logForm.description || null,
+          logForm.outcome || 'completed'
         ]
       );
 

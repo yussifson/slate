@@ -501,15 +501,14 @@ export default function JCLCrmLeads() {
     try {
       const actId = generateUUID();
       const now = new Date().toISOString();
-      const fullName = `${selectedLead.first_name || ''} ${selectedLead.last_name || ''}`.trim();
 
       await powerSync.execute(
         `INSERT INTO univ_re_lead_activities (
-          id, created_at, company_id, lead_id, lead_name, activity_type, subject, description, duration_minutes, outcome
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          id, created_at, company_id, lead_id, activity_type, subject, description, duration_minutes, outcome
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           actId, now, companyId,
-          selectedLead.id, fullName,
+          selectedLead.id,
           activityData.activityType,
           activityData.subject,
           activityData.description,

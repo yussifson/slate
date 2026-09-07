@@ -450,6 +450,18 @@ const JCLCustomerTimeline = React.lazy(() => import('./pages/real-estate-jcl/Cus
 const JCLCrmLeadsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCrmLeads'));
 const JCLClientsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLClients'));
 const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
+const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
+const JCLTransactionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTransactions'));
+const JCLViewingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLViewings'));
+const JCLLeasesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeases'));
+const JCLOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLOffers'));
+
+const SmartRealEstateDashboard = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLDashboardPage />;
+  return <RealEstateDashboard />;
+};
 
 const SmartClientsRouter = () => {
   const { user } = useAuth();
@@ -463,6 +475,41 @@ const SmartLeadsRouter = () => {
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
   if (ind === 'real_estate_jcl') return <JCLCrmLeadsPage />;
   return <RealEstateCRMLeads />;
+};
+
+const SmartPropertiesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLPropertiesPage />;
+  return <RealEstateProperties />;
+};
+
+const SmartTransactionsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLTransactionsPage />;
+  return <RealEstateTransactions />;
+};
+
+const SmartViewingsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLViewingsPage />;
+  return <RealEstateViewings />;
+};
+
+const SmartLeasesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLLeasesPage />;
+  return <RealEstateLeases />;
+};
+
+const SmartOffersRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLOffersPage />;
+  return <RealEstateOffers />;
 };
 
 // Religion Pages
@@ -1067,16 +1114,16 @@ function PlatformRoutes() {
       <Route path="/pharmacy/reports" element={<PharmacyReports />} />
 
       {/* Real Estate & JCL Suite */}
-      <Route path="/real-estate" element={<RealEstateDashboard />} />
-      <Route path="/real-estate/dashboard" element={<RealEstateDashboard />} />
+      <Route path="/real-estate" element={<SmartRealEstateDashboard />} />
+      <Route path="/real-estate/dashboard" element={<SmartRealEstateDashboard />} />
       <Route path="/real-estate/land" element={<JCLLandManagement />} />
       <Route path="/real-estate/customer-timeline" element={<JCLCustomerTimeline />} />
-      <Route path="/real-estate/properties" element={<RealEstateProperties />} />
+      <Route path="/real-estate/properties" element={<SmartPropertiesRouter />} />
       <Route path="/real-estate/clients" element={<SmartClientsRouter />} />
-      <Route path="/real-estate/leases" element={<RealEstateLeases />} />
-      <Route path="/real-estate/viewings" element={<RealEstateViewings />} />
-      <Route path="/real-estate/transactions" element={<RealEstateTransactions />} />
-      <Route path="/real-estate/offers" element={<RealEstateOffers />} />
+      <Route path="/real-estate/leases" element={<SmartLeasesRouter />} />
+      <Route path="/real-estate/viewings" element={<SmartViewingsRouter />} />
+      <Route path="/real-estate/transactions" element={<SmartTransactionsRouter />} />
+      <Route path="/real-estate/offers" element={<SmartOffersRouter />} />
       <Route path="/real-estate/commissions" element={<RealEstateCommissions />} />
       <Route path="/real-estate/rent-payments" element={<RealEstateRentPayments />} />
       <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
