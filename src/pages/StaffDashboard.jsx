@@ -25,6 +25,7 @@ export default function StaffDashboard() {
     case 'optavel':
       return <SoftwareDashboard />;
     case 'real_estate':
+    case 'real_estate_jcl':
       return <RealEstateDashboard />;
     case 'hospital':
       return <HospitalDashboard />;

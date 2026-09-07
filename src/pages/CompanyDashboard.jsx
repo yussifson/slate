@@ -64,7 +64,7 @@ export default function CompanyDashboard() {
     return <RetailDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'logistics') {
     return <LogisticsDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
-  } else if (industry === 'real_estate' || industry === 'realestate') {
+  } else if (industry === 'real_estate' || industry === 'realestate' || industry === 'real_estate_jcl') {
     return <RealEstateDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'pharmacy') {
     return <PharmacyDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;

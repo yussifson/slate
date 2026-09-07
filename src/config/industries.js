@@ -818,6 +818,82 @@ export const INDUSTRIES = {
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 
+  // ── JCL Royal Group — Isolated Real Estate Vertical ────────────────────────
+  // This is a dedicated copy of the real_estate vertical for JCL Royal Group.
+  // It is intentionally identical to real_estate so that existing role strings,
+  // nav paths, and page components work without modification.
+  // DO NOT add it to ALL_INDUSTRY_KEYS in industryVisibility.js — it must
+  // remain invisible in all customer-facing industry pickers.
+  real_estate_jcl: {
+    name: 'Real Estate',
+    icon: '🏠',
+    terms: {
+      client: 'Client', clients: 'Clients',
+      case: 'Property', cases: 'Properties',
+      staff: 'Agent', staffPlural: 'Agents',
+      venue: 'Office', intake: 'Client Registration',
+      hearing: 'Viewing', hearings: 'Viewings'},
+    roles: [
+      { value: 'company_admin', label: 'Broker / Owner' },
+      { value: 'agent', label: 'Real Estate Agent' },
+      { value: 'property_manager', label: 'Property Manager' },
+      { value: 'accountant', label: 'Accountant' },
+      { value: 'finance', label: 'Finance Officer' },
+      { value: 'admin', label: 'Office Administrator' },
+    ],
+
+    departments: [
+      { value: 'admin', label: 'Administration' },
+      { value: 'finance', label: 'Finance' },
+      { value: 'hr', label: 'Human Resources' },
+      { value: 'operations', label: 'Operations' },
+      { value: 'tech', label: 'IT & Support' }
+    ],    nav: [
+
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      
+      { section: 'Properties & Transactions', label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
+      { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
+      { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
+      { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
+      { label: 'Counter Offers', path: '/real-estate/counter-offers', icon: 'MessageCircle' },
+      { label: 'Transactions', path: '/real-estate/transactions', icon: 'Banknote' },
+      
+      { section: 'Financial Management', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
+      { label: 'Escrow Accounts', path: '/real-estate/escrow', icon: 'Lock' },
+      { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
+      { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
+      
+      { section: 'Leasing & Rent', label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
+      { label: 'Lease Renewals', path: '/real-estate/lease-renewals', icon: 'RotateCcw' },
+      { label: 'Rent Payments', path: '/real-estate/rent-payments', icon: 'CreditCard' },
+      { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: 'Calendar' },
+      
+      { section: 'Operations', label: 'Maintenance', path: '/real-estate/maintenance', icon: 'Wrench' },
+      { label: 'Contractors', path: '/real-estate/contractors', icon: 'Users2' },
+      { label: 'Contractor Reviews', path: '/real-estate/contractor-reviews', icon: 'Star' },
+      
+      { section: 'Documents & Agreements', label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { label: 'Document Templates', path: '/real-estate/document-templates', icon: 'FileText' },
+      { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
+      
+      { section: 'Intelligence & Analytics', label: 'Market Intelligence', path: '/real-estate/market-data', icon: 'Globe' },
+      { label: 'Comparable Properties', path: '/real-estate/comparable-properties', icon: 'Layers' },
+      { label: 'Agent Metrics', path: '/real-estate/agent-metrics', icon: 'BarChart2' },
+      { label: 'Recommendations', path: '/real-estate/recommendations', icon: 'Brain' },
+      
+      { section: 'Administration', label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
+      { label: 'Reports', path: '/reports', icon: 'FileText' },
+      { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
+      { label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
+      { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Automations', path: '/automations', icon: 'Zap' },
+
+
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+    ]},
+
   pharmacy: {
     name: 'Pharmacy',
     icon: '💊',

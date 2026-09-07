@@ -112,7 +112,7 @@ export default function MasterPortalRouter() {
     }
 
     // ── Real Estate ─────────────────────────────────────────────────────────
-    if (['real_estate', 'realestate', 'property'].includes(industry)) {
+    if (['real_estate', 'real_estate_jcl', 'realestate', 'property'].includes(industry)) {
       if (role === 'landlord' || role === 'owner') return <RealEstateLandlordPortal />;
       return <RealEstateTenantPortal />; // tenant, default
     }

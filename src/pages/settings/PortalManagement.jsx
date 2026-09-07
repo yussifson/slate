@@ -36,6 +36,7 @@ const PORTAL_ROLES = {
   insurance: [{ value: 'policyholder', label: 'Policyholder' }],
   religion: [{ value: 'member', label: 'Member' }],
   real_estate: [{ value: 'tenant', label: 'Tenant' }, { value: 'landlord', label: 'Landlord / Owner' }],
+  real_estate_jcl: [{ value: 'tenant', label: 'Tenant' }, { value: 'landlord', label: 'Landlord / Owner' }],
   pharmacy: [{ value: 'client', label: 'Customer' }],
   hr: [{ value: 'employee', label: 'Employee' }],
 };
