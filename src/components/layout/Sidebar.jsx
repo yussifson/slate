@@ -787,34 +787,60 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const getCategory = (item) => {
     const p = item.path || '';
-    if (item.isDynamic) return "Workspace";
-    
-    // 1. Platform should ONLY have dashboard and intelligence
+    if (item.isDynamic) return activeIndustry === 'real_estate_jcl' ? "Projects & Smart Docs" : "Workspace";
+
+    // Dedicated Department Grouping for JCL Royal Group
+    if (activeIndustry === 'real_estate_jcl') {
+      if (['/', '/my-dashboard', '/intelligence'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview'].includes(item.label)) {
+        return "Executive Overview";
+      }
+      if (['/real-estate/crm-leads', '/real-estate/clients', '/real-estate/customer-timeline', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers'].includes(p) || p.startsWith('/real-estate/crm')) {
+        return "Sales & CRM";
+      }
+      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data'].includes(p) || p.startsWith('/real-estate/land')) {
+        return "Land & Property";
+      }
+      if (['/real-estate/transactions', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p)) {
+        return "Tenancy & Operations";
+      }
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees'].includes(p) ||
+          p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
+          p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
+        return "Finance & Trust";
+      }
+      if (['/tasks', '/smart-docs', '/real-estate/document-templates', '/real-estate/e-signatures'].includes(p)) {
+        return "Projects & Smart Docs";
+      }
+      if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
+        return "Human Resources";
+      }
+      if (['/settings', '/integrations', '/automations', '/real-estate/audit', '/real-estate/agent-metrics', '/real-estate/analytics'].includes(p) || p.startsWith('/admin')) {
+        return "System Admin";
+      }
+      if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
+        return "Communications";
+      }
+      return "Executive Overview";
+    }
+
+    // Default Grouping for all other industries
     if (['/', '/my-dashboard', '/intelligence'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview', 'Platform Overview'].includes(item.label)) {
       return "Platform";
     }
-    
-    // 2. Notification system added to Communications
     if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
       return "Communications";
     }
-    
     if (['/billing', '/invoices', '/payroll', '/expenses', '/fees', '/donations', '/orders', '/pos'].includes(p) ||
         p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
         p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
       return "Finance";
     }
-    
     if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
       return "Team & HR";
     }
-    
-    // 3. Category for settings, admin, automations, marketplace, etc.
     if (['/settings', '/integrations', '/automations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create', '/sites'].includes(p) || p.startsWith('/admin')) {
       return "System Administration";
     }
-    
-    // Default remaining to Operations
     return "Operations";
   };
 
@@ -825,7 +851,9 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     return acc;
   }, {});
 
-  const categoryOrder = ["Platform", "Operations", "Communications", "Finance", "Team & HR", "Workspace", "System Administration"];
+  const categoryOrder = activeIndustry === 'real_estate_jcl'
+    ? ["Executive Overview", "Sales & CRM", "Land & Property", "Tenancy & Operations", "Finance & Trust", "Projects & Smart Docs", "Human Resources", "System Admin", "Communications"]
+    : ["Platform", "Operations", "Communications", "Finance", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
  setDeleteData({ id, name});
