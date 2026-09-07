@@ -790,7 +790,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     if (item.isDynamic) return "Workspace";
     
     // 1. Platform should ONLY have dashboard and intelligence
-    if (['/', '/my-dashboard', '/intelligence'].includes(p) || item.label === 'Dashboard' || item.label === 'My Dashboard') {
+    if (['/', '/my-dashboard', '/intelligence'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview', 'Platform Overview'].includes(item.label)) {
       return "Platform";
     }
     
@@ -799,16 +799,18 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       return "Communications";
     }
     
-    if (['/billing', '/invoices', '/payroll', '/expenses', '/fees', '/donations', '/orders', '/pos'].includes(p)) {
+    if (['/billing', '/invoices', '/payroll', '/expenses', '/fees', '/donations', '/orders', '/pos'].includes(p) ||
+        p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
+        p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
       return "Finance";
     }
     
-    if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p)) {
+    if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
       return "Team & HR";
     }
     
-    // 3. New Category for settings, admin, marketplace, etc.
-    if (['/settings', '/integrations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create', '/sites'].includes(p) || p.startsWith('/admin')) {
+    // 3. Category for settings, admin, automations, marketplace, etc.
+    if (['/settings', '/integrations', '/automations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create', '/sites'].includes(p) || p.startsWith('/admin')) {
       return "System Administration";
     }
     
