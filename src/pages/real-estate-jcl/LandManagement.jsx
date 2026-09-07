@@ -1349,7 +1349,6 @@ export default function LandManagement() {
                 <TabsTrigger value="allocation" className="font-bold text-xs rounded-lg">Allocation</TabsTrigger>
               </TabsList>
 
-              {/* ── Tab 1: Basic Specifications ── */}
               <TabsContent value="basic" className="space-y-4 pt-3">
                 <div className="space-y-1.5">
                   <Label className="font-bold">Parcel Title / Name *</Label>
@@ -1514,7 +1513,6 @@ export default function LandManagement() {
                 </div>
               </TabsContent>
 
-              {/* ── Tab 2: Co-Ownership ── */}
               <TabsContent value="ownership" className="space-y-4 pt-3">
                 <div className="flex items-center justify-between">
                   <div>

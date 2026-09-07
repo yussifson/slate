@@ -14,7 +14,7 @@ import { motion, AnimatePresence} from 'framer-motion';
 import { 
  Plus, Search, Filter, MoreHorizontal, User, Mail, Phone, 
  Calendar as CalendarIcon, Loader2, DollarSign, Trash2, X,
- LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye
+ LayoutList, KanbanSquare, Target, TrendingUp, Building2, Edit2, Eye, UserCheck
 } from 'lucide-react';
 import { toast} from 'react-hot-toast';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from "@/components/ui/sheet";
