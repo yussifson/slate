@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
-  MapPin, Plus, Edit, Trash2, Search, DollarSign, Layers,
-  FileText, Users, CheckCircle2, Clock, AlertTriangle, ShieldCheck,
-  ChevronRight, Calendar, ArrowUpRight, Filter, Download, UserCheck,
-  Compass, Landmark, Building2
+  Compass, Plus, Edit, Trash2, Search, DollarSign, Layers,
+  CheckCircle2, Clock, MapPin, Users,
+  ChevronRight, RefreshCw, LayoutGrid, List,
+  Grid, UserCheck, Download
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
+import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,12 +18,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { toast } from 'react-hot-toast';
-import { REPageHeader } from '@/components/real-estate/RealEstateViewKit';
-import ViewToggle from '@/components/shared/ViewToggle';
-import { useViewPreference } from '@/hooks/useViewPreference';
 import GenericKanban from '@/components/views/GenericKanban';
 import { formatCurrency } from '@/lib/constants';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 // Helper UUID generator
 function generateUUID() {
@@ -81,7 +81,6 @@ const initialFormData = {
 };
 
 export default function LandManagement() {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
   const { user } = useAuth();
   const powerSync = usePowerSync();
@@ -89,16 +88,19 @@ export default function LandManagement() {
   const [parcels, setParcels] = useState([]);
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [zoningFilter, setZoningFilter] = useState('all');
-  const [view, setView] = useViewPreference('jcl_land_management', 'grid');
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'board' | 'list'
   
   // Drawers & Modals
   const [showParcelDrawer, setShowParcelDrawer] = useState(false);
   const [showAllocationModal, setShowAllocationModal] = useState(false);
+  const [inspectorParcel, setInspectorParcel] = useState(null);
   const [selectedParcel, setSelectedParcel] = useState(null);
   const [editingId, setEditingId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
   const [formData, setFormData] = useState(initialFormData);
 
   // Allocation Quick Form
@@ -116,7 +118,7 @@ export default function LandManagement() {
     notes: '',
   });
 
-  // Fetch Parcels (stored with property_type='land' or structured land JSON)
+  // Fetch Parcels
   const fetchParcels = async () => {
     try {
       setIsLoading(true);
@@ -138,7 +140,7 @@ export default function LandManagement() {
           if (p.features) {
             meta = typeof p.features === 'string' ? JSON.parse(p.features) : p.features;
           }
-        } catch (err) {
+        } catch (_err) {
           meta = {};
         }
 
@@ -170,8 +172,7 @@ export default function LandManagement() {
 
       setParcels(parsedParcels);
       setClients(clientRes.rows._array || Array.from(clientRes.rows || []));
-    } catch (e) {
-      console.error('[LandManagement] Fetch failed:', e);
+    } catch (_e) {
       toast.error('Failed to load land parcel records');
     } finally {
       setIsLoading(false);
@@ -179,8 +180,37 @@ export default function LandManagement() {
   };
 
   useEffect(() => {
-    if (companyId) fetchParcels();
+    if (companyId) {
+      fetchParcels();
+      const channel = supabase.channel(`univ_re_land_${companyId}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_re_properties', filter: `company_id=eq.${companyId}` }, fetchParcels)
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
   }, [companyId]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchParcels();
+    setTimeout(() => {
+      setIsRefreshing(false);
+      toast.success('Land records synchronized');
+    }, 400);
+  };
+
+  const handleExportCSV = () => {
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + "Parcel Name,Plot Number,Cadastral Ref,Location,City,State,Acres,Zoning,Title Type,Price,Status,Allocated To\n"
+      + parcels.map(p => `"${p.parcelName || ''}","${p.plotNumber || ''}","${p.cadastralRef || ''}","${p.address || ''}","${p.city || ''}","${p.state || ''}","${p.lotSizeAcres || 0}","${p.zoning || ''}","${p.titleType || ''}","${p.price || 0}","${p.status || ''}","${p.allocation?.customerName || 'None'}"`).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `jcl_land_parcels_${format(new Date(), 'yyyyMMdd')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Land inventory exported to CSV');
+  };
 
   // Filtered Parcels
   const filteredParcels = useMemo(() => {
@@ -309,22 +339,36 @@ export default function LandManagement() {
         const newId = generateUUID();
         await powerSync.execute(
           `INSERT INTO univ_re_properties (
-            id, created_at, company_id, address, city, state, country, zip_code,
-            property_type, price, status, lot_size, square_feet, agent_name,
-            description, features, last_updated
+            id,
+            company_id,
+            created_at,
+            address,
+            city,
+            state,
+            country,
+            zip_code,
+            price,
+            status,
+            property_type,
+            lot_size,
+            square_feet,
+            agent_name,
+            description,
+            features,
+            last_updated
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             newId,
-            now,
             companyId,
+            now,
             formData.address,
             formData.city,
             formData.state,
             formData.country,
             formData.zipCode,
-            'land',
             Number(formData.price) || 0,
             formData.status,
+            'land',
             Number(formData.lotSizeAcres) || 0,
             Number(formData.squareFeet) || 0,
             formData.agentName || user?.full_name || 'Admin',
@@ -333,49 +377,62 @@ export default function LandManagement() {
             now
           ]
         );
-        toast.success('Land parcel created successfully');
+        toast.success('Land parcel registered');
       }
 
       setShowParcelDrawer(false);
       fetchParcels();
-    } catch (err) {
-      console.error('[LandManagement] Save error:', err);
+      if (inspectorParcel && inspectorParcel.id === editingId) {
+        setInspectorParcel(null);
+      }
+    } catch (_err) {
       toast.error('Failed to save land parcel');
     }
   };
 
-  // Delete Parcel
   const handleDeleteParcel = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this land parcel?')) return;
     try {
-      await powerSync.execute(
-        `DELETE FROM univ_re_properties WHERE id = ? AND company_id = ?`,
-        [id, companyId]
-      );
-      toast.success('Parcel deleted');
+      await powerSync.execute(`DELETE FROM univ_re_properties WHERE id = ? AND company_id = ?`, [id, companyId]);
+      toast.success('Land parcel record deleted');
+      setDeleteId(null);
+      if (inspectorParcel?.id === id) setInspectorParcel(null);
       fetchParcels();
-    } catch (err) {
-      console.error('[LandManagement] Delete error:', err);
+    } catch (_err) {
       toast.error('Failed to delete parcel');
     }
   };
 
-  // Handle Quick Land Allocation
   const handleOpenAllocation = (parcel) => {
     setSelectedParcel(parcel);
-    setAllocationForm({
-      customerId: parcel.allocation?.customerId || '',
-      customerName: parcel.allocation?.customerName || '',
-      customerEmail: parcel.allocation?.customerEmail || '',
-      customerPhone: parcel.allocation?.customerPhone || '',
-      allocationDate: parcel.allocation?.allocationDate || new Date().toISOString().split('T')[0],
-      expiryDate: parcel.allocation?.expiryDate || new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-      depositAmount: parcel.allocation?.depositAmount || '',
-      totalAgreedPrice: parcel.allocation?.totalAgreedPrice || parcel.price || '',
-      paymentTerms: parcel.allocation?.paymentTerms || 'outright',
-      allocationStatus: parcel.allocation?.allocationStatus || 'active_reserved',
-      notes: parcel.allocation?.notes || '',
-    });
+    if (parcel.allocation) {
+      setAllocationForm({
+        customerId: parcel.allocation.customerId || '',
+        customerName: parcel.allocation.customerName || '',
+        customerEmail: parcel.allocation.customerEmail || '',
+        customerPhone: parcel.allocation.customerPhone || '',
+        allocationDate: parcel.allocation.allocationDate || new Date().toISOString().split('T')[0],
+        expiryDate: parcel.allocation.expiryDate || new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+        depositAmount: parcel.allocation.depositAmount || '',
+        totalAgreedPrice: parcel.allocation.totalAgreedPrice || parcel.price || '',
+        paymentTerms: parcel.allocation.paymentTerms || 'outright',
+        allocationStatus: parcel.allocation.allocationStatus || 'active_reserved',
+        notes: parcel.allocation.notes || '',
+      });
+    } else {
+      setAllocationForm({
+        customerId: '',
+        customerName: '',
+        customerEmail: '',
+        customerPhone: '',
+        allocationDate: new Date().toISOString().split('T')[0],
+        expiryDate: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
+        depositAmount: '',
+        totalAgreedPrice: parcel.price || '',
+        paymentTerms: 'outright',
+        allocationStatus: 'active_reserved',
+        notes: '',
+      });
+    }
     setShowAllocationModal(true);
   };
 
@@ -393,7 +450,7 @@ export default function LandManagement() {
         [selectedParcel.id, companyId]
       );
       if (res.rows?._array?.length > 0 && res.rows._array[0].features) {
-        try { meta = JSON.parse(res.rows._array[0].features); } catch(e) {}
+        try { meta = JSON.parse(res.rows._array[0].features); } catch(_e) {}
       }
 
       meta.allocation = {
@@ -416,8 +473,14 @@ export default function LandManagement() {
       toast.success(`Parcel allocated to ${allocationForm.customerName}`);
       setShowAllocationModal(false);
       fetchParcels();
-    } catch (err) {
-      console.error('[LandManagement] Allocation save error:', err);
+      if (inspectorParcel?.id === selectedParcel.id) {
+        setInspectorParcel({
+          ...inspectorParcel,
+          status: newStatus,
+          allocation: meta.allocation
+        });
+      }
+    } catch (_err) {
       toast.error('Failed to record allocation');
     }
   };
@@ -449,526 +512,772 @@ export default function LandManagement() {
   };
 
   return (
-    <div className="space-y-6 p-4 sm:p-6 pb-28">
-      {/* ── Page Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-6 pb-12 font-sans min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 relative bg-background">
+      
+      {/* ── Top Header & Breadcrumbs Row ── */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              <Compass className="w-6 h-6" />
+          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
+            Land Management ({parcels.length})
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Cadastral boundary tracking, co-ownership equity, and prospect parcel allocations
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 text-[13px] font-semibold text-muted-foreground">
+          <div className="hidden md:flex items-center gap-1.5 mr-2">
+            <span className="hover:text-foreground cursor-pointer transition-colors">Home</span>
+            <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-foreground">Land Management</span>
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            className="h-9 gap-1.5 bg-card border-border text-foreground shadow-sm rounded-xl hover:bg-muted font-bold text-xs"
+          >
+            <Download className="w-3.5 h-3.5" /> Export CSV
+          </Button>
+
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="h-9 w-9 bg-card border-border text-foreground shadow-sm rounded-xl hover:bg-muted"
+            title="Refresh Land Records"
+          >
+            <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
+          </Button>
+        </div>
+      </div>
+
+      {/* ── KPI Metric Strip (Law Management System Glass Design) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Parcels</span>
+              <div className="text-2xl font-extrabold text-foreground tracking-tight">{metrics.totalParcels}</div>
+              <p className="text-[11px] text-muted-foreground font-semibold">{metrics.totalAcres.toFixed(1)} Total Acres</p>
             </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                Land Management
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-amber-300">
-                  JCL Department Module
-                </Badge>
-              </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
-                Parcels, Cadastral Records, Co-Ownership Interests & Prospect Allocations
-              </p>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500/20 to-amber-500/5 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-inner">
+              <Layers className="w-6 h-6" />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Available For Sale</span>
+              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">{metrics.available}</div>
+              <p className="text-[11px] text-muted-foreground font-semibold">Ready for allocation</p>
+            </div>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-inner">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Allocated / Reserved</span>
+              <div className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 tracking-tight">{metrics.allocated}</div>
+              <p className="text-[11px] text-muted-foreground font-semibold">{metrics.sold} Parcels Closed Sold</p>
+            </div>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500/20 to-indigo-500/5 flex items-center justify-center text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-inner">
+              <Clock className="w-6 h-6" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Portfolio Valuation</span>
+              <div className="text-2xl font-extrabold text-foreground tracking-tight">{formatCurrency(metrics.totalValue, 'USD')}</div>
+              <p className="text-[11px] text-muted-foreground font-semibold">Active Land Asset Value</p>
+            </div>
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500/20 to-blue-500/5 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
+              <DollarSign className="w-6 h-6" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs value={viewMode} onValueChange={setViewMode} className="w-full space-y-4">
+        {/* ── Search, Filters & Action Hub Bar ── */}
+        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-card/90 backdrop-blur-xl p-3 sm:p-4 rounded-[20px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+          <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search parcel, plot #, cadastral, city..."
+                className="pl-9 h-10 rounded-xl bg-background text-xs border-border/80"
+              />
+            </div>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-10 w-40 rounded-xl text-xs font-medium bg-background border-border/80">
+                <SelectValue placeholder="Status Filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses ({parcels.length})</SelectItem>
+                <SelectItem value="available">Available</SelectItem>
+                <SelectItem value="reserved">Reserved</SelectItem>
+                <SelectItem value="allocated">Allocated</SelectItem>
+                <SelectItem value="sold">Sold</SelectItem>
+                <SelectItem value="disputed">Under Review</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={zoningFilter} onValueChange={setZoningFilter}>
+              <SelectTrigger className="h-10 w-40 rounded-xl text-xs font-medium bg-background border-border/80">
+                <SelectValue placeholder="Zoning" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Zonings</SelectItem>
+                <SelectItem value="residential">Residential</SelectItem>
+                <SelectItem value="commercial">Commercial</SelectItem>
+                <SelectItem value="agricultural">Agricultural</SelectItem>
+                <SelectItem value="industrial">Industrial</SelectItem>
+                <SelectItem value="mixed">Mixed Use</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            <TabsList className="bg-muted/60 p-1 rounded-xl h-10 border border-border/60">
+              <TabsTrigger value="grid" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+                <Grid className="w-3.5 h-3.5" /> Grid
+              </TabsTrigger>
+              <TabsTrigger value="board" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+                <LayoutGrid className="w-3.5 h-3.5" /> Board
+              </TabsTrigger>
+              <TabsTrigger value="list" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+                <List className="w-3.5 h-3.5" /> List
+              </TabsTrigger>
+            </TabsList>
+
+            <Button
+              onClick={() => handleOpenDrawer()}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add Land Parcel
+            </Button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <ViewToggle view={view} onViewChange={setView} />
-          <Button
-            onClick={() => handleOpenDrawer()}
-            className="bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-xl gap-2 shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Add Land Parcel
-          </Button>
-        </div>
-      </div>
-
-      {/* ── KPI Metric Tiles ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-        <Card className="rounded-2xl border bg-card/50 shadow-sm">
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Total Parcels</span>
-              <Layers className="w-4 h-4 text-amber-600" />
+        {/* ── Tab Content: Grid View ── */}
+        <TabsContent value="grid" className="mt-0">
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
+              {[1, 2, 3].map(i => <div key={i} className="h-64 bg-muted rounded-[24px]" />)}
             </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-bold tracking-tight">{metrics.totalParcels}</span>
-              <span className="text-xs font-medium text-muted-foreground">({metrics.totalAcres.toFixed(1)} Acres)</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border bg-card/50 shadow-sm">
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Available</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">{metrics.available}</span>
-              <span className="text-xs font-medium text-muted-foreground">ready for allocation</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border bg-card/50 shadow-sm">
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Allocated / Reserved</span>
-              <Clock className="w-4 h-4 text-indigo-600" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl sm:text-3xl font-bold text-indigo-600 dark:text-indigo-400">{metrics.allocated}</span>
-              <span className="text-xs font-medium text-muted-foreground">in progress</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border bg-card/50 shadow-sm">
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Portfolio Land Value</span>
-              <DollarSign className="w-4 h-4 text-blue-600" />
-            </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-xl sm:text-2xl font-bold">{formatCurrency(metrics.totalValue, 'USD')}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* ── Search & Filters ── */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-card p-3 rounded-2xl border shadow-sm">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search parcel, plot #, cadastral, city..."
-            className="pl-9 h-10 rounded-xl bg-background text-sm"
-          />
-        </div>
-
-        <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-10 w-36 rounded-xl text-xs font-medium">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="available">Available</SelectItem>
-              <SelectItem value="reserved">Reserved</SelectItem>
-              <SelectItem value="allocated">Allocated</SelectItem>
-              <SelectItem value="sold">Sold</SelectItem>
-              <SelectItem value="disputed">Under Review</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={zoningFilter} onValueChange={setZoningFilter}>
-            <SelectTrigger className="h-10 w-36 rounded-xl text-xs font-medium">
-              <SelectValue placeholder="Zoning" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Zonings</SelectItem>
-              <SelectItem value="residential">Residential</SelectItem>
-              <SelectItem value="commercial">Commercial</SelectItem>
-              <SelectItem value="agricultural">Agricultural</SelectItem>
-              <SelectItem value="industrial">Industrial</SelectItem>
-              <SelectItem value="mixed">Mixed Use</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {/* ── Main Parcels Views ── */}
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
-          {[1, 2, 3].map(i => <div key={i} className="h-56 bg-muted rounded-2xl" />)}
-        </div>
-      ) : filteredParcels.length === 0 ? (
-        <div className="text-center py-16 bg-card rounded-2xl border border-dashed">
-          <Compass className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-60" />
-          <h3 className="text-base font-semibold text-foreground">No land parcels found</h3>
-          <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-            {search || statusFilter !== 'all'
-              ? 'Try adjusting your search query or status filter.'
-              : 'Add your first land parcel or cadastral plot to begin managing allocations.'}
-          </p>
-          <Button
-            onClick={() => handleOpenDrawer()}
-            className="mt-4 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold gap-1.5"
-          >
-            <Plus className="w-4 h-4" /> Add Parcel
-          </Button>
-        </div>
-      ) : view === 'kanban' ? (
-        <GenericKanban
-          items={filteredParcels}
-          columns={[
-            { id: 'available', title: 'Available' },
-            { id: 'reserved', title: 'Reserved' },
-            { id: 'allocated', title: 'Allocated' },
-            { id: 'sold', title: 'Sold' },
-          ]}
-          onStatusChange={async (id, newStatus) => {
-            try {
-              await powerSync.execute(
-                `UPDATE univ_re_properties SET status = ?, last_updated = ? WHERE id = ? AND company_id = ?`,
-                [newStatus, new Date().toISOString(), id, companyId]
-              );
-              fetchParcels();
-            } catch(e) {
-              toast.error('Status update failed');
-            }
-          }}
-          renderCard={(parcel) => (
-            <div className="p-3.5 space-y-2.5 bg-card rounded-xl border hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between gap-2">
-                <span className="font-bold text-sm text-foreground line-clamp-1">{parcel.parcelName}</span>
-                <Badge className={statusConfig[parcel.status]?.color || ''}>
-                  {statusConfig[parcel.status]?.label || parcel.status}
-                </Badge>
+          ) : filteredParcels.length === 0 ? (
+            <div className="text-center py-20 bg-card/60 backdrop-blur-xl rounded-[28px] border border-dashed border-border/80 p-8 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto">
+                <Compass className="w-8 h-8 opacity-75" />
               </div>
-              <div className="text-xs text-muted-foreground flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 shrink-0" />
-                <span className="truncate">{parcel.address}, {parcel.city}</span>
+              <div>
+                <h3 className="text-base font-bold text-foreground">No land parcels found</h3>
+                <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                  {search || statusFilter !== 'all' || zoningFilter !== 'all'
+                    ? 'No records match your active search filters.'
+                    : 'Register your first land parcel or cadastral plot to begin managing allocations.'}
+                </p>
               </div>
-              <div className="flex items-center justify-between text-xs pt-2 border-t font-semibold">
-                <span className="text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
-                <span>{formatCurrency(parcel.price, 'USD')}</span>
-              </div>
-              <div className="flex items-center gap-1 pt-1">
-                <Button
-                  size="xs"
-                  variant="outline"
-                  onClick={() => handleOpenAllocation(parcel)}
-                  className="w-full text-[11px] h-7 gap-1 text-indigo-600 border-indigo-200 hover:bg-indigo-50"
+              <Button
+                onClick={() => handleOpenDrawer()}
+                className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl"
+              >
+                <Plus className="w-4 h-4 mr-1.5" /> Add Land Parcel
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredParcels.map((parcel) => (
+                <div
+                  key={parcel.id}
+                  onClick={() => setInspectorParcel(parcel)}
+                  className="p-5 bg-card/90 backdrop-blur-md rounded-[22px] border border-border/80 hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between group space-y-4"
                 >
-                  <UserCheck className="w-3 h-3" /> Allocate
-                </Button>
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  onClick={() => handleOpenDrawer(parcel)}
-                  className="h-7 w-7 p-0"
-                >
-                  <Edit className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-          )}
-        />
-      ) : view === 'list' ? (
-        <div className="bg-card rounded-2xl border overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-muted/50 uppercase tracking-wider text-muted-foreground font-semibold border-b">
-                <tr>
-                  <th className="p-3.5">Parcel / Plot</th>
-                  <th className="p-3.5">Location</th>
-                  <th className="p-3.5">Size / Zoning</th>
-                  <th className="p-3.5">Title Type</th>
-                  <th className="p-3.5">Price</th>
-                  <th className="p-3.5">Status</th>
-                  <th className="p-3.5">Allocation</th>
-                  <th className="p-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {filteredParcels.map((p) => (
-                  <tr key={p.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-3.5 font-semibold text-foreground">
-                      <div>{p.parcelName}</div>
-                      {p.plotNumber && <div className="text-[10px] text-muted-foreground">Plot: {p.plotNumber}</div>}
-                    </td>
-                    <td className="p-3.5 text-muted-foreground">
-                      <div>{p.address}</div>
-                      <div className="text-[10px]">{p.city}, {p.state}</div>
-                    </td>
-                    <td className="p-3.5">
-                      <div className="font-semibold text-foreground">{p.lotSizeAcres || 0} Acres</div>
-                      <div className="text-[10px] capitalize text-muted-foreground">{p.zoning}</div>
-                    </td>
-                    <td className="p-3.5 font-medium">
-                      <Badge variant="outline" className="text-[10px] uppercase">{p.titleType}</Badge>
-                    </td>
-                    <td className="p-3.5 font-bold text-foreground">
-                      {formatCurrency(p.price, 'USD')}
-                    </td>
-                    <td className="p-3.5">
-                      <Badge className={statusConfig[p.status]?.color || ''}>
-                        {statusConfig[p.status]?.label || p.status}
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-0.5">
+                        <h3 className="font-bold text-sm text-foreground group-hover:text-amber-600 transition-colors line-clamp-1">
+                          {parcel.parcelName}
+                        </h3>
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                          <span className="truncate">{parcel.address}, {parcel.city}</span>
+                        </p>
+                      </div>
+                      <Badge className={cn("text-[10px] font-bold uppercase shrink-0 border", statusConfig[parcel.status]?.color)}>
+                        {statusConfig[parcel.status]?.label || parcel.status}
                       </Badge>
-                    </td>
-                    <td className="p-3.5 text-muted-foreground">
-                      {p.allocation?.customerName ? (
-                        <div>
-                          <span className="font-semibold text-foreground block">{p.allocation.customerName}</span>
-                          <span className="text-[10px] text-indigo-600">Exp: {p.allocation.expiryDate}</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 bg-muted/40 p-3 rounded-xl text-xs border border-border/40">
+                      <div>
+                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Plot / Cadastral</span>
+                        <span className="font-bold text-foreground truncate block">{parcel.plotNumber || parcel.cadastralRef || 'Unassigned'}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Total Area</span>
+                        <span className="font-bold text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Zoning</span>
+                        <span className="font-bold capitalize text-foreground">{parcel.zoning}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Title Type</span>
+                        <span className="font-bold text-foreground">{parcel.titleType}</span>
+                      </div>
+                    </div>
+
+                    {parcel.allocation?.customerName ? (
+                      <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 text-xs space-y-1">
+                        <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-bold">
+                          <span className="flex items-center gap-1">
+                            <UserCheck className="w-3.5 h-3.5" /> Allocated To:
+                          </span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-200 font-extrabold uppercase">
+                            {parcel.allocation.allocationStatus}
+                          </span>
                         </div>
-                      ) : (
-                        <span className="text-muted-foreground/60 italic">Unallocated</span>
-                      )}
-                    </td>
-                    <td className="p-3.5 text-right space-x-1">
+                        <div className="font-extrabold text-foreground">{parcel.allocation.customerName}</div>
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                          <span>Deposit: {parcel.allocation.depositAmount ? formatCurrency(parcel.allocation.depositAmount, 'USD') : '$0'}</span>
+                          <span>Expires: {parcel.allocation.expiryDate}</span>
+                        </div>
+                      </div>
+                    ) : parcel.ownershipInterests?.length > 0 ? (
+                      <div className="rounded-xl border border-border/60 bg-muted/20 p-2.5 text-xs">
+                        <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
+                          Co-Ownership ({parcel.ownershipInterests.length} Stakeholders):
+                        </span>
+                        <p className="font-medium text-foreground truncate text-[11px]">
+                          {parcel.ownershipInterests.map(o => `${o.ownerName} (${o.percentage}%)`).join(', ')}
+                        </p>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="pt-3 border-t border-border/60 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase text-muted-foreground block">Asking Valuation</span>
+                      <span className="text-base font-extrabold text-foreground">
+                        {formatCurrency(parcel.price, 'USD')}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <Button
-                        size="xs"
+                        size="sm"
                         variant="outline"
-                        onClick={() => handleOpenAllocation(p)}
-                        className="text-[11px] h-7 px-2 text-indigo-600 border-indigo-200 hover:bg-indigo-50"
+                        onClick={() => handleOpenAllocation(parcel)}
+                        className="text-xs h-8 px-2.5 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 gap-1 rounded-xl"
                       >
-                        <UserCheck className="w-3 h-3 mr-1" /> Allocate
+                        <UserCheck className="w-3.5 h-3.5" /> Allocate
                       </Button>
                       <Button
-                        size="xs"
+                        size="icon"
                         variant="ghost"
-                        onClick={() => handleOpenDrawer(p)}
-                        className="h-7 w-7 p-0"
+                        onClick={() => handleOpenDrawer(parcel)}
+                        className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
                       >
                         <Edit className="w-3.5 h-3.5" />
                       </Button>
                       <Button
-                        size="xs"
+                        size="icon"
                         variant="ghost"
-                        onClick={() => handleDeleteParcel(p.id)}
-                        className="h-7 w-7 p-0 text-rose-500 hover:bg-rose-50 hover:text-rose-600"
+                        onClick={() => setDeleteId(parcel.id)}
+                        className="h-8 w-8 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      ) : (
-        /* ── Grid View ── */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredParcels.map((p) => (
-            <Card key={p.id} className="rounded-2xl border hover:shadow-md transition-all bg-card flex flex-col overflow-hidden">
-              <div className="p-5 flex-1 space-y-3.5">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="font-bold text-base text-foreground tracking-tight line-clamp-1">{p.parcelName}</h3>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span className="truncate">{p.address}, {p.city}</span>
-                    </p>
+                    </div>
                   </div>
-                  <Badge className={statusConfig[p.status]?.color || ''}>
-                    {statusConfig[p.status]?.label || p.status}
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* ── Tab Content: Kanban Board View ── */}
+        <TabsContent value="board" className="mt-0">
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-pulse">
+              {[1, 2, 3, 4].map(i => <div key={i} className="h-64 bg-muted rounded-[24px]" />)}
+            </div>
+          ) : (
+            <GenericKanban
+              items={filteredParcels}
+              columns={[
+                { id: 'available', title: 'Available For Sale' },
+                { id: 'reserved', title: 'Reserved / In Review' },
+                { id: 'allocated', title: 'Allocated To Buyer' },
+                { id: 'sold', title: 'Sold / Transferred' },
+              ]}
+              onStatusChange={async (id, newStatus) => {
+                try {
+                  await powerSync.execute(
+                    `UPDATE univ_re_properties SET status = ?, last_updated = ? WHERE id = ? AND company_id = ?`,
+                    [newStatus, new Date().toISOString(), id, companyId]
+                  );
+                  fetchParcels();
+                } catch (_e) {
+                  toast.error('Status update failed');
+                }
+              }}
+              renderCard={(parcel) => (
+                <div
+                  onClick={() => setInspectorParcel(parcel)}
+                  className="p-4 space-y-3 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer group"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="font-bold text-[13px] text-foreground group-hover:text-amber-600 transition-colors line-clamp-1">
+                      {parcel.parcelName}
+                    </h4>
+                    <Badge className={cn("text-[9px] font-bold uppercase shrink-0 border", statusConfig[parcel.status]?.color)}>
+                      {statusConfig[parcel.status]?.label || parcel.status}
+                    </Badge>
+                  </div>
+
+                  <div className="text-xs text-muted-foreground flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <span className="truncate">{parcel.address}, {parcel.city}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-2 border-t border-border/60 font-bold">
+                    <span className="text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
+                    <span className="text-foreground">{formatCurrency(parcel.price, 'USD')}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1 pt-1" onClick={(e) => e.stopPropagation()}>
+                    <Button
+                      size="xs"
+                      variant="outline"
+                      onClick={() => handleOpenAllocation(parcel)}
+                      className="w-full text-[11px] h-7 gap-1 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-lg"
+                    >
+                      <UserCheck className="w-3 h-3" /> Allocate
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant="ghost"
+                      onClick={() => handleOpenDrawer(parcel)}
+                      className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            />
+          )}
+        </TabsContent>
+
+        {/* ── Tab Content: List View (Data Table) ── */}
+        <TabsContent value="list" className="mt-0">
+          <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-muted/50 uppercase tracking-wider text-muted-foreground font-bold border-b border-border/60">
+                  <tr>
+                    <th className="p-4">Parcel / Cadastral</th>
+                    <th className="p-4">Location</th>
+                    <th className="p-4">Acreage & Zoning</th>
+                    <th className="p-4">Title Deed</th>
+                    <th className="p-4">Valuation</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4">Allocation Holder</th>
+                    <th className="p-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {filteredParcels.map((p) => (
+                    <tr
+                      key={p.id}
+                      onClick={() => setInspectorParcel(p)}
+                      className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                    >
+                      <td className="p-4 font-bold text-foreground">
+                        <div className="group-hover:text-amber-600 transition-colors">{p.parcelName}</div>
+                        {p.plotNumber && <div className="text-[10px] text-muted-foreground font-semibold">Plot: {p.plotNumber}</div>}
+                      </td>
+                      <td className="p-4 text-muted-foreground font-medium">
+                        <div>{p.address}</div>
+                        <div className="text-[10px]">{p.city}, {p.state}</div>
+                      </td>
+                      <td className="p-4">
+                        <div className="font-extrabold text-foreground">{p.lotSizeAcres || 0} Acres</div>
+                        <div className="text-[10px] capitalize font-semibold text-muted-foreground">{p.zoning}</div>
+                      </td>
+                      <td className="p-4">
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold bg-muted/40">{p.titleType}</Badge>
+                      </td>
+                      <td className="p-4 font-extrabold text-foreground">
+                        {formatCurrency(p.price, 'USD')}
+                      </td>
+                      <td className="p-4">
+                        <Badge className={cn("text-[10px] font-bold uppercase border", statusConfig[p.status]?.color)}>
+                          {statusConfig[p.status]?.label || p.status}
+                        </Badge>
+                      </td>
+                      <td className="p-4 text-muted-foreground">
+                        {p.allocation?.customerName ? (
+                          <div>
+                            <span className="font-bold text-foreground block">{p.allocation.customerName}</span>
+                            <span className="text-[10px] text-indigo-600 font-semibold">Exp: {p.allocation.expiryDate}</span>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground/60 italic">Unallocated</span>
+                        )}
+                      </td>
+                      <td className="p-4 text-right space-x-1" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          size="xs"
+                          variant="outline"
+                          onClick={() => handleOpenAllocation(p)}
+                          className="text-[11px] h-7 px-2 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-lg"
+                        >
+                          <UserCheck className="w-3 h-3 mr-1" /> Allocate
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => handleOpenDrawer(p)}
+                          className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => setDeleteId(p.id)}
+                          className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* ── Slide-Over Parcel Inspector Drawer ── */}
+      <Sheet open={!!inspectorParcel} onOpenChange={(open) => !open && setInspectorParcel(null)}>
+        <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto p-6 pb-28 space-y-6">
+          {inspectorParcel && (
+            <>
+              <SheetHeader className="pb-4 border-b border-border/80">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="space-y-1">
+                    <SheetTitle className="text-xl font-extrabold text-foreground">
+                      {inspectorParcel.parcelName}
+                    </SheetTitle>
+                    <SheetDescription className="text-xs flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                      {inspectorParcel.address}, {inspectorParcel.city}, {inspectorParcel.state}
+                    </SheetDescription>
+                  </div>
+                  <Badge className={cn("text-[10px] font-bold uppercase border", statusConfig[inspectorParcel.status]?.color)}>
+                    {statusConfig[inspectorParcel.status]?.label || inspectorParcel.status}
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 bg-muted/30 p-2.5 rounded-xl text-xs">
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Plot / Cadastral</span>
-                    <span className="font-semibold text-foreground">{p.plotNumber || p.cadastralRef || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Total Area</span>
-                    <span className="font-semibold text-amber-600">{p.lotSizeAcres || 0} Acres</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Zoning</span>
-                    <span className="font-semibold capitalize text-foreground">{p.zoning}</span>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground block text-[10px] uppercase font-semibold">Title Type</span>
-                    <span className="font-semibold text-foreground">{p.titleType}</span>
-                  </div>
-                </div>
-
-                {/* Allocation Box */}
-                {p.allocation?.customerName ? (
-                  <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 text-xs">
-                    <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-semibold">
-                      <span className="flex items-center gap-1">
-                        <UserCheck className="w-3.5 h-3.5" /> Allocated To:
-                      </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-200 font-bold uppercase">
-                        {p.allocation.allocationStatus}
-                      </span>
-                    </div>
-                    <div className="font-bold text-foreground mt-0.5">{p.allocation.customerName}</div>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-1">
-                      <span>Deposit: {p.allocation.depositAmount ? formatCurrency(p.allocation.depositAmount, 'USD') : 'None'}</span>
-                      <span>Expires: {p.allocation.expiryDate}</span>
-                    </div>
-                  </div>
-                ) : p.ownershipInterests?.length > 0 ? (
-                  <div className="rounded-xl border bg-muted/20 p-2 text-xs">
-                    <span className="text-[10px] uppercase font-semibold text-muted-foreground block">
-                      Co-Owners ({p.ownershipInterests.length}):
-                    </span>
-                    <span className="font-medium text-foreground truncate block">
-                      {p.ownershipInterests.map(o => `${o.ownerName} (${o.percentage}%)`).join(', ')}
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="p-4 border-t bg-muted/10 flex items-center justify-between mt-auto">
-                <span className="text-base font-bold text-foreground">
-                  {formatCurrency(p.price, 'USD')}
-                </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2 pt-3">
+                  <Button
+                    size="sm"
+                    onClick={() => handleOpenAllocation(inspectorParcel)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl h-8 gap-1.5"
+                  >
+                    <UserCheck className="w-3.5 h-3.5" /> Allocate Plot
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleOpenAllocation(p)}
-                    className="text-xs h-8 px-2.5 font-semibold text-indigo-600 border-indigo-200 hover:bg-indigo-50 gap-1 rounded-xl"
+                    onClick={() => handleOpenDrawer(inspectorParcel)}
+                    className="font-bold text-xs rounded-xl h-8 gap-1.5"
                   >
-                    <UserCheck className="w-3.5 h-3.5" /> Allocate
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleOpenDrawer(p)}
-                    className="h-8 w-8 p-0 rounded-xl"
-                  >
-                    <Edit className="w-4 h-4 text-muted-foreground" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleDeleteParcel(p.id)}
-                    className="h-8 w-8 p-0 rounded-xl text-rose-500 hover:bg-rose-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
+                    <Edit className="w-3.5 h-3.5" /> Edit Record
                   </Button>
                 </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+              </SheetHeader>
 
-      {/* ── Slide-Over Parcel Drawer (Create / Edit) ── */}
+              {/* Inspector Content Tabs */}
+              <Tabs defaultValue="overview" className="w-full space-y-4">
+                <TabsList className="grid grid-cols-3 w-full rounded-xl bg-muted/60 p-1 border border-border/60">
+                  <TabsTrigger value="overview" className="text-xs font-bold rounded-lg">Overview</TabsTrigger>
+                  <TabsTrigger value="co_ownership" className="text-xs font-bold rounded-lg">Co-Ownership</TabsTrigger>
+                  <TabsTrigger value="allocation_details" className="text-xs font-bold rounded-lg">Allocation</TabsTrigger>
+                </TabsList>
+
+                {/* Tab: Overview */}
+                <TabsContent value="overview" className="space-y-4 pt-1">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-muted/40 rounded-2xl border border-border/60">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Asking Price</span>
+                      <span className="text-lg font-extrabold text-foreground">{formatCurrency(inspectorParcel.price, 'USD')}</span>
+                    </div>
+                    <div className="p-3 bg-muted/40 rounded-2xl border border-border/60">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Parcel Acreage</span>
+                      <span className="text-lg font-extrabold text-amber-600">{inspectorParcel.lotSizeAcres || 0} Acres</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-card rounded-2xl border border-border/80 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Cadastral Specifications</h4>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Plot Reference</span>
+                        <span className="font-bold text-foreground">{inspectorParcel.plotNumber || 'None'}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Cadastral Survey Number</span>
+                        <span className="font-bold text-foreground">{inspectorParcel.cadastralRef || 'None'}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Zoning Classification</span>
+                        <span className="font-bold capitalize text-foreground">{inspectorParcel.zoning}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Topography</span>
+                        <span className="font-bold capitalize text-foreground">{inspectorParcel.topography}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Title Document</span>
+                        <span className="font-bold text-foreground">{inspectorParcel.titleType}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Assigned Agent</span>
+                        <span className="font-bold text-foreground">{inspectorParcel.agentName || 'Unassigned'}</span>
+                      </div>
+                    </div>
+
+                    {inspectorParcel.description && (
+                      <div className="pt-2 border-t border-border/60">
+                        <span className="text-muted-foreground block text-[10px] mb-1">Description</span>
+                        <p className="text-xs text-foreground font-medium">{inspectorParcel.description}</p>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* Tab: Co-Ownership */}
+                <TabsContent value="co_ownership" className="space-y-4 pt-1">
+                  {inspectorParcel.ownershipInterests?.length > 0 ? (
+                    <div className="space-y-3">
+                      {inspectorParcel.ownershipInterests.map((owner, idx) => (
+                        <div key={idx} className="p-3.5 bg-card rounded-2xl border border-border/80 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-sm text-foreground">{owner.ownerName}</span>
+                            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200 font-extrabold text-[10px]">
+                              {owner.percentage}% Equity
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                            <div>Interest: <span className="font-bold text-foreground">{owner.interestType || 'Freehold'}</span></div>
+                            <div>Deed Ref: <span className="font-bold text-foreground">{owner.deedRef || 'N/A'}</span></div>
+                            {owner.phone && <div>Phone: <span className="font-bold text-foreground">{owner.phone}</span></div>}
+                            {owner.email && <div>Email: <span className="font-bold text-foreground">{owner.email}</span></div>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-10 bg-muted/30 rounded-2xl border border-dashed p-6 space-y-2">
+                      <Users className="w-8 h-8 mx-auto text-muted-foreground opacity-50" />
+                      <p className="text-xs font-bold text-foreground">Single Owner Entity</p>
+                      <p className="text-[11px] text-muted-foreground">This plot is held at 100% interest by the parent enterprise.</p>
+                    </div>
+                  )}
+                </TabsContent>
+
+                {/* Tab: Allocation */}
+                <TabsContent value="allocation_details" className="space-y-4 pt-1">
+                  {inspectorParcel.allocation?.customerName ? (
+                    <div className="bg-card rounded-2xl border border-indigo-200/80 p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-sm text-foreground">{inspectorParcel.allocation.customerName}</span>
+                        <Badge className="bg-indigo-600 text-white font-bold text-[10px] uppercase">
+                          {inspectorParcel.allocation.allocationStatus}
+                        </Badge>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                        <div>Email: <span className="font-bold text-foreground">{inspectorParcel.allocation.customerEmail || 'N/A'}</span></div>
+                        <div>Phone: <span className="font-bold text-foreground">{inspectorParcel.allocation.customerPhone || 'N/A'}</span></div>
+                        <div>Allocated Date: <span className="font-bold text-foreground">{inspectorParcel.allocation.allocationDate}</span></div>
+                        <div>Expiry Date: <span className="font-bold text-foreground">{inspectorParcel.allocation.expiryDate}</span></div>
+                        <div>Deposit Paid: <span className="font-bold text-emerald-600">{formatCurrency(inspectorParcel.allocation.depositAmount, 'USD')}</span></div>
+                        <div>Payment Terms: <span className="font-bold text-foreground">{inspectorParcel.allocation.paymentTerms}</span></div>
+                      </div>
+                      {inspectorParcel.allocation.notes && (
+                        <div className="pt-2 border-t border-border/60 text-xs">
+                          <span className="text-muted-foreground block text-[10px]">Conditions / Notes</span>
+                          <p className="font-medium text-foreground">{inspectorParcel.allocation.notes}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center py-10 bg-muted/30 rounded-2xl border border-dashed p-6 space-y-2">
+                      <UserCheck className="w-8 h-8 mx-auto text-indigo-500 opacity-50" />
+                      <p className="text-xs font-bold text-foreground">No Active Allocation</p>
+                      <p className="text-[11px] text-muted-foreground">This plot is available for assignment to a prospect or buyer.</p>
+                      <Button
+                        size="sm"
+                        onClick={() => handleOpenAllocation(inspectorParcel)}
+                        className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl"
+                      >
+                        Allocate Now
+                      </Button>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* ── Slide-Over Parcel Form Drawer (Create / Edit) ── */}
       <Sheet open={showParcelDrawer} onOpenChange={setShowParcelDrawer}>
         <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto p-6 pb-28">
-          <SheetHeader className="pb-4 border-b">
-            <SheetTitle className="text-lg font-bold">
+          <SheetHeader className="pb-4 border-b border-border/80">
+            <SheetTitle className="text-lg font-bold text-foreground">
               {editingId ? 'Edit Land Parcel Record' : 'Register New Land Parcel'}
             </SheetTitle>
-            <SheetDescription className="text-xs">
+            <SheetDescription className="text-xs text-muted-foreground">
               Cadastral specifications, co-ownership interests, legal titles & documentation
             </SheetDescription>
           </SheetHeader>
 
           <form onSubmit={handleSaveParcel} className="space-y-5 mt-4 text-xs">
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid grid-cols-3 w-full rounded-xl">
-                <TabsTrigger value="basic">Parcel Specs</TabsTrigger>
-                <TabsTrigger value="ownership">Ownership</TabsTrigger>
-                <TabsTrigger value="allocation">Allocation</TabsTrigger>
+              <TabsList className="grid grid-cols-3 w-full rounded-xl bg-muted/60 p-1 border border-border/60">
+                <TabsTrigger value="basic" className="font-bold text-xs rounded-lg">Parcel Specs</TabsTrigger>
+                <TabsTrigger value="ownership" className="font-bold text-xs rounded-lg">Co-Ownership</TabsTrigger>
+                <TabsTrigger value="allocation" className="font-bold text-xs rounded-lg">Allocation</TabsTrigger>
               </TabsList>
 
               {/* ── Tab 1: Basic Specifications ── */}
               <TabsContent value="basic" className="space-y-4 pt-3">
                 <div className="space-y-1.5">
-                  <Label>Parcel Title / Name *</Label>
+                  <Label className="font-bold">Parcel Title / Name *</Label>
                   <Input
                     required
                     value={formData.parcelName}
                     onChange={(e) => setFormData({ ...formData, parcelName: e.target.value })}
                     placeholder="e.g. Royal Crest Sector 4, Plot 12"
-                    className="rounded-xl"
+                    className="rounded-xl h-10 text-xs"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Plot Number</Label>
+                    <Label className="font-bold">Plot Number</Label>
                     <Input
                       value={formData.plotNumber}
                       onChange={(e) => setFormData({ ...formData, plotNumber: e.target.value })}
                       placeholder="e.g. PL-4029"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Cadastral / Survey Ref</Label>
+                    <Label className="font-bold">Cadastral / Survey Ref</Label>
                     <Input
                       value={formData.cadastralRef}
                       onChange={(e) => setFormData({ ...formData, cadastralRef: e.target.value })}
                       placeholder="e.g. CAD/GH/2026/088"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label>Location / Address *</Label>
+                  <Label className="font-bold">Location / Address *</Label>
                   <Input
                     required
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     placeholder="e.g. Airport Hills Residential Scheme"
-                    className="rounded-xl"
+                    className="rounded-xl h-10 text-xs"
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
-                    <Label>City</Label>
+                    <Label className="font-bold">City</Label>
                     <Input
                       value={formData.city}
                       onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                       placeholder="Accra"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>State / Region</Label>
+                    <Label className="font-bold">State / Region</Label>
                     <Input
                       value={formData.state}
                       onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                       placeholder="Greater Accra"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Country</Label>
+                    <Label className="font-bold">Country</Label>
                     <Input
                       value={formData.country}
                       onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                       placeholder="Ghana"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Area (Acres)</Label>
+                    <Label className="font-bold">Area (Acres)</Label>
                     <Input
                       type="number"
                       step="0.01"
                       value={formData.lotSizeAcres}
                       onChange={(e) => setFormData({ ...formData, lotSizeAcres: e.target.value })}
                       placeholder="e.g. 2.5"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Asking Price ($)</Label>
+                    <Label className="font-bold">Asking Price ($)</Label>
                     <Input
                       type="number"
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       placeholder="250000"
-                      className="rounded-xl"
+                      className="rounded-xl h-10 text-xs"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
-                    <Label>Zoning Type</Label>
+                    <Label className="font-bold">Zoning Type</Label>
                     <Select value={formData.zoning} onValueChange={(v) => setFormData({ ...formData, zoning: v })}>
-                      <SelectTrigger className="rounded-xl text-xs">
+                      <SelectTrigger className="rounded-xl text-xs h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -982,9 +1291,9 @@ export default function LandManagement() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label>Topography</Label>
+                    <Label className="font-bold">Topography</Label>
                     <Select value={formData.topography} onValueChange={(v) => setFormData({ ...formData, topography: v })}>
-                      <SelectTrigger className="rounded-xl text-xs">
+                      <SelectTrigger className="rounded-xl text-xs h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -997,9 +1306,9 @@ export default function LandManagement() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label>Title Type</Label>
+                    <Label className="font-bold">Title Type</Label>
                     <Select value={formData.titleType} onValueChange={(v) => setFormData({ ...formData, titleType: v })}>
-                      <SelectTrigger className="rounded-xl text-xs">
+                      <SelectTrigger className="rounded-xl text-xs h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -1014,9 +1323,9 @@ export default function LandManagement() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label>Status</Label>
+                  <Label className="font-bold">Status</Label>
                   <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                    <SelectTrigger className="rounded-xl text-xs">
+                    <SelectTrigger className="rounded-xl text-xs h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1030,11 +1339,11 @@ export default function LandManagement() {
                 </div>
               </TabsContent>
 
-              {/* ── Tab 2: Co-Ownership & Beneficial Interests ── */}
+              {/* ── Tab 2: Co-Ownership ── */}
               <TabsContent value="ownership" className="space-y-4 pt-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-semibold text-foreground text-sm">Ownership & Beneficial Interests</h4>
+                    <h4 className="font-bold text-foreground text-sm">Ownership & Beneficial Interests</h4>
                     <p className="text-[11px] text-muted-foreground">Record co-owners, equity percentages, and title references.</p>
                   </div>
                   <Button
@@ -1042,33 +1351,33 @@ export default function LandManagement() {
                     size="sm"
                     variant="outline"
                     onClick={addOwnershipInterest}
-                    className="rounded-xl text-xs h-8 gap-1"
+                    className="rounded-xl text-xs h-8 gap-1 font-bold"
                   >
                     <Plus className="w-3.5 h-3.5" /> Add Owner
                   </Button>
                 </div>
 
                 {formData.ownershipInterests.length === 0 ? (
-                  <div className="p-4 rounded-xl border border-dashed text-center text-muted-foreground">
+                  <div className="p-6 rounded-2xl border border-dashed border-border/80 text-center text-muted-foreground">
                     <Users className="w-6 h-6 mx-auto mb-1.5 opacity-50" />
-                    <p className="text-xs">No co-owners added. Default entity holds 100% interest.</p>
+                    <p className="text-xs font-semibold">No co-owners added. Default entity holds 100% interest.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {formData.ownershipInterests.map((interest, idx) => (
-                      <div key={idx} className="p-3 bg-muted/40 rounded-xl border space-y-2 relative">
+                      <div key={idx} className="p-3 bg-muted/40 rounded-2xl border border-border/60 space-y-2 relative">
                         <Button
                           type="button"
                           variant="ghost"
                           size="xs"
                           onClick={() => removeOwnershipInterest(idx)}
-                          className="absolute right-2 top-2 h-6 w-6 p-0 text-rose-500"
+                          className="absolute right-2 top-2 h-6 w-6 p-0 text-rose-500 rounded-md"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                         <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-1">
-                            <Label className="text-[10px]">Owner / Entity Name</Label>
+                            <Label className="text-[10px] font-bold">Owner / Entity Name</Label>
                             <Input
                               value={interest.ownerName}
                               onChange={(e) => updateOwnershipInterest(idx, 'ownerName', e.target.value)}
@@ -1077,7 +1386,7 @@ export default function LandManagement() {
                             />
                           </div>
                           <div className="space-y-1">
-                            <Label className="text-[10px]">Interest %</Label>
+                            <Label className="text-[10px] font-bold">Interest %</Label>
                             <Input
                               type="number"
                               value={interest.percentage}
@@ -1089,7 +1398,7 @@ export default function LandManagement() {
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           <div className="space-y-1">
-                            <Label className="text-[10px]">Interest Type</Label>
+                            <Label className="text-[10px] font-bold">Interest Type</Label>
                             <Input
                               value={interest.interestType}
                               onChange={(e) => updateOwnershipInterest(idx, 'interestType', e.target.value)}
@@ -1098,7 +1407,7 @@ export default function LandManagement() {
                             />
                           </div>
                           <div className="space-y-1">
-                            <Label className="text-[10px]">Deed / Registration #</Label>
+                            <Label className="text-[10px] font-bold">Deed / Registration #</Label>
                             <Input
                               value={interest.deedRef}
                               onChange={(e) => updateOwnershipInterest(idx, 'deedRef', e.target.value)}
@@ -1116,15 +1425,15 @@ export default function LandManagement() {
               {/* ── Tab 3: Land Allocation Info ── */}
               <TabsContent value="allocation" className="space-y-4 pt-3">
                 <div>
-                  <h4 className="font-semibold text-foreground text-sm">Active Prospect Allocation</h4>
+                  <h4 className="font-bold text-foreground text-sm">Active Prospect Allocation</h4>
                   <p className="text-[11px] text-muted-foreground">Pre-sale parcel allocation details for this plot.</p>
                 </div>
 
                 {formData.allocation?.customerName ? (
-                  <div className="p-3.5 rounded-xl border border-indigo-200 bg-indigo-50/50 dark:bg-indigo-950/20 space-y-2 text-xs">
+                  <div className="p-3.5 rounded-2xl border border-indigo-200 bg-indigo-50/50 dark:bg-indigo-950/20 space-y-2 text-xs">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-foreground text-sm">{formData.allocation.customerName}</span>
-                      <Badge className="bg-indigo-600 text-white text-[10px]">{formData.allocation.allocationStatus}</Badge>
+                      <Badge className="bg-indigo-600 text-white text-[10px] font-bold">{formData.allocation.allocationStatus}</Badge>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-muted-foreground">
                       <div>Email: {formData.allocation.customerEmail || 'N/A'}</div>
@@ -1134,43 +1443,37 @@ export default function LandManagement() {
                       <div>Deposit: {formatCurrency(formData.allocation.depositAmount, 'USD')}</div>
                       <div>Terms: {formData.allocation.paymentTerms}</div>
                     </div>
-                    {formData.allocation.notes && (
-                      <p className="text-[11px] italic text-muted-foreground border-t pt-1 mt-1">
-                        Notes: {formData.allocation.notes}
-                      </p>
-                    )}
                     <Button
                       type="button"
                       size="xs"
                       variant="destructive"
                       onClick={() => setFormData({ ...formData, allocation: null, status: 'available' })}
-                      className="mt-2 h-7 text-[11px] rounded-lg"
+                      className="mt-2 h-7 text-[11px] rounded-lg font-bold"
                     >
                       Clear Allocation
                     </Button>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-xl border border-dashed text-center text-muted-foreground">
+                  <div className="p-6 rounded-2xl border border-dashed border-border/80 text-center text-muted-foreground">
                     <UserCheck className="w-6 h-6 mx-auto mb-1.5 opacity-50 text-indigo-500" />
-                    <p className="text-xs">No active allocation on this parcel.</p>
-                    <p className="text-[10px] mt-0.5">Use the "Allocate" button on the parcel card to allocate to a prospect.</p>
+                    <p className="text-xs font-semibold">No active allocation on this parcel.</p>
                   </div>
                 )}
               </TabsContent>
             </Tabs>
 
-            <div className="pt-4 border-t flex items-center justify-end gap-2.5">
+            <div className="pt-4 border-t border-border/80 flex items-center justify-end gap-2.5">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setShowParcelDrawer(false)}
-                className="rounded-xl"
+                className="rounded-xl text-xs font-bold"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-semibold"
+                className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs"
               >
                 {editingId ? 'Update Parcel' : 'Save Land Parcel'}
               </Button>
@@ -1181,7 +1484,7 @@ export default function LandManagement() {
 
       {/* ── Dialog: Quick Land Allocation Modal ── */}
       <Dialog open={showAllocationModal} onOpenChange={setShowAllocationModal}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
+        <DialogContent className="sm:max-w-md rounded-[24px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
               <UserCheck className="w-5 h-5 text-indigo-600" />
@@ -1195,7 +1498,7 @@ export default function LandManagement() {
           <div className="space-y-3.5 py-2 text-xs">
             {clients.length > 0 && (
               <div className="space-y-1">
-                <Label>Select Existing Client (Optional)</Label>
+                <Label className="font-bold">Select Existing Client (Optional)</Label>
                 <Select
                   value={allocationForm.customerId}
                   onValueChange={(cid) => {
@@ -1211,7 +1514,7 @@ export default function LandManagement() {
                     }
                   }}
                 >
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="rounded-xl text-xs h-10">
                     <SelectValue placeholder="Pick a registered client..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -1224,77 +1527,77 @@ export default function LandManagement() {
             )}
 
             <div className="space-y-1">
-              <Label>Prospect / Buyer Full Name *</Label>
+              <Label className="font-bold">Prospect / Buyer Full Name *</Label>
               <Input
                 required
                 value={allocationForm.customerName}
                 onChange={(e) => setAllocationForm({ ...allocationForm, customerName: e.target.value })}
                 placeholder="e.g. Chief Kwame Mensah"
-                className="rounded-xl"
+                className="rounded-xl h-10 text-xs"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label>Contact Email</Label>
+                <Label className="font-bold">Contact Email</Label>
                 <Input
                   type="email"
                   value={allocationForm.customerEmail}
                   onChange={(e) => setAllocationForm({ ...allocationForm, customerEmail: e.target.value })}
                   placeholder="kwame@example.com"
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
               <div className="space-y-1">
-                <Label>Phone Number</Label>
+                <Label className="font-bold">Phone Number</Label>
                 <Input
                   value={allocationForm.customerPhone}
                   onChange={(e) => setAllocationForm({ ...allocationForm, customerPhone: e.target.value })}
                   placeholder="+233 24 000 0000"
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label>Allocation Date</Label>
+                <Label className="font-bold">Allocation Date</Label>
                 <Input
                   type="date"
                   value={allocationForm.allocationDate}
                   onChange={(e) => setAllocationForm({ ...allocationForm, allocationDate: e.target.value })}
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label>Expiry / Reservation Deadline</Label>
+              <div className="space-y-1">
+                <Label className="font-bold">Expiry / Deadline</Label>
                 <Input
                   type="date"
                   value={allocationForm.expiryDate}
                   onChange={(e) => setAllocationForm({ ...allocationForm, expiryDate: e.target.value })}
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label>Deposit Paid ($)</Label>
+                <Label className="font-bold">Deposit Paid ($)</Label>
                 <Input
                   type="number"
                   value={allocationForm.depositAmount}
                   onChange={(e) => setAllocationForm({ ...allocationForm, depositAmount: e.target.value })}
                   placeholder="25000"
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
               <div className="space-y-1">
-                <Label>Payment Terms</Label>
+                <Label className="font-bold">Payment Terms</Label>
                 <Select
                   value={allocationForm.paymentTerms}
                   onValueChange={(v) => setAllocationForm({ ...allocationForm, paymentTerms: v })}
                 >
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="rounded-xl text-xs h-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1308,12 +1611,12 @@ export default function LandManagement() {
             </div>
 
             <div className="space-y-1">
-              <Label>Allocation Stage</Label>
+              <Label className="font-bold">Allocation Stage</Label>
               <Select
                 value={allocationForm.allocationStatus}
                 onValueChange={(v) => setAllocationForm({ ...allocationForm, allocationStatus: v })}
               >
-                <SelectTrigger className="rounded-xl text-xs">
+                <SelectTrigger className="rounded-xl text-xs h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -1326,12 +1629,12 @@ export default function LandManagement() {
             </div>
 
             <div className="space-y-1">
-              <Label>Notes & Conditions</Label>
+              <Label className="font-bold">Notes & Conditions</Label>
               <Input
                 value={allocationForm.notes}
                 onChange={(e) => setAllocationForm({ ...allocationForm, notes: e.target.value })}
                 placeholder="Survey plan handoff conditions, deed drafting, etc."
-                className="rounded-xl"
+                className="rounded-xl h-10 text-xs"
               />
             </div>
           </div>
@@ -1341,20 +1644,43 @@ export default function LandManagement() {
               type="button"
               variant="outline"
               onClick={() => setShowAllocationModal(false)}
-              className="rounded-xl"
+              className="rounded-xl font-bold text-xs"
             >
               Cancel
             </Button>
             <Button
               type="button"
               onClick={handleSaveAllocation}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs"
             >
               Confirm Land Allocation
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* ── Dialog: Delete Confirmation ── */}
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent className="rounded-[24px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-base font-bold text-foreground">
+              Delete Land Parcel Record?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs">
+              This action will permanently remove this land parcel and its allocation history from the database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel className="rounded-xl font-bold text-xs">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => handleDeleteParcel(deleteId)}
+              className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl"
+            >
+              Delete Record
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

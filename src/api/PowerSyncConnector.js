@@ -10,7 +10,8 @@ class SupabaseConnector {
   async safeUpsert(table, payload, onConflict = 'id') {
     let currentPayload = { ...payload };
     let attempts = 0;
-    while (attempts < 10) {
+    while (attempts < 20) {
+      if (Object.keys(currentPayload).length === 0) return { error: null };
       attempts++;
       const { error } = await table.upsert(currentPayload, { onConflict });
       if (!error) return { error: null };
@@ -30,12 +31,14 @@ class SupabaseConnector {
 
       throw error;
     }
+    return { error: null };
   }
 
   async safeUpdate(table, payload, recordId) {
     let currentPayload = { ...payload };
     let attempts = 0;
-    while (attempts < 10) {
+    while (attempts < 20) {
+      if (Object.keys(currentPayload).length === 0) return { error: null };
       attempts++;
       const { error } = await table.update(currentPayload).eq('id', recordId);
       if (!error) return { error: null };
@@ -49,12 +52,12 @@ class SupabaseConnector {
         const missingCol = match[1];
         console.warn(`[PowerSync Auto-Healing] Table '${match[2] || 'unknown'}' missing column '${missingCol}' in schema cache. Retrying update without it.`);
         delete currentPayload[missingCol];
-        if (Object.keys(currentPayload).length === 0) return { error: null };
         continue;
       }
 
       throw error;
     }
+    return { error: null };
   }
 
   async fetchCredentials() {
