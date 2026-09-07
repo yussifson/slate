@@ -4,7 +4,7 @@ import {
   CheckCircle2, Clock, MapPin, Users,
   ChevronRight, RefreshCw, LayoutGrid, List,
   Grid, UserCheck, Download, MoreVertical,
-  ShieldCheck, Eye
+  ShieldCheck, Eye, Sparkles
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { usePowerSync } from '@powersync/react';
@@ -45,19 +45,19 @@ const STATUS_COLUMNS = [
 
 const statusConfig = {
   'available': {
-    label: 'Available',
+    label: 'Available For Sale',
     color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30'
   },
   'reserved': {
-    label: 'Reserved',
+    label: 'Reserved / Review',
     color: 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border-amber-200 dark:border-amber-500/30'
   },
   'allocated': {
-    label: 'Allocated',
+    label: 'Allocated To Buyer',
     color: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30'
   },
   'sold': {
-    label: 'Sold',
+    label: 'Sold / Transferred',
     color: 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 border-blue-200 dark:border-blue-500/30'
   },
   'disputed': {
@@ -84,10 +84,176 @@ const initialFormData = {
   status: 'available',
   description: '',
   agentName: '',
-  ownershipInterests: [], // [{ ownerName, percentage, interestType, deedRef, phone, email }]
-  allocation: null, // { customerName, customerEmail, customerPhone, allocationDate, expiryDate, depositAmount, paymentTerms, allocationStatus, notes }
-  documents: [], // [{ docName, docType, url, uploadDate }]
+  ownershipInterests: [],
+  allocation: null,
+  documents: [],
 };
+
+// ── Dedicated Self-Contained Land Kanban Component ──
+function LandKanbanBoardComponent({ parcels, onUpdateStatus, onParcelClick, onOpenAllocation, onOpenDrawer, onDelete }) {
+  const [optimisticParcels, setOptimisticParcels] = useState(parcels);
+
+  useEffect(() => {
+    setOptimisticParcels(parcels);
+  }, [parcels]);
+
+  const onDragEnd = (result) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+    const newStatus = destination.droppableId;
+    const parcelId = draggableId;
+
+    // Immediately update local optimistic state
+    setOptimisticParcels(prev => prev.map(p => String(p.id) === String(parcelId) ? { ...p, status: newStatus } : p));
+
+    // Propagate to PowerSync
+    onUpdateStatus(parcelId, newStatus);
+  };
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="flex gap-4 overflow-x-auto pb-6 custom-scrollbar items-start min-h-[600px]">
+        {STATUS_COLUMNS.map(col => {
+          const columnParcels = optimisticParcels.filter(p => {
+            const s = (p.status || 'available').toLowerCase();
+            if (col.id === 'available') {
+              return s === 'available' || !STATUS_COLUMNS.some(c => c.id === s);
+            }
+            return s === col.id;
+          });
+
+          const totalVal = columnParcels.reduce((acc, p) => acc + (Number(p.price) || 0), 0);
+          const totalAcres = columnParcels.reduce((acc, p) => acc + (Number(p.lotSizeAcres) || 0), 0);
+
+          return (
+            <div key={col.id} className="flex flex-col w-[340px] shrink-0">
+              {/* Column Header */}
+              <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[18px] p-3.5 mb-3 shadow-sm flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={cn("w-2.5 h-2.5 rounded-full", col.dot)} />
+                  <div>
+                    <h3 className="font-bold text-xs text-foreground tracking-tight">{col.title}</h3>
+                    <p className="text-[10px] font-semibold text-muted-foreground">
+                      {columnParcels.length} Plots • {totalAcres.toFixed(1)} ac • {formatCurrency(totalVal, 'USD')}
+                    </p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="text-[10px] font-extrabold h-5 px-1.5 bg-muted/40">
+                  {columnParcels.length}
+                </Badge>
+              </div>
+
+              {/* Droppable Stage Area */}
+              <Droppable droppableId={col.id}>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className={cn(
+                      "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
+                      snapshot.isDraggingOver && "bg-muted/40 border-dashed border-amber-500/30"
+                    )}
+                  >
+                    {columnParcels.map((parcel, index) => (
+                      <Draggable key={String(parcel.id)} draggableId={String(parcel.id)} index={index}>
+                        {(providedDraggable, snapshotDraggable) => (
+                          <div
+                            ref={providedDraggable.innerRef}
+                            {...providedDraggable.draggableProps}
+                            {...providedDraggable.dragHandleProps}
+                            style={{
+                              ...providedDraggable.draggableProps.style,
+                            }}
+                            onClick={() => onParcelClick(parcel)}
+                            className={cn(
+                              "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer group space-y-3",
+                              snapshotDraggable.isDragging && "shadow-2xl border-amber-500 ring-2 ring-amber-500/30 rotate-1 z-50 bg-card"
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-amber-600 transition-colors">
+                                  {parcel.parcelName}
+                                </h4>
+                                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
+                                  <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
+                                  <span className="truncate">{parcel.address}, {parcel.city}</span>
+                                </p>
+                              </div>
+
+                              <Badge variant="outline" className="text-[9px] font-extrabold uppercase py-0 h-4 bg-muted/40 shrink-0">
+                                {parcel.plotNumber || 'Plot'}
+                              </Badge>
+                            </div>
+
+                            {/* Acreage & Financial Strip */}
+                            <div className="flex items-center justify-between bg-muted/30 p-2.5 rounded-xl text-xs border border-border/40 font-bold">
+                              <span className="text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
+                              <span className="text-foreground">{formatCurrency(parcel.price, 'USD')}</span>
+                            </div>
+
+                            {/* Active Allocation Pill */}
+                            {parcel.allocation?.customerName ? (
+                              <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 dark:bg-indigo-950/30 p-2 text-[11px] space-y-0.5">
+                                <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-bold">
+                                  <span className="truncate">👤 {parcel.allocation.customerName}</span>
+                                  <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-indigo-200 dark:bg-indigo-800">
+                                    {parcel.allocation.allocationStatus}
+                                  </span>
+                                </div>
+                                <div className="text-[10px] text-muted-foreground">
+                                  Exp: {parcel.allocation.expiryDate}
+                                </div>
+                              </div>
+                            ) : null}
+
+                            {/* Card Footer Actions */}
+                            <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground" onClick={(e) => e.stopPropagation()}>
+                              <span className="capitalize font-semibold">{parcel.zoning} • {parcel.titleType}</span>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  size="xs"
+                                  variant="outline"
+                                  onClick={() => onOpenAllocation(parcel)}
+                                  className="text-[10px] h-6 px-2 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg"
+                                >
+                                  <UserCheck className="w-2.5 h-2.5 mr-1" /> Allocate
+                                </Button>
+                                <Button
+                                  size="xs"
+                                  variant="ghost"
+                                  onClick={() => onOpenDrawer(parcel)}
+                                  className="h-6 w-6 p-0 rounded-lg text-muted-foreground"
+                                >
+                                  <Edit className="w-3 h-3" />
+                                </Button>
+                                <Button
+                                  size="xs"
+                                  variant="ghost"
+                                  onClick={() => onDelete(parcel.id)}
+                                  className="h-6 w-6 p-0 rounded-lg text-rose-500 hover:bg-rose-50"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
+          );
+        })}
+      </div>
+    </DragDropContext>
+  );
+}
 
 export default function LandManagement() {
   const companyId = useCompanyId();
@@ -250,23 +416,14 @@ export default function LandManagement() {
     return { totalParcels, available, allocated, sold, totalAcres, totalValue };
   }, [parcels]);
 
-  // Drag and Drop Handler for Land Kanban
-  const onDragEnd = async (result) => {
-    const { source, destination, draggableId } = result;
-    if (!destination) return;
-    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
-
-    const newStatus = destination.droppableId;
-    const parcelId = draggableId;
-
-    // Optimistic UI update
-    setParcels(prev => prev.map(p => p.id === parcelId ? { ...p, status: newStatus } : p));
-
+  // Update Status in PowerSync
+  const handleUpdateStatus = async (parcelId, newStatus) => {
     try {
       await powerSync.execute(
         `UPDATE univ_re_properties SET status = ?, last_updated = ? WHERE id = ? AND company_id = ?`,
         [newStatus, new Date().toISOString(), parcelId, companyId]
       );
+      fetchParcels();
     } catch (_err) {
       toast.error('Failed to update parcel status');
       fetchParcels();
@@ -656,7 +813,7 @@ export default function LandManagement() {
             </div>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-10 w-40 rounded-xl text-xs font-medium bg-background border-border/80">
+              <SelectTrigger className="h-10 w-44 rounded-xl text-xs font-medium bg-background border-border/80">
                 <SelectValue placeholder="Status Filter" />
               </SelectTrigger>
               <SelectContent>
@@ -707,11 +864,11 @@ export default function LandManagement() {
           </div>
         </div>
 
-        {/* ── Tab Content: Grid View ── */}
+        {/* ── Tab Content: Modern Luxury Grid Card View ── */}
         <TabsContent value="grid" className="mt-0">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
-              {[1, 2, 3].map(i => <div key={i} className="h-64 bg-muted rounded-[24px]" />)}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-pulse">
+              {[1, 2, 3].map(i => <div key={i} className="h-80 bg-muted rounded-[26px]" />)}
             </div>
           ) : filteredParcels.length === 0 ? (
             <div className="text-center py-20 bg-card/60 backdrop-blur-xl rounded-[28px] border border-dashed border-border/80 p-8 space-y-4">
@@ -734,80 +891,110 @@ export default function LandManagement() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredParcels.map((parcel) => (
                 <div
                   key={parcel.id}
                   onClick={() => setInspectorParcel(parcel)}
-                  className="p-5 bg-card/90 backdrop-blur-md rounded-[22px] border border-border/80 hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer flex flex-col justify-between group space-y-4"
+                  className="bg-card/95 backdrop-blur-xl rounded-[26px] border border-border/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-amber-500/50 transition-all cursor-pointer flex flex-col justify-between overflow-hidden group relative"
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-0.5">
-                        <h3 className="font-bold text-sm text-foreground group-hover:text-amber-600 transition-colors line-clamp-1">
-                          {parcel.parcelName}
-                        </h3>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                          <span className="truncate">{parcel.address}, {parcel.city}</span>
-                        </p>
+                  {/* Card Visual Header Banner */}
+                  <div className="p-5 pb-4 space-y-3.5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500/20 to-amber-500/5 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                          <Compass className="w-5 h-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-extrabold text-[15px] text-foreground group-hover:text-amber-600 transition-colors line-clamp-1">
+                            {parcel.parcelName}
+                          </h3>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+                            <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                            <span className="truncate">{parcel.address}, {parcel.city}</span>
+                          </p>
+                        </div>
                       </div>
-                      <Badge className={cn("text-[10px] font-bold uppercase shrink-0 border", statusConfig[parcel.status]?.color || statusConfig['available'].color)}>
+
+                      <Badge className={cn("text-[10px] font-extrabold uppercase shrink-0 border py-0.5 px-2", statusConfig[parcel.status]?.color || statusConfig['available'].color)}>
                         {statusConfig[parcel.status]?.label || parcel.status}
                       </Badge>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 bg-muted/40 p-3 rounded-xl text-xs border border-border/40">
-                      <div>
-                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Plot / Cadastral</span>
-                        <span className="font-bold text-foreground truncate block">{parcel.plotNumber || parcel.cadastralRef || 'Unassigned'}</span>
+                    {/* Cadastral & Spec Pill Strip */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      {parcel.plotNumber && (
+                        <Badge variant="outline" className="text-[10px] font-black uppercase bg-muted/40 border-border/80">
+                          Plot {parcel.plotNumber}
+                        </Badge>
+                      )}
+                      {parcel.cadastralRef && (
+                        <Badge variant="outline" className="text-[10px] font-mono font-bold bg-muted/40 text-muted-foreground border-border/80">
+                          CAD: {parcel.cadastralRef}
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="text-[10px] font-bold uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200">
+                        <ShieldCheck className="w-3 h-3 mr-1 text-emerald-600" /> {parcel.titleType}
+                      </Badge>
+                    </div>
+
+                    {/* 3-Column Structured Stats Matrix */}
+                    <div className="grid grid-cols-3 gap-2 bg-muted/30 p-3 rounded-2xl border border-border/60 text-center">
+                      <div className="space-y-0.5">
+                        <span className="text-muted-foreground block text-[9px] font-black uppercase tracking-wider">Lot Area</span>
+                        <span className="font-black text-amber-600 text-xs">{parcel.lotSizeAcres || 0} Acres</span>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Total Area</span>
-                        <span className="font-bold text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
+                      <div className="space-y-0.5 border-x border-border/60">
+                        <span className="text-muted-foreground block text-[9px] font-black uppercase tracking-wider">Zoning</span>
+                        <span className="font-bold capitalize text-foreground text-xs">{parcel.zoning}</span>
                       </div>
-                      <div>
-                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Zoning</span>
-                        <span className="font-bold capitalize text-foreground">{parcel.zoning}</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground block text-[10px] font-bold uppercase tracking-wider">Title Type</span>
-                        <span className="font-bold text-foreground">{parcel.titleType}</span>
+                      <div className="space-y-0.5">
+                        <span className="text-muted-foreground block text-[9px] font-black uppercase tracking-wider">Terrain</span>
+                        <span className="font-bold capitalize text-foreground text-xs">{parcel.topography}</span>
                       </div>
                     </div>
 
+                    {/* Active Allocation or Ownership Highlight */}
                     {parcel.allocation?.customerName ? (
-                      <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 text-xs space-y-1">
+                      <div className="rounded-2xl border border-indigo-200/90 bg-indigo-50/70 dark:bg-indigo-950/40 p-3 text-xs space-y-1">
                         <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-bold">
-                          <span className="flex items-center gap-1">
-                            <UserCheck className="w-3.5 h-3.5" /> Allocated To:
+                          <span className="flex items-center gap-1.5 truncate">
+                            <UserCheck className="w-3.5 h-3.5 text-indigo-600" />
+                            <span className="truncate">{parcel.allocation.customerName}</span>
                           </span>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-200 font-extrabold uppercase">
+                          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-200 dark:bg-indigo-800 text-indigo-900 dark:text-indigo-200 font-black uppercase">
                             {parcel.allocation.allocationStatus}
                           </span>
                         </div>
-                        <div className="font-extrabold text-foreground">{parcel.allocation.customerName}</div>
-                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1 border-t border-indigo-200/50">
                           <span>Deposit: {parcel.allocation.depositAmount ? formatCurrency(parcel.allocation.depositAmount, 'USD') : '$0'}</span>
-                          <span>Expires: {parcel.allocation.expiryDate}</span>
+                          <span>Exp: {parcel.allocation.expiryDate}</span>
                         </div>
                       </div>
                     ) : parcel.ownershipInterests?.length > 0 ? (
-                      <div className="rounded-xl border border-border/60 bg-muted/20 p-2.5 text-xs">
-                        <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
+                      <div className="rounded-2xl border border-border/60 bg-muted/20 p-2.5 text-xs">
+                        <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-0.5">
                           Co-Ownership ({parcel.ownershipInterests.length} Stakeholders):
                         </span>
                         <p className="font-medium text-foreground truncate text-[11px]">
                           {parcel.ownershipInterests.map(o => `${o.ownerName} (${o.percentage}%)`).join(', ')}
                         </p>
                       </div>
-                    ) : null}
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-950/20 p-2.5 flex items-center justify-between text-xs">
+                        <span className="text-emerald-700 dark:text-emerald-300 font-bold text-[11px] flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-emerald-600" /> Unallocated Plot
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-semibold">Available for assignment</span>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="pt-3 border-t border-border/60 flex items-center justify-between">
+                  {/* Card Bottom: Valuation & Action Bar */}
+                  <div className="p-4 px-5 border-t border-border/70 bg-muted/15 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-bold uppercase text-muted-foreground block">Asking Valuation</span>
-                      <span className="text-base font-extrabold text-foreground">
+                      <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider block">Asking Valuation</span>
+                      <span className="text-lg font-black text-foreground">
                         {formatCurrency(parcel.price, 'USD')}
                       </span>
                     </div>
@@ -815,28 +1002,38 @@ export default function LandManagement() {
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <Button
                         size="sm"
-                        variant="outline"
                         onClick={() => handleOpenAllocation(parcel)}
-                        className="text-xs h-8 px-2.5 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 gap-1 rounded-xl"
+                        className="text-xs h-8 px-3 font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-sm gap-1"
                       >
                         <UserCheck className="w-3.5 h-3.5" /> Allocate
                       </Button>
                       <Button
                         size="icon"
-                        variant="ghost"
+                        variant="outline"
                         onClick={() => handleOpenDrawer(parcel)}
                         className="h-8 w-8 rounded-xl text-muted-foreground hover:text-foreground"
+                        title="Edit Record"
                       >
                         <Edit className="w-3.5 h-3.5" />
                       </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        onClick={() => setDeleteId(parcel.id)}
-                        className="h-8 w-8 rounded-xl text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl text-muted-foreground">
+                            <MoreVertical className="w-3.5 h-3.5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="text-xs">
+                          <DropdownMenuItem onClick={() => setInspectorParcel(parcel)}>
+                            <Eye className="w-3.5 h-3.5 mr-1.5" /> Inspect Parcel
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleOpenDrawer(parcel)}>
+                            <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Parcel
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={() => setDeleteId(parcel.id)}>
+                            <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete Parcel
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 </div>
@@ -845,141 +1042,21 @@ export default function LandManagement() {
           )}
         </TabsContent>
 
-        {/* ── Tab Content: Dedicated Kanban Board ── */}
+        {/* ── Tab Content: Dedicated Drag-and-Drop Kanban Board ── */}
         <TabsContent value="board" className="mt-0">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-pulse">
               {[1, 2, 3, 4].map(i => <div key={i} className="h-64 bg-muted rounded-[24px]" />)}
             </div>
           ) : (
-            <DragDropContext onDragEnd={onDragEnd}>
-              <div className="flex gap-4 overflow-x-auto pb-6 custom-scrollbar items-start min-h-[600px]">
-                {STATUS_COLUMNS.map(col => {
-                  const columnParcels = filteredParcels.filter(p => {
-                    const s = (p.status || 'available').toLowerCase();
-                    if (col.id === 'available') {
-                      return s === 'available' || !STATUS_COLUMNS.some(c => c.id === s);
-                    }
-                    return s === col.id;
-                  });
-
-                  const totalVal = columnParcels.reduce((acc, p) => acc + (Number(p.price) || 0), 0);
-                  const totalAcres = columnParcels.reduce((acc, p) => acc + (Number(p.lotSizeAcres) || 0), 0);
-
-                  return (
-                    <div key={col.id} className="flex flex-col w-[340px] shrink-0">
-                      {/* Column Header */}
-                      <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[18px] p-3.5 mb-3 shadow-sm flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={cn("w-2.5 h-2.5 rounded-full", col.dot)} />
-                          <div>
-                            <h3 className="font-bold text-xs text-foreground tracking-tight">{col.title}</h3>
-                            <p className="text-[10px] font-semibold text-muted-foreground">
-                              {columnParcels.length} Plots • {totalAcres.toFixed(1)} ac • {formatCurrency(totalVal, 'USD')}
-                            </p>
-                          </div>
-                        </div>
-                        <Badge variant="outline" className="text-[10px] font-extrabold h-5 px-1.5 bg-muted/40">
-                          {columnParcels.length}
-                        </Badge>
-                      </div>
-
-                      {/* Droppable Stage Area */}
-                      <Droppable droppableId={col.id}>
-                        {(provided, snapshot) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className={cn(
-                              "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
-                              snapshot.isDraggingOver && "bg-muted/40 border-dashed border-amber-500/30"
-                            )}
-                          >
-                            {columnParcels.map((parcel, index) => (
-                              <Draggable key={parcel.id} draggableId={parcel.id} index={index}>
-                                {(providedDraggable, snapshotDraggable) => (
-                                  <div
-                                    ref={providedDraggable.innerRef}
-                                    {...providedDraggable.draggableProps}
-                                    {...providedDraggable.dragHandleProps}
-                                    onClick={() => setInspectorParcel(parcel)}
-                                    className={cn(
-                                      "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer group space-y-3",
-                                      snapshotDraggable.isDragging && "shadow-xl border-amber-500 ring-2 ring-amber-500/20 rotate-1"
-                                    )}
-                                  >
-                                    <div className="flex items-start justify-between gap-2">
-                                      <div className="min-w-0">
-                                        <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-amber-600 transition-colors">
-                                          {parcel.parcelName}
-                                        </h4>
-                                        <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
-                                          <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
-                                          <span className="truncate">{parcel.address}, {parcel.city}</span>
-                                        </p>
-                                      </div>
-
-                                      <Badge variant="outline" className="text-[9px] font-extrabold uppercase py-0 h-4 bg-muted/40 shrink-0">
-                                        {parcel.plotNumber || 'Plot'}
-                                      </Badge>
-                                    </div>
-
-                                    {/* Acreage & Financial Strip */}
-                                    <div className="flex items-center justify-between bg-muted/30 p-2.5 rounded-xl text-xs border border-border/40 font-bold">
-                                      <span className="text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
-                                      <span className="text-foreground">{formatCurrency(parcel.price, 'USD')}</span>
-                                    </div>
-
-                                    {/* Active Allocation Pill */}
-                                    {parcel.allocation?.customerName ? (
-                                      <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 dark:bg-indigo-950/30 p-2 text-[11px] space-y-0.5">
-                                        <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-bold">
-                                          <span className="truncate">👤 {parcel.allocation.customerName}</span>
-                                          <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-indigo-200 dark:bg-indigo-800">
-                                            {parcel.allocation.allocationStatus}
-                                          </span>
-                                        </div>
-                                        <div className="text-[10px] text-muted-foreground">
-                                          Exp: {parcel.allocation.expiryDate}
-                                        </div>
-                                      </div>
-                                    ) : null}
-
-                                    {/* Card Footer Actions */}
-                                    <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground" onClick={(e) => e.stopPropagation()}>
-                                      <span className="capitalize font-semibold">{parcel.zoning} • {parcel.titleType}</span>
-                                      <div className="flex items-center gap-1">
-                                        <Button
-                                          size="xs"
-                                          variant="outline"
-                                          onClick={() => handleOpenAllocation(parcel)}
-                                          className="text-[10px] h-6 px-2 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg"
-                                        >
-                                          <UserCheck className="w-2.5 h-2.5 mr-1" /> Allocate
-                                        </Button>
-                                        <Button
-                                          size="xs"
-                                          variant="ghost"
-                                          onClick={() => handleOpenDrawer(parcel)}
-                                          className="h-6 w-6 p-0 rounded-lg text-muted-foreground"
-                                        >
-                                          <Edit className="w-3 h-3" />
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-                  );
-                })}
-              </div>
-            </DragDropContext>
+            <LandKanbanBoardComponent
+              parcels={filteredParcels}
+              onUpdateStatus={handleUpdateStatus}
+              onParcelClick={(p) => setInspectorParcel(p)}
+              onOpenAllocation={handleOpenAllocation}
+              onOpenDrawer={handleOpenDrawer}
+              onDelete={(id) => setDeleteId(id)}
+            />
           )}
         </TabsContent>
 
@@ -1349,6 +1426,7 @@ export default function LandManagement() {
                 <TabsTrigger value="allocation" className="font-bold text-xs rounded-lg">Allocation</TabsTrigger>
               </TabsList>
 
+              {/* ── Tab 1: Basic Specifications ── */}
               <TabsContent value="basic" className="space-y-4 pt-3">
                 <div className="space-y-1.5">
                   <Label className="font-bold">Parcel Title / Name *</Label>
@@ -1513,6 +1591,7 @@ export default function LandManagement() {
                 </div>
               </TabsContent>
 
+              {/* ── Tab 2: Co-Ownership ── */}
               <TabsContent value="ownership" className="space-y-4 pt-3">
                 <div className="flex items-center justify-between">
                   <div>
@@ -1595,6 +1674,7 @@ export default function LandManagement() {
                 )}
               </TabsContent>
 
+              {/* ── Tab 3: Land Allocation Info ── */}
               <TabsContent value="allocation" className="space-y-4 pt-3">
                 <div>
                   <h4 className="font-bold text-foreground text-sm">Active Prospect Allocation</h4>
@@ -1741,7 +1821,7 @@ export default function LandManagement() {
                   className="rounded-xl h-10 text-xs"
                 />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <Label className="font-bold">Expiry / Deadline</Label>
                 <Input
                   type="date"

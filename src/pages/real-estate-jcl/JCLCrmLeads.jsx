@@ -62,6 +62,207 @@ const getInitialsBg = (name = '') => {
   return colors[code % colors.length];
 };
 
+const getInitials = (firstName = '', lastName = '') => {
+  return `${firstName?.[0] || ''}${lastName?.[0] || 'L'}`.toUpperCase();
+};
+
+// ── Dedicated Self-Contained Kanban Component ──
+function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, onActivity, onConvert, onDelete }) {
+  const [optimisticLeads, setOptimisticLeads] = useState(leads);
+
+  useEffect(() => {
+    setOptimisticLeads(leads);
+  }, [leads]);
+
+  const onDragEnd = (result) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+    const newStatus = destination.droppableId;
+    const leadId = draggableId;
+
+    // Immediately update local optimistic state
+    setOptimisticLeads(prev => prev.map(l => String(l.id) === String(leadId) ? { ...l, status: newStatus } : l));
+
+    // Propagate to PowerSync
+    onUpdateStatus(leadId, newStatus);
+  };
+
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="flex gap-4 overflow-x-auto pb-6 custom-scrollbar items-start min-h-[600px]">
+        {STATUS_COLUMNS.map(col => {
+          const columnLeads = optimisticLeads.filter(l => {
+            const s = (l.status || 'new').toLowerCase();
+            if (col.id === 'new') {
+              return s === 'new' || !STATUS_COLUMNS.some(c => c.id === s);
+            }
+            return s === col.id;
+          });
+
+          const totalBudget = columnLeads.reduce((acc, lead) => acc + (Number(lead.budget_max) || Number(lead.budget_min) || 0), 0);
+
+          return (
+            <div key={col.id} className="flex flex-col w-[320px] shrink-0">
+              {/* Column Header */}
+              <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[18px] p-3.5 mb-3 shadow-sm flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={cn("w-2.5 h-2.5 rounded-full", col.dot)} />
+                  <div>
+                    <h3 className="font-bold text-xs text-foreground tracking-tight">{col.title}</h3>
+                    <p className="text-[10px] font-semibold text-muted-foreground">
+                      {columnLeads.length} Leads • {formatCurrency(totalBudget, 'USD')}
+                    </p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="text-[10px] font-extrabold h-5 px-1.5 bg-muted/40">
+                  {columnLeads.length}
+                </Badge>
+              </div>
+
+              {/* Droppable Column */}
+              <Droppable droppableId={col.id}>
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className={cn(
+                      "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
+                      snapshot.isDraggingOver && "bg-muted/40 border-dashed border-emerald-500/30"
+                    )}
+                  >
+                    {columnLeads.map((lead, index) => {
+                      const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || 'Prospective Lead';
+                      const initials = getInitials(lead.first_name, lead.last_name);
+                      const avatarColor = getInitialsBg(lead.first_name || 'L');
+
+                      return (
+                        <Draggable key={String(lead.id)} draggableId={String(lead.id)} index={index}>
+                          {(providedDraggable, snapshotDraggable) => (
+                            <div
+                              ref={providedDraggable.innerRef}
+                              {...providedDraggable.draggableProps}
+                              {...providedDraggable.dragHandleProps}
+                              style={{
+                                ...providedDraggable.draggableProps.style,
+                              }}
+                              onClick={() => onLeadClick(lead)}
+                              className={cn(
+                                "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-emerald-500/40 transition-all cursor-pointer group space-y-3",
+                                snapshotDraggable.isDragging && "shadow-2xl border-emerald-500 ring-2 ring-emerald-500/30 rotate-1 z-50 bg-card"
+                              )}
+                            >
+                              {/* Card Top: Avatar & Name */}
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                  <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
+                                    {initials}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-emerald-600 transition-colors">
+                                      {fullName}
+                                    </h4>
+                                    <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/30">
+                                      {lead.lead_type || 'Buyer'}
+                                    </Badge>
+                                  </div>
+                                </div>
+
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg">
+                                      <MoreVertical className="w-3.5 h-3.5" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="text-xs">
+                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(lead); }}>
+                                      <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Lead
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onActivity(lead); }}>
+                                      <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Log Activity
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onConvert(lead); }}>
+                                      <Users className="w-3.5 h-3.5 mr-1.5 text-emerald-600" /> Convert to Client
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={(e) => { e.stopPropagation(); onDelete(lead.id); }}>
+                                      <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+
+                              {/* 2x2 Contact / Budget Grid */}
+                              <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40">
+                                {lead.phone && (
+                                  <div className="flex items-center gap-1.5 truncate">
+                                    <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
+                                    <span className="truncate">{lead.phone}</span>
+                                  </div>
+                                )}
+                                {lead.email && (
+                                  <div className="flex items-center gap-1.5 truncate">
+                                    <Mail className="w-3 h-3 text-blue-600 shrink-0" />
+                                    <span className="truncate">{lead.email}</span>
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-1.5 truncate col-span-2">
+                                  <DollarSign className="w-3 h-3 text-amber-600 shrink-0" />
+                                  <span className="font-bold text-foreground">
+                                    {lead.budget_max ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}` : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : 'Budget Unset')}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Card Footer: Date & Quick Actions */}
+                              <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground font-semibold">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3 text-muted-foreground" />
+                                  <span>{lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : 'Recent'}</span>
+                                </div>
+
+                                <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                  {lead.phone && (
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      onClick={() => window.open(`tel:${lead.phone}`)}
+                                      className="h-6 w-6 rounded-md hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40"
+                                      title="Call Lead"
+                                    >
+                                      <Phone className="w-3 h-3" />
+                                    </Button>
+                                  )}
+                                  {lead.email && (
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      onClick={() => window.open(`mailto:${lead.email}`)}
+                                      className="h-6 w-6 rounded-md hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40"
+                                      title="Email Lead"
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </div>
+          );
+        })}
+      </div>
+    </DragDropContext>
+  );
+}
+
 export default function JCLCrmLeads() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
@@ -177,25 +378,16 @@ export default function JCLCrmLeads() {
     });
   }, [leads, search, statusFilter]);
 
-  // Drag and Drop Handler for Kanban
-  const onDragEnd = async (result) => {
-    const { source, destination, draggableId } = result;
-    if (!destination) return;
-    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
-
-    const newStatus = destination.droppableId;
-    const leadId = draggableId;
-
-    // Optimistic UI update
-    setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
-
+  // Update Status in PowerSync
+  const handleUpdateStatus = async (leadId, newStatus) => {
     try {
       await powerSync.execute(
         `UPDATE univ_re_leads SET status = ? WHERE id = ? AND company_id = ?`,
         [newStatus, leadId, companyId]
       );
+      fetchLeads();
     } catch (_err) {
-      toast.error('Failed to update lead status');
+      toast.error('Failed to update status');
       fetchLeads();
     }
   };
@@ -366,10 +558,6 @@ export default function JCLCrmLeads() {
     fetchLeadActivities(lead.id);
   };
 
-  const getInitials = (firstName = '', lastName = '') => {
-    return `${firstName?.[0] || ''}${lastName?.[0] || 'L'}`.toUpperCase();
-  };
-
   return (
     <div className="space-y-6 pb-12 font-sans min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 relative bg-background">
       
@@ -471,181 +659,22 @@ export default function JCLCrmLeads() {
           </div>
         </div>
 
-        {/* ── Tab Content: Kanban Board ── */}
+        {/* ── Tab Content: Dedicated Drag-and-Drop Kanban Board ── */}
         <TabsContent value="board" className="mt-0">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-pulse">
               {[1, 2, 3, 4].map(i => <div key={i} className="h-64 bg-muted rounded-[24px]" />)}
             </div>
           ) : (
-            <DragDropContext onDragEnd={onDragEnd}>
-              <div className="flex gap-4 overflow-x-auto pb-6 custom-scrollbar items-start min-h-[600px]">
-                {STATUS_COLUMNS.map(col => {
-                  // Filter leads matching this column status (with fallback to 'new' for unknown statuses)
-                  const columnLeads = filteredLeads.filter(l => {
-                    const s = (l.status || 'new').toLowerCase();
-                    if (col.id === 'new') {
-                      return s === 'new' || !STATUS_COLUMNS.some(c => c.id === s);
-                    }
-                    return s === col.id;
-                  });
-
-                  const totalBudget = columnLeads.reduce((acc, lead) => acc + (Number(lead.budget_max) || Number(lead.budget_min) || 0), 0);
-
-                  return (
-                    <div key={col.id} className="flex flex-col w-[320px] shrink-0">
-                      {/* Column Header */}
-                      <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[18px] p-3.5 mb-3 shadow-sm flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={cn("w-2.5 h-2.5 rounded-full", col.dot)} />
-                          <div>
-                            <h3 className="font-bold text-xs text-foreground tracking-tight">{col.title}</h3>
-                            <p className="text-[10px] font-semibold text-muted-foreground">
-                              {columnLeads.length} Leads • {formatCurrency(totalBudget, 'USD')}
-                            </p>
-                          </div>
-                        </div>
-                        <Badge variant="outline" className="text-[10px] font-extrabold h-5 px-1.5 bg-muted/40">
-                          {columnLeads.length}
-                        </Badge>
-                      </div>
-
-                      {/* Droppable Container */}
-                      <Droppable droppableId={col.id}>
-                        {(provided, snapshot) => (
-                          <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            className={cn(
-                              "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
-                              snapshot.isDraggingOver && "bg-muted/40 border-dashed border-emerald-500/30"
-                            )}
-                          >
-                            {columnLeads.map((lead, index) => {
-                              const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || 'Prospective Lead';
-                              const initials = getInitials(lead.first_name, lead.last_name);
-                              const avatarColor = getInitialsBg(lead.first_name || 'L');
-
-                              return (
-                                <Draggable key={lead.id} draggableId={lead.id} index={index}>
-                                  {(providedDraggable, snapshotDraggable) => (
-                                    <div
-                                      ref={providedDraggable.innerRef}
-                                      {...providedDraggable.draggableProps}
-                                      {...providedDraggable.dragHandleProps}
-                                      onClick={() => openInspector(lead)}
-                                      className={cn(
-                                        "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-emerald-500/40 transition-all cursor-pointer group space-y-3",
-                                        snapshotDraggable.isDragging && "shadow-xl border-emerald-500 ring-2 ring-emerald-500/20 rotate-1"
-                                      )}
-                                    >
-                                      {/* Card Top: Avatar & Name */}
-                                      <div className="flex items-start justify-between gap-2">
-                                        <div className="flex items-center gap-2.5 min-w-0">
-                                          <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
-                                            {initials}
-                                          </div>
-                                          <div className="min-w-0">
-                                            <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-emerald-600 transition-colors">
-                                              {fullName}
-                                            </h4>
-                                            <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/30">
-                                              {lead.lead_type || 'Buyer'}
-                                            </Badge>
-                                          </div>
-                                        </div>
-
-                                        <DropdownMenu>
-                                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg">
-                                              <MoreVertical className="w-3.5 h-3.5" />
-                                            </Button>
-                                          </DropdownMenuTrigger>
-                                          <DropdownMenuContent align="end" className="text-xs">
-                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openEditDrawer(lead); }}>
-                                              <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Lead
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setSelectedLead(lead); setShowActivityModal(true); }}>
-                                              <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Log Activity
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleConvertToClient(lead); }}>
-                                              <Users className="w-3.5 h-3.5 mr-1.5 text-emerald-600" /> Convert to Client
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={(e) => { e.stopPropagation(); setDeleteId(lead.id); }}>
-                                              <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
-                                            </DropdownMenuItem>
-                                          </DropdownMenuContent>
-                                        </DropdownMenu>
-                                      </div>
-
-                                      {/* 2x2 Contact / Budget Grid */}
-                                      <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40">
-                                        {lead.phone && (
-                                          <div className="flex items-center gap-1.5 truncate">
-                                            <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
-                                            <span className="truncate">{lead.phone}</span>
-                                          </div>
-                                        )}
-                                        {lead.email && (
-                                          <div className="flex items-center gap-1.5 truncate">
-                                            <Mail className="w-3 h-3 text-blue-600 shrink-0" />
-                                            <span className="truncate">{lead.email}</span>
-                                          </div>
-                                        )}
-                                        <div className="flex items-center gap-1.5 truncate col-span-2">
-                                          <DollarSign className="w-3 h-3 text-amber-600 shrink-0" />
-                                          <span className="font-bold text-foreground">
-                                            {lead.budget_max ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}` : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : 'Budget Unset')}
-                                          </span>
-                                        </div>
-                                      </div>
-
-                                      {/* Card Footer: Date & Quick Actions */}
-                                      <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground font-semibold">
-                                        <div className="flex items-center gap-1">
-                                          <Calendar className="w-3 h-3 text-muted-foreground" />
-                                          <span>{lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : 'Recent'}</span>
-                                        </div>
-
-                                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                                          {lead.phone && (
-                                            <Button
-                                              size="icon"
-                                              variant="ghost"
-                                              onClick={() => window.open(`tel:${lead.phone}`)}
-                                              className="h-6 w-6 rounded-md hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40"
-                                              title="Call Lead"
-                                            >
-                                              <Phone className="w-3 h-3" />
-                                            </Button>
-                                          )}
-                                          {lead.email && (
-                                            <Button
-                                              size="icon"
-                                              variant="ghost"
-                                              onClick={() => window.open(`mailto:${lead.email}`)}
-                                              className="h-6 w-6 rounded-md hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40"
-                                              title="Email Lead"
-                                            >
-                                              <Mail className="w-3 h-3" />
-                                            </Button>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                </Draggable>
-                              );
-                            })}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-                  );
-                })}
-              </div>
-            </DragDropContext>
+            <LeadKanbanBoardComponent
+              leads={filteredLeads}
+              onUpdateStatus={handleUpdateStatus}
+              onLeadClick={openInspector}
+              onEdit={openEditDrawer}
+              onActivity={(l) => { setSelectedLead(l); setShowActivityModal(true); }}
+              onConvert={handleConvertToClient}
+              onDelete={(id) => setDeleteId(id)}
+            />
           )}
         </TabsContent>
 

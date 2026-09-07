@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
-  Clock, MessageSquare, Phone, Mail, Calendar, Compass,
-  Home, DollarSign, FileText, CheckCircle2, User, Plus,
-  Filter, Search, ArrowUpRight, ArrowRight, ShieldCheck, Tag
+  Clock, MessageSquare, Calendar, Compass,
+  Home, DollarSign, User, Plus,
+  Search
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'react-hot-toast';
 import { formatCurrency } from '@/lib/constants';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -28,31 +27,33 @@ function generateUUID() {
 
 const moduleConfig = {
   crm: {
-    label: 'CRM & Lead',
+    label: 'CRM & Outreach',
     icon: MessageSquare,
-    color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border-emerald-200'
+    badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200',
+    nodeColor: 'bg-emerald-500',
   },
   land: {
     label: 'Land Allocation',
     icon: Compass,
-    color: 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300 border-amber-200'
+    badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200',
+    nodeColor: 'bg-amber-500',
   },
   property: {
-    label: 'Property & Lease',
+    label: 'Viewing & Tenancy',
     icon: Home,
-    color: 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300 border-blue-200'
+    badgeColor: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200',
+    nodeColor: 'bg-blue-500',
   },
   finance: {
-    label: 'Deals & Finance',
+    label: 'Offers & Finance',
     icon: DollarSign,
-    color: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-300 border-indigo-200'
+    badgeColor: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200',
+    nodeColor: 'bg-indigo-500',
   },
 };
 
 export default function CustomerTimeline({ customerId = null, compact = false }) {
-  const { t } = useTranslation();
   const companyId = useCompanyId();
-  const { user } = useAuth();
   const powerSync = usePowerSync();
 
   const [timelineEvents, setTimelineEvents] = useState([]);
@@ -72,14 +73,12 @@ export default function CustomerTimeline({ customerId = null, compact = false })
     title: '',
     description: '',
     outcome: 'successful',
-    eventDate: new Date().toISOString().split('T')[0],
   });
 
   const fetchTimelineData = async () => {
     try {
       setIsLoading(true);
 
-      // Fetch across CRM lead activities, viewings, offers, transactions, leases, properties (land allocations), and manual notes
       const [clientRes, leadActRes, viewingRes, offerRes, txnRes, leaseRes, propRes] = await Promise.all([
         powerSync.execute(`SELECT * FROM univ_re_clients WHERE company_id = ? ORDER BY name ASC`, [companyId]),
         powerSync.execute(`SELECT * FROM univ_re_lead_activities WHERE company_id = ? ORDER BY created_at DESC`, [companyId]).catch(() => ({ rows: [] })),
@@ -103,7 +102,7 @@ export default function CustomerTimeline({ customerId = null, compact = false })
           clientName: act.lead_name || 'Prospect Lead',
           module: 'crm',
           activityType: act.activity_type || 'activity',
-          title: act.subject || `CRM ${act.activity_type || 'Log'}`,
+          title: act.subject || `CRM ${act.activity_type || 'Interaction'}`,
           description: act.description || act.notes || '',
           date: act.created_at || new Date().toISOString(),
           status: act.outcome || 'completed',
@@ -162,7 +161,7 @@ export default function CustomerTimeline({ customerId = null, compact = false })
       // 5. Land Allocations
       (propRes.rows._array || Array.from(propRes.rows || [])).forEach(p => {
         let meta = {};
-        try { if (p.features) meta = JSON.parse(p.features); } catch(e) {}
+        try { if (p.features) meta = JSON.parse(p.features); } catch(_e) {}
         if (meta.allocation?.customerName) {
           events.push({
             id: `alloc_${p.id}`,
@@ -198,8 +197,8 @@ export default function CustomerTimeline({ customerId = null, compact = false })
       // Sort descending by date
       events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       setTimelineEvents(events);
-    } catch (e) {
-      console.error('[CustomerTimeline] Fetch failed:', e);
+    } catch (_e) {
+      toast.error('Failed to load timeline events');
     } finally {
       setIsLoading(false);
     }
@@ -264,66 +263,55 @@ export default function CustomerTimeline({ customerId = null, compact = false })
       toast.success('Interaction logged to timeline');
       setShowLogModal(false);
       fetchTimelineData();
-    } catch (err) {
-      console.error('[CustomerTimeline] Save error:', err);
+    } catch (_err) {
       toast.error('Failed to log interaction');
     }
   };
 
   return (
-    <div className={`space-y-4 ${compact ? '' : 'p-4 sm:p-6 pb-28'}`}>
-      {/* ── Header ── */}
+    <div className={`space-y-4 ${compact ? '' : 'p-4 sm:p-6 pb-28 font-sans'}`}>
+      {/* ── Header (Only if standalone page) ── */}
       {!compact && (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-                <Clock className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                  Customer Interaction Timeline
-                  <Badge variant="outline" className="bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400 border-indigo-300">
-                    Cross-Module Audit
-                  </Badge>
-                </h1>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  Complete activity history across CRM, Land Allocations, Property Viewings, and Financial Deals
-                </p>
-              </div>
-            </div>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
+              Customer Timeline ({timelineEvents.length})
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Omni-channel activity audit across CRM, Land Allocations, Property Viewings, and Financial Deals
+            </p>
           </div>
 
           <Button
             onClick={() => setShowLogModal(true)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl gap-2 shadow-sm"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl gap-2 shadow-sm text-xs h-10 px-4"
           >
             <Plus className="w-4 h-4" />
-            Log Client Interaction
+            Log Interaction
           </Button>
         </div>
       )}
 
-      {/* ── Filters ── */}
-      <div className="flex flex-col sm:flex-row gap-2.5 items-center justify-between bg-card p-3 rounded-2xl border shadow-sm text-xs">
-        <div className="relative w-full sm:w-64">
+      {/* ── Filters Toolbar ── */}
+      <div className="flex flex-col sm:flex-row gap-2.5 items-center justify-between bg-card/90 backdrop-blur-xl p-3 sm:p-4 rounded-[20px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)] text-xs">
+        <div className="relative w-full sm:w-72">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search interaction, notes, client..."
-            className="pl-8 h-9 rounded-xl text-xs bg-background"
+            className="pl-8 h-9 rounded-xl text-xs bg-background border-border/80"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
           {!customerId && (
             <Select value={selectedCustomerId} onValueChange={setSelectedCustomerId}>
-              <SelectTrigger className="h-9 w-40 rounded-xl text-xs">
+              <SelectTrigger className="h-9 w-44 rounded-xl text-xs font-medium bg-background border-border/80">
                 <SelectValue placeholder="All Clients" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Clients</SelectItem>
+                <SelectItem value="all">All Clients ({clients.length})</SelectItem>
                 {clients.map(c => (
                   <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                 ))}
@@ -332,15 +320,15 @@ export default function CustomerTimeline({ customerId = null, compact = false })
           )}
 
           <Select value={selectedModule} onValueChange={setSelectedModule}>
-            <SelectTrigger className="h-9 w-36 rounded-xl text-xs">
-              <SelectValue placeholder="All Modules" />
+            <SelectTrigger className="h-9 w-40 rounded-xl text-xs font-medium bg-background border-border/80">
+              <SelectValue placeholder="All Departments" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Departments</SelectItem>
-              <SelectItem value="crm">CRM & Leads</SelectItem>
+              <SelectItem value="crm">CRM & Outreach</SelectItem>
               <SelectItem value="land">Land Allocations</SelectItem>
-              <SelectItem value="property">Property & Leases</SelectItem>
-              <SelectItem value="finance">Deals & Finance</SelectItem>
+              <SelectItem value="property">Viewings & Leases</SelectItem>
+              <SelectItem value="finance">Offers & Deals</SelectItem>
             </SelectContent>
           </Select>
 
@@ -348,200 +336,187 @@ export default function CustomerTimeline({ customerId = null, compact = false })
             <Button
               size="sm"
               onClick={() => setShowLogModal(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs h-9 gap-1"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs h-9 px-3 gap-1 shrink-0"
             >
-              <Plus className="w-3.5 h-3.5" /> Log
+              <Plus className="w-3.5 h-3.5" /> Log Event
             </Button>
           )}
         </div>
       </div>
 
-      {/* ── Timeline Activity Feed ── */}
+      {/* ── Chronological Vertical Timeline Stem ── */}
       {isLoading ? (
-        <div className="space-y-3 animate-pulse">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-20 bg-muted rounded-2xl" />)}
+        <div className="space-y-4 py-8 animate-pulse">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="flex gap-4 items-start">
+              <div className="w-8 h-8 rounded-full bg-muted shrink-0" />
+              <div className="flex-1 h-24 bg-muted rounded-2xl" />
+            </div>
+          ))}
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="text-center py-12 bg-card rounded-2xl border border-dashed text-muted-foreground">
-          <Clock className="w-10 h-10 mx-auto mb-2 opacity-50" />
-          <h4 className="text-sm font-semibold text-foreground">No timeline interactions found</h4>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Log an interaction or perform a land allocation / property viewing to see it in the timeline.
+        <div className="text-center py-16 bg-card/60 backdrop-blur-xl rounded-[24px] border border-dashed border-border/80 p-8 space-y-3">
+          <Clock className="w-10 h-10 text-muted-foreground mx-auto opacity-50" />
+          <h4 className="text-sm font-bold text-foreground">No timeline events found</h4>
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+            {search || selectedModule !== 'all' || selectedCustomerId !== 'all'
+              ? 'Try resetting your active search queries or department filters.'
+              : 'Log your first customer interaction, land booking, or inspection tour to begin timeline tracking.'}
           </p>
         </div>
       ) : (
-        <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-border">
-          {filteredEvents.map((ev, index) => {
-            const modInfo = moduleConfig[ev.module] || moduleConfig.crm;
-            const Icon = ev.icon || modInfo.icon;
+        <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-border/80">
+          {filteredEvents.map((ev) => {
+            const mod = moduleConfig[ev.module] || moduleConfig.crm;
+            const Icon = ev.icon || mod.icon;
 
             return (
-              <div key={ev.id || index} className="relative group">
-                {/* Timeline Dot Icon */}
-                <div className={`absolute -left-6 top-1.5 w-6 h-6 rounded-full border-2 border-background flex items-center justify-center text-white shadow-sm ${
-                  ev.module === 'land' ? 'bg-amber-500' :
-                  ev.module === 'property' ? 'bg-blue-500' :
-                  ev.module === 'finance' ? 'bg-indigo-600' : 'bg-emerald-500'
-                }`}>
-                  <Icon className="w-3 h-3 text-white" />
+              <div key={ev.id} className="relative group">
+                {/* Timeline Colored Circular Node */}
+                <div className={cn(
+                  "absolute -left-6 sm:-left-8 top-3.5 w-6 h-6 rounded-full border-2 border-background flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-110",
+                  mod.nodeColor
+                )}>
+                  <Icon className="w-3 h-3" />
                 </div>
 
-                {/* Card */}
-                <Card className="rounded-2xl border bg-card/70 hover:bg-card hover:shadow-md transition-all">
-                  <CardContent className="p-4 space-y-2">
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <div className="space-y-0.5">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline" className={`text-[10px] uppercase font-bold ${modInfo.color}`}>
-                            {modInfo.label}
-                          </Badge>
-                          <span className="text-xs font-bold text-foreground">
-                            {ev.clientName}
-                          </span>
-                        </div>
-                        <h4 className="text-sm font-semibold text-foreground tracking-tight pt-0.5">
-                          {ev.title}
-                        </h4>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-right">
-                        <Badge variant="secondary" className="text-[10px] capitalize">
-                          {ev.status}
-                        </Badge>
-                        <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
-                          {ev.date ? new Date(ev.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}
-                        </span>
-                      </div>
+                {/* Event Card */}
+                <div className="p-4 sm:p-5 bg-card/90 backdrop-blur-xl rounded-[22px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-indigo-500/40 transition-all space-y-2.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge className={cn("text-[10px] font-extrabold uppercase border", mod.badgeColor)}>
+                        {mod.label}
+                      </Badge>
+                      <span className="font-extrabold text-[13px] text-foreground">{ev.title}</span>
                     </div>
 
-                    {ev.description && (
-                      <p className="text-xs text-muted-foreground leading-relaxed bg-muted/30 p-2.5 rounded-xl border">
-                        {ev.description}
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
+                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-semibold">
+                      <Calendar className="w-3 h-3 text-muted-foreground" />
+                      <span>{ev.date ? format(new Date(ev.date), 'dd MMM yyyy, HH:mm') : 'Recent'}</span>
+                    </div>
+                  </div>
+
+                  {ev.description && (
+                    <p className="text-xs text-foreground/80 font-medium leading-relaxed bg-muted/30 p-2.5 rounded-xl border border-border/40">
+                      {ev.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[11px]">
+                    <div className="flex items-center gap-1.5 font-bold text-muted-foreground">
+                      <User className="w-3 h-3 text-indigo-600" />
+                      <span className="text-foreground">{ev.clientName}</span>
+                    </div>
+
+                    <Badge variant="outline" className="text-[10px] uppercase font-black bg-muted/30">
+                      {ev.status}
+                    </Badge>
+                  </div>
+                </div>
               </div>
             );
           })}
         </div>
       )}
 
-      {/* ── Dialog: Log Client Interaction ── */}
+      {/* ── Dialog: Log Client Interaction Modal ── */}
       <Dialog open={showLogModal} onOpenChange={setShowLogModal}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
+        <DialogContent className="sm:max-w-md rounded-[24px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
-              <Clock className="w-5 h-5 text-indigo-600" />
+              <Plus className="w-5 h-5 text-indigo-600" />
               Log Customer Interaction
             </DialogTitle>
             <DialogDescription className="text-xs">
-              Record a call, meeting, site visit, or email note to the cross-department timeline.
+              Record a call, consultation, physical parcel tour, or contract note.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3.5 py-2 text-xs">
+            {clients.length > 0 && !customerId && (
+              <div className="space-y-1">
+                <Label className="font-bold">Select Client</Label>
+                <Select
+                  value={logForm.clientId}
+                  onValueChange={(cid) => {
+                    const found = clients.find(c => c.id === cid);
+                    setLogForm(prev => ({
+                      ...prev,
+                      clientId: cid,
+                      clientName: found?.name || ''
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="rounded-xl text-xs h-10">
+                    <SelectValue placeholder="Choose a registered client..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clients.map(c => (
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
             <div className="space-y-1">
-              <Label>Customer / Client</Label>
-              <Select
-                value={logForm.clientId}
-                onValueChange={(cid) => {
-                  const found = clients.find(c => c.id === cid);
-                  setLogForm(prev => ({
-                    ...prev,
-                    clientId: cid,
-                    clientName: found?.name || ''
-                  }));
-                }}
-              >
-                <SelectTrigger className="rounded-xl text-xs">
-                  <SelectValue placeholder="Pick a client..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map(c => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label className="font-bold">Event Subject / Title *</Label>
+              <Input
+                required
+                value={logForm.title}
+                onChange={(e) => setLogForm({ ...logForm, title: e.target.value })}
+                placeholder="e.g. Discussed installment payment terms for Airport Hills Plot"
+                className="rounded-xl h-10 text-xs"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label>Interaction Type</Label>
+                <Label className="font-bold">Interaction Medium</Label>
                 <Select
                   value={logForm.activityType}
                   onValueChange={(v) => setLogForm({ ...logForm, activityType: v })}
                 >
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="rounded-xl text-xs h-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="call">Phone Call</SelectItem>
                     <SelectItem value="meeting">In-Person Meeting</SelectItem>
-                    <SelectItem value="site_visit">Land / Site Visit</SelectItem>
-                    <SelectItem value="email">Email Note</SelectItem>
-                    <SelectItem value="negotiation">Price Negotiation</SelectItem>
+                    <SelectItem value="viewing">Site Inspection</SelectItem>
+                    <SelectItem value="email">Email Follow-Up</SelectItem>
+                    <SelectItem value="whatsapp">WhatsApp / Chat</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-1">
-                <Label>Department / Module</Label>
+                <Label className="font-bold">Department / Module</Label>
                 <Select
                   value={logForm.module}
                   onValueChange={(v) => setLogForm({ ...logForm, module: v })}
                 >
-                  <SelectTrigger className="rounded-xl text-xs">
+                  <SelectTrigger className="rounded-xl text-xs h-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="crm">CRM & Prospect</SelectItem>
+                    <SelectItem value="crm">CRM & Outreach</SelectItem>
                     <SelectItem value="land">Land Allocation</SelectItem>
-                    <SelectItem value="property">Property & Unit</SelectItem>
-                    <SelectItem value="finance">Deals & Finance</SelectItem>
+                    <SelectItem value="property">Viewing & Tenancy</SelectItem>
+                    <SelectItem value="finance">Offers & Deals</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div className="space-y-1">
-              <Label>Subject / Title *</Label>
-              <Input
-                required
-                value={logForm.title}
-                onChange={(e) => setLogForm({ ...logForm, title: e.target.value })}
-                placeholder="e.g. Discussed Sector 4 land survey terms"
-                className="rounded-xl"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label>Detailed Notes</Label>
+              <Label className="font-bold">Detailed Event Notes</Label>
               <Input
                 value={logForm.description}
                 onChange={(e) => setLogForm({ ...logForm, description: e.target.value })}
-                placeholder="Client agreed on 10% earnest deposit, awaiting draft deed..."
-                className="rounded-xl"
+                placeholder="Client requested site layout deed survey and certified title copy..."
+                className="rounded-xl h-10 text-xs"
               />
-            </div>
-
-            <div className="space-y-1">
-              <Label>Outcome Status</Label>
-              <Select
-                value={logForm.outcome}
-                onValueChange={(v) => setLogForm({ ...logForm, outcome: v })}
-              >
-                <SelectTrigger className="rounded-xl text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="successful">Successful / Positive</SelectItem>
-                  <SelectItem value="follow_up_required">Follow-up Required</SelectItem>
-                  <SelectItem value="negotiating">Pending Negotiation</SelectItem>
-                  <SelectItem value="closed_deal">Agreement Finalized</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
 
@@ -550,16 +525,16 @@ export default function CustomerTimeline({ customerId = null, compact = false })
               type="button"
               variant="outline"
               onClick={() => setShowLogModal(false)}
-              className="rounded-xl"
+              className="rounded-xl font-bold text-xs"
             >
               Cancel
             </Button>
             <Button
               type="button"
               onClick={handleSaveLog}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs"
             >
-              Log Interaction
+              Record Event
             </Button>
           </DialogFooter>
         </DialogContent>
