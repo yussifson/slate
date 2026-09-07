@@ -142,6 +142,9 @@ const UnivListing = React.lazy(() => import("@/components/universal/UnivListing"
 const UnivAgentcommission = React.lazy(() => import("@/components/universal/UnivAgentcommission"));
 const UnivHoa = React.lazy(() => import("@/components/universal/UnivHoa"));
 const UnivUtilitybill = React.lazy(() => import("@/components/universal/UnivUtilitybill"));
+const UnivLandManagement = React.lazy(() => import("@/components/universal/UnivLandManagement"));
+const UnivCustomerTimeline = React.lazy(() => import("@/components/universal/UnivCustomerTimeline"));
+const UnivClientProfile = React.lazy(() => import("@/components/universal/UnivClientProfile"));
 
 // Phase 11 Universal Components (Retail & E-commerce Suite)
 const UnivProductCatalog = React.lazy(() => import("@/components/universal/UnivProductCatalog"));
@@ -803,6 +806,9 @@ export default function OrbitBuildPage() {
  case 'agentcommission': return <UnivAgentcommission />;
  case 'hoa': return <UnivHoa />;
  case 'utilitybill': case 'utilities': return <UnivUtilitybill />;
+ case 'landmanagement': case 'land': case 'landparcels': return <UnivLandManagement />;
+ case 'customertimeline': case 'activitytimeline': case 'clienttimeline': return <UnivCustomerTimeline />;
+ case 'clientprofile': case 'client360': case 'clientdossier': return <UnivClientProfile />;
 
  // Retail & E-commerce Suite
  case 'productcatalog': case 'products': return <UnivProductCatalog />;

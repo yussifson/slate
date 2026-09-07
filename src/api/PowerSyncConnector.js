@@ -7,6 +7,56 @@ class SupabaseConnector {
     this.client = supabase;
   }
 
+  async safeUpsert(table, payload, onConflict = 'id') {
+    let currentPayload = { ...payload };
+    let attempts = 0;
+    while (attempts < 10) {
+      attempts++;
+      const { error } = await table.upsert(currentPayload, { onConflict });
+      if (!error) return { error: null };
+
+      // Check if error is PGRST204 (missing column in schema cache) or column not in table
+      const match = error.message?.match(/Could not find the '([^']+)' column of '([^']+)' in the schema cache/i)
+        || error.message?.match(/Could not find the '([^']+)' column/i)
+        || error.message?.match(/column "([^"]+)" of relation "([^"]+)" does not exist/i)
+        || error.details?.match(/column "([^"]+)" of relation "([^"]+)" does not exist/i);
+
+      if (match && match[1] && currentPayload.hasOwnProperty(match[1])) {
+        const missingCol = match[1];
+        console.warn(`[PowerSync Auto-Healing] Table '${match[2] || 'unknown'}' missing column '${missingCol}' in schema cache. Retrying upsert without it.`);
+        delete currentPayload[missingCol];
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  async safeUpdate(table, payload, recordId) {
+    let currentPayload = { ...payload };
+    let attempts = 0;
+    while (attempts < 10) {
+      attempts++;
+      const { error } = await table.update(currentPayload).eq('id', recordId);
+      if (!error) return { error: null };
+
+      const match = error.message?.match(/Could not find the '([^']+)' column of '([^']+)' in the schema cache/i)
+        || error.message?.match(/Could not find the '([^']+)' column/i)
+        || error.message?.match(/column "([^"]+)" of relation "([^"]+)" does not exist/i)
+        || error.details?.match(/column "([^"]+)" of relation "([^"]+)" does not exist/i);
+
+      if (match && match[1] && currentPayload.hasOwnProperty(match[1])) {
+        const missingCol = match[1];
+        console.warn(`[PowerSync Auto-Healing] Table '${match[2] || 'unknown'}' missing column '${missingCol}' in schema cache. Retrying update without it.`);
+        delete currentPayload[missingCol];
+        if (Object.keys(currentPayload).length === 0) return { error: null };
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
   async fetchCredentials() {
     try {
       const { data: { session }, error } = await this.client.auth.getSession();
@@ -136,10 +186,10 @@ class SupabaseConnector {
               
               if (op.table === 'companies') {
                 // Companies require update instead of upsert due to RLS INSERT restrictions for standard users
-                const { error } = await table.update(payload).eq('id', op.id);
+                const { error } = await this.safeUpdate(table, payload, op.id);
                 if (error) throw error;
               } else {
-                const { error } = await table.upsert(payload, { onConflict: 'id' });
+                const { error } = await this.safeUpsert(table, payload, 'id');
                 if (error) throw error;
               }
               break;
@@ -198,17 +248,17 @@ class SupabaseConnector {
                 payload = Object.fromEntries(Object.entries(payload).filter(([k]) => safeColumns.includes(k)));
                 
                 // Use update instead of upsert because upsert requires INSERT privileges which might fail due to RLS
-                const { error } = await table.update(payload).eq('id', op.id);
+                const { error } = await this.safeUpdate(table, payload, op.id);
                 if (error) throw error;
                 break;
               }
               // Real Estate tables - allow all fields for PATCH
               const realtEstateTablesForPatch = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
                 'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 
-                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests'];
+                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests', 'univ_re_leads'];
               
               if (Object.keys(payload).length > 0) {
-                const { error } = await table.update(payload).eq('id', op.id);
+                const { error } = await this.safeUpdate(table, payload, op.id);
                 if (error) throw error;
               }
               break;

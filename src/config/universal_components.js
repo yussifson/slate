@@ -210,6 +210,11 @@ export const UNIVERSAL_COMPONENTS = [
     "icon": "LayoutGrid"
   },
   {
+    "id": "UnivClientProfile",
+    "label": "Client 360 Profile",
+    "icon": "Users"
+  },
+  {
     "id": "UnivColdChain",
     "label": "Cold Chain",
     "icon": "LayoutGrid"
@@ -288,6 +293,11 @@ export const UNIVERSAL_COMPONENTS = [
     "id": "UnivCustomerSegment",
     "label": "Customer Segment",
     "icon": "LayoutGrid"
+  },
+  {
+    "id": "UnivCustomerTimeline",
+    "label": "Customer Timeline",
+    "icon": "Clock"
   },
   {
     "id": "UnivCustomsDoc",
@@ -563,6 +573,11 @@ export const UNIVERSAL_COMPONENTS = [
     "id": "UnivLab",
     "label": "Lab",
     "icon": "LayoutGrid"
+  },
+  {
+    "id": "UnivLandManagement",
+    "label": "Land Management",
+    "icon": "Layers"
   },
   {
     "id": "UnivLeadMagnet",

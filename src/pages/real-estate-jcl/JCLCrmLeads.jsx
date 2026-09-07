@@ -6,6 +6,7 @@ import {
   ArrowRight, ShieldCheck, Search, Filter
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
+import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -97,7 +98,13 @@ export default function JCLCrmLeads() {
   };
 
   useEffect(() => {
-    if (companyId) fetchLeads();
+    if (companyId) {
+      fetchLeads();
+      const channel = supabase.channel(`univ_re_leads_${companyId}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_re_leads', filter: `company_id=eq.${companyId}` }, fetchLeads)
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    }
   }, [companyId]);
 
   useEffect(() => {

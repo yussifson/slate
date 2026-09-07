@@ -5,7 +5,7 @@ import { Button} from "@/components/ui/button";
 import { useToast} from "@/components/ui/use-toast";
 import { powerSync} from "@/api/PowerSyncConnector";
 import { useNavigate, useParams, useLocation} from "react-router-dom";
-import { useCompanyId} from "@/hooks/useCompanyId";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import { Blocks, Sparkles, Plus, Trash2, Play, Undo2, Redo2, ChevronLeft, ChevronRight, Zap} from "lucide-react";

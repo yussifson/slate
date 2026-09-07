@@ -37,25 +37,51 @@ export default function UnivCRM() {
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [editingLeadId, setEditingLeadId] = useState(null);
  
- // Sheet State
- const [viewingLead, setViewingLead] = useState(null);
+  const [viewingLead, setViewingLead] = useState(null);
+  const [leadActivities, setLeadActivities] = useState([]);
+  const [isLoggingActivity, setIsLoggingActivity] = useState(false);
+  const [activityForm, setActivityForm] = useState({
+    activity_type: 'call',
+    subject: '',
+    description: '',
+    outcome: 'successful'
+  });
 
- const [formData, setFormData] = useState({
- first_name: '', last_name: '', email: '', phone: '', source: '', value: 0, status: 'New', notes: ''
-});
+  const [formData, setFormData] = useState({
+    first_name: '', last_name: '', email: '', phone: '', source: '', value: 0, status: 'New', notes: ''
+  });
 
- useEffect(() => {
- if (companyId) {
- const savedStages = localStorage.getItem(`crm_stages_${companyId}`);
- if (savedStages) setStages(JSON.parse(savedStages));
- fetchLeads();
- const channel = supabase.channel('crm_changes')
- .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_crm_leads', filter: `company_id=eq.${companyId}`}, () => {
- fetchLeads();
-}).subscribe();
- return () => { supabase.removeChannel(channel);};
-}
-}, [companyId]);
+  const fetchActivities = async (leadId) => {
+    if (!leadId || !companyId) return;
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_lead_activities WHERE company_id = ? AND lead_id = ? ORDER BY created_at DESC',
+        [companyId, leadId]
+      );
+      setLeadActivities(res.rows?._array || Array.from(res.rows || []));
+    } catch (e) {
+      setLeadActivities([]);
+    }
+  };
+
+  useEffect(() => {
+    if (viewingLead?.id) {
+      fetchActivities(viewingLead.id);
+    }
+  }, [viewingLead?.id]);
+
+  useEffect(() => {
+    if (companyId) {
+      const savedStages = localStorage.getItem(`crm_stages_${companyId}`);
+      if (savedStages) setStages(JSON.parse(savedStages));
+      fetchLeads();
+      const channel = supabase.channel('crm_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_crm_leads', filter: `company_id=eq.${companyId}`}, () => {
+          fetchLeads();
+        }).subscribe();
+      return () => { supabase.removeChannel(channel);};
+    }
+  }, [companyId]);
 
  const fetchLeads = async () => {
  setLoading(true);
@@ -583,27 +609,150 @@ export default function UnivCRM() {
  <DollarSign className="w-8 h-8 text-emerald-200 dark:text-emerald-800" />
  </div>
 
- <div>
- <p className="text-[11px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider mb-2 tracking-[0.04em]">Notes & Context</p>
- <div className="bg-muted/30 p-4 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-sm text-foreground whitespace-pre-wrap min-h-[100px]">
- {viewingLead.notes || <span className="text-[#71717a] dark:text-gray-400 italic">No notes added to this lead yet.</span>}
- </div>
- </div>
+  {/* Structured Activity History (Additive) */}
+  <div className="space-y-3">
+    <div className="flex items-center justify-between">
+      <p className="text-[11px] font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Interaction History</p>
+      <button
+        onClick={() => setIsLoggingActivity(!isLoggingActivity)}
+        className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+      >
+        <Plus className="w-3.5 h-3.5" /> {isLoggingActivity ? 'Cancel' : 'Log Activity'}
+      </button>
+    </div>
 
- <div className="pt-6 border-t border-primary/40 flex gap-3">
- <button 
- onClick={() => { handleOpenModal(viewingLead); setViewingLead(null);}}
- className="flex-1 flex items-center justify-center gap-2 h-11 bg-primary text-white rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors "
- >
- <Edit2 className="w-4 h-4" /> Edit Profile
- </button>
- <button 
- onClick={() => handleDeleteLead(viewingLead.id)}
- className="w-11 h-11 flex items-center justify-center bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 rounded-xl hover:bg-red-100 transition-colors"
- >
- <Trash2 className="w-4 h-4" />
- </button>
- </div>
+    {isLoggingActivity && (
+      <div className="p-3 bg-muted/40 rounded-xl border border-primary/30 space-y-2.5">
+        <div className="grid grid-cols-2 gap-2">
+          <select
+            value={activityForm.activity_type}
+            onChange={e => setActivityForm({ ...activityForm, activity_type: e.target.value })}
+            className="h-8 px-2 bg-background border border-border rounded-lg text-xs"
+          >
+            <option value="call">Phone Call</option>
+            <option value="email">Email</option>
+            <option value="meeting">Site Tour / Meeting</option>
+            <option value="note">Internal Note</option>
+          </select>
+          <select
+            value={activityForm.outcome}
+            onChange={e => setActivityForm({ ...activityForm, outcome: e.target.value })}
+            className="h-8 px-2 bg-background border border-border rounded-lg text-xs"
+          >
+            <option value="successful">Successful / Interested</option>
+            <option value="follow_up_needed">Follow-up Required</option>
+            <option value="negotiating">In Negotiation</option>
+            <option value="closed">Closed Deal</option>
+          </select>
+        </div>
+        <input
+          type="text"
+          placeholder="Activity Subject..."
+          value={activityForm.subject}
+          onChange={e => setActivityForm({ ...activityForm, subject: e.target.value })}
+          className="w-full h-8 px-2 bg-background border border-border rounded-lg text-xs"
+        />
+        <textarea
+          rows="2"
+          placeholder="Activity notes & feedback..."
+          value={activityForm.description}
+          onChange={e => setActivityForm({ ...activityForm, description: e.target.value })}
+          className="w-full p-2 bg-background border border-border rounded-lg text-xs resize-none"
+        />
+        <div className="flex justify-end">
+          <button
+            onClick={async () => {
+              if (!activityForm.subject.trim()) return toast.error('Subject is required');
+              try {
+                const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                  const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                });
+                await powerSync.execute(
+                  `INSERT INTO univ_re_lead_activities (id, company_id, lead_id, activity_type, subject, description, outcome, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                  [id, companyId, viewingLead.id, activityForm.activity_type, activityForm.subject, activityForm.description, activityForm.outcome, new Date().toISOString()]
+                );
+                toast.success('Activity logged');
+                setIsLoggingActivity(false);
+                setActivityForm({ activity_type: 'call', subject: '', description: '', outcome: 'successful' });
+                fetchActivities(viewingLead.id);
+              } catch (e) {
+                toast.error('Failed to log activity');
+              }
+            }}
+            className="h-7 px-3 bg-primary text-white text-xs font-semibold rounded-lg"
+          >
+            Save Interaction
+          </button>
+        </div>
+      </div>
+    )}
+
+    {leadActivities.length > 0 ? (
+      <div className="space-y-2 max-h-48 overflow-y-auto">
+        {leadActivities.map(act => (
+          <div key={act.id} className="p-2.5 bg-card border border-border/70 rounded-xl text-xs space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-foreground">{act.subject || act.activity_type}</span>
+              <span className="text-[10px] text-muted-foreground">{new Date(act.created_at).toLocaleDateString()}</span>
+            </div>
+            {act.description && <p className="text-muted-foreground">{act.description}</p>}
+            <span className="inline-block px-1.5 py-0.5 bg-muted rounded text-[10px] uppercase font-semibold text-muted-foreground">{act.outcome || act.activity_type}</span>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className="bg-muted/30 p-3 rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 text-xs text-foreground whitespace-pre-wrap min-h-[60px]">
+        {viewingLead.notes || <span className="text-[#71717a] dark:text-gray-400 italic">No notes or activities recorded yet.</span>}
+      </div>
+    )}
+  </div>
+
+  <div className="pt-4 border-t border-primary/40 space-y-2">
+    <button
+      onClick={async () => {
+        if (!window.confirm(`Convert "${viewingLead.first_name} ${viewingLead.last_name}" to a registered Customer?`)) return;
+        try {
+          const clientId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+          });
+          const fullName = `${viewingLead.first_name || ''} ${viewingLead.last_name || ''}`.trim();
+          await powerSync.execute(
+            `INSERT INTO univ_re_clients (id, created_at, company_id, name, email, phone, budget, notes)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [clientId, new Date().toISOString(), companyId, fullName, viewingLead.email, viewingLead.phone, Number(viewingLead.value) || 0, viewingLead.notes]
+          );
+          await powerSync.execute(
+            'UPDATE univ_crm_leads SET status = ? WHERE id = ?',
+            ['Won', viewingLead.id]
+          );
+          toast.success(`Converted ${fullName} to Registered Customer`);
+          setViewingLead(null);
+          fetchLeads();
+        } catch (e) {
+          toast.error('Failed to convert lead');
+        }
+      }}
+      className="w-full flex items-center justify-center gap-2 h-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+    >
+      <UserCheck className="w-4 h-4" /> 1-Click Convert to Customer
+    </button>
+    
+    <div className="flex gap-2">
+      <button 
+        onClick={() => { handleOpenModal(viewingLead); setViewingLead(null);}}
+        className="flex-1 flex items-center justify-center gap-2 h-10 bg-primary text-white rounded-xl text-xs font-semibold hover:bg-primary/90 transition-colors"
+      >
+        <Edit2 className="w-3.5 h-3.5" /> Edit Profile
+      </button>
+      <button 
+        onClick={() => handleDeleteLead(viewingLead.id)}
+        className="w-10 h-10 flex items-center justify-center bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400 rounded-xl hover:bg-red-100 transition-colors"
+      >
+        <Trash2 className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  </div>
 
  </div>
  )}

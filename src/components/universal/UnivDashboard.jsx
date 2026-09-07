@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo} from 'react';
 import { useCompanyId} from '@/hooks/useCompanyId';
 
 import { supabase} from "@/api/supabaseClient";
@@ -6,27 +6,29 @@ import { motion} from 'framer-motion';
 import {
  Plus, Edit3, Check, Trash2, LayoutGrid, XCircle, X,
  Database, TrendingUp, TrendingDown, Users, Activity,
- Clock, Zap, BarChart2, AlertTriangle, RefreshCw,
+  Clock, Zap, BarChart2, AlertTriangle, RefreshCw, Layers, Compass
 } from 'lucide-react';
 import {
- AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
+  AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
 } from 'recharts';
 import { format, subMonths, startOfMonth, endOfMonth} from 'date-fns';
 
-// â”€â”€â”€ Data Sources â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Data Sources ────────────────────────────────────────────────────────────
 const AVAILABLE_SOURCES = [
- { label: 'Employees', table: 'univ_hr_employees', icon: Users},
- { label: 'CRM Leads', table: 'univ_crm_leads', icon: TrendingUp},
- { label: 'Projects', table: 'univ_projects', icon: Activity},
- { label: 'Support Tickets', table: 'univ_support_tickets', icon: Database},
- { label: 'Inventory Items', table: 'univ_inventory', icon: Database},
- { label: 'Assets', table: 'univ_assets', icon: Database},
- { label: 'Invoices', table: 'univ_invoices', icon: Database},
- { label: 'Procurement POs', table: 'univ_procurement', icon: Database},
- { label: 'Payroll Records', table: 'univ_payroll', icon: Database},
- { label: 'Bookings', table: 'univ_bookings', icon: Database},
- { label: 'Recruitment', table: 'univ_recruitment', icon: Users},
- { label: 'Attendance', table: 'univ_attendance', icon: Activity},
+  { label: 'Employees', table: 'univ_hr_employees', icon: Users},
+  { label: 'CRM Leads', table: 'univ_crm_leads', icon: TrendingUp},
+  { label: 'Land Parcels', table: 'univ_land_parcels', icon: Layers},
+  { label: 'Land Allocations', table: 'univ_land_allocations', icon: Compass},
+  { label: 'Projects', table: 'univ_projects', icon: Activity},
+  { label: 'Support Tickets', table: 'univ_support_tickets', icon: Database},
+  { label: 'Inventory Items', table: 'univ_inventory', icon: Database},
+  { label: 'Assets', table: 'univ_assets', icon: Database},
+  { label: 'Invoices', table: 'univ_invoices', icon: Database},
+  { label: 'Procurement POs', table: 'univ_procurement', icon: Database},
+  { label: 'Payroll Records', table: 'univ_payroll', icon: Database},
+  { label: 'Bookings', table: 'univ_bookings', icon: Database},
+  { label: 'Recruitment', table: 'univ_recruitment', icon: Users},
+  { label: 'Attendance', table: 'univ_attendance', icon: Activity},
 ];
 
 const DEFAULT_LAYOUT = [

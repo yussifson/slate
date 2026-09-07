@@ -16,8 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
-import { format, differenceInHours } from 'date-fns';
-import dayjs from 'dayjs';
+import { format, differenceInHours, subMonths, getMonth, getYear } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import {
@@ -154,17 +153,19 @@ export default function JCLDashboard() {
   // Recharts Cashflow & Sales Bar Chart Data
   const chartData = useMemo(() => {
     const data = [];
+    const currentDate = new Date();
     if (dateRangeView === 'Monthly') {
       for (let i = 5; i >= 0; i--) {
-        const d = dayjs().subtract(i, 'month');
-        const monthStr = d.format('MMM');
-        const monthNum = d.month();
-        const yearNum = d.year();
+        const d = subMonths(currentDate, i);
+        const monthStr = format(d, 'MMM');
+        const monthNum = getMonth(d);
+        const yearNum = getYear(d);
 
         const monthSales = transactions
           .filter(t => {
-            const date = dayjs(t.closing_date || t.created_at);
-            return date.month() === monthNum && date.year() === yearNum;
+            if (!t.closing_date && !t.created_at) return false;
+            const date = new Date(t.closing_date || t.created_at);
+            return getMonth(date) === monthNum && getYear(date) === yearNum;
           })
           .reduce((sum, t) => sum + (Number(t.sale_price || t.price || t.amount) || 0), 0);
 
@@ -178,15 +179,16 @@ export default function JCLDashboard() {
       }
     } else {
       for (let i = 3; i >= 0; i--) {
-        const d = dayjs().subtract(i * 3, 'month');
-        const q = Math.floor(d.month() / 3) + 1;
-        const yearNum = d.year();
+        const d = subMonths(currentDate, i * 3);
+        const q = Math.floor(getMonth(d) / 3) + 1;
+        const yearNum = getYear(d);
 
         const qSales = transactions
           .filter(t => {
-            const date = dayjs(t.closing_date || t.created_at);
-            const invQ = Math.floor(date.month() / 3) + 1;
-            return invQ === q && date.year() === yearNum;
+            if (!t.closing_date && !t.created_at) return false;
+            const date = new Date(t.closing_date || t.created_at);
+            const invQ = Math.floor(getMonth(date) / 3) + 1;
+            return invQ === q && getYear(date) === yearNum;
           })
           .reduce((sum, t) => sum + (Number(t.sale_price || t.price || t.amount) || 0), 0);
 
