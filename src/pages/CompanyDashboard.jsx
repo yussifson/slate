@@ -14,6 +14,7 @@ import RetailDashboard from "@/components/dashboard/RetailDashboard";
 import LogisticsDashboard from "@/components/dashboard/LogisticsDashboard";
 import GenericDashboard from "@/components/dashboard/GenericDashboard";
 import RealEstateDashboard from "@/pages/real-estate/RealEstateDashboard";
+import JCLDashboard from "@/pages/real-estate-jcl/JCLDashboard";
 import PharmacyDashboard from "@/pages/pharmacy/Dashboard";
 import OptavelCommandCenter from "@/pages/optavel/OptavelCommandCenter";
 
@@ -64,7 +65,9 @@ export default function CompanyDashboard() {
     return <RetailDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'logistics') {
     return <LogisticsDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
-  } else if (industry === 'real_estate' || industry === 'realestate' || industry === 'real_estate_jcl') {
+  } else if (industry === 'real_estate_jcl') {
+    return <JCLDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+  } else if (industry === 'real_estate' || industry === 'realestate') {
     return <RealEstateDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'pharmacy') {
     return <PharmacyDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;

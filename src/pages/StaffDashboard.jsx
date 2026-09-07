@@ -3,6 +3,7 @@ import { useAuth } from "@/lib/AuthContext";
 import LawDashboard from "./dashboards/LawDashboard";
 import SoftwareDashboard from "./dashboards/SoftwareDashboard";
 import RealEstateDashboard from "./dashboards/RealEstateDashboard";
+import JCLDashboard from "@/pages/real-estate-jcl/JCLDashboard";
 import HospitalDashboard from "./dashboards/HospitalDashboard";
 import SchoolDashboard from "./dashboards/SchoolDashboard";
 import { useQuery } from "@tanstack/react-query";
@@ -24,8 +25,9 @@ export default function StaffDashboard() {
   switch (activeIndustry) {
     case 'optavel':
       return <SoftwareDashboard />;
-    case 'real_estate':
     case 'real_estate_jcl':
+      return <JCLDashboard />;
+    case 'real_estate':
       return <RealEstateDashboard />;
     case 'hospital':
       return <HospitalDashboard />;

@@ -444,6 +444,27 @@ const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/Te
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
 const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analytics'));
 
+// JCL Royal Group — Dedicated Isolated Vertical Components
+const JCLLandManagement = React.lazy(() => import('./pages/real-estate-jcl/LandManagement'));
+const JCLCustomerTimeline = React.lazy(() => import('./pages/real-estate-jcl/CustomerTimeline'));
+const JCLCrmLeadsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCrmLeads'));
+const JCLClientsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLClients'));
+const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
+
+const SmartClientsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLClientsPage />;
+  return <RealEstateClients />;
+};
+
+const SmartLeadsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLCrmLeadsPage />;
+  return <RealEstateCRMLeads />;
+};
+
 // Religion Pages
 const ReligionMembers = React.lazy(() => import('./pages/religion/Members'));
 const ReligionGroups = React.lazy(() => import('./pages/religion/Groups'));
@@ -1045,11 +1066,13 @@ function PlatformRoutes() {
       <Route path="/pharmacy/claims" element={<PharmacyClaims />} />
       <Route path="/pharmacy/reports" element={<PharmacyReports />} />
 
-      {/* Real Estate Suite */}
+      {/* Real Estate & JCL Suite */}
       <Route path="/real-estate" element={<RealEstateDashboard />} />
       <Route path="/real-estate/dashboard" element={<RealEstateDashboard />} />
+      <Route path="/real-estate/land" element={<JCLLandManagement />} />
+      <Route path="/real-estate/customer-timeline" element={<JCLCustomerTimeline />} />
       <Route path="/real-estate/properties" element={<RealEstateProperties />} />
-      <Route path="/real-estate/clients" element={<RealEstateClients />} />
+      <Route path="/real-estate/clients" element={<SmartClientsRouter />} />
       <Route path="/real-estate/leases" element={<RealEstateLeases />} />
       <Route path="/real-estate/viewings" element={<RealEstateViewings />} />
       <Route path="/real-estate/transactions" element={<RealEstateTransactions />} />
@@ -1057,7 +1080,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/commissions" element={<RealEstateCommissions />} />
       <Route path="/real-estate/rent-payments" element={<RealEstateRentPayments />} />
       <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
-      <Route path="/real-estate/crm-leads" element={<RealEstateCRMLeads />} />
+      <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
       <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
       <Route path="/real-estate/audit-log" element={<RealEstateAuditLog />} />
       <Route path="/real-estate/commission-rules" element={<RealEstateCommissionRules />} />

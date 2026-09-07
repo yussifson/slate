@@ -852,8 +852,11 @@ export const INDUSTRIES = {
 
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       
-      { section: 'Properties & Transactions', label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
-      { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
+      { section: 'Land & Cadastral', label: 'Land Management', path: '/real-estate/land', icon: 'Compass' },
+      { label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
+      { label: 'Clients & CRM', path: '/real-estate/clients', icon: 'Users' },
+      { label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Sparkles' },
+      { label: 'Customer Timeline', path: '/real-estate/customer-timeline', icon: 'Clock' },
       { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
       { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
       { label: 'Counter Offers', path: '/real-estate/counter-offers', icon: 'MessageCircle' },
