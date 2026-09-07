@@ -501,56 +501,54 @@ export default function SignUp() {
  </div>
  </div>
  
- {/* Right Side: Marketing Visual */}
- <div className="hidden lg:flex flex-1 relative items-center justify-center bg-primary/[0.03] overflow-hidden p-8">
- {/* Abstract Pattern Background */}
- <div 
-   className="absolute -inset-[100%] animate-[spin_60s_linear_infinite] opacity-40"
-   style={{ background: 'conic-gradient(from 0deg, transparent 0%, rgba(16,185,129,0.15) 25%, transparent 50%, rgba(16,185,129,0.05) 75%, transparent 100%)'}}
- />
- <div className="absolute inset-0 bg-white/60 backdrop-blur-3xl"></div>
+  {/* Right Side: Marketing Visual */}
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-950 overflow-hidden p-8 lg:p-14">
+    {/* Ambient background glow effects */}
+    <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-600/15 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
- {(currentSubdomain || companyBranding?.name) ? (
-   <IndustryFeatureShowcase companyName={companyBranding?.name} industryType={companyBranding?.industry_type} />
- ) : (
-   <div className="relative z-10 w-full max-w-2xl bg-white/80 backdrop-blur-xl rounded-[2rem] border-[0.5px] border-primary/20 shadow-[0_20px_80px_-20px_rgba(16,185,129,0.15)] p-12 lg:p-16 flex flex-col justify-between group hover:shadow-[0_20px_80px_-15px_rgba(16,185,129,0.2)] hover:bg-white/90 transition-all duration-500">
-     <div>
-       <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary mb-8 uppercase tracking-widest">
-         <span className="flex h-2 w-2 relative">
-           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-           <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-         </span>
-         {t("universal_os", "Universal Operating System")}
-       </div>
-       
-       <h3 className="text-4xl 2xl:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.1] tracking-tight">
-         {t("a_workspace_that_grows_with_yo", "The foundation for modern institutions.")}
-       </h3>
-       <p className="text-lg text-slate-600 font-medium max-w-lg leading-relaxed">
-         {t("slate_unifies_your_team_s_", "Slate unifies your entire organization's workflow, operations, and billing into one beautifully orchestrated platform.")}
-       </p>
-     </div>
+    {(currentSubdomain || companyBranding?.name) ? (
+      <IndustryFeatureShowcase companyName={companyBranding?.name} industryType={companyBranding?.industry_type} />
+    ) : (
+      <div className="relative z-10 w-full max-w-xl bg-white/[0.04] backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-10 lg:p-12 shadow-[0_25px_80px_-20px_rgba(0,0,0,0.6)] flex flex-col justify-between text-white">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 mb-6">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            Instant Enterprise Provisioning
+          </div>
 
-     <div className="grid grid-cols-2 gap-8 mt-16 border-t border-primary/10 pt-10">
-       <div className="group/feature">
-         <div className="w-12 h-12 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary mb-5 group-hover/feature:bg-primary/10 transition-colors duration-300">
-           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-         </div>
-         <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("set_up_in_seconds", "Instant Provisioning")}</h4>
-         <p className="text-sm text-slate-500 font-medium leading-relaxed">{t("no_engineering_required_just_i", "Subdomain, databases, and core infrastructure deployed seamlessly.")}</p>
-       </div>
-       
-       <div className="group/feature">
-         <div className="w-12 h-12 rounded-2xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary mb-5 group-hover/feature:bg-primary/10 transition-colors duration-300">
-           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-         </div>
-         <h4 className="text-lg font-bold text-slate-900 mb-2 tracking-wide">{t("bank_grade_security", "Enterprise Security")}</h4>
-         <p className="text-sm text-slate-500 font-medium leading-relaxed">{t("soc2_compliant_infrastructure_", "Isolated sub-tenants with Row-Level Security ensuring absolute data privacy.")}</p>
-       </div>
-     </div>
-   </div>
- )}
- </div>
+          <h3 className="text-3xl lg:text-4xl font-extrabold text-white mb-4 tracking-tight leading-[1.15]">
+            The Foundation for Modern High-Growth Institutions
+          </h3>
+          <p className="text-sm text-slate-300 font-normal leading-relaxed mb-8">
+            Deploy your dedicated multi-tenant operating system with row-level security, offline database sync, and cross-department automation.
+          </p>
+
+          <div className="grid grid-cols-2 gap-4 border-t border-white/10 pt-6">
+            <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center text-emerald-300">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </div>
+              <h4 className="text-xs font-bold text-white tracking-tight">Instant Provisioning</h4>
+              <p className="text-[11px] text-slate-300 leading-relaxed">Dedicated workspace, tenant scoping, and databases provisioned in seconds.</p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-2">
+              <div className="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center text-indigo-300">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <h4 className="text-xs font-bold text-white tracking-tight">Enterprise Security</h4>
+              <p className="text-[11px] text-slate-300 leading-relaxed">Sub-tenant isolation with Postgres RLS ensuring complete data privacy.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
  </div>
   </div>
  );

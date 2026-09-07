@@ -850,50 +850,43 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
 
-      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Executive Dashboard', path: '/', icon: 'LayoutDashboard' },
       
-      { section: 'Land & Cadastral', label: 'Land Management', path: '/real-estate/land', icon: 'Compass' },
-      { label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
-      { label: 'Clients & CRM', path: '/real-estate/clients', icon: 'Users' },
-      { label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Sparkles' },
+      { section: 'Land & Survey Department', label: 'Land & Cadastral Parcels', path: '/real-estate/land', icon: 'Compass' },
+      
+      { section: 'Commercial & Sales CRM', label: 'CRM Leads & Pipelines', path: '/real-estate/crm-leads', icon: 'Sparkles' },
+      { label: '360° Customer Profiles', path: '/real-estate/clients', icon: 'Users' },
       { label: 'Customer Timeline', path: '/real-estate/customer-timeline', icon: 'Clock' },
-      { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
-      { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
+      { label: 'Viewing & Tours Calendar', path: '/real-estate/viewings', icon: 'Eye' },
+      { label: 'Purchase Offers & Terms', path: '/real-estate/offers', icon: 'FileText' },
       { label: 'Counter Offers', path: '/real-estate/counter-offers', icon: 'MessageCircle' },
-      { label: 'Transactions', path: '/real-estate/transactions', icon: 'Banknote' },
+      { label: 'Sales Deals & Closing', path: '/real-estate/transactions', icon: 'Banknote' },
       
-      { section: 'Financial Management', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
-      { label: 'Escrow Accounts', path: '/real-estate/escrow', icon: 'Lock' },
-      { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
-      { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
-      
-      { section: 'Leasing & Rent', label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
+      { section: 'Property & Facilities Management', label: 'Built Properties & Units', path: '/real-estate/properties', icon: 'Home' },
+      { label: 'Tenancy Leases', path: '/real-estate/leases', icon: 'FileCheck' },
       { label: 'Lease Renewals', path: '/real-estate/lease-renewals', icon: 'RotateCcw' },
-      { label: 'Rent Payments', path: '/real-estate/rent-payments', icon: 'CreditCard' },
-      { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: 'Calendar' },
-      
-      { section: 'Operations', label: 'Maintenance', path: '/real-estate/maintenance', icon: 'Wrench' },
-      { label: 'Contractors', path: '/real-estate/contractors', icon: 'Users2' },
+      { label: 'Maintenance Requests', path: '/real-estate/maintenance', icon: 'Wrench' },
+      { label: 'Approved Contractors', path: '/real-estate/contractors', icon: 'Users2' },
       { label: 'Contractor Reviews', path: '/real-estate/contractor-reviews', icon: 'Star' },
       
-      { section: 'Documents & Agreements', label: 'Documents', path: '/documents', icon: 'FolderOpen' },
+      { section: 'Finance & Accounts', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
+      { label: 'Escrow Holdings', path: '/real-estate/escrow', icon: 'Lock' },
+      { label: 'Rent Collection', path: '/real-estate/rent-payments', icon: 'CreditCard' },
+      { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: 'Calendar' },
+      { label: 'Agent Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
+      { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
+      { label: 'Invoices & Billing', path: '/invoices', icon: 'Receipt' },
+      
+      { section: 'Projects & Engineering', label: 'Development Projects', path: '/tasks', icon: 'Briefcase' },
+      
+      { section: 'HR & Administration', label: 'Staff & Team Roster', path: '/hr', icon: 'HeartHandshake' },
       { label: 'Document Templates', path: '/real-estate/document-templates', icon: 'FileText' },
       { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
       
-      { section: 'Intelligence & Analytics', label: 'Market Intelligence', path: '/real-estate/market-data', icon: 'Globe' },
-      { label: 'Comparable Properties', path: '/real-estate/comparable-properties', icon: 'Layers' },
-      { label: 'Agent Metrics', path: '/real-estate/agent-metrics', icon: 'BarChart2' },
-      { label: 'Recommendations', path: '/real-estate/recommendations', icon: 'Brain' },
-      
-      { section: 'Administration', label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
-      { label: 'Reports', path: '/reports', icon: 'FileText' },
-      { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
-      { label: 'Tasks', path: '/tasks', icon: 'CheckSquare' },
-      { label: 'HR & Leave', path: '/hr', icon: 'HeartHandshake' },
-      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
-      { label: 'Automations', path: '/automations', icon: 'Zap' },
-
-
+      { section: 'Executive Intelligence', label: 'Market Valuation & Comps', path: '/real-estate/market-data', icon: 'Globe' },
+      { label: 'Analytics & BI', path: '/real-estate/analytics', icon: 'LineChart' },
+      { label: 'Reports & Audits', path: '/reports', icon: 'FileText' },
+      { label: 'Audit Security Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
     ]},
 

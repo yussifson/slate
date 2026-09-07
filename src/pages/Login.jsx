@@ -691,33 +691,77 @@ export default function Login() {
  </div>
 
   {/* Right Side: Marketing Visual */}
-  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-50 overflow-hidden p-8">
-    <div className="absolute inset-0 bg-slate-900/5 mix-blend-overlay"></div>
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-950 overflow-hidden p-8 lg:p-14">
+    {/* Ambient background glow effects */}
+    <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-600/15 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
     {(currentSubdomain || isCustomDomain || branding.name !== 'Slate') ? (
       <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
     ) : (
-      <div className="relative z-10 w-full max-w-2xl bg-white rounded-[2rem] border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 p-12 lg:p-16 flex flex-col justify-center relative group hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-        <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[10rem] font-serif leading-none font-black text-primary/70 group-hover:text-primary group-hover:opacity-10 transition-colors duration-700 pointer-events-none">"</div>
-        
-        <div className="relative z-10">
-          <div className="flex gap-2 mb-8">
-            {[1, 2, 3, 4, 5].map(s => (
-              <svg key={s} className="w-6 h-6 text-amber-400 fill-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-            ))}
+      <div className="relative z-10 w-full max-w-xl bg-white/[0.04] backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-10 lg:p-12 shadow-[0_25px_80px_-20px_rgba(0,0,0,0.6)] flex flex-col justify-between text-white">
+        <div>
+          {/* Top Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 mb-6">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            Next-Gen Multi-Tenant Enterprise SaaS
           </div>
-          
-          <p className="text-slate-800 font-medium text-2xl md:text-3xl mb-12 relative z-10 leading-relaxed tracking-tight tracking-[-0.02em]">
-            {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
+
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-4 tracking-tight leading-[1.15]">
+            Powering Modern Enterprise Operations & Real Estate
+          </h2>
+          <p className="text-sm text-slate-300 font-normal leading-relaxed mb-8">
+            Complete data isolation, offline-first sync, cadastral land management, and department workflows engineered for scale.
           </p>
-          
-          <div className="flex items-center gap-5 pt-8 relative z-10">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/5 to-primary/10 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 flex items-center justify-center text-primary/90 font-semibold text-xl">
-              {randomQuote.initials}
+
+          {/* Floating Command Preview Card */}
+          <div className="mb-8 p-5 rounded-2xl bg-white/[0.05] border border-white/10 backdrop-blur-md space-y-3.5 shadow-lg">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-white flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+                Executive Command Center
+              </span>
+              <span className="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                100% Synced
+              </span>
             </div>
-            <div>
-              <p className="text-xl font-semibold text-slate-900 tracking-tight">{randomQuote.name}</p>
+            
+            <div className="grid grid-cols-3 gap-2 text-center text-xs">
+              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
+                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Parcels</span>
+                <span className="text-sm font-bold text-white">2,450 Ac</span>
+              </div>
+              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
+                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Active Deals</span>
+                <span className="text-sm font-bold text-emerald-400">$14.2M</span>
+              </div>
+              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
+                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Offline Sync</span>
+                <span className="text-sm font-bold text-indigo-300">&lt; 30ms</span>
+              </div>
             </div>
+
+            <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
+              <span className="truncate">🔐 Sector 4 Plot 12 allocated to Kwame Mensah</span>
+              <span className="text-emerald-400 font-semibold shrink-0 ml-2">Just now</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonial Quote Footer */}
+        <div className="pt-6 border-t border-white/10 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-indigo-500/20 border border-white/15 flex items-center justify-center text-emerald-300 font-bold text-sm shrink-0 shadow-inner">
+            {randomQuote.initials}
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs text-slate-200 italic line-clamp-2">
+              {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
+            </p>
+            <p className="text-xs font-semibold text-white mt-1">{randomQuote.name}</p>
           </div>
         </div>
       </div>
