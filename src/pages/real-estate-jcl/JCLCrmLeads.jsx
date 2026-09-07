@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Users, Edit, Trash2, Phone, Mail,
-  MessageSquare, UserCheck, Search,
+  MessageSquare, Search,
   RefreshCw, LayoutGrid, List,
   MoreVertical, ChevronRight,
-  UserPlus
+  UserPlus, Download,
+  DollarSign, Calendar
 } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -20,7 +22,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { toast } from 'react-hot-toast';
-import GenericKanban from '@/components/views/GenericKanban';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -33,13 +34,32 @@ function generateUUID() {
   });
 }
 
-const STATUS_CONFIG = {
-  'new': { label: 'New Inquiry', color: 'bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border-blue-200' },
-  'contacted': { label: 'Contacted', color: 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border-amber-200' },
-  'qualified': { label: 'Qualified', color: 'bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 border-purple-200' },
-  'negotiating': { label: 'Negotiating', color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300 border-indigo-200' },
-  'closed': { label: 'Converted / Won', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border-emerald-200' },
-  'lost': { label: 'Lost', color: 'bg-muted text-muted-foreground border-border' },
+const STATUS_COLUMNS = [
+  { id: 'new', title: 'New Inquiries', dot: 'bg-blue-500', badgeColor: 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200' },
+  { id: 'contacted', title: 'Contact Made', dot: 'bg-amber-500', badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200' },
+  { id: 'qualified', title: 'Qualified', dot: 'bg-purple-500', badgeColor: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200' },
+  { id: 'negotiating', title: 'Negotiating', dot: 'bg-indigo-500', badgeColor: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200' },
+  { id: 'closed', title: 'Won / Converted', dot: 'bg-emerald-500', badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200' },
+  { id: 'lost', title: 'Lost', dot: 'bg-slate-400', badgeColor: 'bg-muted text-muted-foreground border-border' },
+];
+
+const STATUS_CONFIG = STATUS_COLUMNS.reduce((acc, col) => {
+  acc[col.id] = { label: col.title, color: col.badgeColor };
+  return acc;
+}, {});
+
+const getInitialsBg = (name = '') => {
+  const code = (name.charCodeAt(0) || 65) + (name.charCodeAt(1) || 66);
+  const colors = [
+    'bg-emerald-600 text-white',
+    'bg-blue-600 text-white',
+    'bg-indigo-600 text-white',
+    'bg-amber-600 text-white',
+    'bg-teal-600 text-white',
+    'bg-purple-600 text-white',
+    'bg-rose-600 text-white',
+  ];
+  return colors[code % colors.length];
 };
 
 export default function JCLCrmLeads() {
@@ -51,17 +71,18 @@ export default function JCLCrmLeads() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [viewMode, setViewMode] = useState('board'); // board or list
+  const [viewMode, setViewMode] = useState('board'); // 'board' | 'list'
 
   // Modals & Drawers
   const [showForm, setShowForm] = useState(false);
   const [showActivityModal, setShowActivityModal] = useState(false);
+  const [inspectorLead, setInspectorLead] = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  const [inspectorLead, setInspectorLead] = useState(null);
   const [leadActivities, setLeadActivities] = useState([]);
 
+  // Form States
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -80,9 +101,10 @@ export default function JCLCrmLeads() {
     subject: '',
     description: '',
     durationMinutes: 15,
-    outcome: 'qualified',
+    outcome: 'connected',
   });
 
+  // Fetch Leads
   const fetchLeads = async () => {
     try {
       setIsLoading(true);
@@ -90,11 +112,9 @@ export default function JCLCrmLeads() {
         `SELECT * FROM univ_re_leads WHERE company_id = ? ORDER BY created_at DESC`,
         [companyId]
       );
-      const data = res.rows._array || Array.from(res.rows || []);
-      setLeads(data);
-    } catch (e) {
-      console.error('[JCLCrmLeads] Fetch error:', e);
-      toast.error('Failed to load CRM leads');
+      setLeads(res.rows._array || Array.from(res.rows || []));
+    } catch (_e) {
+      toast.error('Failed to load leads');
     } finally {
       setIsLoading(false);
     }
@@ -157,6 +177,29 @@ export default function JCLCrmLeads() {
     });
   }, [leads, search, statusFilter]);
 
+  // Drag and Drop Handler for Kanban
+  const onDragEnd = async (result) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+    const newStatus = destination.droppableId;
+    const leadId = draggableId;
+
+    // Optimistic UI update
+    setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
+
+    try {
+      await powerSync.execute(
+        `UPDATE univ_re_leads SET status = ? WHERE id = ? AND company_id = ?`,
+        [newStatus, leadId, companyId]
+      );
+    } catch (_err) {
+      toast.error('Failed to update lead status');
+      fetchLeads();
+    }
+  };
+
   // Save or Update Lead
   const handleSaveLead = async (e) => {
     e.preventDefault();
@@ -203,8 +246,7 @@ export default function JCLCrmLeads() {
       setShowForm(false);
       setEditingId(null);
       fetchLeads();
-    } catch (err) {
-      console.error('[JCLCrmLeads] Save error:', err);
+    } catch (_err) {
       toast.error('Failed to save lead');
     }
   };
@@ -239,8 +281,7 @@ export default function JCLCrmLeads() {
         setInspectorLead(null);
       }
       fetchLeads();
-    } catch (err) {
-      console.error('[JCLCrmLeads] Convert error:', err);
+    } catch (_err) {
       toast.error('Failed to convert lead to customer');
     }
   };
@@ -253,7 +294,7 @@ export default function JCLCrmLeads() {
       setDeleteId(null);
       if (inspectorLead?.id === id) setInspectorLead(null);
       fetchLeads();
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to delete lead');
     }
   };
@@ -298,7 +339,7 @@ export default function JCLCrmLeads() {
       if (inspectorLead?.id === selectedLead.id) {
         fetchLeadActivities(selectedLead.id);
       }
-    } catch (err) {
+    } catch (_err) {
       toast.error('Failed to log activity');
     }
   };
@@ -323,6 +364,10 @@ export default function JCLCrmLeads() {
   const openInspector = (lead) => {
     setInspectorLead(lead);
     fetchLeadActivities(lead.id);
+  };
+
+  const getInitials = (firstName = '', lastName = '') => {
+    return `${firstName?.[0] || ''}${lastName?.[0] || 'L'}`.toUpperCase();
   };
 
   return (
@@ -352,7 +397,7 @@ export default function JCLCrmLeads() {
             onClick={handleExportCSV}
             className="h-9 gap-1.5 bg-card border-border text-foreground shadow-sm rounded-xl hover:bg-muted font-bold text-xs"
           >
-            <LayoutGrid className="w-3.5 h-3.5" /> Export CSV
+            <Download className="w-3.5 h-3.5" /> Export CSV
           </Button>
 
           <Button
@@ -388,11 +433,11 @@ export default function JCLCrmLeads() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses ({leads.length})</SelectItem>
-                <SelectItem value="new">New Inquiry</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="new">New Inquiries</SelectItem>
+                <SelectItem value="contacted">Contact Made</SelectItem>
                 <SelectItem value="qualified">Qualified</SelectItem>
                 <SelectItem value="negotiating">Negotiating</SelectItem>
-                <SelectItem value="closed">Converted / Won</SelectItem>
+                <SelectItem value="closed">Won / Converted</SelectItem>
                 <SelectItem value="lost">Lost</SelectItem>
               </SelectContent>
             </Select>
@@ -433,238 +478,277 @@ export default function JCLCrmLeads() {
               {[1, 2, 3, 4].map(i => <div key={i} className="h-64 bg-muted rounded-[24px]" />)}
             </div>
           ) : (
-            <GenericKanban
-              items={filteredLeads}
-              columns={[
-                { id: 'new', title: 'New Inquiries' },
-                { id: 'contacted', title: 'Contacted' },
-                { id: 'qualified', title: 'Qualified' },
-                { id: 'negotiating', title: 'Negotiating' },
-                { id: 'closed', title: 'Won / Converted' },
-              ]}
-              onStatusChange={async (id, newStatus) => {
-                try {
-                  await powerSync.execute(
-                    `UPDATE univ_re_leads SET status = ? WHERE id = ? AND company_id = ?`,
-                    [newStatus, id, companyId]
-                  );
-                  fetchLeads();
-                } catch (_e) {
-                  toast.error('Status update failed');
-                }
-              }}
-              renderCard={(lead) => {
-                const initials = `${lead.first_name?.[0] || ''}${lead.last_name?.[0] || 'L'}`.toUpperCase();
-                return (
-                  <div
-                    onClick={() => openInspector(lead)}
-                    className="p-4 space-y-3 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 hover:shadow-md hover:border-emerald-500/40 transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-100 dark:from-emerald-950 dark:to-teal-900 flex items-center justify-center font-extrabold text-xs text-emerald-800 dark:text-emerald-200 shrink-0">
-                          {initials}
-                        </div>
-                        <div className="min-w-0">
-                          <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-emerald-600 transition-colors">
-                            {lead.first_name} {lead.last_name}
-                          </h4>
-                          <span className="text-[10px] text-muted-foreground uppercase font-semibold">
-                            {lead.source || 'Referral'}
-                          </span>
-                        </div>
-                      </div>
-                      <Badge className={cn("text-[10px] font-semibold", STATUS_CONFIG[lead.status]?.color || '')}>
-                        {STATUS_CONFIG[lead.status]?.label || lead.status}
-                      </Badge>
-                    </div>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div className="flex gap-4 overflow-x-auto pb-6 custom-scrollbar items-start min-h-[600px]">
+                {STATUS_COLUMNS.map(col => {
+                  // Filter leads matching this column status (with fallback to 'new' for unknown statuses)
+                  const columnLeads = filteredLeads.filter(l => {
+                    const s = (l.status || 'new').toLowerCase();
+                    if (col.id === 'new') {
+                      return s === 'new' || !STATUS_COLUMNS.some(c => c.id === s);
+                    }
+                    return s === col.id;
+                  });
 
-                    <div className="space-y-1 text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-xl">
-                      <div className="flex items-center gap-2 truncate">
-                        <Mail className="w-3 h-3 text-emerald-600 shrink-0" />
-                        <span className="truncate">{lead.email}</span>
-                      </div>
-                      {lead.phone && (
+                  const totalBudget = columnLeads.reduce((acc, lead) => acc + (Number(lead.budget_max) || Number(lead.budget_min) || 0), 0);
+
+                  return (
+                    <div key={col.id} className="flex flex-col w-[320px] shrink-0">
+                      {/* Column Header */}
+                      <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[18px] p-3.5 mb-3 shadow-sm flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
-                          <span>{lead.phone}</span>
+                          <div className={cn("w-2.5 h-2.5 rounded-full", col.dot)} />
+                          <div>
+                            <h3 className="font-bold text-xs text-foreground tracking-tight">{col.title}</h3>
+                            <p className="text-[10px] font-semibold text-muted-foreground">
+                              {columnLeads.length} Leads • {formatCurrency(totalBudget, 'USD')}
+                            </p>
+                          </div>
                         </div>
-                      )}
-                    </div>
+                        <Badge variant="outline" className="text-[10px] font-extrabold h-5 px-1.5 bg-muted/40">
+                          {columnLeads.length}
+                        </Badge>
+                      </div>
 
-                    <div className="flex items-center justify-between text-xs pt-1 border-t border-border/50 font-semibold">
-                      <span className="capitalize text-emerald-600 dark:text-emerald-400">{lead.lead_type || 'Buyer'}</span>
-                      <span className="text-foreground">
-                        {lead.budget_max ? formatCurrency(lead.budget_max, 'USD') : 'Open Budget'}
-                      </span>
-                    </div>
+                      {/* Droppable Container */}
+                      <Droppable droppableId={col.id}>
+                        {(provided, snapshot) => (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className={cn(
+                              "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
+                              snapshot.isDraggingOver && "bg-muted/40 border-dashed border-emerald-500/30"
+                            )}
+                          >
+                            {columnLeads.map((lead, index) => {
+                              const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || 'Prospective Lead';
+                              const initials = getInitials(lead.first_name, lead.last_name);
+                              const avatarColor = getInitialsBg(lead.first_name || 'L');
 
-                    <div className="flex items-center gap-1.5 pt-1" onClick={(e) => e.stopPropagation()}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleConvertToClient(lead)}
-                        className="flex-1 text-[11px] h-7 gap-1 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg font-bold"
-                      >
-                        <UserCheck className="w-3 h-3" /> Convert
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          setSelectedLead(lead);
-                          setActivityData({ activityType: 'call', subject: '', description: '', durationMinutes: 15, outcome: 'qualified' });
-                          setShowActivityModal(true);
-                        }}
-                        className="h-7 w-7 p-0 rounded-lg"
-                        title="Log Activity"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5 text-muted-foreground" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => openEditDrawer(lead)}
-                        className="h-7 w-7 p-0 rounded-lg"
-                        title="Edit Lead"
-                      >
-                        <Edit className="w-3.5 h-3.5 text-muted-foreground" />
-                      </Button>
+                              return (
+                                <Draggable key={lead.id} draggableId={lead.id} index={index}>
+                                  {(providedDraggable, snapshotDraggable) => (
+                                    <div
+                                      ref={providedDraggable.innerRef}
+                                      {...providedDraggable.draggableProps}
+                                      {...providedDraggable.dragHandleProps}
+                                      onClick={() => openInspector(lead)}
+                                      className={cn(
+                                        "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-emerald-500/40 transition-all cursor-pointer group space-y-3",
+                                        snapshotDraggable.isDragging && "shadow-xl border-emerald-500 ring-2 ring-emerald-500/20 rotate-1"
+                                      )}
+                                    >
+                                      {/* Card Top: Avatar & Name */}
+                                      <div className="flex items-start justify-between gap-2">
+                                        <div className="flex items-center gap-2.5 min-w-0">
+                                          <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
+                                            {initials}
+                                          </div>
+                                          <div className="min-w-0">
+                                            <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-emerald-600 transition-colors">
+                                              {fullName}
+                                            </h4>
+                                            <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/30">
+                                              {lead.lead_type || 'Buyer'}
+                                            </Badge>
+                                          </div>
+                                        </div>
+
+                                        <DropdownMenu>
+                                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg">
+                                              <MoreVertical className="w-3.5 h-3.5" />
+                                            </Button>
+                                          </DropdownMenuTrigger>
+                                          <DropdownMenuContent align="end" className="text-xs">
+                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openEditDrawer(lead); }}>
+                                              <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Lead
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setSelectedLead(lead); setShowActivityModal(true); }}>
+                                              <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Log Activity
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleConvertToClient(lead); }}>
+                                              <Users className="w-3.5 h-3.5 mr-1.5 text-emerald-600" /> Convert to Client
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={(e) => { e.stopPropagation(); setDeleteId(lead.id); }}>
+                                              <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
+                                            </DropdownMenuItem>
+                                          </DropdownMenuContent>
+                                        </DropdownMenu>
+                                      </div>
+
+                                      {/* 2x2 Contact / Budget Grid */}
+                                      <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40">
+                                        {lead.phone && (
+                                          <div className="flex items-center gap-1.5 truncate">
+                                            <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
+                                            <span className="truncate">{lead.phone}</span>
+                                          </div>
+                                        )}
+                                        {lead.email && (
+                                          <div className="flex items-center gap-1.5 truncate">
+                                            <Mail className="w-3 h-3 text-blue-600 shrink-0" />
+                                            <span className="truncate">{lead.email}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex items-center gap-1.5 truncate col-span-2">
+                                          <DollarSign className="w-3 h-3 text-amber-600 shrink-0" />
+                                          <span className="font-bold text-foreground">
+                                            {lead.budget_max ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}` : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : 'Budget Unset')}
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      {/* Card Footer: Date & Quick Actions */}
+                                      <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground font-semibold">
+                                        <div className="flex items-center gap-1">
+                                          <Calendar className="w-3 h-3 text-muted-foreground" />
+                                          <span>{lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : 'Recent'}</span>
+                                        </div>
+
+                                        <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                          {lead.phone && (
+                                            <Button
+                                              size="icon"
+                                              variant="ghost"
+                                              onClick={() => window.open(`tel:${lead.phone}`)}
+                                              className="h-6 w-6 rounded-md hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40"
+                                              title="Call Lead"
+                                            >
+                                              <Phone className="w-3 h-3" />
+                                            </Button>
+                                          )}
+                                          {lead.email && (
+                                            <Button
+                                              size="icon"
+                                              variant="ghost"
+                                              onClick={() => window.open(`mailto:${lead.email}`)}
+                                              className="h-6 w-6 rounded-md hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40"
+                                              title="Email Lead"
+                                            >
+                                              <Mail className="w-3 h-3" />
+                                            </Button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </Draggable>
+                              );
+                            })}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
                     </div>
-                  </div>
-                );
-              }}
-            />
+                  );
+                })}
+              </div>
+            </DragDropContext>
           )}
         </TabsContent>
 
-        {/* ── Tab Content: List View (DataTable) ── */}
+        {/* ── Tab Content: List View (Data Table) ── */}
         <TabsContent value="list" className="mt-0">
-          <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)] overflow-hidden">
+          <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
             <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-border bg-muted/30">
-                    <th className="py-3.5 px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Lead Contact</th>
-                    <th className="py-3.5 px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Type / Interest</th>
-                    <th className="py-3.5 px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Target Budget</th>
-                    <th className="py-3.5 px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-wider text-center">Status</th>
-                    <th className="py-3.5 px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Submitted</th>
-                    <th className="py-3.5 px-4 text-[11px] font-bold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
+              <table className="w-full text-left text-xs">
+                <thead className="bg-muted/50 uppercase tracking-wider text-muted-foreground font-bold border-b border-border/60">
+                  <tr>
+                    <th className="p-4">Lead Contact</th>
+                    <th className="p-4">Type & Source</th>
+                    <th className="p-4">Budget Range</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4">Date Captured</th>
+                    <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/40">
-                  {filteredLeads.length === 0 ? (
-                    <tr>
-                      <td colSpan={6} className="text-center py-12 text-muted-foreground text-xs">
-                        <Users className="w-8 h-8 mx-auto mb-2 opacity-40" />
-                        No leads matched your search criteria.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredLeads.map((lead) => {
-                      const initials = `${lead.first_name?.[0] || ''}${lead.last_name?.[0] || 'L'}`.toUpperCase();
-                      return (
-                        <tr
-                          key={lead.id}
-                          onClick={() => openInspector(lead)}
-                          className="hover:bg-muted/40 transition-colors cursor-pointer group"
-                        >
-                          <td className="py-4 px-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-100 to-teal-100 dark:from-emerald-950 dark:to-teal-900 flex items-center justify-center font-extrabold text-xs text-emerald-800 dark:text-emerald-200 shrink-0">
-                                {initials}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-[13px] font-bold text-foreground truncate group-hover:text-emerald-600 transition-colors">
-                                  {lead.first_name} {lead.last_name}
-                                </p>
-                                <p className="text-[11px] text-muted-foreground truncate">{lead.email}</p>
+                <tbody className="divide-y divide-border/60">
+                  {filteredLeads.map((lead) => {
+                    const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || 'Lead Prospect';
+                    const initials = getInitials(lead.first_name, lead.last_name);
+                    const avatarColor = getInitialsBg(lead.first_name || 'L');
+
+                    return (
+                      <tr
+                        key={lead.id}
+                        onClick={() => openInspector(lead)}
+                        className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                      >
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
+                              {initials}
+                            </div>
+                            <div>
+                              <div className="font-bold text-foreground text-[13px] group-hover:text-emerald-600 transition-colors">{fullName}</div>
+                              <div className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
+                                {lead.email && <span className="flex items-center gap-1"><Mail className="w-2.5 h-2.5 text-blue-500" /> {lead.email}</span>}
+                                {lead.phone && <span className="flex items-center gap-1"><Phone className="w-2.5 h-2.5 text-emerald-500" /> {lead.phone}</span>}
                               </div>
                             </div>
-                          </td>
-
-                          <td className="py-4 px-4">
-                            <Badge variant="outline" className="text-[11px] capitalize font-medium">
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <div className="space-y-1">
+                            <Badge variant="outline" className="text-[10px] font-bold uppercase capitalize bg-muted/30">
                               {lead.lead_type || 'Buyer'}
                             </Badge>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">Src: {lead.source || 'Referral'}</p>
-                          </td>
-
-                          <td className="py-4 px-4">
-                            <p className="text-[13px] font-bold text-foreground">
-                              {lead.budget_max ? formatCurrency(lead.budget_max, 'USD') : 'Flexible'}
-                            </p>
-                            {lead.budget_min ? (
-                              <p className="text-[10px] text-muted-foreground">Min: {formatCurrency(lead.budget_min, 'USD')}</p>
-                            ) : null}
-                          </td>
-
-                          <td className="py-4 px-4 text-center">
-                            <Badge className={cn("text-[11px] font-semibold py-1 px-3", STATUS_CONFIG[lead.status]?.color || '')}>
-                              {STATUS_CONFIG[lead.status]?.label || lead.status}
-                            </Badge>
-                          </td>
-
-                          <td className="py-4 px-4 text-xs text-muted-foreground">
-                            {lead.created_at ? format(new Date(lead.created_at), "MMM d, yyyy") : "Recent"}
-                          </td>
-
-                          <td className="py-4 px-4 text-right" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex items-center justify-end gap-1.5">
-                              {lead.email && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-lg"
-                                  title="Email Lead"
-                                  onClick={() => window.open(`mailto:${lead.email}`)}
-                                >
-                                  <Mail className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
-                                </Button>
-                              )}
-                              {lead.phone && (
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 rounded-lg"
-                                  title="Call Lead"
-                                  onClick={() => window.open(`tel:${lead.phone}`)}
-                                >
-                                  <Phone className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
-                                </Button>
-                              )}
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
-                                    <MoreVertical className="w-3.5 h-3.5 text-muted-foreground" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="rounded-xl">
-                                  <DropdownMenuItem onClick={() => handleConvertToClient(lead)}>
-                                    <UserCheck className="w-4 h-4 mr-2 text-emerald-600" /> Convert to Customer
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => {
-                                    setSelectedLead(lead);
-                                    setActivityData({ activityType: 'call', subject: '', description: '', durationMinutes: 15, outcome: 'qualified' });
-                                    setShowActivityModal(true);
-                                  }}>
-                                    <MessageSquare className="w-4 h-4 mr-2" /> Log Activity Note
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => openEditDrawer(lead)}>
-                                    <Edit className="w-4 h-4 mr-2" /> Edit Details
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => setDeleteId(lead.id)}>
-                                    <Trash2 className="w-4 h-4 mr-2" /> Delete Lead
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
+                            <div className="text-[10px] text-muted-foreground font-semibold capitalize">Source: {lead.source || 'Referral'}</div>
+                          </div>
+                        </td>
+                        <td className="p-4 font-bold text-foreground">
+                          {lead.budget_max
+                            ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}`
+                            : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : '—')}
+                        </td>
+                        <td className="p-4">
+                          <Badge className={cn("text-[10px] font-bold uppercase border", STATUS_CONFIG[lead.status]?.color || STATUS_CONFIG['new'].color)}>
+                            {STATUS_CONFIG[lead.status]?.label || lead.status || 'New'}
+                          </Badge>
+                        </td>
+                        <td className="p-4 text-muted-foreground font-medium">
+                          {lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : '—'}
+                        </td>
+                        <td className="p-4 text-right space-x-1" onClick={(e) => e.stopPropagation()}>
+                          <Button
+                            size="xs"
+                            variant="outline"
+                            onClick={() => handleConvertToClient(lead)}
+                            className="text-[11px] h-7 px-2 font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg"
+                          >
+                            Convert
+                          </Button>
+                          <Button
+                            size="xs"
+                            variant="ghost"
+                            onClick={() => { setSelectedLead(lead); setShowActivityModal(true); }}
+                            className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-foreground"
+                            title="Log Activity"
+                          >
+                            <MessageSquare className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button
+                            size="xs"
+                            variant="ghost"
+                            onClick={() => openEditDrawer(lead)}
+                            className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button
+                            size="xs"
+                            variant="ghost"
+                            onClick={() => setDeleteId(lead.id)}
+                            className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -672,218 +756,240 @@ export default function JCLCrmLeads() {
         </TabsContent>
       </Tabs>
 
-      {/* ── Slide-Over Inspector: Full Lead Dossier ── */}
+      {/* ── Slide-Over Lead Inspector Drawer ── */}
       <Sheet open={!!inspectorLead} onOpenChange={(open) => !open && setInspectorLead(null)}>
-        <SheetContent side="right" className="w-full sm:max-w-xl md:max-w-2xl overflow-y-auto p-6 pb-28">
+        <SheetContent side="right" className="w-full sm:max-w-xl overflow-y-auto p-6 pb-28 space-y-6">
           {inspectorLead && (
-            <div className="space-y-6">
-              <SheetHeader className="pb-4 border-b border-border">
-                <div className="flex items-start justify-between gap-4">
+            <>
+              <SheetHeader className="pb-4 border-b border-border/80">
+                <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-200 to-teal-200 dark:from-emerald-900 dark:to-teal-800 flex items-center justify-center font-extrabold text-base text-emerald-800 dark:text-emerald-200 shadow-inner">
-                      {`${inspectorLead.first_name?.[0] || ''}${inspectorLead.last_name?.[0] || 'L'}`.toUpperCase()}
+                    <div className={cn("w-12 h-12 rounded-full flex items-center justify-center font-black text-sm shrink-0 shadow", getInitialsBg(inspectorLead.first_name || 'L'))}>
+                      {getInitials(inspectorLead.first_name, inspectorLead.last_name)}
                     </div>
                     <div>
-                      <SheetTitle className="text-lg font-bold text-foreground">
+                      <SheetTitle className="text-xl font-extrabold text-foreground">
                         {inspectorLead.first_name} {inspectorLead.last_name}
                       </SheetTitle>
-                      <SheetDescription className="text-xs">
-                        Lead ID: {inspectorLead.id?.substring(0, 8)} · Captured {inspectorLead.created_at ? format(new Date(inspectorLead.created_at), "MMM d, yyyy") : 'Recently'}
+                      <SheetDescription className="text-xs flex items-center gap-2 mt-0.5">
+                        <span className="capitalize">{inspectorLead.lead_type || 'Buyer'} Prospect</span>
+                        <span>•</span>
+                        <span>Source: {inspectorLead.source || 'Referral'}</span>
                       </SheetDescription>
                     </div>
                   </div>
-                  <Badge className={cn("text-xs font-bold py-1 px-3", STATUS_CONFIG[inspectorLead.status]?.color || '')}>
+
+                  <Badge className={cn("text-[10px] font-bold uppercase border", STATUS_CONFIG[inspectorLead.status]?.color || STATUS_CONFIG['new'].color)}>
                     {STATUS_CONFIG[inspectorLead.status]?.label || inspectorLead.status}
                   </Badge>
                 </div>
 
-                <div className="flex items-center gap-2 pt-4">
+                <div className="flex items-center gap-2 pt-3">
                   <Button
                     size="sm"
                     onClick={() => handleConvertToClient(inspectorLead)}
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold gap-1.5 h-9"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl h-8 gap-1.5"
                   >
-                    <UserCheck className="w-4 h-4" /> Convert to Customer Account
+                    <Users className="w-3.5 h-3.5" /> Convert To Customer
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => {
-                      setSelectedLead(inspectorLead);
-                      setActivityData({ activityType: 'call', subject: '', description: '', durationMinutes: 15, outcome: 'qualified' });
-                      setShowActivityModal(true);
-                    }}
-                    className="rounded-xl text-xs font-semibold gap-1.5 h-9"
+                    onClick={() => { setSelectedLead(inspectorLead); setShowActivityModal(true); }}
+                    className="font-bold text-xs rounded-xl h-8 gap-1.5"
                   >
-                    <MessageSquare className="w-4 h-4" /> Log Activity
+                    <MessageSquare className="w-3.5 h-3.5" /> Log Interaction
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => openEditDrawer(inspectorLead)}
-                    className="rounded-xl text-xs font-semibold h-9 px-3"
+                    className="font-bold text-xs rounded-xl h-8 gap-1.5"
                   >
-                    <Edit className="w-4 h-4" />
+                    <Edit className="w-3.5 h-3.5" /> Edit
                   </Button>
                 </div>
               </SheetHeader>
 
-              {/* Tabs inside Inspector */}
-              <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="bg-muted/60 p-1 rounded-xl h-9 mb-4">
-                  <TabsTrigger value="overview" className="rounded-lg text-xs font-bold px-3">Overview</TabsTrigger>
-                  <TabsTrigger value="activities" className="rounded-lg text-xs font-bold px-3">Activity History ({leadActivities.length})</TabsTrigger>
+              {/* Inspector Content Tabs */}
+              <Tabs defaultValue="overview" className="w-full space-y-4">
+                <TabsList className="grid grid-cols-2 w-full rounded-xl bg-muted/60 p-1 border border-border/60">
+                  <TabsTrigger value="overview" className="text-xs font-bold rounded-lg">Lead Overview</TabsTrigger>
+                  <TabsTrigger value="activities" className="text-xs font-bold rounded-lg">Activity History ({leadActivities.length})</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="overview" className="space-y-4 text-xs">
-                  <div className="grid grid-cols-2 gap-3 bg-muted/20 p-4 rounded-2xl border border-border/60">
-                    <div>
-                      <span className="text-muted-foreground uppercase text-[10px] font-bold block">Email Address</span>
-                      <span className="font-semibold text-foreground">{inspectorLead.email || 'N/A'}</span>
+                {/* Tab: Overview */}
+                <TabsContent value="overview" className="space-y-4 pt-1">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-muted/40 rounded-2xl border border-border/60">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Target Budget Max</span>
+                      <span className="text-lg font-extrabold text-foreground">{formatCurrency(inspectorLead.budget_max || inspectorLead.budget_min || 0, 'USD')}</span>
                     </div>
-                    <div>
-                      <span className="text-muted-foreground uppercase text-[10px] font-bold block">Phone Number</span>
-                      <span className="font-semibold text-foreground">{inspectorLead.phone || 'N/A'}</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground uppercase text-[10px] font-bold block">Lead Category</span>
-                      <span className="font-semibold text-foreground capitalize">{inspectorLead.lead_type || 'Buyer'}</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground uppercase text-[10px] font-bold block">Acquisition Source</span>
-                      <span className="font-semibold text-foreground capitalize">{inspectorLead.source || 'Referral'}</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground uppercase text-[10px] font-bold block">Target Budget</span>
-                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                        {inspectorLead.budget_max ? formatCurrency(inspectorLead.budget_max, 'USD') : 'Flexible'}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground uppercase text-[10px] font-bold block">Minimum Range</span>
-                      <span className="font-semibold text-foreground">
-                        {inspectorLead.budget_min ? formatCurrency(inspectorLead.budget_min, 'USD') : 'None'}
-                      </span>
+                    <div className="p-3 bg-muted/40 rounded-2xl border border-border/60">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground block">Lead Score</span>
+                      <span className="text-lg font-extrabold text-emerald-600">{inspectorLead.lead_score || 75}%</span>
                     </div>
                   </div>
 
-                  {inspectorLead.notes && (
-                    <div className="space-y-1 bg-card p-4 rounded-2xl border border-border/80">
-                      <span className="text-[11px] font-bold text-foreground">Requirements & Notes</span>
-                      <p className="text-muted-foreground leading-relaxed italic">{inspectorLead.notes}</p>
+                  <div className="bg-card rounded-2xl border border-border/80 p-4 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Contact & Qualifications</h4>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Email Address</span>
+                        <span className="font-bold text-foreground">{inspectorLead.email || 'None'}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Phone Number</span>
+                        <span className="font-bold text-foreground">{inspectorLead.phone || 'None'}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Min Budget Target</span>
+                        <span className="font-bold text-foreground">{formatCurrency(inspectorLead.budget_min || 0, 'USD')}</span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground block text-[10px]">Acquisition Channel</span>
+                        <span className="font-bold capitalize text-foreground">{inspectorLead.source || 'Direct'}</span>
+                      </div>
                     </div>
-                  )}
+
+                    {inspectorLead.notes && (
+                      <div className="pt-2 border-t border-border/60">
+                        <span className="text-muted-foreground block text-[10px] mb-1">Requirement Notes</span>
+                        <p className="text-xs text-foreground font-medium">{inspectorLead.notes}</p>
+                      </div>
+                    )}
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="activities" className="space-y-3">
-                  {leadActivities.length === 0 ? (
-                    <div className="text-center py-10 bg-muted/20 rounded-2xl border border-dashed text-xs text-muted-foreground">
-                      <MessageSquare className="w-8 h-8 mx-auto mb-1.5 opacity-40" />
-                      No follow-up activity logged yet.
+                {/* Tab: Activities */}
+                <TabsContent value="activities" className="space-y-4 pt-1">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold uppercase text-muted-foreground">Logged Interactions</h4>
+                    <Button
+                      size="xs"
+                      onClick={() => { setSelectedLead(inspectorLead); setShowActivityModal(true); }}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg h-7 gap-1"
+                    >
+                      <MessageSquare className="w-3 h-3" /> Log Activity
+                    </Button>
+                  </div>
+
+                  {leadActivities.length > 0 ? (
+                    <div className="space-y-3">
+                      {leadActivities.map((act) => (
+                        <div key={act.id} className="p-3.5 bg-card rounded-2xl border border-border/80 space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-xs text-foreground">{act.subject}</span>
+                            <Badge variant="outline" className="text-[9px] uppercase font-bold">{act.activity_type}</Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{act.description}</p>
+                          <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1 border-t border-border/60">
+                            <span>Duration: {act.duration_minutes || 15}m</span>
+                            <span>{act.created_at ? format(new Date(act.created_at), 'dd MMM yyyy, HH:mm') : 'Recent'}</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : (
-                    leadActivities.map(act => (
-                      <div key={act.id} className="p-3.5 bg-card rounded-2xl border border-border/80 space-y-1 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-foreground">{act.subject}</span>
-                          <Badge variant="outline" className="text-[10px] capitalize">{act.activity_type}</Badge>
-                        </div>
-                        {act.description && <p className="text-muted-foreground">{act.description}</p>}
-                        <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1">
-                          <span>Outcome: <strong>{act.outcome}</strong></span>
-                          <span>{act.created_at ? format(new Date(act.created_at), "MMM d, h:mm a") : ''}</span>
-                        </div>
-                      </div>
-                    ))
+                    <div className="text-center py-10 bg-muted/30 rounded-2xl border border-dashed p-6 space-y-2">
+                      <MessageSquare className="w-8 h-8 mx-auto text-muted-foreground opacity-50" />
+                      <p className="text-xs font-bold text-foreground">No Interactions Logged</p>
+                      <p className="text-[11px] text-muted-foreground">Keep record of calls, emails, and site viewings for this lead.</p>
+                    </div>
                   )}
                 </TabsContent>
               </Tabs>
-            </div>
+            </>
           )}
         </SheetContent>
       </Sheet>
 
-      {/* ── Slide-Over Form: Add / Edit Lead ── */}
+      {/* ── Slide-Over Lead Form Drawer (Create / Edit) ── */}
       <Sheet open={showForm} onOpenChange={setShowForm}>
-        <SheetContent side="right" className="w-full sm:max-w-lg overflow-y-auto p-6 pb-28">
-          <SheetHeader className="pb-4 border-b">
-            <SheetTitle className="text-lg font-bold">
-              {editingId ? 'Edit CRM Lead' : 'Capture Prospective Lead'}
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto p-6 pb-28">
+          <SheetHeader className="pb-4 border-b border-border/80">
+            <SheetTitle className="text-lg font-bold text-foreground">
+              {editingId ? 'Edit CRM Lead' : 'Capture New CRM Lead'}
             </SheetTitle>
-            <SheetDescription className="text-xs">
-              Lead contact info, budget specifications & purchase interest
+            <SheetDescription className="text-xs text-muted-foreground">
+              Enter buyer/seller details, acquisition source, and investment parameters.
             </SheetDescription>
           </SheetHeader>
 
           <form onSubmit={handleSaveLead} className="space-y-4 mt-4 text-xs">
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>First Name *</Label>
+                <Label className="font-bold">First Name *</Label>
                 <Input
                   required
                   value={formData.firstName}
                   onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  placeholder="e.g. Kwabena"
-                  className="rounded-xl"
+                  placeholder="Kwame"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Last Name *</Label>
+                <Label className="font-bold">Last Name *</Label>
                 <Input
                   required
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  placeholder="e.g. Osei"
-                  className="rounded-xl"
+                  placeholder="Mensah"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label>Email Address *</Label>
+              <Label className="font-bold">Email Address *</Label>
               <Input
                 required
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="kwabena@example.com"
-                className="rounded-xl"
+                placeholder="kwame@example.com"
+                className="rounded-xl h-10 text-xs"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label>Phone Number</Label>
+              <Label className="font-bold">Phone Number</Label>
               <Input
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="+233 20 000 0000"
-                className="rounded-xl"
+                placeholder="+233 24 000 0000"
+                className="rounded-xl h-10 text-xs"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Lead Type</Label>
+                <Label className="font-bold">Lead Type</Label>
                 <Select value={formData.leadType} onValueChange={(v) => setFormData({ ...formData, leadType: v })}>
-                  <SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="rounded-xl text-xs h-10">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="buyer">Land / Property Buyer</SelectItem>
-                    <SelectItem value="investor">Estate Investor</SelectItem>
-                    <SelectItem value="tenant">Commercial Tenant</SelectItem>
-                    <SelectItem value="seller">Land Seller / Owner</SelectItem>
+                    <SelectItem value="buyer">Buyer</SelectItem>
+                    <SelectItem value="seller">Seller</SelectItem>
+                    <SelectItem value="investor">Investor</SelectItem>
+                    <SelectItem value="renter">Renter</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-1.5">
-                <Label>Lead Source</Label>
+                <Label className="font-bold">Acquisition Source</Label>
                 <Select value={formData.source} onValueChange={(v) => setFormData({ ...formData, source: v })}>
-                  <SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="rounded-xl text-xs h-10">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="referral">Referral / Network</SelectItem>
-                    <SelectItem value="website">Website Portal</SelectItem>
-                    <SelectItem value="walkin">Office Walk-in</SelectItem>
-                    <SelectItem value="ad">Marketing Campaign</SelectItem>
+                    <SelectItem value="website">Website Form</SelectItem>
+                    <SelectItem value="referral">Referral / Agent</SelectItem>
+                    <SelectItem value="direct">Direct Walk-in</SelectItem>
+                    <SelectItem value="social_media">Social Media</SelectItem>
+                    <SelectItem value="billboard">Outdoor Billboard</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -891,57 +997,67 @@ export default function JCLCrmLeads() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Budget Min ($)</Label>
+                <Label className="font-bold">Min Budget ($)</Label>
                 <Input
                   type="number"
                   value={formData.budgetMin}
                   onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
                   placeholder="50000"
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Budget Max ($)</Label>
+                <Label className="font-bold">Max Budget ($)</Label>
                 <Input
                   type="number"
                   value={formData.budgetMax}
                   onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
                   placeholder="250000"
-                  className="rounded-xl"
+                  className="rounded-xl h-10 text-xs"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label>Pipeline Status</Label>
+              <Label className="font-bold">Pipeline Stage</Label>
               <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
-                <SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="rounded-xl text-xs h-10">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="new">New Inquiry</SelectItem>
-                  <SelectItem value="contacted">Contacted</SelectItem>
+                  <SelectItem value="contacted">Contact Made</SelectItem>
                   <SelectItem value="qualified">Qualified</SelectItem>
                   <SelectItem value="negotiating">Negotiating</SelectItem>
-                  <SelectItem value="closed">Converted / Won</SelectItem>
+                  <SelectItem value="closed">Won / Converted</SelectItem>
                   <SelectItem value="lost">Lost</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-1.5">
-              <Label>Notes & Preferred Locations</Label>
+              <Label className="font-bold">Property Preferences & Notes</Label>
               <Input
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                placeholder="Looking for 2 acres in Airport Hills..."
-                className="rounded-xl"
+                placeholder="Interested in 2-acre residential parcels in Airport Hills..."
+                className="rounded-xl h-10 text-xs"
               />
             </div>
 
-            <div className="pt-4 border-t flex items-center justify-end gap-2.5">
-              <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="rounded-xl">
+            <div className="pt-4 border-t border-border/80 flex items-center justify-end gap-2.5">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowForm(false)}
+                className="rounded-xl text-xs font-bold"
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold">
+              <Button
+                type="submit"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs"
+              >
                 {editingId ? 'Update Lead' : 'Save Lead'}
               </Button>
             </div>
@@ -949,102 +1065,129 @@ export default function JCLCrmLeads() {
         </SheetContent>
       </Sheet>
 
-      {/* ── Dialog: Log Structured Activity ── */}
+      {/* ── Dialog: Log Activity Modal ── */}
       <Dialog open={showActivityModal} onOpenChange={setShowActivityModal}>
         <DialogContent className="sm:max-w-md rounded-[24px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
               <MessageSquare className="w-5 h-5 text-emerald-600" />
-              Log Activity: {selectedLead?.first_name} {selectedLead?.last_name}
+              Log Interaction: {selectedLead?.first_name} {selectedLead?.last_name}
             </DialogTitle>
             <DialogDescription className="text-xs">
-              Record follow-up phone calls, site inspections, and negotiation notes.
+              Record calls, meetings, property showings, and email notes.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3.5 py-2 text-xs">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1">
-                <Label>Activity Type</Label>
-                <Select
-                  value={activityData.activityType}
-                  onValueChange={(v) => setActivityData({ ...activityData, activityType: v })}
-                >
-                  <SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="call">Phone Call</SelectItem>
-                    <SelectItem value="meeting">In-Person Meeting</SelectItem>
-                    <SelectItem value="viewing">Site / Land Viewing</SelectItem>
-                    <SelectItem value="email">Email Note</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1">
-                <Label>Outcome</Label>
-                <Select
-                  value={activityData.outcome}
-                  onValueChange={(v) => setActivityData({ ...activityData, outcome: v })}
-                >
-                  <SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="qualified">Qualified Prospect</SelectItem>
-                    <SelectItem value="follow_up_required">Follow-up Required</SelectItem>
-                    <SelectItem value="not_interested">Not Interested</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
             <div className="space-y-1">
-              <Label>Subject *</Label>
+              <Label className="font-bold">Activity Subject *</Label>
               <Input
                 required
                 value={activityData.subject}
                 onChange={(e) => setActivityData({ ...activityData, subject: e.target.value })}
-                placeholder="e.g. Discussed financing terms for Cantonments parcel"
-                className="rounded-xl"
+                placeholder="e.g. Phone consultation regarding Airport Hills parcel"
+                className="rounded-xl h-10 text-xs"
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="font-bold">Activity Type</Label>
+                <Select
+                  value={activityData.activityType}
+                  onValueChange={(v) => setActivityData({ ...activityData, activityType: v })}
+                >
+                  <SelectTrigger className="rounded-xl text-xs h-10">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="call">Phone Call</SelectItem>
+                    <SelectItem value="meeting">In-Person Meeting</SelectItem>
+                    <SelectItem value="viewing">Site Viewing</SelectItem>
+                    <SelectItem value="email">Email Follow-up</SelectItem>
+                    <SelectItem value="whatsapp">WhatsApp Chat</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="font-bold">Duration (Minutes)</Label>
+                <Input
+                  type="number"
+                  value={activityData.durationMinutes}
+                  onChange={(e) => setActivityData({ ...activityData, durationMinutes: e.target.value })}
+                  placeholder="15"
+                  className="rounded-xl h-10 text-xs"
+                />
+              </div>
+            </div>
+
             <div className="space-y-1">
-              <Label>Detailed Notes</Label>
+              <Label className="font-bold">Call / Meeting Outcome</Label>
+              <Select
+                value={activityData.outcome}
+                onValueChange={(v) => setActivityData({ ...activityData, outcome: v })}
+              >
+                <SelectTrigger className="rounded-xl text-xs h-10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="connected">Connected / Productive</SelectItem>
+                  <SelectItem value="qualified">Qualified Prospect</SelectItem>
+                  <SelectItem value="schedule_viewing">Scheduled Parcel Viewing</SelectItem>
+                  <SelectItem value="no_answer">No Answer / Left Voicemail</SelectItem>
+                  <SelectItem value="not_interested">Not Interested</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="font-bold">Discussion Notes</Label>
               <Input
                 value={activityData.description}
                 onChange={(e) => setActivityData({ ...activityData, description: e.target.value })}
-                placeholder="Lead requested survey plan copy..."
-                className="rounded-xl"
+                placeholder="Requested price flexibility and C of O verification document..."
+                className="rounded-xl h-10 text-xs"
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={() => setShowActivityModal(false)} className="rounded-xl">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowActivityModal(false)}
+              className="rounded-xl font-bold text-xs"
+            >
               Cancel
             </Button>
-            <Button type="button" onClick={handleSaveActivity} className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold">
+            <Button
+              type="button"
+              onClick={handleSaveActivity}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs"
+            >
               Save Activity
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* ── Alert Dialog: Delete Confirmation ── */}
+      {/* ── Dialog: Delete Confirmation ── */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent className="rounded-[24px]">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-base font-bold text-foreground">
-              Delete this lead record?
+              Delete CRM Lead?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-xs">
-              This action cannot be undone. This lead will be removed from your active CRM pipeline.
+              This action cannot be undone. All activity logs associated with this lead will also be removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel className="rounded-xl font-bold text-xs">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => handleDeleteLead(deleteId)}
-              className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold"
+              className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl"
             >
               Delete Lead
             </AlertDialogAction>
