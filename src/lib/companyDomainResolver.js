@@ -70,6 +70,36 @@ export async function fetchCompanyBrandingFromDomain() {
 export function getIndustryFeatures(industryType, companyName = 'Workspace') {
   const ind = (industryType || '').toLowerCase().trim();
 
+  if (ind.includes('real_estate_jcl') || ind.includes('jcl')) {
+    return {
+      badge: "JCL Royal Group · Enterprise Real Estate & Land OS",
+      title: `Powered by ${companyName}`,
+      subtitle: "Integrated cadastral land management, pre-sale allocations, client 360° timeline, and real estate operations.",
+      features: [
+        {
+          icon: "Compass",
+          title: "Land & Cadastral Registry",
+          desc: "GPS coordinates, survey plan numbers, deed types (C of O, Freehold, Gazette), and co-ownership percentages."
+        },
+        {
+          icon: "Layers",
+          title: "Pre-Sale Land Allocation",
+          desc: "Customer reservations, milestone payment schedules, deposit tracking, and automated plot allocation."
+        },
+        {
+          icon: "Users",
+          title: "Client 360° & Interaction Timeline",
+          desc: "Unified customer history across land deals, property viewings, CRM leads, and financial transactions."
+        },
+        {
+          icon: "Building2",
+          title: "Property & Facility Operations",
+          desc: "Units, tenant leases, trust accounting, maintenance ticketing, and executive command telemetry."
+        }
+      ]
+    };
+  }
+
   if (ind.includes('real_estate') || ind.includes('realestate') || ind.includes('property')) {
     return {
       badge: "Real Estate Management Suite",
