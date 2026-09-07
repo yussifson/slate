@@ -68,33 +68,33 @@ export async function fetchCompanyBrandingFromDomain() {
 }
 
 export function getIndustryFeatures(industryType, companyName = 'Workspace') {
-  const ind = (industryType || '').toLowerCase().trim();
+  const ind = ((industryType || '') + ' ' + (companyName || '')).toLowerCase().trim();
 
   if (ind.includes('real_estate_jcl') || ind.includes('jcl')) {
     return {
-      badge: "JCL Royal Group · Enterprise Real Estate & Land OS",
+      badge: "Real Estate & Land OS",
       title: `Powered by ${companyName}`,
-      subtitle: "Integrated cadastral land management, pre-sale allocations, client 360° timeline, and real estate operations.",
+      subtitle: "Integrated land registry, pre-sale allocations, client relationship management, and property operations.",
       features: [
         {
           icon: "Compass",
           title: "Land & Cadastral Registry",
-          desc: "GPS coordinates, survey plan numbers, deed types (C of O, Freehold, Gazette), and co-ownership percentages."
+          desc: "GPS coordinates, survey plan numbers, deed types (C of O, Freehold), and co-ownership records."
         },
         {
           icon: "Layers",
           title: "Pre-Sale Land Allocation",
-          desc: "Customer reservations, milestone payment schedules, deposit tracking, and automated plot allocation."
+          desc: "Plot reservation engine, flexible installment plans, deposit tracking, and automated allocation."
         },
         {
           icon: "Users",
-          title: "Client 360° & Interaction Timeline",
-          desc: "Unified customer history across land deals, property viewings, CRM leads, and financial transactions."
+          title: "Client CRM & Timeline",
+          desc: "Unified customer history across property viewings, inquiries, purchase offers, and closed deals."
         },
         {
           icon: "Building2",
           title: "Property & Facility Operations",
-          desc: "Units, tenant leases, trust accounting, maintenance ticketing, and executive command telemetry."
+          desc: "Commercial & residential listings, tenant lease agreements, and trust accounting."
         }
       ]
     };
@@ -281,29 +281,29 @@ export function getIndustryFeatures(industryType, companyName = 'Workspace') {
   }
 
   return {
-    badge: "Company Operations Suite",
+    badge: "Enterprise Workspace Suite",
     title: `Powered by ${companyName}`,
     subtitle: `The unified digital workspace tailored for ${companyName}.`,
     features: [
       {
         icon: "Zap",
-        title: "Unified Workflow & Operations",
-        desc: "Streamlined business processes, task automation, and team project management."
+        title: "Operations & Workflow",
+        desc: "Streamlined daily workflows, task automation, and team project management."
       },
       {
         icon: "Users",
-        title: "Real-Time Team Collaboration",
-        desc: "Integrated communications, file vaults, and cross-departmental alignment."
+        title: "Team Collaboration",
+        desc: "Integrated communications, document sharing, and cross-departmental alignment."
       },
       {
         icon: "ShieldCheck",
-        title: "Enterprise Data Security",
-        desc: "Isolated data security, granular role-based access, and encrypted compliance logs."
+        title: "Enterprise Security",
+        desc: "Granular role-based permissions, data encryption, and complete compliance logs."
       },
       {
         icon: "BarChart2",
-        title: "Smart Analytics & Reporting",
-        desc: "Live performance metrics, operational dashboards, and actionable business insights."
+        title: "Analytics & Intelligence",
+        desc: "Live performance dashboards, real-time metrics, and actionable operational insights."
       }
     ]
   };

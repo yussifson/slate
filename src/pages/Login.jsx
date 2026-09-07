@@ -691,77 +691,77 @@ export default function Login() {
  </div>
 
   {/* Right Side: Marketing Visual */}
-  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-slate-950 overflow-hidden p-8 lg:p-14">
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-gradient-to-br from-slate-50 via-slate-100/70 to-emerald-50/40 border-l border-slate-200/80 overflow-hidden p-8 lg:p-14">
     {/* Ambient background glow effects */}
-    <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none" />
-    <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-600/15 rounded-full blur-[100px] pointer-events-none" />
-    <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+    <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute inset-0 bg-[radial-gradient(#00000008_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
     {(currentSubdomain || isCustomDomain || branding.name !== 'Slate') ? (
       <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
     ) : (
-      <div className="relative z-10 w-full max-w-xl bg-white/[0.04] backdrop-blur-2xl rounded-[2.5rem] border border-white/10 p-10 lg:p-12 shadow-[0_25px_80px_-20px_rgba(0,0,0,0.6)] flex flex-col justify-between text-white">
+      <div className="relative z-10 w-full max-w-xl bg-white/95 backdrop-blur-2xl rounded-[2.5rem] border border-slate-200/90 p-8 lg:p-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] flex flex-col justify-between text-slate-900">
         <div>
           {/* Top Pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-semibold text-emerald-800 mb-5 shadow-xs">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
-            Next-Gen Multi-Tenant Enterprise SaaS
+            Enterprise Operating System
           </div>
 
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-4 tracking-tight leading-[1.15]">
-            Powering Modern Enterprise Operations & Real Estate
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-3 tracking-tight leading-[1.15]">
+            Modern Enterprise Workspace & Operations
           </h2>
-          <p className="text-sm text-slate-300 font-normal leading-relaxed mb-8">
-            Complete data isolation, offline-first sync, cadastral land management, and department workflows engineered for scale.
+          <p className="text-sm text-slate-600 font-normal leading-relaxed mb-6">
+            Integrated client management, real estate operations, cross-team collaboration, and executive intelligence.
           </p>
 
-          {/* Floating Command Preview Card */}
-          <div className="mb-8 p-5 rounded-2xl bg-white/[0.05] border border-white/10 backdrop-blur-md space-y-3.5 shadow-lg">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-white flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
-                Executive Command Center
+          {/* Business Preview Card */}
+          <div className="mb-6 p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-3 shadow-xs">
+            <div className="flex items-center justify-between text-xs text-slate-700">
+              <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                Executive Intelligence Hub
               </span>
-              <span className="text-[10px] uppercase font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
-                100% Synced
+              <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                Live & Synced
               </span>
             </div>
             
-            <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Parcels</span>
-                <span className="text-sm font-bold text-white">2,450 Ac</span>
+            <div className="grid grid-cols-3 gap-2.5 text-center text-xs pt-0.5">
+              <div className="bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-xs">
+                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Operations</span>
+                <span className="text-sm font-bold text-slate-900">Real-Time</span>
               </div>
-              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Active Deals</span>
-                <span className="text-sm font-bold text-emerald-400">$14.2M</span>
+              <div className="bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-xs">
+                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Security</span>
+                <span className="text-sm font-bold text-emerald-700">Encrypted</span>
               </div>
-              <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Offline Sync</span>
-                <span className="text-sm font-bold text-indigo-300">&lt; 30ms</span>
+              <div className="bg-white p-2.5 rounded-xl border border-slate-200/60 shadow-xs">
+                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Cloud Sync</span>
+                <span className="text-sm font-bold text-indigo-700">99.9% Uptime</span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
-              <span className="truncate">🔐 Sector 4 Plot 12 allocated to Kwame Mensah</span>
-              <span className="text-emerald-400 font-semibold shrink-0 ml-2">Just now</span>
+            <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
+              <span>⚡ Real-time updates active across team workspaces</span>
+              <span className="text-emerald-700 font-semibold shrink-0 ml-2">Active</span>
             </div>
           </div>
         </div>
 
         {/* Testimonial Quote Footer */}
-        <div className="pt-6 border-t border-white/10 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-indigo-500/20 border border-white/15 flex items-center justify-center text-emerald-300 font-bold text-sm shrink-0 shadow-inner">
+        <div className="pt-5 border-t border-slate-200/80 flex items-center gap-4">
+          <div className="w-11 h-11 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-sm shrink-0 shadow-xs">
             {randomQuote.initials}
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-slate-200 italic line-clamp-2">
+            <p className="text-xs text-slate-600 italic line-clamp-2">
               {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
             </p>
-            <p className="text-xs font-semibold text-white mt-1">{randomQuote.name}</p>
+            <p className="text-xs font-semibold text-slate-900 mt-0.5">{randomQuote.name}</p>
           </div>
         </div>
       </div>
