@@ -66,15 +66,42 @@ export default function JCLContractorReviews() {
           </div>
         ) : (
           reviews.map(r => (
-            <div key={r.id} className="p-5 rounded-2xl border border-border/80 bg-card space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-foreground text-sm">{r.contractor_name || 'Vendor Partner'}</h3>
-                <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                  <Star className="h-3.5 w-3.5 fill-amber-500" />
-                  <span>{r.rating || 5}/5</span>
+            <div key={r.id} className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-amber-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+              {/* Gradient Banner */}
+              <div className="relative h-24 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-400">
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 25% 75%, white 1px, transparent 1px), radial-gradient(circle at 75% 25%, white 1px, transparent 1px)', backgroundSize: '26px 26px' }} />
+                <div className="flex items-start justify-between relative z-10">
+                  <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                    Performance Review
+                  </span>
+                  <span className="flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                    <Star className="h-3.5 w-3.5 fill-white" />
+                    {r.rating || 5}/5
+                  </span>
+                </div>
+                <div className="relative z-10">
+                  <p className="text-white font-extrabold text-sm leading-snug line-clamp-1">{r.contractor_name || 'Vendor Partner'}</p>
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">{r.review_text || 'Excellent response time and high quality repair execution.'}</p>
+
+              {/* Body */}
+              <div className="p-4 flex flex-col gap-3 flex-1">
+                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
+                  {r.review_text || 'Excellent response time and high quality repair execution.'}
+                </p>
+
+                {/* Footer strip */}
+                <div className="mt-auto pt-3 border-t border-border/60 grid grid-cols-2 divide-x divide-border/60 text-center">
+                  <div>
+                    <span className="block text-[9px] uppercase font-semibold text-muted-foreground mb-0.5">Work Quality</span>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{r.work_quality || 'Excellent'}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[9px] uppercase font-semibold text-muted-foreground mb-0.5">Punctuality</span>
+                    <span className="text-xs font-bold text-foreground">{r.punctuality || 'On Time'}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           ))
         )}
