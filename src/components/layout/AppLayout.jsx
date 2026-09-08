@@ -23,6 +23,7 @@ import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
 import ElectronTitleBar from "./ElectronTitleBar";
 import DockResizer from "./DockResizer";
+import { useCompany } from "@/hooks/useCompanyId";
 
 import { cn } from "@/lib/utils";
 
