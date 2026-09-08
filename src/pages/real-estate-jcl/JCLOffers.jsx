@@ -527,7 +527,6 @@ export default function JCLOffers() {
                   </div>
                 </div>
               );
-            );
           })}
         </div>
       ) : (
