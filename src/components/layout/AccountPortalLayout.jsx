@@ -30,24 +30,7 @@ export default function AccountPortalLayout() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     
-    // Trigger Logout Alert (fire and forget)
-    try {
-      const getDevice = () => {
-        if (typeof window === 'undefined') return 'Unknown';
-        const ua = navigator.userAgent;
-        if (ua.includes('Win')) return 'Windows';
-        if (ua.includes('Mac')) return 'Mac';
-        if (ua.includes('Linux')) return 'Linux';
-        if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
-        if (ua.includes('Android')) return 'Android';
-        return 'Web Browser';
-      };
-      if (user?.email) {
-        supabase.functions.invoke('send-auth-alert', {
-          body: { email: user.email, type: 'Logout', deviceInfo: getDevice() }
-        }).catch(() => { /* Silenced: CORS on some origins is expected */ });
-      }
-    } catch (e) {}
+
 
     // 1. Clear local storage cache
     localStorage.removeItem('slate_cached_user');

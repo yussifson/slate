@@ -368,25 +368,7 @@ export default function Login() {
  return;
 }
 
-  // Trigger Login Alert (fire and forget — CORS errors are intentionally silenced)
-  try {
-    const getDevice = () => {
-      if (typeof window === 'undefined') return 'Unknown';
-      const ua = navigator.userAgent;
-      if (ua.includes('Win')) return 'Windows';
-      if (ua.includes('Mac')) return 'Mac';
-      if (ua.includes('Linux')) return 'Linux';
-      if (ua.includes('iPhone') || ua.includes('iPad')) return 'iOS';
-      if (ua.includes('Android')) return 'Android';
-      return 'Web Browser';
-    };
-    // Only invoke if running on main domain or custom origin that supports edge CORS
-    if (window.location.origin.includes('optavel.com') || window.location.origin.includes('localhost')) {
-      supabase.functions.invoke('send-auth-alert', {
-        body: { email: loginEmail, type: 'Login', deviceInfo: getDevice() }
-      }).catch(() => {});
-    }
-  } catch (e) {}
+
  
  if (targetSubdomain) {
     // Check if user belongs to this subdomain via Supabase directly (local DB might not be synced yet)
