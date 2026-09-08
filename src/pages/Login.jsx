@@ -309,8 +309,18 @@ export default function Login() {
   
   signInError = { message: "Invalid login credentials" }; // Initial state to trigger fallback chain
   
-  // 1. Try the primary UUID salt strategy
-  if (compId) {
+  // 1. Try direct raw email first
+  const rawAuth = await supabase.auth.signInWithPassword({ email: rawLoginEmail, password });
+  if (!rawAuth.error) {
+    authData = rawAuth.data;
+    signInError = null;
+    loginEmail = rawLoginEmail;
+  } else {
+    signInError = rawAuth.error;
+  }
+
+  // 2. If raw email failed, try UUID salt proxy email
+  if (signInError && compId && signInError.message === "Invalid login credentials") {
     const proxyEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
     const primaryAuth = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
     if (!primaryAuth.error) {
@@ -322,7 +332,7 @@ export default function Login() {
     }
   }
   
-  // 2. If it fails with Invalid Credentials (or compId was null), try the legacy Subdomain salt strategy
+  // 3. Fallback to legacy subdomain salt strategy
   if (signInError && signInError.message === "Invalid login credentials") {
     const proxyEmail = `${localPart}+firm_${targetSubdomain}@${domain}`;
     const retry = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
@@ -332,18 +342,6 @@ export default function Login() {
       loginEmail = proxyEmail;
     } else {
       signInError = retry.error;
-    }
-  }
-  
-  // 3. If that STILL fails, try the RAW unsalted email
-  if (signInError && signInError.message === "Invalid login credentials") {
-    const rawRetry = await supabase.auth.signInWithPassword({ email: rawLoginEmail, password });
-    if (!rawRetry.error) {
-      authData = rawRetry.data;
-      signInError = null;
-      loginEmail = rawLoginEmail;
-    } else {
-      signInError = rawRetry.error;
     }
   }
   
