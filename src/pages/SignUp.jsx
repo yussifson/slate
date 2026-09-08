@@ -502,47 +502,45 @@ export default function SignUp() {
  </div>
  
   {/* Right Side: Marketing Visual */}
-  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-gradient-to-br from-slate-50 via-slate-100/70 to-emerald-50/40 border-l border-slate-200/80 overflow-hidden p-8 lg:p-14">
-    {/* Ambient background glow effects */}
-    <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
-    <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
-    <div className="absolute inset-0 bg-[radial-gradient(#00000008_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#0B132B] border-l border-[#1E293B] overflow-hidden p-8 lg:p-14">
+    {/* Ambient micro geometry */}
+    <div className="absolute inset-0 bg-[radial-gradient(#1E293B_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
 
     {(currentSubdomain || companyBranding?.name) ? (
       <IndustryFeatureShowcase companyName={companyBranding?.name} industryType={companyBranding?.industry_type} />
     ) : (
-      <div className="relative z-10 w-full max-w-xl bg-white/95 backdrop-blur-2xl rounded-[2.5rem] border border-slate-200/90 p-8 lg:p-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] flex flex-col justify-between text-slate-900">
+      <div className="relative z-10 w-full max-w-xl bg-[#1E293B]/90 backdrop-blur-2xl rounded-3xl border border-[#334155] p-8 lg:p-10 flex flex-col justify-between text-slate-100 overflow-hidden">
         <div>
-          <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-semibold text-emerald-800 mb-5 shadow-xs">
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-[#0F172A] border border-emerald-500/30 text-xs font-semibold text-emerald-400 mb-6">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="tracking-wide uppercase text-[11px] font-bold">Instant Workspace Provisioning</span>
+            <span className="tracking-wide text-[11px] font-bold text-emerald-300">Instant Workspace Provisioning</span>
           </div>
 
-          <h3 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-3 tracking-tight leading-[1.15]">
+          <h3 className="text-3xl lg:text-4xl font-extrabold text-slate-100 mb-3 tracking-tight leading-[1.15]">
             The Foundation for Modern Enterprise Operations
           </h3>
-          <p className="text-sm text-slate-600 font-normal leading-relaxed mb-6">
+          <p className="text-sm text-slate-300 font-normal leading-relaxed mb-6">
             Deploy your dedicated multi-tenant operating system with end-to-end security, real-time database sync, and cross-department automation.
           </p>
 
-          <div className="grid grid-cols-2 gap-3.5 border-t border-slate-200/80 pt-5">
-            <div className="p-3.5 rounded-2xl bg-slate-50/70 hover:bg-emerald-50/30 border border-slate-200/70 hover:border-emerald-500/30 transition-all duration-200 shadow-xs space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center text-emerald-700 shadow-xs">
+          <div className="grid grid-cols-2 gap-3.5 border-t border-[#334155] pt-6">
+            <div className="p-4 rounded-2xl bg-[#0F172A]/70 hover:bg-[#0F172A] border border-[#334155] hover:border-emerald-500/40 transition-all duration-200 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               </div>
-              <h4 className="text-xs font-bold text-slate-900 tracking-tight">Instant Provisioning</h4>
-              <p className="text-[11px] text-slate-600 leading-relaxed">Dedicated workspace, tenant scoping, and databases provisioned in seconds.</p>
+              <h4 className="text-xs font-bold text-slate-100 tracking-tight">Instant Provisioning</h4>
+              <p className="text-[11px] text-slate-400 leading-relaxed">Dedicated workspace, tenant scoping, and databases provisioned in seconds.</p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-slate-50/70 hover:bg-emerald-50/30 border border-slate-200/70 hover:border-emerald-500/30 transition-all duration-200 shadow-xs space-y-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-100/80 border border-emerald-200/80 flex items-center justify-center text-emerald-700 shadow-xs">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            <div className="p-4 rounded-2xl bg-[#0F172A]/70 hover:bg-[#0F172A] border border-[#334155] hover:border-emerald-500/40 transition-all duration-200 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
               </div>
-              <h4 className="text-xs font-bold text-slate-900 tracking-tight">Enterprise Security</h4>
-              <p className="text-[11px] text-slate-600 leading-relaxed">Granular role-based access control ensuring complete workspace data privacy.</p>
+              <h4 className="text-xs font-bold text-slate-100 tracking-tight">Enterprise Security</h4>
+              <p className="text-[11px] text-slate-400 leading-relaxed">Granular role-based access control ensuring complete workspace data privacy.</p>
             </div>
           </div>
         </div>

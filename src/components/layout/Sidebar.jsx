@@ -789,6 +789,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     const p = item.path || '';
     if (item.isDynamic) return activeIndustry === 'real_estate_jcl' ? "Projects & Smart Docs" : "Workspace";
 
+    // Administrative & Management Features (Admin Section)
+    const isAdminFeature = [
+      '/branch-manager', '/slate/create', '/marketplace', '/enterprise-admin',
+      '/feature-insider', '/feature-vault', '/firm-setup', '/settings', '/integrations',
+      '/automations', '/sites', '/real-estate/audit', '/admin'
+    ].includes(p) || p.startsWith('/admin') || ['Branch Manager', 'Create Slate', 'Marketplace', 'Enterprise Admin', 'Feature Insider', 'Firm Setup', 'Settings'].includes(item.label);
+
+    if (isAdminFeature) {
+      return activeIndustry === 'real_estate_jcl' ? "System Admin" : "System Administration";
+    }
+
     // Dedicated Department Grouping for JCL Royal Group
     if (activeIndustry === 'real_estate_jcl') {
       if (['/', '/my-dashboard', '/intelligence'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview'].includes(item.label)) {
@@ -814,13 +825,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
         return "Human Resources";
       }
-      if (['/settings', '/integrations', '/automations', '/real-estate/audit', '/real-estate/agent-metrics', '/real-estate/analytics'].includes(p) || p.startsWith('/admin')) {
-        return "System Admin";
+      if (['/real-estate/agent-metrics', '/real-estate/analytics'].includes(p)) {
+        return "Executive Overview";
       }
       if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
         return "Communications";
       }
-      return "Executive Overview";
+      return "Tenancy & Operations";
     }
 
     // Default Grouping for all other industries
@@ -837,9 +848,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     }
     if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
       return "Team & HR";
-    }
-    if (['/settings', '/integrations', '/automations', '/feature-insider', '/feature-vault', '/marketplace', '/firm-setup', '/super-admin', '/enterprise-admin', '/branch-manager', '/client-portal', '/slate/create', '/sites'].includes(p) || p.startsWith('/admin')) {
-      return "System Administration";
     }
     return "Operations";
   };
@@ -915,7 +923,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-white dark:bg-[#0c1a13] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
+    <div className="flex flex-col h-full bg-[#F4F6F8] dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 border-r border-slate-200/90 dark:border-[#1E293B] overflow-x-hidden transition-colors duration-200">
       <div className={cn("py-4 border-b border-black/5 dark:border-white/10 flex items-center transition-all", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>
