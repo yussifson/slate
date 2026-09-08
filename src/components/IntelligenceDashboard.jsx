@@ -117,142 +117,194 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
     );
   }
   return (
-    <div className="space-y-8 pb-20 animate-in fade-in duration-500">
+    <div className="space-y-8 pb-20 animate-in fade-in duration-500 font-sans">
       <Tabs defaultValue="insights" className="w-full">
-        <TabsList className="mb-8 w-full flex justify-start gap-6 bg-transparent p-0 border-b border-slate-200 dark:border-border rounded-none h-auto overflow-x-auto hide-scrollbar">
-          <TabsTrigger value="insights" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-primary pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Sparkles className="w-4 h-4"/> Insights Engine</TabsTrigger>
-          <TabsTrigger value="oracle" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-blue-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Bot className="w-4 h-4"/> Data Oracle</TabsTrigger>
-          <TabsTrigger value="report" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-purple-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><FileText className="w-4 h-4"/> Report Generator</TabsTrigger>
-          <TabsTrigger value="anomaly" className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-red-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-red-500 pb-3 px-1 transition-all font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"><Activity className="w-4 h-4"/> Anomaly Scanner</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-card p-6 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 shadow-lg shadow-slate-200/20 dark:shadow-none bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/50 relative overflow-hidden gap-4">
-            <div className="absolute right-0 top-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-            <div className="relative z-10">
-              <h3 className="font-extrabold text-xl text-foreground tracking-tight flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                Passive Insights Engine
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1 ml-10 font-medium">Continuous AI scanning of your data for hidden patterns</p>
-            </div>
-            <Button
-              onClick={() => runEngine(effectiveVertical)}
-              disabled={isRunning}
-              className="relative z-10 gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-xl shadow-emerald-500/25 border-0 font-bold px-6 py-5 rounded-xl transition-all hover:scale-105 active:scale-95"
+        {/* Luxury Navigation Header */}
+        <div className="bg-card/70 backdrop-blur-xl border border-border/80 rounded-2xl p-2 mb-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-wrap gap-1 border-0">
+            <TabsTrigger 
+              value="insights" 
+              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
             >
-              {isRunning ? (
-                <><RefreshCw className="w-5 h-5 animate-spin" /> Analyzing Workspace...</>
-              ) : (
-                <><Zap className="w-5 h-5 fill-current" /> Run Full Analysis</>
-              )}
-            </Button>
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              Insights Engine
+            </TabsTrigger>
+            <TabsTrigger 
+              value="oracle" 
+              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              <Bot className="w-4 h-4 text-indigo-500" />
+              Data Oracle AI
+            </TabsTrigger>
+            <TabsTrigger 
+              value="report" 
+              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              <FileText className="w-4 h-4 text-emerald-500" />
+              Report Generator
+            </TabsTrigger>
+            <TabsTrigger 
+              value="anomaly" 
+              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
+              <Activity className="w-4 h-4 text-rose-500" />
+              Anomaly Scanner
+            </TabsTrigger>
+          </TabsList>
+
+          <div className="flex items-center gap-2 px-3">
+            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-semibold text-muted-foreground">Neural Engine Online</span>
+          </div>
+        </div>
+
+        {/* TAB 1: INSIGHTS ENGINE */}
+        <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          {/* Executive Hero Banner */}
+          <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+            <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-1/3 -mb-12 w-64 h-64 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5" /> Autonomous Analytics & Market Intelligence
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  Executive Intelligence & Pattern Recognition
+                </h2>
+                <p className="text-sm text-slate-300 max-w-xl font-normal">
+                  Continuous deep-learning audit of operational workflows, client behavior, anomalies, and financial performance.
+                </p>
+              </div>
+
+              <Button
+                onClick={() => runEngine(effectiveVertical)}
+                disabled={isRunning}
+                className="gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold px-6 py-6 rounded-2xl shadow-lg shadow-emerald-900/40 border-0 transition-all hover:scale-105 active:scale-95 shrink-0"
+              >
+                {isRunning ? (
+                  <><RefreshCw className="w-5 h-5 animate-spin" /> Deep Scanning Workspace...</>
+                ) : (
+                  <><Zap className="w-5 h-5 fill-current" /> Execute Full Diagnostics</>
+                )}
+              </Button>
+            </div>
           </div>
 
+          {/* 4 Stat Metric Hero Strip */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10 flex items-center justify-center text-primary relative z-10">
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Discoveries</p>
+                <p className="text-3xl font-extrabold text-foreground">{insights.length}</p>
+                <p className="text-[11px] text-muted-foreground">Active pattern markers</p>
+              </div>
+              <div className="h-12 w-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                 <Brain className="w-6 h-6" />
               </div>
-              <div className="relative z-10">
-                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{insights.length}</p>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Total Insights</p>
-              </div>
             </div>
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/10 to-red-500/5 border border-red-500/10 flex items-center justify-center text-red-600 relative z-10">
+
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Critical Escalations</p>
+                <p className="text-3xl font-extrabold text-rose-600 dark:text-rose-400">{criticalCount}</p>
+                <p className="text-[11px] text-rose-600/80">Immediate attention</p>
+              </div>
+              <div className="h-12 w-12 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
                 <Shield className="w-6 h-6" />
               </div>
-              <div className="relative z-10">
-                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{criticalCount}</p>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Critical</p>
-              </div>
             </div>
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-500/5 border border-amber-500/10 flex items-center justify-center text-amber-600 relative z-10">
+
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Warning Flags</p>
+                <p className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">{warningCount}</p>
+                <p className="text-[11px] text-amber-600/80">Threshold alerts</p>
+              </div>
+              <div className="h-12 w-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                 <AlertTriangle className="w-6 h-6" />
               </div>
-              <div className="relative z-10">
-                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{warningCount}</p>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Warnings</p>
-              </div>
             </div>
-            <div className="bg-gradient-to-br from-white to-slate-50 dark:from-slate-900 dark:to-slate-950/80 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 p-5 flex items-center gap-5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:shadow-xl hover:shadow-slate-200/30 transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/10 flex items-center justify-center text-emerald-600 relative z-10">
-                <TrendingUp className="w-6 h-6" />
+
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Positive Signals</p>
+                <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{positiveCount}</p>
+                <p className="text-[11px] text-emerald-600/80">Growth indicators</p>
               </div>
-              <div className="relative z-10">
-                <p className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none mb-1">{positiveCount}</p>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Positive</p>
+              <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6" />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-1 bg-card rounded-lg border p-1">
-              {SEVERITY_FILTERS.map(f => (
-                <button
-                  key={f.key}
-                  onClick={() => setSeverityFilter(f.key)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                    severityFilter === f.key
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'text-[#71717a] hover:text-card-foreground hover:bg-muted'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              ))}
+          {/* Filters Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50">
+                {SEVERITY_FILTERS.map(f => (
+                  <button
+                    key={f.key}
+                    onClick={() => setSeverityFilter(f.key)}
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                      severityFilter === f.key
+                        ? 'bg-background text-foreground shadow-xs'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              <select
+                value={typeFilter}
+                onChange={e => setTypeFilter(e.target.value)}
+                className="text-xs border border-border/80 rounded-lg px-3 py-2 bg-background text-foreground font-medium"
+              >
+                {TYPE_FILTERS.map(f => (
+                  <option key={f.key} value={f.key}>{f.label}</option>
+                ))}
+              </select>
             </div>
-            <select
-              value={typeFilter}
-              onChange={e => setTypeFilter(e.target.value)}
-              className="text-xs border rounded-lg px-3 py-2 bg-card text-card-foreground"
-            >
-              {TYPE_FILTERS.map(f => (
-                <option key={f.key} value={f.key}>{f.label}</option>
-              ))}
-            </select>
+
             {lastRun && (
-              <span className="text-[10px] text-[#71717a] flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
-                Last run: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleString() : "Unknown"}
+              <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5 px-2">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                Last audit: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleString() : "Live continuous"}
               </span>
             )}
           </div>
 
+          {/* Body Cards List */}
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6 text-primary animate-pulse" />
+            <div className="flex flex-col items-center justify-center py-20 bg-card border border-border/80 rounded-2xl">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                <Sparkles className="w-7 h-7 text-emerald-600 animate-pulse" />
               </div>
-              <p className="text-sm text-[#71717a]">Loading intelligence data...</p>
+              <p className="text-sm font-semibold text-foreground">Extracting intelligence vectors...</p>
+              <p className="text-xs text-muted-foreground mt-1">Cross-referencing historical operational metrics</p>
             </div>
           ) : displayInsights.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 bg-card rounded-2xl border">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-                <Brain className="w-8 h-8 text-primary/40" />
+            <div className="flex flex-col items-center justify-center py-20 bg-card rounded-2xl border border-dashed border-border/80 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-4">
+                <Brain className="w-8 h-8 text-emerald-600/70" />
               </div>
-              <h3 className="text-lg font-semibold text-card-foreground mb-1">Building Intelligence</h3>
-              <p className="text-sm text-[#71717a] text-center max-w-md mb-4">
+              <h3 className="text-base font-bold text-foreground mb-1">Intelligence Database Ready</h3>
+              <p className="text-xs text-muted-foreground max-w-md mb-6">
                 {insights.length === 0
-                  ? "Click 'Run Full Analysis' to scan your data and generate AI-powered insights."
-                  : 'No insights match your current filters. Try adjusting the filters above.'}
+                  ? "Execute full diagnostics to evaluate your workspace and retrieve predictive AI insights."
+                  : 'No pattern markers match your currently selected filters.'}
               </p>
               {insights.length === 0 && (
                 <Button
                   onClick={() => runEngine(effectiveVertical)}
                   disabled={isRunning}
-                  className="gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg border-0"
+                  className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md border-0"
                 >
                   <Zap className="w-4 h-4" />
-                  {isRunning ? 'Analyzing...' : 'Generate Insights Now'}
+                  {isRunning ? 'Analyzing...' : 'Execute Diagnostics Now'}
                 </Button>
               )}
             </div>
@@ -281,7 +333,6 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
         <TabsContent value="anomaly">
           <AnomalyScanner />
         </TabsContent>
-
       </Tabs>
     </div>
   );

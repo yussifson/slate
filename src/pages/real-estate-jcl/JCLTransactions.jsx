@@ -4,6 +4,7 @@ import {
   TrendingUp, RefreshCw, Eye, Grid, List, CheckCircle2
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { PortalAwareItem } from '@/lib/kanbanPortal.jsx';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -442,40 +443,38 @@ export default function JCLTransactions() {
                         {stageDeals.map((deal, index) => (
                           <Draggable key={deal.id} draggableId={deal.id} index={index}>
                             {(providedDraggable, snapshotDraggable) => (
-                              <div
-                                ref={providedDraggable.innerRef}
-                                {...providedDraggable.draggableProps}
-                                {...providedDraggable.dragHandleProps}
-                                style={{ ...providedDraggable.draggableProps.style }}
-                                onClick={() => setInspectorTxn(deal)}
-                                className={cn(
-                                  "p-3 rounded-lg border border-border bg-card shadow-xs hover:shadow-md transition-all cursor-grab active:cursor-grabbing group",
-                                  snapshotDraggable.isDragging && "shadow-xl ring-2 ring-emerald-500 z-50 bg-background"
-                                )}
-                              >
-                                <div className="flex items-center justify-between gap-1 mb-1">
-                                  <span className="text-xs font-bold text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-                                    {deal.property_address}
-                                  </span>
-                                </div>
-
-                                <p className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 mb-2">
-                                  {formatCurrency(deal.sale_price, 'USD')}
-                                </p>
-
-                                <div className="space-y-1 text-[11px] text-muted-foreground border-t border-border/50 pt-2">
-                                  <div className="flex items-center justify-between">
-                                    <span>Buyer:</span>
-                                    <strong className="text-foreground truncate max-w-[110px]">{deal.buyer_name || 'N/A'}</strong>
-                                  </div>
-                                  {deal.closing_date && (
-                                    <div className="flex items-center justify-between text-[10px]">
-                                      <span>Close:</span>
-                                      <span className="font-mono text-foreground">{deal.closing_date}</span>
-                                    </div>
+                              <PortalAwareItem provided={providedDraggable} snapshot={snapshotDraggable}>
+                                <div
+                                  onClick={() => setInspectorTxn(deal)}
+                                  className={cn(
+                                    "p-3 rounded-lg border border-border bg-card shadow-xs hover:shadow-md transition-all cursor-grab active:cursor-grabbing group",
+                                    snapshotDraggable.isDragging && "shadow-xl ring-2 ring-emerald-500 z-50 bg-background"
                                   )}
+                                >
+                                  <div className="flex items-center justify-between gap-1 mb-1">
+                                    <span className="text-xs font-bold text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                                      {deal.property_address}
+                                    </span>
+                                  </div>
+
+                                  <p className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 mb-2">
+                                    {formatCurrency(deal.sale_price, 'USD')}
+                                  </p>
+
+                                  <div className="space-y-1 text-[11px] text-muted-foreground border-t border-border/50 pt-2">
+                                    <div className="flex items-center justify-between">
+                                      <span>Buyer:</span>
+                                      <strong className="text-foreground truncate max-w-[110px]">{deal.buyer_name || 'N/A'}</strong>
+                                    </div>
+                                    {deal.closing_date && (
+                                      <div className="flex items-center justify-between text-[10px]">
+                                        <span>Close:</span>
+                                        <span className="font-mono text-foreground">{deal.closing_date}</span>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
+                              </PortalAwareItem>
                             )}
                           </Draggable>
                         ))}

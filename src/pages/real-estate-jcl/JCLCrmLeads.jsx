@@ -8,6 +8,7 @@ import {
   DollarSign, Calendar
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { PortalAwareItem } from '@/lib/kanbanPortal.jsx';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -140,113 +141,109 @@ function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, 
                       return (
                         <Draggable key={String(lead.id)} draggableId={String(lead.id)} index={index}>
                           {(providedDraggable, snapshotDraggable) => (
-                            <div
-                              ref={providedDraggable.innerRef}
-                              {...providedDraggable.draggableProps}
-                              {...providedDraggable.dragHandleProps}
-                              style={{
-                                ...providedDraggable.draggableProps.style,
-                              }}
-                              onClick={() => onLeadClick(lead)}
-                              className={cn(
-                                "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-emerald-500/40 transition-all cursor-pointer group space-y-3",
-                                snapshotDraggable.isDragging && "shadow-2xl border-emerald-500 ring-2 ring-emerald-500/30 rotate-1 z-50 bg-card"
-                              )}
-                            >
-                              {/* Card Top: Avatar & Name */}
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                  <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
-                                    {initials}
-                                  </div>
-                                  <div className="min-w-0">
-                                    <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-emerald-600 transition-colors">
-                                      {fullName}
-                                    </h4>
-                                    <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/30">
-                                      {lead.lead_type || 'Buyer'}
-                                    </Badge>
-                                  </div>
-                                </div>
-
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg">
-                                      <MoreVertical className="w-3.5 h-3.5" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className="text-xs">
-                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(lead); }}>
-                                      <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Lead
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onActivity(lead); }}>
-                                      <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Log Activity
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onConvert(lead); }}>
-                                      <Users className="w-3.5 h-3.5 mr-1.5 text-emerald-600" /> Convert to Client
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={(e) => { e.stopPropagation(); onDelete(lead.id); }}>
-                                      <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </div>
-
-                              {/* 2x2 Contact / Budget Grid */}
-                              <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40">
-                                {lead.phone && (
-                                  <div className="flex items-center gap-1.5 truncate">
-                                    <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
-                                    <span className="truncate">{lead.phone}</span>
-                                  </div>
+                            <PortalAwareItem provided={providedDraggable} snapshot={snapshotDraggable}>
+                              <div
+                                onClick={() => onLeadClick(lead)}
+                                className={cn(
+                                  "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-emerald-500/40 transition-all cursor-pointer group space-y-3",
+                                  snapshotDraggable.isDragging && "shadow-2xl border-emerald-500 ring-2 ring-emerald-500/30 rotate-1 z-50 bg-card"
                                 )}
-                                {lead.email && (
-                                  <div className="flex items-center gap-1.5 truncate">
-                                    <Mail className="w-3 h-3 text-blue-600 shrink-0" />
-                                    <span className="truncate">{lead.email}</span>
+                              >
+                                {/* Card Top: Avatar & Name */}
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex items-center gap-2.5 min-w-0">
+                                    <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
+                                      {initials}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-emerald-600 transition-colors">
+                                        {fullName}
+                                      </h4>
+                                      <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/30">
+                                        {lead.lead_type || 'Buyer'}
+                                      </Badge>
+                                    </div>
                                   </div>
-                                )}
-                                <div className="flex items-center gap-1.5 truncate col-span-2">
-                                  <DollarSign className="w-3 h-3 text-amber-600 shrink-0" />
-                                  <span className="font-bold text-foreground">
-                                    {lead.budget_max ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}` : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : 'Budget Unset')}
-                                  </span>
-                                </div>
-                              </div>
 
-                              {/* Card Footer: Date & Quick Actions */}
-                              <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground font-semibold">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="w-3 h-3 text-muted-foreground" />
-                                  <span>{lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : 'Recent'}</span>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                                      <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg">
+                                        <MoreVertical className="w-3.5 h-3.5" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="text-xs">
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(lead); }}>
+                                        <Edit className="w-3.5 h-3.5 mr-1.5" /> Edit Lead
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onActivity(lead); }}>
+                                        <MessageSquare className="w-3.5 h-3.5 mr-1.5" /> Log Activity
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onConvert(lead); }}>
+                                        <Users className="w-3.5 h-3.5 mr-1.5 text-emerald-600" /> Convert to Client
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem className="text-rose-600 focus:text-rose-600" onClick={(e) => { e.stopPropagation(); onDelete(lead.id); }}>
+                                        <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </div>
 
-                                <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                {/* 2x2 Contact / Budget Grid */}
+                                <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/40">
                                   {lead.phone && (
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      onClick={() => window.open(`tel:${lead.phone}`)}
-                                      className="h-6 w-6 rounded-md hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40"
-                                      title="Call Lead"
-                                    >
-                                      <Phone className="w-3 h-3" />
-                                    </Button>
+                                    <div className="flex items-center gap-1.5 truncate">
+                                      <Phone className="w-3 h-3 text-emerald-600 shrink-0" />
+                                      <span className="truncate">{lead.phone}</span>
+                                    </div>
                                   )}
                                   {lead.email && (
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      onClick={() => window.open(`mailto:${lead.email}`)}
-                                      className="h-6 w-6 rounded-md hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40"
-                                      title="Email Lead"
-                                    >
-                                      <Mail className="w-3 h-3" />
-                                    </Button>
+                                    <div className="flex items-center gap-1.5 truncate">
+                                      <Mail className="w-3 h-3 text-blue-600 shrink-0" />
+                                      <span className="truncate">{lead.email}</span>
+                                    </div>
                                   )}
+                                  <div className="flex items-center gap-1.5 truncate col-span-2">
+                                    <DollarSign className="w-3 h-3 text-amber-600 shrink-0" />
+                                    <span className="font-bold text-foreground">
+                                      {lead.budget_max ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}` : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : 'Budget Unset')}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Card Footer: Date & Quick Actions */}
+                                <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground font-semibold">
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="w-3 h-3 text-muted-foreground" />
+                                    <span>{lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : 'Recent'}</span>
+                                  </div>
+
+                                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                    {lead.phone && (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => window.open(`tel:${lead.phone}`)}
+                                        className="h-6 w-6 rounded-md hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40"
+                                        title="Call Lead"
+                                      >
+                                        <Phone className="w-3 h-3" />
+                                      </Button>
+                                    )}
+                                    {lead.email && (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => window.open(`mailto:${lead.email}`)}
+                                        className="h-6 w-6 rounded-md hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/40"
+                                        title="Email Lead"
+                                      >
+                                        <Mail className="w-3 h-3" />
+                                      </Button>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            </PortalAwareItem>
                           )}
                         </Draggable>
                       );

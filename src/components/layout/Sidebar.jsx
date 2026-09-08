@@ -923,7 +923,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-[#F4F6F8] dark:bg-[#0B132B] text-slate-800 dark:text-slate-100 border-r border-slate-200/90 dark:border-[#1E293B] overflow-x-hidden transition-colors duration-200">
+    <div className="flex flex-col h-full bg-white dark:bg-[#0c1a13] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
       <div className={cn("py-4 border-b border-black/5 dark:border-white/10 flex items-center transition-all", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>

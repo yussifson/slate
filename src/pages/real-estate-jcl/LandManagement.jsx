@@ -7,6 +7,7 @@ import {
   ShieldCheck, Eye, Sparkles
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { PortalAwareItem } from '@/lib/kanbanPortal.jsx';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -159,87 +160,83 @@ function LandKanbanBoardComponent({ parcels, onUpdateStatus, onParcelClick, onOp
                     {columnParcels.map((parcel, index) => (
                       <Draggable key={String(parcel.id)} draggableId={String(parcel.id)} index={index}>
                         {(providedDraggable, snapshotDraggable) => (
-                          <div
-                            ref={providedDraggable.innerRef}
-                            {...providedDraggable.draggableProps}
-                            {...providedDraggable.dragHandleProps}
-                            style={{
-                              ...providedDraggable.draggableProps.style,
-                            }}
-                            onClick={() => onParcelClick(parcel)}
-                            className={cn(
-                              "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer group space-y-3",
-                              snapshotDraggable.isDragging && "shadow-2xl border-amber-500 ring-2 ring-amber-500/30 rotate-1 z-50 bg-card"
-                            )}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="min-w-0">
-                                <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-amber-600 transition-colors">
-                                  {parcel.parcelName}
-                                </h4>
-                                <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
-                                  <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
-                                  <span className="truncate">{parcel.address}, {parcel.city}</span>
-                                </p>
-                              </div>
-
-                              <Badge variant="outline" className="text-[9px] font-extrabold uppercase py-0 h-4 bg-muted/40 shrink-0">
-                                {parcel.plotNumber || 'Plot'}
-                              </Badge>
-                            </div>
-
-                            {/* Acreage & Financial Strip */}
-                            <div className="flex items-center justify-between bg-muted/30 p-2.5 rounded-xl text-xs border border-border/40 font-bold">
-                              <span className="text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
-                              <span className="text-foreground">{formatCurrency(parcel.price, 'USD')}</span>
-                            </div>
-
-                            {/* Active Allocation Pill */}
-                            {parcel.allocation?.customerName ? (
-                              <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 dark:bg-indigo-950/30 p-2 text-[11px] space-y-0.5">
-                                <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-bold">
-                                  <span className="truncate">👤 {parcel.allocation.customerName}</span>
-                                  <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-indigo-200 dark:bg-indigo-800">
-                                    {parcel.allocation.allocationStatus}
-                                  </span>
+                          <PortalAwareItem provided={providedDraggable} snapshot={snapshotDraggable}>
+                            <div
+                              onClick={() => onParcelClick(parcel)}
+                              className={cn(
+                                "p-4 bg-card/95 backdrop-blur-md rounded-[20px] border border-border/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-amber-500/40 transition-all cursor-pointer group space-y-3",
+                                snapshotDraggable.isDragging && "shadow-2xl border-amber-500 ring-2 ring-amber-500/30 rotate-1 z-50 bg-card"
+                              )}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="min-w-0">
+                                  <h4 className="font-bold text-[13px] text-foreground truncate group-hover:text-amber-600 transition-colors">
+                                    {parcel.parcelName}
+                                  </h4>
+                                  <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5 truncate">
+                                    <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
+                                    <span className="truncate">{parcel.address}, {parcel.city}</span>
+                                  </p>
                                 </div>
-                                <div className="text-[10px] text-muted-foreground">
-                                  Exp: {parcel.allocation.expiryDate}
+
+                                <Badge variant="outline" className="text-[9px] font-extrabold uppercase py-0 h-4 bg-muted/40 shrink-0">
+                                  {parcel.plotNumber || 'Plot'}
+                                </Badge>
+                              </div>
+
+                              {/* Acreage & Financial Strip */}
+                              <div className="flex items-center justify-between bg-muted/30 p-2.5 rounded-xl text-xs border border-border/40 font-bold">
+                                <span className="text-amber-600">{parcel.lotSizeAcres || 0} Acres</span>
+                                <span className="text-foreground">{formatCurrency(parcel.price, 'USD')}</span>
+                              </div>
+
+                              {/* Active Allocation Pill */}
+                              {parcel.allocation?.customerName ? (
+                                <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 dark:bg-indigo-950/30 p-2 text-[11px] space-y-0.5">
+                                  <div className="flex items-center justify-between text-indigo-900 dark:text-indigo-300 font-bold">
+                                    <span className="truncate">👤 {parcel.allocation.customerName}</span>
+                                    <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-indigo-200 dark:bg-indigo-800">
+                                      {parcel.allocation.allocationStatus}
+                                    </span>
+                                  </div>
+                                  <div className="text-[10px] text-muted-foreground">
+                                    Exp: {parcel.allocation.expiryDate}
+                                  </div>
+                                </div>
+                              ) : null}
+
+                              {/* Card Footer Actions */}
+                              <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground" onClick={(e) => e.stopPropagation()}>
+                                <span className="capitalize font-semibold">{parcel.zoning} • {parcel.titleType}</span>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    size="xs"
+                                    variant="outline"
+                                    onClick={() => onOpenAllocation(parcel)}
+                                    className="text-[10px] h-6 px-2 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg"
+                                  >
+                                    <UserCheck className="w-2.5 h-2.5 mr-1" /> Allocate
+                                  </Button>
+                                  <Button
+                                    size="xs"
+                                    variant="ghost"
+                                    onClick={() => onOpenDrawer(parcel)}
+                                    className="h-6 w-6 p-0 rounded-lg text-muted-foreground"
+                                  >
+                                    <Edit className="w-3 h-3" />
+                                  </Button>
+                                  <Button
+                                    size="xs"
+                                    variant="ghost"
+                                    onClick={() => onDelete(parcel.id)}
+                                    className="h-6 w-6 p-0 rounded-lg text-rose-500 hover:bg-rose-50"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
                                 </div>
                               </div>
-                            ) : null}
-
-                            {/* Card Footer Actions */}
-                            <div className="flex items-center justify-between pt-2 border-t border-border/60 text-[10px] text-muted-foreground" onClick={(e) => e.stopPropagation()}>
-                              <span className="capitalize font-semibold">{parcel.zoning} • {parcel.titleType}</span>
-                              <div className="flex items-center gap-1">
-                                <Button
-                                  size="xs"
-                                  variant="outline"
-                                  onClick={() => onOpenAllocation(parcel)}
-                                  className="text-[10px] h-6 px-2 font-bold text-indigo-600 border-indigo-200 hover:bg-indigo-50 rounded-lg"
-                                >
-                                  <UserCheck className="w-2.5 h-2.5 mr-1" /> Allocate
-                                </Button>
-                                <Button
-                                  size="xs"
-                                  variant="ghost"
-                                  onClick={() => onOpenDrawer(parcel)}
-                                  className="h-6 w-6 p-0 rounded-lg text-muted-foreground"
-                                >
-                                  <Edit className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  size="xs"
-                                  variant="ghost"
-                                  onClick={() => onDelete(parcel.id)}
-                                  className="h-6 w-6 p-0 rounded-lg text-rose-500 hover:bg-rose-50"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
                             </div>
-                          </div>
+                          </PortalAwareItem>
                         )}
                       </Draggable>
                     ))}

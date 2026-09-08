@@ -7,8 +7,7 @@ import {
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -461,114 +460,97 @@ export default function JCLProperties() {
             const priceSqft = property.square_feet > 0 ? (property.price / property.square_feet).toFixed(1) : null;
 
             return (
-              <Card
-                key={property.id}
-                className="group border border-border/80 hover:border-emerald-500/40 transition-all duration-200 shadow-xs hover:shadow-md bg-card overflow-hidden flex flex-col"
-              >
-                {/* Header Card Banner */}
-                <div className="p-4 pb-3 border-b border-border/50 bg-gradient-to-b from-muted/30 to-transparent">
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted text-muted-foreground border border-border/60">
-                      {property.property_type || 'Residential'}
-                    </span>
-                    <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1.5", st.badge)}>
-                      <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
-                      {st.label}
-                    </Badge>
-                  </div>
-
-                  <h3 className="font-bold text-foreground text-base group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-                    {property.address}
-                  </h3>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                    <MapPin className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" />
-                    <span className="truncate">{[property.city, property.state, property.zip_code].filter(Boolean).join(', ') || 'Prime Location'}</span>
-                  </div>
-                </div>
-
-                {/* Card Body Metrics */}
-                <CardContent className="p-4 flex-1 flex flex-col justify-between space-y-4">
-                  <div className="flex items-baseline justify-between">
-                    <div>
-                      <p className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Listing Price</p>
-                      <p className="text-xl font-extrabold text-foreground">
+                <div
+                  key={property.id}
+                  onClick={() => setInspectorProperty(property)}
+                  className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+                >
+                  {/* Colour Banner Header */}
+                  <div className={cn(
+                    "relative h-28 flex flex-col justify-between p-4 overflow-hidden",
+                    property.status === 'active' ? 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500' :
+                    property.status === 'pending' ? 'bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-400' :
+                    property.status === 'sold' ? 'bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-500' :
+                    'bg-gradient-to-br from-slate-600 via-slate-500 to-slate-400'
+                  )}>
+                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+                    <div className="flex items-start justify-between relative z-10">
+                      <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                        {property.property_type || 'Residential'}
+                      </span>
+                      <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                        {(STATUS_CONFIG[property.status] || STATUS_CONFIG.active).label}
+                      </span>
+                    </div>
+                    <div className="relative z-10">
+                      <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Listing Price</p>
+                      <p className="text-2xl font-extrabold text-white tracking-tight">
                         {formatCurrency(property.price, 'USD')}
                       </p>
                     </div>
+                  </div>
+
+                  {/* Card Body */}
+                  <div className="p-4 flex flex-col gap-3 flex-1">
+                    <div>
+                      <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                        {property.address}
+                      </h3>
+                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
+                        <MapPin className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{[property.city, property.state, property.zip_code].filter(Boolean).join(', ') || 'Prime Location'}</span>
+                      </div>
+                    </div>
+
+                    {/* 3-Spec Strip */}
+                    <div className="grid grid-cols-3 divide-x divide-border/60 rounded-xl border border-border/60 bg-muted/30 overflow-hidden">
+                      <div className="flex flex-col items-center py-2.5 gap-0.5">
+                        <BedDouble className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm font-bold text-foreground">{property.bedrooms ?? '\u2014'}</span>
+                        <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">Beds</span>
+                      </div>
+                      <div className="flex flex-col items-center py-2.5 gap-0.5">
+                        <Bath className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm font-bold text-foreground">{property.bathrooms ?? '\u2014'}</span>
+                        <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">Baths</span>
+                      </div>
+                      <div className="flex flex-col items-center py-2.5 gap-0.5">
+                        <Square className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm font-bold text-foreground">{property.square_feet ? property.square_feet.toLocaleString() : '\u2014'}</span>
+                        <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">Sq Ft</span>
+                      </div>
+                    </div>
+
                     {priceSqft && (
-                      <div className="text-right">
-                        <p className="text-[10px] uppercase font-medium text-muted-foreground">Price/Sqft</p>
-                        <p className="text-xs font-semibold text-foreground">${priceSqft}/sqft</p>
+                      <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                        <span className="text-muted-foreground font-medium">Price / sq ft</span>
+                        <span className="font-bold text-emerald-700 dark:text-emerald-400">${priceSqft}</span>
                       </div>
                     )}
-                  </div>
 
-                  {/* 3-Spec Blueprint Box */}
-                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-lg bg-muted/40 border border-border/50 text-center">
-                    <div>
-                      <div className="flex items-center justify-center gap-1 text-muted-foreground mb-0.5">
-                        <BedDouble className="h-3.5 w-3.5" />
-                        <span className="text-[10px] uppercase">Beds</span>
+                    <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
+                      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground min-w-0">
+                        <div className="h-5 w-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-[8px] font-extrabold shrink-0">
+                          {(property.agent_name || 'A')[0].toUpperCase()}
+                        </div>
+                        <span className="truncate font-medium">{property.agent_name || 'Assigned Broker'}</span>
                       </div>
-                      <span className="text-xs font-bold text-foreground">{property.bedrooms || '-'}</span>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-center gap-1 text-muted-foreground mb-0.5">
-                        <Bath className="h-3.5 w-3.5" />
-                        <span className="text-[10px] uppercase">Baths</span>
+                      <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-emerald-600" onClick={() => setInspectorProperty(property)} title="Inspect">
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => handleOpenEdit(property)} title="Edit">
+                          <Edit className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30" onClick={() => setDeleteTarget(property)} title="Delete">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
-                      <span className="text-xs font-bold text-foreground">{property.bathrooms || '-'}</span>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-center gap-1 text-muted-foreground mb-0.5">
-                        <Square className="h-3.5 w-3.5" />
-                        <span className="text-[10px] uppercase">SqFt</span>
-                      </div>
-                      <span className="text-xs font-bold text-foreground">
-                        {property.square_feet ? property.square_feet.toLocaleString() : '-'}
-                      </span>
                     </div>
                   </div>
-
-                  {/* Footer Broker & Actions */}
-                  <div className="pt-2 border-t border-border/50 flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground truncate max-w-[140px]">
-                      Broker: <strong className="text-foreground">{property.agent_name || 'Assigned'}</strong>
-                    </span>
-
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                        onClick={() => setInspectorProperty(property)}
-                        title="Inspect Property"
-                      >
-                        <Eye className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                        onClick={() => handleOpenEdit(property)}
-                        title="Edit Property"
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                        onClick={() => setDeleteTarget(property)}
-                        title="Delete Property"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
+                </div>
+              );
           })}
         </div>
       ) : (

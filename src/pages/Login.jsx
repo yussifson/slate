@@ -691,75 +691,75 @@ export default function Login() {
  </div>
 
   {/* Right Side: Marketing Visual */}
-  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#0B132B] border-l border-[#1E293B] overflow-hidden p-8 lg:p-14">
-    {/* Ambient micro geometry */}
-    <div className="absolute inset-0 bg-[radial-gradient(#1E293B_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#F8FAFC] border-l border-slate-200/80 overflow-hidden p-6 sm:p-8">
+    {/* Ambient geometry */}
+    <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
 
     {(currentSubdomain || isCustomDomain || branding.name !== 'Slate') ? (
       <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
     ) : (
-      <div className="relative z-10 w-full max-w-xl bg-[#1E293B]/90 backdrop-blur-2xl rounded-3xl border border-[#334155] p-8 lg:p-10 flex flex-col justify-between text-slate-100 overflow-hidden">
+      <div className="relative z-10 w-full max-w-2xl bg-white/95 backdrop-blur-2xl rounded-3xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between text-slate-900 shadow-sm overflow-hidden">
         <div>
           {/* Status Badge */}
-          <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-[#0F172A] border border-emerald-500/30 text-xs font-semibold text-emerald-400 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-bold text-emerald-800 mb-4 shadow-xs">
             <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
             </span>
-            <span className="tracking-wide text-[11px] font-bold text-emerald-300">Enterprise Operating System</span>
+            <span className="tracking-wide text-[11px] uppercase font-bold">Enterprise Operating System</span>
           </div>
 
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-100 mb-3 tracking-tight leading-[1.15]">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2 tracking-tight leading-tight">
             Modern Enterprise Workspace & Operations
           </h2>
-          <p className="text-sm text-slate-300 font-normal leading-relaxed mb-6">
+          <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mb-5">
             Integrated client management, real estate operations, cross-team collaboration, and executive intelligence.
           </p>
 
           {/* Operational Telemetry Card */}
-          <div className="mb-6 p-4 rounded-2xl bg-[#0F172A]/80 border border-[#334155] space-y-3">
-            <div className="flex items-center justify-between text-xs text-slate-300">
-              <span className="font-bold text-slate-100 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+          <div className="mb-5 p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-2.5 shadow-xs">
+            <div className="flex items-center justify-between text-xs text-slate-700">
+              <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
                 Executive Intelligence Hub
               </span>
-              <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+              <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
                 Live & Synced
               </span>
             </div>
             
-            <div className="grid grid-cols-3 gap-2.5 text-center text-xs pt-0.5">
-              <div className="bg-[#1E293B] p-2.5 rounded-xl border border-[#334155]">
-                <span className="text-[10px] text-slate-400 block font-semibold mb-0.5">Operations</span>
-                <span className="text-xs font-bold text-slate-100">Real-Time</span>
+            <div className="grid grid-cols-3 gap-2 text-center text-xs pt-0.5">
+              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
+                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Operations</span>
+                <span className="text-xs font-bold text-slate-900">Real-Time</span>
               </div>
-              <div className="bg-[#1E293B] p-2.5 rounded-xl border border-[#334155]">
-                <span className="text-[10px] text-slate-400 block font-semibold mb-0.5">Security</span>
-                <span className="text-xs font-bold text-emerald-400">Encrypted</span>
+              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
+                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Security</span>
+                <span className="text-xs font-bold text-emerald-700">Encrypted</span>
               </div>
-              <div className="bg-[#1E293B] p-2.5 rounded-xl border border-[#334155]">
-                <span className="text-[10px] text-slate-400 block font-semibold mb-0.5">Cloud Sync</span>
-                <span className="text-xs font-bold text-indigo-400">99.9% Uptime</span>
+              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
+                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Cloud Sync</span>
+                <span className="text-xs font-bold text-indigo-700">99.9% Uptime</span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-[#334155] flex items-center justify-between text-[11px] text-slate-400">
+            <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
               <span>Real-time updates active across team workspaces</span>
-              <span className="text-emerald-400 font-semibold shrink-0 ml-2">Active</span>
+              <span className="text-emerald-700 font-semibold shrink-0 ml-2">Active</span>
             </div>
           </div>
         </div>
 
         {/* Testimonial Quote Footer */}
-        <div className="pt-5 border-t border-[#334155] flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs shrink-0">
+        <div className="pt-4 border-t border-slate-200/80 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs shrink-0 shadow-xs">
             {randomQuote.initials}
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-slate-300 italic line-clamp-2">
+            <p className="text-xs text-slate-600 italic line-clamp-2">
               {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
             </p>
-            <p className="text-xs font-semibold text-slate-100 mt-0.5">{randomQuote.name}</p>
+            <p className="text-xs font-semibold text-slate-900 mt-0.5">{randomQuote.name}</p>
           </div>
         </div>
       </div>

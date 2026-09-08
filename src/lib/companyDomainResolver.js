@@ -72,7 +72,7 @@ export function getIndustryFeatures(industryType, companyName = 'Workspace') {
 
   if (ind.includes('real_estate_jcl') || ind.includes('jcl')) {
     return {
-      badge: "Real Estate & Land OS",
+      badge: "JCL Office",
       title: `Powered by ${companyName}`,
       subtitle: "Integrated land registry, pre-sale allocations, client relationship management, and property operations.",
       features: [
