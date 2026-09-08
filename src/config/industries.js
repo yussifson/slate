@@ -876,8 +876,6 @@ export const INDUSTRIES = {
       { label: 'Templates', path: '/real-estate/document-templates', icon: 'FileText' },
       { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
       { label: 'Market Data', path: '/real-estate/market-data', icon: 'Globe' },
-      { label: 'Comparable Properties', path: '/real-estate/comparable-properties', icon: 'Layers' },
-      { label: 'Agent Metrics', path: '/real-estate/agent-metrics', icon: 'BarChart2' },
       { label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
       { label: 'Reports', path: '/reports', icon: 'FileText' },
       { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
