@@ -517,7 +517,6 @@ export default function JCLLeases() {
                   </div>
                 </div>
               );
-            );
           })}
         </div>
       ) : (
