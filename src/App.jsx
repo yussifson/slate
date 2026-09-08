@@ -1300,10 +1300,10 @@ function PlatformRoutes() {
       <Route path="/real-estate/rent-payments" element={<SmartRentPaymentsRouter />} />
       <Route path="/real-estate/maintenance" element={<SmartMaintenanceRouter />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
-      <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
+      <Route path="/real-estate/agent-metrics" element={<SmartAgentMetricsRouter />} />
       <Route path="/real-estate/audit-log" element={<SmartAuditLogRouter />} />
       <Route path="/real-estate/commission-rules" element={<SmartCommissionRulesRouter />} />
-      <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
+      <Route path="/real-estate/comparable-properties" element={<SmartComparablePropertiesRouter />} />
       <Route path="/real-estate/contractor-reviews" element={<SmartContractorReviewsRouter />} />
       <Route path="/real-estate/contractors" element={<SmartContractorsRouter />} />
       <Route path="/real-estate/counter-offers" element={<SmartCounterOffersRouter />} />
@@ -1312,11 +1312,13 @@ function PlatformRoutes() {
       <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/escrow" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/lease-renewals" element={<SmartLeaseRenewalsRouter />} />
-      <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
+      <Route path="/real-estate/market-data" element={<SmartMarketDataRouter />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
       <Route path="/real-estate/payment-schedules" element={<SmartPaymentSchedulesRouter />} />
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
-      <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
+      <Route path="/real-estate/team-management" element={<SmartTeamManagementRouter />} />
+      <Route path="/real-estate/tenant-portal" element={<SmartTenantPortalRouter />} />
+      <Route path="/real-estate/landlord-portal" element={<SmartLandlordPortalRouter />} />
       <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
       <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
 
