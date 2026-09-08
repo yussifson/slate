@@ -70,6 +70,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     autoRefreshToken: true,
     storageKey: 'sb-optavel-auth-token', // Explicit key prevents collisions across subdomains
+    lock: false, // Disables Web LockManager contention across multiple open tabs / subdomains
   },
   global: {
     fetch: customFetch
