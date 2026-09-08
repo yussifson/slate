@@ -15,7 +15,7 @@ import { Button} from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";
 import GlobalChatPanel from "@/components/chat/GlobalChatPanel";
-import Chat from "@/pages/Chat";
+const Chat = React.lazy(() => import("@/pages/Chat"));
 import { useChatDock } from "@/hooks/useChatDock";
 import SpotlightSearch from "./SpotlightSearch";
 import GlobalVideoOverlay from "@/components/video/GlobalVideoOverlay";

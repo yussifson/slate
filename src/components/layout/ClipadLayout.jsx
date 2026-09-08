@@ -5,7 +5,7 @@ import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
 import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 import ClipadSidebar from '@/components/clipad/ClipadSidebar';
 import { useChatDock } from '@/hooks/useChatDock';
-import ClipadChat from '@/pages/clipad/ClipadChat';
+const ClipadChat = React.lazy(() => import('@/pages/clipad/ClipadChat'));
 import { MessageSquare, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
