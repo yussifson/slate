@@ -509,12 +509,36 @@ const JCLTrustAccountingPage = React.lazy(() => import('./pages/real-estate-jcl/
 const JCLEscrowAccountsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEscrowAccounts'));
 const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
 const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
+const JCLCounterOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCounterOffers'));
+const JCLPaymentSchedulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPaymentSchedules'));
+const JCLRentPaymentsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLRentPayments'));
 
 const SmartOffersRouter = () => {
   const { user } = useAuth();
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
   if (ind === 'real_estate_jcl') return <JCLOffersPage />;
   return <RealEstateOffers />;
+};
+
+const SmartCounterOffersRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLCounterOffersPage />;
+  return <RealEstateCounterOffers />;
+};
+
+const SmartPaymentSchedulesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLPaymentSchedulesPage />;
+  return <RealEstatePaymentSchedules />;
+};
+
+const SmartRentPaymentsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLRentPaymentsPage />;
+  return <RealEstateRentPayments />;
 };
 
 const SmartTrustAccountingRouter = () => {
@@ -1158,7 +1182,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/transactions" element={<SmartTransactionsRouter />} />
       <Route path="/real-estate/offers" element={<SmartOffersRouter />} />
       <Route path="/real-estate/commissions" element={<SmartCommissionsRouter />} />
-      <Route path="/real-estate/rent-payments" element={<RealEstateRentPayments />} />
+      <Route path="/real-estate/rent-payments" element={<SmartRentPaymentsRouter />} />
       <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
       <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
@@ -1167,7 +1191,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
       <Route path="/real-estate/contractor-reviews" element={<RealEstateContractorReviews />} />
       <Route path="/real-estate/contractors" element={<RealEstateContractors />} />
-      <Route path="/real-estate/counter-offers" element={<RealEstateCounterOffers />} />
+      <Route path="/real-estate/counter-offers" element={<SmartCounterOffersRouter />} />
       <Route path="/real-estate/document-templates" element={<RealEstateDocumentTemplates />} />
       <Route path="/real-estate/e-signatures" element={<RealEstateESignatures />} />
       <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
@@ -1175,7 +1199,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/lease-renewals" element={<RealEstateLeaseRenewals />} />
       <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
-      <Route path="/real-estate/payment-schedules" element={<RealEstatePaymentSchedules />} />
+      <Route path="/real-estate/payment-schedules" element={<SmartPaymentSchedulesRouter />} />
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
       <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
