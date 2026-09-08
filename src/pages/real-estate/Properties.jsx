@@ -12,6 +12,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RealEstateAPI } from '@/api/RealEstateAPI';
 import { toast } from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 import { REPageHeader } from '@/components/real-estate/RealEstateViewKit';
 import ViewToggle from '@/components/shared/ViewToggle';
 import { useViewPreference } from '@/hooks/useViewPreference';
@@ -149,87 +150,118 @@ export default function Properties() {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
-  const PropertyCard = ({ property }) => (
-    <div className="group bg-card/40 backdrop-blur-md border border-border/60 rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 hover:shadow-2xl hover:border-primary/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
-      {/* Real Estate Specific Decoration */}
-      <div className="absolute top-0 right-0 border-t-[80px] border-r-[80px] border-t-transparent border-r-primary/10 pointer-events-none group-hover:border-r-primary/20 transition-colors duration-500 z-0" />
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[4rem] pointer-events-none z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100" />
-      
-      <div className="flex items-start justify-between mb-4 sm:mb-5 relative z-10">
-        <div className="flex-1 pr-12">
-          <Badge className={`mb-2 sm:mb-3 uppercase tracking-wider text-[10px] font-extrabold border ${statusColors[property.status?.toLowerCase()] || statusColors.active}`}>
-            {property.status || 'Active'}
-          </Badge>
-          <h3 className="text-xl sm:text-2xl font-black text-foreground group-hover:text-primary transition-colors line-clamp-1">{property.address}</h3>
-          <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-1 sm:mt-2 flex items-center gap-1.5 truncate">
-            <MapPin className="w-4 h-4 text-primary/60 shrink-0" /> {property.city}, {property.state} {property.zip_code}
-          </p>
-        </div>
-      </div>
+  const PropertyCard = ({ property }) => {
+    const priceSqft = property.square_feet > 0 ? (property.price / property.square_feet).toFixed(1) : null;
 
-      <div className="absolute top-4 right-4 flex gap-1.5 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity z-10">
-        <Button
-          size="icon"
-          variant="secondary"
-          onClick={() => handleEdit(property)}
-          className="h-8 w-8 bg-white/90 dark:bg-black/90 backdrop-blur-sm hover:bg-primary hover:text-white text-primary transition-colors border-0 shadow-sm"
-          title="Edit Property"
-        >
-          <Edit className="w-4 h-4" />
-        </Button>
-        <Button
-          size="icon"
-          variant="destructive"
-          onClick={async () => {
-            if(window.confirm('Are you sure you want to delete this property?')) {
-              try {
-                await RealEstateAPI.deleteProperty(companyId, property.id, user.id);
-                const res = await powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
-                setProperties(res.rows._array || Array.from(res.rows));
-                toast.success('Property deleted');
-              } catch (e) {
-                toast.error(e.message);
-              }
-            }
-          }}
-          className="h-8 w-8 bg-red-100/90 dark:bg-red-900/90 backdrop-blur-sm hover:bg-red-500 text-red-600 hover:text-white transition-colors border-0 shadow-sm"
-          title="Delete Property"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
+    return (
+      <div
+        onClick={() => handleEdit(property)}
+        className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer h-full"
+      >
+        {/* Colour Banner Header */}
+        <div className={cn(
+          "relative h-28 flex flex-col justify-between p-4 overflow-hidden",
+          property.status === 'active' ? 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500' :
+          property.status === 'pending' ? 'bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-400' :
+          property.status === 'sold' ? 'bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-500' :
+          'bg-gradient-to-br from-slate-600 via-slate-500 to-slate-400'
+        )}>
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+          <div className="flex items-start justify-between relative z-10">
+            <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+              {property.property_type || 'Residential'}
+            </span>
+            <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+              {property.status || 'Active'}
+            </span>
+          </div>
+          <div className="relative z-10">
+            <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Listing Price</p>
+            <p className="text-2xl font-extrabold text-white tracking-tight">
+              ${parseFloat(property.price || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}
+            </p>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5 flex-1 relative z-10">
-        <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-center border border-primary/10">
-          <BedDouble className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-1" />
-          <p className="font-bold text-base sm:text-lg leading-none">{property.bedrooms}</p>
-          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Beds</p>
-        </div>
-        <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-center border border-primary/10">
-          <Bath className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-1" />
-          <p className="font-bold text-base sm:text-lg leading-none">{property.bathrooms}</p>
-          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Baths</p>
-        </div>
-        <div className="bg-primary/5 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex flex-col items-center justify-center border border-primary/10">
-          <Square className="w-4 h-4 sm:w-5 sm:h-5 text-primary mb-1" />
-          <p className="font-bold text-base sm:text-lg leading-none truncate max-w-full">{property.square_feet?.toLocaleString() || 0}</p>
-          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mt-1">Sq Ft</p>
-        </div>
-      </div>
+        {/* Card Body */}
+        <div className="p-4 flex flex-col gap-3 flex-1">
+          <div>
+            <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+              {property.address}
+            </h3>
+            <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
+              <MapPin className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+              <span className="truncate">{[property.city, property.state, property.zip_code].filter(Boolean).join(', ') || 'Prime Location'}</span>
+            </div>
+          </div>
 
-      <div className="flex items-center justify-between pt-3.5 sm:pt-4 border-t border-border/40 mt-auto relative z-10 gap-2">
-        <div className="min-w-0">
-          <p className="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-0.5">List Price</p>
-          <p className="font-black text-lg sm:text-2xl text-primary flex items-center truncate">
-            ${parseFloat(property.price || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-          </p>
+          {/* 3-Spec Blueprint Strip */}
+          <div className="grid grid-cols-3 divide-x divide-border/60 rounded-xl border border-border/60 bg-muted/30 overflow-hidden">
+            <div className="flex flex-col items-center py-2.5 gap-0.5">
+              <BedDouble className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-sm font-bold text-foreground">{property.bedrooms ?? '—'}</span>
+              <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">Beds</span>
+            </div>
+            <div className="flex flex-col items-center py-2.5 gap-0.5">
+              <Bath className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-sm font-bold text-foreground">{property.bathrooms ?? '—'}</span>
+              <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">Baths</span>
+            </div>
+            <div className="flex flex-col items-center py-2.5 gap-0.5">
+              <Square className="h-3.5 w-3.5 text-muted-foreground" />
+              <span className="text-sm font-bold text-foreground">{property.square_feet ? property.square_feet.toLocaleString() : '—'}</span>
+              <span className="text-[9px] uppercase font-semibold text-muted-foreground tracking-wider">Sq Ft</span>
+            </div>
+          </div>
+
+          {priceSqft && (
+            <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+              <span className="text-muted-foreground font-medium">Price / sq ft</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400">${priceSqft}</span>
+            </div>
+          )}
+
+          <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
+            <span className="text-[11px] font-medium text-muted-foreground">
+              Year Built: <strong className="text-foreground">{property.year_built || 'N/A'}</strong>
+            </span>
+            <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground hover:text-emerald-600"
+                onClick={() => handleEdit(property)}
+                title="Edit Property"
+              >
+                <Edit className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                onClick={async () => {
+                  if (window.confirm('Are you sure you want to delete this property?')) {
+                    try {
+                      await RealEstateAPI.deleteProperty(companyId, property.id, user.id);
+                      const res = await powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+                      setProperties(res.rows._array || Array.from(res.rows));
+                      toast.success('Property deleted');
+                    } catch (e) {
+                      toast.error(e.message);
+                    }
+                  }
+                }}
+                title="Delete Property"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </div>
         </div>
-        <Badge variant="outline" className="bg-background font-bold uppercase text-[9px] sm:text-[10px] px-2.5 py-1 border-border/50 text-foreground shrink-0">
-          {property.property_type}
-        </Badge>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6">

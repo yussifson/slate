@@ -99,8 +99,8 @@ export default function DataOracle() {
           <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">Data Oracle</h3>
           <p className="text-xs font-medium text-slate-500 mt-0.5">Natural Language Database Interface</p>
         </div>
-        <div className="ml-auto flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800/50 px-3 py-1.5 rounded-full shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="ml-auto flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 px-3 py-1.5 rounded-full shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           Live
         </div>
       </div>
