@@ -507,7 +507,38 @@ const SmartLeasesRouter = () => {
 
 const JCLTrustAccountingPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTrustAccounting'));
 const JCLEscrowAccountsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEscrowAccounts'));
-const JCLMaintenancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaintenance'));
+const JCLDocumentTemplatesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDocumentTemplates'));
+const JCLESignaturesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLESignatures'));
+const JCLCommissionRulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissionRules'));
+const JCLAuditLogPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAuditLog'));
+
+const SmartDocumentTemplatesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLDocumentTemplatesPage />;
+  return <RealEstateDocumentTemplates />;
+};
+
+const SmartESignaturesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLESignaturesPage />;
+  return <RealEstateESignatures />;
+};
+
+const SmartCommissionRulesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLCommissionRulesPage />;
+  return <RealEstateCommissionRules />;
+};
+
+const SmartAuditLogRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLAuditLogPage />;
+  return <RealEstateAuditLog />;
+};
 const JCLContractorsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractors'));
 const JCLContractorReviewsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractorReviews'));
 const JCLLeaseRenewalsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeaseRenewals'));
@@ -1217,14 +1248,14 @@ function PlatformRoutes() {
       <Route path="/real-estate/maintenance" element={<SmartMaintenanceRouter />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
       <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
-      <Route path="/real-estate/audit-log" element={<RealEstateAuditLog />} />
-      <Route path="/real-estate/commission-rules" element={<RealEstateCommissionRules />} />
+      <Route path="/real-estate/audit-log" element={<SmartAuditLogRouter />} />
+      <Route path="/real-estate/commission-rules" element={<SmartCommissionRulesRouter />} />
       <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
       <Route path="/real-estate/contractor-reviews" element={<SmartContractorReviewsRouter />} />
       <Route path="/real-estate/contractors" element={<SmartContractorsRouter />} />
       <Route path="/real-estate/counter-offers" element={<SmartCounterOffersRouter />} />
-      <Route path="/real-estate/document-templates" element={<RealEstateDocumentTemplates />} />
-      <Route path="/real-estate/e-signatures" element={<RealEstateESignatures />} />
+      <Route path="/real-estate/document-templates" element={<SmartDocumentTemplatesRouter />} />
+      <Route path="/real-estate/e-signatures" element={<SmartESignaturesRouter />} />
       <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/escrow" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/lease-renewals" element={<SmartLeaseRenewalsRouter />} />
