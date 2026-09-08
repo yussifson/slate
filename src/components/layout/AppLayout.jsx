@@ -10,7 +10,7 @@ import TopBar from "./TopBar";
 import MobileBottomNav from "./MobileBottomNav";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
-import { Building2, X, Clock, CreditCard, WifiOff} from "lucide-react";
+import { Building2, X, Clock, CreditCard, WifiOff, MessageSquare } from "lucide-react";
 import { Button} from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";

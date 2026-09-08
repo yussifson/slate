@@ -443,6 +443,8 @@ const RealEstateRecommendations = React.lazy(() => import('./pages/real-estate/R
 const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/TeamManagement'));
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
 const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analytics'));
+const RealEstateTenantPortal = React.lazy(() => import('./pages/real-estate/TenantPortal'));
+const RealEstateLandlordPortal = React.lazy(() => import('./pages/real-estate/LandlordPortal'));
 
 // JCL Royal Group — Dedicated Isolated Vertical Components
 const JCLLandManagement = React.lazy(() => import('./pages/real-estate-jcl/LandManagement'));
@@ -542,6 +544,7 @@ const SmartAuditLogRouter = () => {
 const JCLContractorsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractors'));
 const JCLContractorReviewsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractorReviews'));
 const JCLLeaseRenewalsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeaseRenewals'));
+const JCLMaintenancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaintenance'));
 
 const SmartMaintenanceRouter = () => {
   const { user } = useAuth();
@@ -571,6 +574,7 @@ const SmartLeaseRenewalsRouter = () => {
   return <RealEstateLeaseRenewals />;
 };
 const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
+const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
 const JCLCounterOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCounterOffers'));
 const JCLPaymentSchedulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPaymentSchedules'));
 const JCLRentPaymentsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLRentPayments'));
