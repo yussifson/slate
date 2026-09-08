@@ -89,7 +89,7 @@ export default function DataOracle() {
   };
 
   return (
-    <div className="flex flex-col bg-card dark:bg-background/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none" style={{ minHeight: '560px', maxHeight: '72vh' }}>
+    <div className="flex flex-col bg-card dark:bg-background/40 rounded-2xl border-[0.5px] border-slate-200 dark:border-white/10 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none h-[calc(100vh-140px)] min-h-[500px]">
       {/* Header */}
       <div className="flex items-center gap-4 px-6 py-5 border-b border-slate-200 dark:border-border bg-gradient-to-r from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900/20 shrink-0">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md shadow-blue-500/20">

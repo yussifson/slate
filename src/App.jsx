@@ -505,11 +505,44 @@ const SmartLeasesRouter = () => {
   return <RealEstateLeases />;
 };
 
+const JCLTrustAccountingPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTrustAccounting'));
+const JCLEscrowAccountsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEscrowAccounts'));
+const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
+const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
+
 const SmartOffersRouter = () => {
   const { user } = useAuth();
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
   if (ind === 'real_estate_jcl') return <JCLOffersPage />;
   return <RealEstateOffers />;
+};
+
+const SmartTrustAccountingRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLTrustAccountingPage />;
+  return <RealEstateTrustAccounting />;
+};
+
+const SmartEscrowAccountsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLEscrowAccountsPage />;
+  return <RealEstateEscrowAccounts />;
+};
+
+const SmartCommissionsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLCommissionsPage />;
+  return <RealEstateCommissions />;
+};
+
+const SmartAnalyticsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLAnalyticsPage />;
+  return <RealEstateAnalytics />;
 };
 
 // Religion Pages
@@ -1124,7 +1157,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/viewings" element={<SmartViewingsRouter />} />
       <Route path="/real-estate/transactions" element={<SmartTransactionsRouter />} />
       <Route path="/real-estate/offers" element={<SmartOffersRouter />} />
-      <Route path="/real-estate/commissions" element={<RealEstateCommissions />} />
+      <Route path="/real-estate/commissions" element={<SmartCommissionsRouter />} />
       <Route path="/real-estate/rent-payments" element={<RealEstateRentPayments />} />
       <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
@@ -1137,16 +1170,16 @@ function PlatformRoutes() {
       <Route path="/real-estate/counter-offers" element={<RealEstateCounterOffers />} />
       <Route path="/real-estate/document-templates" element={<RealEstateDocumentTemplates />} />
       <Route path="/real-estate/e-signatures" element={<RealEstateESignatures />} />
-      <Route path="/real-estate/escrow-accounts" element={<RealEstateEscrowAccounts />} />
-      <Route path="/real-estate/escrow" element={<RealEstateEscrowAccounts />} />
+      <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
+      <Route path="/real-estate/escrow" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/lease-renewals" element={<RealEstateLeaseRenewals />} />
       <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
       <Route path="/real-estate/payment-schedules" element={<RealEstatePaymentSchedules />} />
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
-      <Route path="/real-estate/trust-accounting" element={<RealEstateTrustAccounting />} />
-      <Route path="/real-estate/analytics" element={<RealEstateAnalytics />} />
+      <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
+      <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />

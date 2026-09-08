@@ -159,18 +159,17 @@ export const RealEstateAnalytics = {
            COUNT(DISTINCT c.id) as client_count,
            COALESCE(SUM(CASE WHEN t.status = 'closed' THEN t.sale_price ELSE 0 END), 0) as sales_volume,
            COALESCE(AVG(CASE WHEN t.status = 'closed' THEN t.sale_price ELSE 0 END), 0) as average_sale_price,
-           COALESCE(SUM(cd.total_commission_amount), 0) as commission_earned,
+           0 as commission_earned,
            0 as return_client_rate,
            'monthly' as metric_period
          FROM univ_re_team_members u
          LEFT JOIN univ_re_properties p ON u.id = p.agent_id AND p.company_id = ?
          LEFT JOIN univ_re_clients c ON u.id = c.assigned_agent AND c.company_id = ?
          LEFT JOIN univ_re_transactions t ON u.id = t.agent_id AND t.company_id = ?
-         LEFT JOIN univ_re_commission_details cd ON u.id = cd.agent_id AND cd.company_id = ?
          WHERE u.company_id = ? AND u.role IN ('agent', 'team_lead')
          GROUP BY u.id, u.name
          ORDER BY sales_volume DESC`,
-        [companyId, companyId, companyId, companyId, companyId]
+        [companyId, companyId, companyId, companyId]
       );
 
       return (result.rows._array || []).map(row => ({
