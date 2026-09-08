@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useImpersonation } from "@/lib/ImpersonationContext";
-import { useCompanyId } from "@/hooks/useCompanyId";
-import { useQuery } from "@powersync/react";
+import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { base44 } from "@/api/base44Client"; // Keep for other possible uses, or remove if unused
 import LawDashboard from "@/components/dashboard/LawDashboard";
 import SchoolDashboard from "@/components/dashboard/SchoolDashboard";
@@ -22,11 +21,9 @@ export default function CompanyDashboard() {
   const { user } = useAuth();
   const { impersonatedCompany } = useImpersonation();
   const defaultCompanyId = useCompanyId();
-  const companyId = impersonatedCompany?.id || user?.company_id || defaultCompanyId;
-
-  // Use PowerSync to read from the unified offline DB instead of base44 network calls
-  const { data: companies = [] } = useQuery("SELECT * FROM companies WHERE id = ?", [companyId]);
-  const company = companies.length > 0 ? companies[0] : null;
+  const { company: fetchedCompany } = useCompany();
+  const company = impersonatedCompany || fetchedCompany;
+  const companyId = company?.id || user?.company_id || defaultCompanyId;
 
   const isAdmin = ["company_admin", "super_admin", "admin"].includes(user?.role);
   const dbIndustry = company?.industry_type;

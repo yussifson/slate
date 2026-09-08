@@ -6,10 +6,12 @@ import { ErrorBoundary } from '@/components/ErrorBoundary.jsx'
 import { registerSW } from 'virtual:pwa-register'
 import i18n from '@/i18n/config.js'
 import { I18nextProvider } from 'react-i18next'
+import { Capacitor } from '@capacitor/core';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 
-
-CapacitorUpdater.notifyAppReady();
+if (Capacitor.isNativePlatform()) {
+  CapacitorUpdater.notifyAppReady().catch(console.error);
+}
 
 const updateSW = registerSW({
   onNeedRefresh() {

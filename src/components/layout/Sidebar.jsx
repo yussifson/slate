@@ -106,8 +106,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     queryKey: ['live_employee_role', user?.id, companyId],
     queryFn: async () => {
       if (!user?.id || !companyId) return null;
-      const empRes = await powerSync.execute('SELECT role FROM univ_hr_employees WHERE user_id = ? AND company_id = ? LIMIT 1', [user.id, companyId]);
-      if (empRes.rows?.length > 0) return empRes.rows._array[0].role;
+      const emp = await powerSync.getOptional('SELECT role FROM univ_hr_employees WHERE user_id = ? AND company_id = ? LIMIT 1', [user.id, companyId]);
+      if (emp?.role) return emp.role;
       return user?.role; // Fallback to auth token
     },
     enabled: !!user?.id && !!companyId
@@ -124,14 +124,14 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       
       try {
         // 1. Resolve role name to role UUID
-        const roleRes = await powerSync.execute('SELECT id FROM platform_roles WHERE company_id = ? AND name = ? LIMIT 1', [companyId, activeRoleName]);
-        if (roleRes.rows?.length > 0) {
-          const roleId = roleRes.rows._array[0].id;
+        const roleRecord = await powerSync.getOptional('SELECT id FROM platform_roles WHERE company_id = ? AND name = ? LIMIT 1', [companyId, activeRoleName]);
+        if (roleRecord?.id) {
+          const roleId = roleRecord.id;
           
           // 2. Fetch permissions for that UUID
-          const permRes = await powerSync.execute('SELECT feature_path FROM platform_role_permissions WHERE role_id = ?', [roleId]);
-          if (permRes.rows?.length > 0) {
-            return permRes.rows._array.map(p => p.feature_path);
+          const permList = await powerSync.getAll('SELECT feature_path FROM platform_role_permissions WHERE role_id = ?', [roleId]);
+          if (permList && permList.length > 0) {
+            return permList.map(p => p.feature_path);
           }
         }
       } catch (e) {
