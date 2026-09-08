@@ -1177,6 +1177,5 @@ RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
  </>
  );
 
- const portalTarget = document.getElementById('right-docked-panel-portal');
- return portalTarget ? createPortal(content, portalTarget) : content;
+  return content;
 }

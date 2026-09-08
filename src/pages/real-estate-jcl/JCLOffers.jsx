@@ -426,7 +426,6 @@ export default function JCLOffers() {
             const st = STATUS_CONFIG[offer.status] || STATUS_CONFIG.pending;
 
             return (
-              return (
                 <div
                   key={offer.id}
                   onClick={() => setInspectorOffer(offer)}

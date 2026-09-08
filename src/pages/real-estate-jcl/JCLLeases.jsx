@@ -416,7 +416,6 @@ export default function JCLLeases() {
             const st = STATUS_CONFIG[lease.status] || STATUS_CONFIG.active;
 
             return (
-              return (
                 <div
                   key={lease.id}
                   onClick={() => setInspectorLease(lease)}
