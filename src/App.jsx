@@ -631,6 +631,55 @@ const SmartAnalyticsRouter = () => {
   return <RealEstateAnalytics />;
 };
 
+const JCLComparablePropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLComparableProperties'));
+const JCLMarketDataPage = React.lazy(() => import('./pages/real-estate-jcl/JCLMarketData'));
+const JCLTenantPortalPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTenantPortal'));
+const JCLLandlordPortalPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLandlordPortal'));
+const JCLTeamManagementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTeamManagement'));
+const JCLAgentMetricsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAgentMetrics'));
+
+const SmartComparablePropertiesRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLComparablePropertiesPage />;
+  return <RealEstateComparableProperties />;
+};
+
+const SmartMarketDataRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLMarketDataPage />;
+  return <RealEstateMarketData />;
+};
+
+const SmartTenantPortalRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLTenantPortalPage />;
+  return <RealEstateTenantPortal />;
+};
+
+const SmartLandlordPortalRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLLandlordPortalPage />;
+  return <RealEstateLandlordPortal />;
+};
+
+const SmartTeamManagementRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLTeamManagementPage />;
+  return <RealEstateTeamManagement />;
+};
+
+const SmartAgentMetricsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLAgentMetricsPage />;
+  return <RealEstateAgentMetrics />;
+};
+
 // Religion Pages
 const ReligionMembers = React.lazy(() => import('./pages/religion/Members'));
 const ReligionGroups = React.lazy(() => import('./pages/religion/Groups'));
