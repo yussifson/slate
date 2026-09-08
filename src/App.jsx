@@ -507,7 +507,38 @@ const SmartLeasesRouter = () => {
 
 const JCLTrustAccountingPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTrustAccounting'));
 const JCLEscrowAccountsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEscrowAccounts'));
-const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
+const JCLMaintenancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaintenance'));
+const JCLContractorsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractors'));
+const JCLContractorReviewsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractorReviews'));
+const JCLLeaseRenewalsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeaseRenewals'));
+
+const SmartMaintenanceRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLMaintenancePage />;
+  return <RealEstateMaintenance />;
+};
+
+const SmartContractorsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLContractorsPage />;
+  return <RealEstateContractors />;
+};
+
+const SmartContractorReviewsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLContractorReviewsPage />;
+  return <RealEstateContractorReviews />;
+};
+
+const SmartLeaseRenewalsRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLLeaseRenewalsPage />;
+  return <RealEstateLeaseRenewals />;
+};
 const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
 const JCLCounterOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCounterOffers'));
 const JCLPaymentSchedulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPaymentSchedules'));
@@ -1183,20 +1214,20 @@ function PlatformRoutes() {
       <Route path="/real-estate/offers" element={<SmartOffersRouter />} />
       <Route path="/real-estate/commissions" element={<SmartCommissionsRouter />} />
       <Route path="/real-estate/rent-payments" element={<SmartRentPaymentsRouter />} />
-      <Route path="/real-estate/maintenance" element={<RealEstateMaintenance />} />
+      <Route path="/real-estate/maintenance" element={<SmartMaintenanceRouter />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
       <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
       <Route path="/real-estate/audit-log" element={<RealEstateAuditLog />} />
       <Route path="/real-estate/commission-rules" element={<RealEstateCommissionRules />} />
       <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
-      <Route path="/real-estate/contractor-reviews" element={<RealEstateContractorReviews />} />
-      <Route path="/real-estate/contractors" element={<RealEstateContractors />} />
+      <Route path="/real-estate/contractor-reviews" element={<SmartContractorReviewsRouter />} />
+      <Route path="/real-estate/contractors" element={<SmartContractorsRouter />} />
       <Route path="/real-estate/counter-offers" element={<SmartCounterOffersRouter />} />
       <Route path="/real-estate/document-templates" element={<RealEstateDocumentTemplates />} />
       <Route path="/real-estate/e-signatures" element={<RealEstateESignatures />} />
       <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/escrow" element={<SmartEscrowAccountsRouter />} />
-      <Route path="/real-estate/lease-renewals" element={<RealEstateLeaseRenewals />} />
+      <Route path="/real-estate/lease-renewals" element={<SmartLeaseRenewalsRouter />} />
       <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
       <Route path="/real-estate/payment-schedules" element={<SmartPaymentSchedulesRouter />} />
