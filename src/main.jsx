@@ -57,7 +57,13 @@ window.addEventListener('vite:preloadError', async (event) => {
 });
 
 window.addEventListener('unhandledrejection', async (event) => {
-  const msg = event.reason?.message || '';
+  const msg = event.reason?.message || String(event.reason || '');
+
+  // Ignore Service Worker Cache.put NetworkError (harmless browser background caching failure)
+  if (msg.includes("Failed to execute 'put' on 'Cache'") || msg.includes('NetworkError when attempting to fetch resource') || msg.includes('Cache.put')) {
+    console.warn('Service worker cache.put NetworkError ignored:', msg);
+    return;
+  }
 
   // Handle stale Vercel chunks: "Failed to fetch dynamically imported module"
   if (msg.includes('Failed to fetch dynamically imported module') || msg.includes('Importing a module script failed')) {
@@ -80,7 +86,6 @@ window.addEventListener('unhandledrejection', async (event) => {
 
   if (msg.includes('importScripts') && msg.includes('workbox')) {
     console.warn('Workbox importScripts failed.');
-    // CAUTION: Do not unregister the service worker if offline, as reloading will show the Dinosaur error.
     if (!navigator.onLine) {
       console.log('Currently offline, ignoring Workbox update failure.');
       return;
