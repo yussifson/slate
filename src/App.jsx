@@ -572,6 +572,7 @@ const SmartLeaseRenewalsRouter = () => {
   return <RealEstateLeaseRenewals />;
 };
 const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
+const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
 const JCLCounterOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCounterOffers'));
 const JCLPaymentSchedulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPaymentSchedules'));
 const JCLRentPaymentsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLRentPayments'));

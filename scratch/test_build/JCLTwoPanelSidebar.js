@@ -1,0 +1,375 @@
+import { jsx, jsxs } from "react/jsx-runtime";
+import React, { useState, useMemo } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
+import {
+  LayoutDashboard,
+  Sparkles,
+  Home,
+  Wrench,
+  Wallet,
+  Briefcase,
+  FileText,
+  Settings,
+  Compass,
+  Users,
+  Clock,
+  Eye,
+  MessageCircle,
+  Banknote,
+  FileCheck,
+  RotateCcw,
+  Users2,
+  Star,
+  Lock,
+  CreditCard,
+  Calendar,
+  TrendingUp,
+  Receipt,
+  HeartHandshake,
+  PenTool,
+  Globe,
+  LineChart,
+  ClipboardList,
+  Blocks,
+  Zap,
+  ChevronDown,
+  Plus,
+  MessageSquare,
+  LifeBuoy,
+  RefreshCw,
+  LogOut,
+  ShieldCheck,
+  UserCheck
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
+import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+const JCL_DEPARTMENTS = [
+  {
+    id: "overview",
+    label: "Overview & Intelligence",
+    icon: LayoutDashboard,
+    color: "emerald",
+    items: [
+      { label: "Dashboard", path: "/", icon: LayoutDashboard },
+      { label: "Customer Timeline", path: "/real-estate/customer-timeline", icon: Clock },
+      { label: "Market Data", path: "/real-estate/market-data", icon: Globe },
+      { label: "Analytics & Insights", path: "/real-estate/analytics", icon: LineChart }
+    ]
+  },
+  {
+    id: "sales",
+    label: "Sales & CRM",
+    icon: Sparkles,
+    color: "amber",
+    actionLabel: "New Lead",
+    actionPath: "/real-estate/crm-leads",
+    items: [
+      { label: "CRM Leads", path: "/real-estate/crm-leads", icon: Sparkles, badgeKey: "leads" },
+      { label: "Clients Directory", path: "/real-estate/clients", icon: Users },
+      { label: "Tours & Viewings", path: "/real-estate/viewings", icon: Eye, badgeKey: "viewings" },
+      { label: "Purchase Offers", path: "/real-estate/offers", icon: FileText, badgeKey: "offers" },
+      { label: "Counter Offers", path: "/real-estate/counter-offers", icon: MessageCircle },
+      { label: "Deals & Transactions", path: "/real-estate/transactions", icon: Banknote }
+    ]
+  },
+  {
+    id: "property",
+    label: "Land & Properties",
+    icon: Home,
+    color: "blue",
+    actionLabel: "Add Property",
+    actionPath: "/real-estate/properties",
+    items: [
+      { label: "Land Parcels", path: "/real-estate/land", icon: Compass },
+      { label: "Properties Portfolio", path: "/real-estate/properties", icon: Home },
+      { label: "Leases & Contracts", path: "/real-estate/leases", icon: FileCheck },
+      { label: "Lease Renewals", path: "/real-estate/lease-renewals", icon: RotateCcw, badgeKey: "renewals" }
+    ]
+  },
+  {
+    id: "facilities",
+    label: "Facilities & Maintenance",
+    icon: Wrench,
+    color: "purple",
+    actionLabel: "New Work Order",
+    actionPath: "/real-estate/maintenance",
+    items: [
+      { label: "Maintenance Tickets", path: "/real-estate/maintenance", icon: Wrench, badgeKey: "tickets" },
+      { label: "Approved Contractors", path: "/real-estate/contractors", icon: Users2 },
+      { label: "Contractor Reviews", path: "/real-estate/contractor-reviews", icon: Star }
+    ]
+  },
+  {
+    id: "finance",
+    label: "Finance & Escrow",
+    icon: Wallet,
+    color: "indigo",
+    actionLabel: "Record Payment",
+    actionPath: "/real-estate/rent-payments",
+    items: [
+      { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
+      { label: "Escrow Accounts", path: "/real-estate/escrow", icon: Lock },
+      { label: "Rent Payments", path: "/real-estate/rent-payments", icon: CreditCard },
+      { label: "Payment Schedules", path: "/real-estate/payment-schedules", icon: Calendar },
+      { label: "Agent Commissions", path: "/real-estate/commissions", icon: TrendingUp },
+      { label: "Commission Rules", path: "/real-estate/commission-rules", icon: Settings },
+      { label: "Invoices & Billing", path: "/invoices", icon: Receipt }
+    ]
+  },
+  {
+    id: "projects",
+    label: "Projects & Engineering",
+    icon: Briefcase,
+    color: "orange",
+    actionLabel: "New Project",
+    actionPath: "/tasks",
+    items: [
+      { label: "Projects & Tasks", path: "/tasks", icon: Briefcase },
+      { label: "HR & Team Roster", path: "/hr", icon: HeartHandshake },
+      { label: "Civil Engineering & QS", path: "/real-estate/team-management", icon: UserCheck }
+    ]
+  },
+  {
+    id: "governance",
+    label: "Docs & Governance",
+    icon: FileText,
+    color: "teal",
+    actionLabel: "New Template",
+    actionPath: "/real-estate/document-templates",
+    items: [
+      { label: "Document Templates", path: "/real-estate/document-templates", icon: FileText },
+      { label: "E-Signatures Hub", path: "/real-estate/e-signatures", icon: PenTool },
+      { label: "Executive Reports", path: "/reports", icon: ClipboardList },
+      { label: "Audit & Compliance Log", path: "/real-estate/audit-log", icon: ShieldCheck }
+    ]
+  },
+  {
+    id: "settings",
+    label: "Settings & System",
+    icon: Settings,
+    color: "slate",
+    items: [
+      { label: "Integrations Hub", path: "/integrations", icon: Blocks },
+      { label: "Automations Engine", path: "/automations", icon: Zap },
+      { label: "Workspace Settings", path: "/settings", icon: Settings }
+    ]
+  }
+];
+export default function JCLTwoPanelSidebar({
+  user,
+  companyId,
+  companyData,
+  impersonatedCompany,
+  isAdmin,
+  customRolePermissions
+}) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
+  const [activeDeptId, setActiveDeptId] = useState(() => {
+    const currentPath = location.pathname;
+    const found = JCL_DEPARTMENTS.find((d) => d.items.some((item) => item.path === currentPath));
+    return found ? found.id : "overview";
+  });
+  const { data: counts = {} } = useQuery({
+    queryKey: ["jcl_sidebar_counts", companyId],
+    queryFn: async () => {
+      if (!companyId) return {};
+      try {
+        const [leadsRes, viewingsRes, offersRes, ticketsRes] = await Promise.all([
+          powerSync.execute("SELECT count(*) as cnt FROM univ_re_leads WHERE company_id = ? AND status = 'new'", [companyId]).catch(() => ({ rows: [] })),
+          powerSync.execute("SELECT count(*) as cnt FROM univ_re_viewings WHERE company_id = ? AND status = 'scheduled'", [companyId]).catch(() => ({ rows: [] })),
+          powerSync.execute("SELECT count(*) as cnt FROM univ_re_offers WHERE company_id = ? AND status = 'pending'", [companyId]).catch(() => ({ rows: [] })),
+          powerSync.execute("SELECT count(*) as cnt FROM univ_re_maintenance WHERE company_id = ? AND status = 'open'", [companyId]).catch(() => ({ rows: [] }))
+        ]);
+        return {
+          leads: leadsRes.rows._array?.[0]?.cnt || 0,
+          viewings: viewingsRes.rows._array?.[0]?.cnt || 0,
+          offers: offersRes.rows._array?.[0]?.cnt || 0,
+          tickets: ticketsRes.rows._array?.[0]?.cnt || 0,
+          renewals: 2
+        };
+      } catch (_e) {
+        return {};
+      }
+    },
+    enabled: !!companyId,
+    refetchInterval: 3e4
+  });
+  const activeDepartment = useMemo(() => {
+    return JCL_DEPARTMENTS.find((d) => d.id === activeDeptId) || JCL_DEPARTMENTS[0];
+  }, [activeDeptId]);
+  const filteredDeptItems = useMemo(() => {
+    if (isAdmin || !customRolePermissions) return activeDepartment.items;
+    return activeDepartment.items.filter((item) => customRolePermissions.includes(item.path));
+  }, [activeDepartment, isAdmin, customRolePermissions]);
+  const companyName = companyData?.name || impersonatedCompany?.name || user?.company_name || "JCL Royal Group";
+  return /* @__PURE__ */ jsxs("div", { className: "flex h-full select-none font-sans text-slate-900 dark:text-slate-100 border-r border-slate-200/80 dark:border-border shrink-0 bg-white dark:bg-background", children: [
+    /* @__PURE__ */ jsxs("div", { className: "w-14 shrink-0 flex flex-col items-center justify-between py-3 border-r border-slate-200/70 dark:border-border/70 bg-[#FAFAFA] dark:bg-background/90 z-20", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3 w-full px-2", children: [
+        /* @__PURE__ */ jsx("div", { className: "h-9 w-9 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm flex items-center justify-center shadow-sm", children: "JCL" }),
+        /* @__PURE__ */ jsx("div", { className: "w-8 h-[1px] bg-slate-200 dark:bg-border my-1" }),
+        /* @__PURE__ */ jsx("div", { className: "flex flex-col gap-1.5 w-full items-center", children: JCL_DEPARTMENTS.map((dept) => {
+          const IconComponent = dept.icon;
+          const isActive = activeDeptId === dept.id;
+          return /* @__PURE__ */ jsxs(
+            "button",
+            {
+              onClick: () => setActiveDeptId(dept.id),
+              title: dept.label,
+              className: cn(
+                "h-9 w-9 rounded-xl flex items-center justify-center transition-all duration-200 group relative",
+                isActive ? "bg-slate-200/80 dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold" : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50"
+              ),
+              children: [
+                /* @__PURE__ */ jsx(IconComponent, { className: "h-4 w-4 shrink-0" }),
+                isActive && /* @__PURE__ */ jsx("span", { className: "absolute -left-1.5 top-1/2 -translate-y-1/2 w-1 h-4 bg-emerald-600 dark:bg-emerald-400 rounded-r-full" })
+              ]
+            },
+            dept.id
+          );
+        }) })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-1.5 w-full items-center px-2", children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => navigate("/chat"),
+            title: "Chat & Support",
+            className: "h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors",
+            children: /* @__PURE__ */ jsx(MessageSquare, { className: "h-4 w-4" })
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => navigate("/settings"),
+            title: "Settings",
+            className: "h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors",
+            children: /* @__PURE__ */ jsx(Settings, { className: "h-4 w-4" })
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "w-[230px] shrink-0 flex flex-col justify-between p-3.5 bg-white dark:bg-background z-10", children: [
+      /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+        /* @__PURE__ */ jsxs("div", { className: "pb-3 border-b border-slate-200/70 dark:border-border/70 space-y-1.5", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+            /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
+              /* @__PURE__ */ jsx("h2", { className: "font-extrabold text-sm text-slate-900 dark:text-white truncate leading-tight", children: companyName }),
+              /* @__PURE__ */ jsx("p", { className: "text-[11px] font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5", children: "real_estate_jcl" })
+            ] }),
+            /* @__PURE__ */ jsxs(DropdownMenu, { children: [
+              /* @__PURE__ */ jsx(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsx("button", { className: "h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors", children: /* @__PURE__ */ jsx(ChevronDown, { className: "h-4 w-4" }) }) }),
+              /* @__PURE__ */ jsxs(DropdownMenuContent, { align: "end", className: "w-48 text-xs", children: [
+                /* @__PURE__ */ jsx(DropdownMenuLabel, { children: "Switch Workspace" }),
+                /* @__PURE__ */ jsx(DropdownMenuSeparator, {}),
+                /* @__PURE__ */ jsx(DropdownMenuItem, { onClick: () => navigate("/settings"), children: "Workspace Settings" }),
+                /* @__PURE__ */ jsx(DropdownMenuItem, { onClick: () => supabase.auth.signOut().then(() => navigate("/login")), children: "Sign Out" })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs(
+            "button",
+            {
+              onClick: () => navigate("/settings"),
+              className: "flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors",
+              children: [
+                /* @__PURE__ */ jsx(RefreshCw, { className: "h-3 w-3" }),
+                /* @__PURE__ */ jsx("span", { children: "Switch firm" })
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between px-1.5", children: [
+            /* @__PURE__ */ jsx("span", { className: "text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400", children: activeDepartment.label }),
+            activeDepartment.actionPath && /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: () => navigate(activeDepartment.actionPath),
+                title: activeDepartment.actionLabel || "Add New",
+                className: "h-5 w-5 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-slate-800 transition-colors",
+                children: /* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" })
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: "space-y-0.5", children: filteredDeptItems.map((item) => {
+            const ItemIcon = item.icon;
+            const isItemActive = location.pathname === item.path;
+            const badgeValue = item.badgeKey ? counts[item.badgeKey] : null;
+            return /* @__PURE__ */ jsxs(
+              Link,
+              {
+                to: item.path,
+                className: cn(
+                  "h-9 px-2.5 rounded-xl flex items-center justify-between text-xs font-semibold transition-all duration-150 group",
+                  isItemActive ? "bg-slate-200/70 dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs font-extrabold" : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                ),
+                children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2.5 min-w-0", children: [
+                    /* @__PURE__ */ jsx(ItemIcon, { className: cn(
+                      "h-4 w-4 shrink-0 transition-colors",
+                      isItemActive ? "text-slate-900 dark:text-white" : "text-slate-400 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white"
+                    ) }),
+                    /* @__PURE__ */ jsx("span", { className: "truncate", children: item.label })
+                  ] }),
+                  badgeValue > 0 && /* @__PURE__ */ jsx("span", { className: cn(
+                    "text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors",
+                    isItemActive ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900" : "bg-slate-200/80 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                  ), children: badgeValue })
+                ]
+              },
+              item.path
+            );
+          }) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "pt-3 border-t border-slate-200/70 dark:border-border/70 space-y-1", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors", children: [
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => setShowAvatarDialog(true),
+            className: "flex items-center gap-2 min-w-0 text-left",
+            children: [
+              /* @__PURE__ */ jsx("div", { className: "h-7 w-7 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 text-white font-extrabold flex items-center justify-center text-xs shadow-xs", children: (user?.full_name || user?.email || "A")[0].toUpperCase() }),
+              /* @__PURE__ */ jsxs("div", { className: "min-w-0", children: [
+                /* @__PURE__ */ jsx("p", { className: "text-xs font-bold text-slate-900 dark:text-white truncate leading-tight", children: user?.full_name || "Assigned Broker" }),
+                /* @__PURE__ */ jsx("p", { className: "text-[10px] text-slate-500 dark:text-slate-400 truncate", children: user?.email })
+              ] })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => supabase.auth.signOut().then(() => navigate("/login")),
+            title: "Sign Out",
+            className: "h-7 w-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-600 transition-colors",
+            children: /* @__PURE__ */ jsx(LogOut, { className: "h-3.5 w-3.5" })
+          }
+        )
+      ] }) })
+    ] }),
+    showAvatarDialog && /* @__PURE__ */ jsx(
+      ProfileAvatarDialog,
+      {
+        isOpen: showAvatarDialog,
+        onClose: () => setShowAvatarDialog(false),
+        user
+      }
+    )
+  ] });
+}
