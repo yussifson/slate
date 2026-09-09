@@ -14,6 +14,7 @@ export { RealEstateLeaseAutomation } from './RealEstateLeaseAutomation';
 export { RealEstateIntelligence } from './RealEstateIntelligence';
 export { RealEstateAnalytics } from './RealEstateAnalytics';
 export { powerSync } from './PowerSyncConnector';
+export * as glEngine from './glEngine';
 
 /**
  * Unified API client for real estate operations

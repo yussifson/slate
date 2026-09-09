@@ -7117,5 +7117,51 @@ export const AppSchema = new Schema({
         plan_url: column.text,
         status: column.text,
         notes: column.text
+    }),
+
+    // GENERAL LEDGER CORE INFRASTRUCTURE
+    gl_accounts: new Table({
+        id: column.text,
+        company_id: column.text,
+        code: column.text,
+        name: column.text,
+        type: column.text, // Asset, Liability, Equity, Revenue, Expense
+        parent_id: column.text,
+        is_active: column.integer,
+        description: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    gl_journal_entries: new Table({
+        id: column.text,
+        company_id: column.text,
+        entry_number: column.text,
+        entry_date: column.text,
+        description: column.text,
+        reference: column.text,
+        posted_by: column.text,
+        status: column.text, // posted, reversed
+        reversed_by_entry_id: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    gl_journal_line_items: new Table({
+        id: column.text,
+        company_id: column.text,
+        journal_entry_id: column.text,
+        account_id: column.text,
+        debit: column.real,
+        credit: column.real,
+        description: column.text,
+        created_at: column.text
+    }),
+    gl_audit_trail: new Table({
+        id: column.text,
+        company_id: column.text,
+        journal_entry_id: column.text,
+        action: column.text, // POST, REVERSE
+        performed_by: column.text,
+        performed_at: column.text,
+        details: column.text
     })
 });

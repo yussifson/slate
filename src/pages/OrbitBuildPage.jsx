@@ -161,6 +161,8 @@ const UnivLoyaltyPoint = React.lazy(() => import("@/components/universal/UnivLoy
 const UnivGeneralLedger = React.lazy(() => import("@/components/universal/UnivGeneralLedger"));
 const UnivExpenseReport = React.lazy(() => import("@/components/universal/UnivExpenseReport"));
 const UnivTaxFiling = React.lazy(() => import("@/components/universal/UnivTaxFiling"));
+const UnivTaxPayrollEngine = React.lazy(() => import("@/components/universal/UnivTaxPayrollEngine"));
+const UnivFinancialStatements = React.lazy(() => import("@/components/universal/UnivFinancialStatements"));
 const UnivAuditTrail = React.lazy(() => import("@/components/universal/UnivAuditTrail"));
 
 // Phase 11 Universal Components (Events, Travel & Hospitality)
@@ -825,6 +827,8 @@ export default function OrbitBuildPage() {
  case 'generalledger': case 'ledger': return <UnivGeneralLedger />;
  case 'expensereport': case 'expenses': return <UnivExpenseReport />;
  case 'taxfiling': case 'tax': return <UnivTaxFiling />;
+ case 'taxpayrollengine': case 'taxpayroll': return <UnivTaxPayrollEngine />;
+ case 'financialstatements': case 'financials': return <UnivFinancialStatements />;
  case 'audittrail': return <UnivAuditTrail />;
 
  // Events, Travel & Hospitality Extended

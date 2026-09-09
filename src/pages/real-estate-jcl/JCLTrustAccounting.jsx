@@ -192,7 +192,7 @@ export default function JCLTrustAccounting() {
   };
 
   return (
-    <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
+    <div className="p-4 sm:p-6 pb-28 w-full max-w-full space-y-6 font-sans">
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -253,62 +253,62 @@ export default function JCLTrustAccounting() {
 
       {/* ── 2. KPI Hero Row ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Net Trust Holdings</p>
-              <p className="text-2xl font-bold text-foreground">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Net Trust Holdings</span>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">
                 {formatCurrency(stats.netTrustBalance, 'USD')}
               </p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <CheckCircle2 className="h-3 w-3" /> 3-Way Reconciled
+              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                <CheckCircle2 className="h-3.5 w-3.5" /> 3-Way Reconciled
               </p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <Shield className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <Shield className="h-6 w-6" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Client Deposits</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Client Deposits</span>
+              <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
                 {formatCurrency(stats.totalDeposits, 'USD')}
               </p>
-              <p className="text-[11px] text-muted-foreground">Fiduciary inflows</p>
+              <p className="text-[11px] text-muted-foreground font-semibold">Fiduciary inflows</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <ArrowDownLeft className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-500/20 shadow-inner">
+              <ArrowDownLeft className="h-6 w-6" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Disbursements</p>
-              <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Disbursements</span>
+              <p className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">
                 {formatCurrency(stats.totalDisbursements, 'USD')}
               </p>
-              <p className="text-[11px] text-muted-foreground">Closing payout releases</p>
+              <p className="text-[11px] text-muted-foreground font-semibold">Closing payout releases</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <ArrowUpRight className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-500/20 shadow-inner">
+              <ArrowUpRight className="h-6 w-6" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Trust Accounts</p>
-              <p className="text-2xl font-bold text-foreground">{stats.accountCount}</p>
-              <p className="text-[11px] text-muted-foreground">Insured banking accounts</p>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Active Trust Accounts</span>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">{stats.accountCount}</p>
+              <p className="text-[11px] text-muted-foreground font-semibold">Insured banking accounts</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-              <Building2 className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20 shadow-inner">
+              <Building2 className="h-6 w-6" />
             </div>
           </CardContent>
         </Card>
@@ -316,7 +316,7 @@ export default function JCLTrustAccounting() {
 
       {/* ── 3. Trust Accounts Cards Grid ── */}
       <div className="space-y-3">
-        <h2 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+        <h2 className="text-[13px] font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
           <Building2 className="h-4 w-4 text-emerald-600" />
           Fiduciary Bank Accounts
         </h2>
@@ -325,38 +325,61 @@ export default function JCLTrustAccounting() {
             <p className="text-xs text-muted-foreground">No trust accounts configured yet. Establish your first escrow/trust bank account.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {accounts.map(acc => (
               <div
                 key={acc.id}
-                className="p-4 rounded-xl border border-border/80 bg-card hover:border-emerald-500/40 transition-all shadow-xs flex flex-col justify-between"
+                className="bg-card/95 backdrop-blur-xl rounded-[26px] border border-border/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-emerald-500/50 transition-all flex flex-col justify-between overflow-hidden group relative"
               >
-                <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <Badge variant="outline" className="text-[9px] uppercase font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
-                      {acc.account_type || 'Escrow'}
+                <div className="p-5 pb-4 space-y-3.5 flex-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                        <Banknote className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-extrabold text-[15px] text-foreground group-hover:text-emerald-600 transition-colors truncate">
+                          {acc.account_name}
+                        </h3>
+                        <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/40 capitalize mt-0.5">
+                          {acc.account_type || 'Escrow'}
+                        </Badge>
+                      </div>
+                    </div>
+                    <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-extrabold text-[10px] uppercase border-emerald-200">
+                      Active
                     </Badge>
-                    <span className="text-[10px] text-muted-foreground font-mono">{acc.bank_name}</span>
                   </div>
-                  <h3 className="font-bold text-foreground text-sm line-clamp-1">{acc.account_name}</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Acc: •••• {acc.account_number?.slice(-4) || '8841'}</p>
+
+                  <div className="space-y-1.5 text-xs text-muted-foreground bg-muted/30 p-3 rounded-2xl border border-border/50">
+                    <div className="flex items-center gap-2 truncate">
+                      <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                      <span className="truncate font-medium">{acc.bank_name}</span>
+                    </div>
+                    <div className="flex items-center gap-2 truncate">
+                      <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span className="truncate font-medium">Acc: •••• {acc.account_number?.slice(-4) || '8841'}</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-border/60 flex items-baseline justify-between">
+                <div className="p-4 px-5 border-t border-border/70 bg-muted/15 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] uppercase font-medium text-muted-foreground">Current Balance</span>
-                    <p className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+                    <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider block">Current Balance</span>
+                    <span className="text-base font-black text-emerald-600">
                       {formatCurrency(acc.balance || 0, acc.currency || 'USD')}
-                    </p>
+                    </span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setInspectAccount(acc)}
-                    className="h-7 text-xs px-2 text-muted-foreground hover:text-foreground"
-                  >
-                    View History
-                  </Button>
+
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      size="sm"
+                      onClick={() => setInspectAccount(acc)}
+                      className="text-xs h-8 px-3 font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm gap-1"
+                    >
+                      <Eye className="w-3.5 h-3.5" /> History
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

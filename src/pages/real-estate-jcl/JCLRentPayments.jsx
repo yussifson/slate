@@ -27,9 +27,9 @@ function generateUUID() {
 }
 
 const STATUS_CONFIG = {
-  paid: { label: 'Paid in Full', badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30', dot: 'bg-emerald-500' },
-  pending: { label: 'Payment Pending', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30', dot: 'bg-amber-500' },
-  overdue: { label: 'Overdue Arrears', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30', dot: 'bg-rose-500' },
+  paid: { label: 'Paid in Full', badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200', dot: 'bg-emerald-500' },
+  pending: { label: 'Payment Pending', badge: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200 border-amber-200', dot: 'bg-amber-500' },
+  overdue: { label: 'Overdue Arrears', badge: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-200', dot: 'bg-rose-500' },
 };
 
 export default function JCLRentPayments() {
@@ -127,13 +127,13 @@ export default function JCLRentPayments() {
   };
 
   return (
-    <div className="p-4 sm:p-6 pb-28 w-full max-w-full space-y-6 font-sans">
+    <div className="space-y-6 pb-12 font-sans min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 relative bg-background w-full max-w-full">
       {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
-              <CreditCard className="h-5 w-5" />
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+              <CreditCard className="h-6 w-6" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -146,13 +146,13 @@ export default function JCLRentPayments() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3 text-xs gap-1.5 border-border">
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3 text-xs gap-1.5 bg-card border-border shadow-sm rounded-xl hover:bg-muted font-bold">
             <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
             Refresh
           </Button>
 
-          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-4 text-xs font-bold gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm">
+          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-4 text-xs font-bold gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-xl">
             <Plus className="h-4 w-4" /> Record Rent Entry
           </Button>
         </div>
@@ -160,61 +160,61 @@ export default function JCLRentPayments() {
 
       {/* ── 2. KPI Hero Cards ── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Collected Rent Roll</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{formatCurrency(stats.totalCollected, 'USD')}</p>
-              <p className="text-[11px] text-emerald-600/80">Received this period</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Collected Rent Roll</p>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">{formatCurrency(stats.totalCollected, 'USD')}</p>
+              <p className="text-[11px] text-muted-foreground font-semibold">Received this period</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <CheckCircle2 className="h-5 w-5" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-inner">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pending Collection</p>
-              <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{formatCurrency(stats.totalPending, 'USD')}</p>
-              <p className="text-[11px] text-amber-600/80">Awaiting tenant payment</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Pending Collection</p>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">{formatCurrency(stats.totalPending, 'USD')}</p>
+              <p className="text-[11px] text-muted-foreground font-semibold">Awaiting tenant payment</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <Clock className="h-5 w-5" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500/20 to-amber-500/5 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-inner">
+              <Clock className="w-6 h-6" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Overdue Arrears</p>
-              <p className="text-2xl font-bold text-rose-600 dark:text-rose-400">{formatCurrency(stats.totalOverdue, 'USD')}</p>
-              <p className="text-[11px] text-rose-600/80">Action required</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Overdue Arrears</p>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">{formatCurrency(stats.totalOverdue, 'USD')}</p>
+              <p className="text-[11px] text-rose-500 font-semibold">Action required</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
-              <AlertTriangle className="h-5 w-5" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500/20 to-rose-500/5 flex items-center justify-center text-rose-600 dark:text-rose-400 border border-rose-500/20 shadow-inner">
+              <AlertTriangle className="w-6 h-6" />
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* ── 3. Filters Strip ── */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border shadow-xs">
-        <div className="flex flex-1 items-center gap-2">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-card/90 backdrop-blur-xl p-3 sm:p-4 rounded-[20px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+        <div className="flex flex-1 items-center gap-2.5">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search tenant name or property..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-9 h-9 text-xs bg-background"
+              className="pl-9 h-10 rounded-xl bg-background text-xs border-border/80"
             />
           </div>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-9 text-xs w-[170px] bg-background">
+            <SelectTrigger className="h-10 text-xs font-medium w-[170px] bg-background border-border/80 rounded-xl">
               <SelectValue placeholder="Payment Status" />
             </SelectTrigger>
             <SelectContent>
@@ -228,20 +228,20 @@ export default function JCLRentPayments() {
       </div>
 
       {/* ── 4. Full Width Table ── */}
-      <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs w-full">
+      <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] w-full max-w-full">
         <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
-                <th className="py-3.5 px-4">Tenant Name</th>
-                <th className="py-3.5 px-4">Property Address</th>
-                <th className="py-3.5 px-4">Due Date</th>
-                <th className="py-3.5 px-4">Amount</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-right">Quick Action</th>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-muted/60 uppercase tracking-wider text-muted-foreground font-extrabold border-b border-border/80 text-[10px]">
+              <tr>
+                <th className="p-4 pl-5">Tenant Name</th>
+                <th className="p-4">Property Address</th>
+                <th className="p-4">Due Date</th>
+                <th className="p-4">Amount</th>
+                <th className="p-4">Status</th>
+                <th className="p-4 pr-5 text-right">Quick Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border/60">
               {filteredPayments.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-muted-foreground">
@@ -252,20 +252,20 @@ export default function JCLRentPayments() {
                 filteredPayments.map(p => {
                   const st = STATUS_CONFIG[p.status] || STATUS_CONFIG.pending;
                   return (
-                    <tr key={p.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-foreground">{p.tenant_name || 'Tenant'}</td>
-                      <td className="py-3.5 px-4 text-foreground">{p.property_address || 'Unit Address'}</td>
-                      <td className="py-3.5 px-4 font-mono text-muted-foreground">{p.due_date || 'N/A'}</td>
-                      <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400 font-mono text-sm">{formatCurrency(p.amount, 'USD')}</td>
-                      <td className="py-3.5 px-4">
-                        <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1", st.badge)}>
+                    <tr key={p.id} className="hover:bg-muted/40 transition-colors group">
+                      <td className="p-4 pl-5 font-bold text-foreground text-[13px]">{p.tenant_name || 'Tenant'}</td>
+                      <td className="p-4 text-muted-foreground">{p.property_address || 'Unit Address'}</td>
+                      <td className="p-4 font-mono text-muted-foreground font-semibold">{p.due_date || 'N/A'}</td>
+                      <td className="p-4 font-black text-foreground text-sm">{formatCurrency(p.amount, 'USD')}</td>
+                      <td className="p-4">
+                        <Badge variant="outline" className={cn("text-[10px] font-bold border gap-1.5 py-0.5 px-2.5", st.badge)}>
                           <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
                           {st.label}
                         </Badge>
                       </td>
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="p-4 pr-5 text-right">
                         <Select value={p.status} onValueChange={v => handleStatusChange(p.id, v)}>
-                          <SelectTrigger className="h-7 text-[10px] w-[120px] ml-auto bg-background">
+                          <SelectTrigger className="h-8 text-[10px] font-bold w-[120px] ml-auto bg-background rounded-xl">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -308,7 +308,7 @@ export default function JCLRentPayments() {
                   }
                 }}
               >
-                <SelectTrigger className="h-9 text-xs mt-1">
+                <SelectTrigger className="h-10 rounded-xl text-xs mt-1">
                   <SelectValue placeholder="Pick active lease..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -324,7 +324,7 @@ export default function JCLRentPayments() {
               <Input
                 value={formData.tenantName}
                 onChange={e => setFormData({ ...formData, tenantName: e.target.value })}
-                className="h-9 text-xs mt-1"
+                className="h-10 rounded-xl text-xs mt-1"
                 required
               />
             </div>
@@ -334,7 +334,7 @@ export default function JCLRentPayments() {
               <Input
                 value={formData.propertyAddress}
                 onChange={e => setFormData({ ...formData, propertyAddress: e.target.value })}
-                className="h-9 text-xs mt-1"
+                className="h-10 rounded-xl text-xs mt-1"
                 required
               />
             </div>
@@ -346,7 +346,7 @@ export default function JCLRentPayments() {
                   type="number"
                   value={formData.amount}
                   onChange={e => setFormData({ ...formData, amount: e.target.value })}
-                  className="h-9 text-xs mt-1"
+                  className="h-10 rounded-xl text-xs mt-1"
                   required
                 />
               </div>
@@ -356,13 +356,13 @@ export default function JCLRentPayments() {
                   type="date"
                   value={formData.dueDate}
                   onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="h-9 text-xs mt-1"
+                  className="h-10 rounded-xl text-xs mt-1"
                   required
                 />
               </div>
             </div>
 
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
+            <Button type="submit" className="w-full h-10 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
               Record Rent Payment
             </Button>
           </form>
@@ -371,4 +371,3 @@ export default function JCLRentPayments() {
     </div>
   );
 }
-

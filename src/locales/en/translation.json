@@ -1113,6 +1113,8 @@
   "@/components/universal/UnivGeneralLedger": "@/components/universal/UnivGeneralLedger",
   "@/components/universal/UnivExpenseReport": "@/components/universal/UnivExpenseReport",
   "@/components/universal/UnivTaxFiling": "@/components/universal/UnivTaxFiling",
+  "@/components/universal/UnivTaxPayrollEngine": "@/components/universal/UnivTaxPayrollEngine",
+  "@/components/universal/UnivFinancialStatements": "@/components/universal/UnivFinancialStatements",
   "@/components/universal/UnivAuditTrail": "@/components/universal/UnivAuditTrail",
   "@/components/universal/UnivEventPlanner": "@/components/universal/UnivEventPlanner",
   "@/components/universal/UnivTicketSales": "@/components/universal/UnivTicketSales",

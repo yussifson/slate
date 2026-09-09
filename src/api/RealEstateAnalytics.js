@@ -529,5 +529,95 @@ export const RealEstateAnalytics = {
       console.error('[Analytics] getSystemHealth failed:', e);
       throw e;
     }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // CROSS-DEPARTMENT ROLLUP ANALYTICS
+  // ────────────────────────────────────────────────────────
+
+  async getExecutiveCrossDepartmentRollup(companyId) {
+    try {
+      const rollup = {
+        land: { totalParcels: 0, totalAcres: 0, estimatedLandValue: 0 },
+        civil: { totalBoqs: 0, totalContractValue: 0, activeProjects: 0 },
+        sales: { totalTransactions: 0, grossSalesVolume: 0 },
+        maintenance: { totalRequests: 0, pendingRequests: 0, totalCost: 0 }
+      };
+
+      // 1. Land Holdings
+      try {
+        const landRes = await powerSync.execute(
+          `SELECT COUNT(*) as total_parcels, COALESCE(SUM(area_acres), 0) as total_acres, COALESCE(SUM(estimated_value), 0) as total_val FROM univ_land_parcels WHERE company_id = ?`,
+          [companyId]
+        );
+        const landRow = landRes.rows._array?.[0] || landRes.rows?.[0];
+        if (landRow) {
+          rollup.land.totalParcels = Number(landRow.total_parcels || 0);
+          rollup.land.totalAcres = Number(landRow.total_acres || 0);
+          rollup.land.estimatedLandValue = Number(landRow.total_val || 0);
+        }
+      } catch (_e) {
+        console.warn('[Analytics] Land rollup fetch skipped/failed:', _e?.message);
+      }
+
+      // 2. Civil Engineering & BOQ
+      try {
+        const civilRes = await powerSync.execute(
+          `SELECT COUNT(*) as total_boqs, COALESCE(SUM(total_amount), 0) as total_val FROM univ_boqs WHERE company_id = ?`,
+          [companyId]
+        );
+        const civilRow = civilRes.rows._array?.[0] || civilRes.rows?.[0];
+        if (civilRow) {
+          rollup.civil.totalBoqs = Number(civilRow.total_boqs || 0);
+          rollup.civil.totalContractValue = Number(civilRow.total_val || 0);
+        }
+      } catch (_e) {
+        console.warn('[Analytics] Civil rollup fetch skipped/failed:', _e?.message);
+      }
+
+      // 3. Sales & Transactions
+      try {
+        const salesRes = await powerSync.execute(
+          `SELECT COUNT(*) as total_txns, COALESCE(SUM(sale_price), 0) as total_val FROM univ_re_transactions WHERE company_id = ?`,
+          [companyId]
+        );
+        const salesRow = salesRes.rows._array?.[0] || salesRes.rows?.[0];
+        if (salesRow) {
+          rollup.sales.totalTransactions = Number(salesRow.total_txns || 0);
+          rollup.sales.grossSalesVolume = Number(salesRow.total_val || 0);
+        }
+      } catch (_e) {
+        console.warn('[Analytics] Sales rollup fetch skipped/failed:', _e?.message);
+      }
+
+      // 4. Maintenance & Property Ops
+      try {
+        const maintRes = await powerSync.execute(
+          `SELECT COUNT(*) as total_reqs, 
+                  SUM(CASE WHEN status IN ('pending', 'in_progress', 'open') THEN 1 ELSE 0 END) as pending_reqs,
+                  COALESCE(SUM(actual_cost), 0) as total_cost 
+           FROM univ_re_maintenance_requests WHERE company_id = ?`,
+          [companyId]
+        );
+        const maintRow = maintRes.rows._array?.[0] || maintRes.rows?.[0];
+        if (maintRow) {
+          rollup.maintenance.totalRequests = Number(maintRow.total_reqs || 0);
+          rollup.maintenance.pendingRequests = Number(maintRow.pending_reqs || 0);
+          rollup.maintenance.totalCost = Number(maintRow.total_cost || 0);
+        }
+      } catch (_e) {
+        console.warn('[Analytics] Maintenance rollup fetch skipped/failed:', _e?.message);
+      }
+
+      return rollup;
+    } catch (e) {
+      console.error('[Analytics] getExecutiveCrossDepartmentRollup failed:', e);
+      return {
+        land: { totalParcels: 0, totalAcres: 0, estimatedLandValue: 0 },
+        civil: { totalBoqs: 0, totalContractValue: 0, activeProjects: 0 },
+        sales: { totalTransactions: 0, grossSalesVolume: 0 },
+        maintenance: { totalRequests: 0, pendingRequests: 0, totalCost: 0 }
+      };
+    }
   }
 };

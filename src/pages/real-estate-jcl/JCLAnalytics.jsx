@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   BarChart3, TrendingUp, Home, DollarSign, Users, Calendar, LineChart as LineChartIcon,
-  PieChart as PieChartIcon, RefreshCw, Sparkles, Building2, Shield, CheckCircle2, ArrowUpRight
+  PieChart as PieChartIcon, RefreshCw, Sparkles, Building2, Shield, CheckCircle2, ArrowUpRight,
+  Layers, HardHat, MapPin, Wrench
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -10,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { RealEstateAnalytics } from '@/api/RealEstateAnalytics';
 
 export default function JCLAnalytics() {
   const companyId = useCompanyId();
@@ -27,16 +29,23 @@ export default function JCLAnalytics() {
     avgDaysOnMarket: 24,
     absorptionRate: 78.5,
   });
+  const [rollup, setRollup] = useState({
+    land: { totalParcels: 0, totalAcres: 0, estimatedLandValue: 0 },
+    civil: { totalBoqs: 0, totalContractValue: 0, activeProjects: 0 },
+    sales: { totalTransactions: 0, grossSalesVolume: 0 },
+    maintenance: { totalRequests: 0, pendingRequests: 0, totalCost: 0 }
+  });
 
   const fetchAnalyticsData = async () => {
     if (!companyId) return;
     try {
       setIsLoading(true);
-      const [propRes, txnRes, commRes, clientRes] = await Promise.all([
+      const [propRes, txnRes, commRes, clientRes, rollupData] = await Promise.all([
         powerSync.execute('SELECT COUNT(*) as total, SUM(price) as total_val FROM univ_re_properties WHERE company_id = ?', [companyId]),
         powerSync.execute('SELECT COUNT(*) as total, SUM(sale_price) as total_val FROM univ_re_transactions WHERE company_id = ?', [companyId]),
         powerSync.execute('SELECT SUM(commission_amount) as total FROM univ_re_commissions WHERE company_id = ?', [companyId]),
-        powerSync.execute('SELECT COUNT(*) as total FROM univ_re_clients WHERE company_id = ?', [companyId])
+        powerSync.execute('SELECT COUNT(*) as total FROM univ_re_clients WHERE company_id = ?', [companyId]),
+        RealEstateAnalytics.getExecutiveCrossDepartmentRollup(companyId)
       ]);
 
       const propData = propRes.rows._array?.[0] || propRes.rows?.[0] || {};
@@ -58,6 +67,7 @@ export default function JCLAnalytics() {
         avgDaysOnMarket: 24,
         absorptionRate: 78.5,
       });
+      if (rollupData) setRollup(rollupData);
     } catch (_err) {
       console.error('[JCLAnalytics] Fetch error:', _err);
     }
@@ -162,7 +172,51 @@ export default function JCLAnalytics() {
         </Card>
       </div>
 
-      {/* ── 3. Visual Analytics Breakdown Cards ── */}
+      {/* ── 3. Cross-Department Rollup Overview ── */}
+      <div className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+            <Layers className="h-4 w-4 text-emerald-600" />
+            Cross-Department Rollup Overview
+          </h3>
+          <Badge variant="outline" className="text-[10px] font-mono">Multi-Vertical</Badge>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+          <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+              <MapPin className="h-3.5 w-3.5 text-emerald-600" /> Land Holdings
+            </div>
+            <p className="text-xl font-extrabold text-foreground">{rollup.land.totalParcels} Parcels</p>
+            <p className="text-[11px] text-muted-foreground">{rollup.land.totalAcres.toFixed(1)} Total Acres • {formatCurrency(rollup.land.estimatedLandValue, 'USD')}</p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+              <HardHat className="h-3.5 w-3.5 text-blue-600" /> Civil & BOQ
+            </div>
+            <p className="text-xl font-extrabold text-foreground">{rollup.civil.totalBoqs} Active BOQs</p>
+            <p className="text-[11px] text-muted-foreground">Valued at {formatCurrency(rollup.civil.totalContractValue, 'USD')}</p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+              <TrendingUp className="h-3.5 w-3.5 text-purple-600" /> Sales Transactions
+            </div>
+            <p className="text-xl font-extrabold text-foreground">{rollup.sales.totalTransactions} Closed</p>
+            <p className="text-[11px] text-muted-foreground">{formatCurrency(rollup.sales.grossSalesVolume, 'USD')} Volume</p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
+              <Wrench className="h-3.5 w-3.5 text-amber-600" /> Property Ops
+            </div>
+            <p className="text-xl font-extrabold text-foreground">{rollup.maintenance.totalRequests} Requests</p>
+            <p className="text-[11px] text-muted-foreground">{rollup.maintenance.pendingRequests} Pending • {formatCurrency(rollup.maintenance.totalCost, 'USD')} Maintenance Cost</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 4. Visual Analytics Breakdown Cards ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs space-y-4">
           <div className="flex items-center justify-between">

@@ -194,7 +194,7 @@ const [transactionFormData, setTransactionFormData] = useState({
 
   const handleEditTransaction = (transaction) => {
     setTransactionFormData({
-      accountId: transaction.account_id || '',
+      accountId: transaction.account_id || transaction.trust_account_id || '',
       transactionType: transaction.transaction_type || 'deposit',
       amount: transaction.amount || 0,
       description: transaction.description || '',
@@ -202,7 +202,26 @@ const [transactionFormData, setTransactionFormData] = useState({
       transactionDate: new Date(transaction.transaction_date).toISOString().split('T')[0],
     });
     setEditingTransactionId(transaction.id);
+    setShowTransactionForm(false);
     setShowTransactionForm(true);
+  };
+
+  const handleDeleteTransaction = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this transaction record?')) return;
+    try {
+      await RealEstateAPI.deleteTrustLedgerEntry(companyId, id, user.id);
+      toast.success('Transaction deleted successfully');
+      setLedger(prev => prev.filter(t => t.id !== id));
+      // Refresh accounts for balance updates
+      const accountsRes = await powerSync.execute(
+        'SELECT * FROM univ_re_trust_accounts WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      setAccounts(accountsRes.rows._array || Array.from(accountsRes.rows));
+    } catch (e) {
+      console.error('[TrustAccounting] Delete transaction failed:', e);
+      toast.error('Failed to delete transaction');
+    }
   };
 
   // Calculate KPIs
@@ -464,6 +483,9 @@ const [transactionFormData, setTransactionFormData] = useState({
                             <Button size="sm" variant="ghost" onClick={() => handleEditTransaction(entry)}>
                               <Edit className="w-4 h-4" />
                             </Button>
+                            <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10" onClick={() => handleDeleteTransaction(entry.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -678,13 +700,13 @@ const [transactionFormData, setTransactionFormData] = useState({
             </SheetDescription>
           </SheetHeader>
           <div className="space-y-4">
-            {ledger.filter(t => t.account_id === viewingHistoryId).length === 0 ? (
+            {ledger.filter(t => (t.account_id || t.trust_account_id) === viewingHistoryId).length === 0 ? (
               <div className="text-center py-12 bg-slate-50 dark:bg-card/50 rounded-lg border border-dashed">
                 <p className="text-muted-foreground">No transactions recorded yet.</p>
               </div>
             ) : (
               <div className="relative border-l border-border ml-3 space-y-6">
-                {ledger.filter(t => t.account_id === viewingHistoryId).map(entry => (
+                {ledger.filter(t => (t.account_id || t.trust_account_id) === viewingHistoryId).map(entry => (
                   <div key={entry.id} className="relative pl-6">
                     <span className={`absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-background ring-4 ring-background ${
                       entry.transaction_type === 'deposit' ? 'bg-green-500' : 'bg-red-500'

@@ -455,6 +455,11 @@ export const UNIVERSAL_COMPONENTS = [
     "icon": "LayoutGrid"
   },
   {
+    "id": "UnivFinancialStatements",
+    "label": "Financial Statements",
+    "icon": "LineChart"
+  },
+  {
     "id": "UnivFixedAsset",
     "label": "Fixed Asset",
     "icon": "LayoutGrid"
@@ -923,6 +928,11 @@ export const UNIVERSAL_COMPONENTS = [
     "id": "UnivTaxFiling",
     "label": "Tax Filing",
     "icon": "LayoutGrid"
+  },
+  {
+    "id": "UnivTaxPayrollEngine",
+    "label": "Tax & Payroll Engine",
+    "icon": "Calculator"
   },
   {
     "id": "UnivTelemedicine",

@@ -17,6 +17,7 @@
     "desktop:build": "node --max-old-space-size=8192 ./node_modules/vite/bin/vite.js build --base ./ && electron-builder"
   },
   "dependencies": {
+    "@alloc/quick-lru": "^5.3.0",
     "@capacitor/app": "^8.1.0",
     "@capacitor/camera": "^8.2.1",
     "@capacitor/core": "^8.4.1",

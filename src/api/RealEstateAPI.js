@@ -1291,6 +1291,26 @@ export const RealEstateAPI = {
 
   async deleteTrustLedgerEntry(companyId, entryId, userId) {
     try {
+      // Get entry to adjust account balance
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_trust_ledger WHERE company_id = ? AND id = ?',
+        [companyId, entryId]
+      );
+      const entry = res.rows._array?.[0] || Array.from(res.rows)[0];
+      if (entry) {
+        const adjustment = entry.transaction_type === 'deposit' || entry.transaction_type === 'transfer'
+          ? -Number(entry.amount || 0)
+          : Number(entry.amount || 0);
+
+        if (entry.account_id || entry.trust_account_id) {
+          const accId = entry.account_id || entry.trust_account_id;
+          await powerSync.execute(
+            'UPDATE univ_re_trust_accounts SET balance = balance + ? WHERE id = ?',
+            [adjustment, accId]
+          );
+        }
+      }
+
       await powerSync.execute(
         'DELETE FROM univ_re_trust_ledger WHERE company_id = ? AND id = ?',
         [companyId, entryId]
