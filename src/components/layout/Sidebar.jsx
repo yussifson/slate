@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
+import JCLTwoPanelSidebar from "./JCLTwoPanelSidebar";
 import { cn} from "@/lib/utils";
 import {
  DropdownMenu,
@@ -152,6 +153,19 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     || companyData?.industry_type 
     || user?.company_industry 
     || 'law';
+
+  if (activeIndustry === 'real_estate_jcl') {
+    return (
+      <JCLTwoPanelSidebar
+        user={user}
+        companyId={companyId}
+        companyData={companyData}
+        impersonatedCompany={impersonatedCompany}
+        isAdmin={isAdmin}
+        customRolePermissions={customRolePermissions}
+      />
+    );
+  }
   
   useEffect(() => {
   const fetchDynamicNav = async () => {

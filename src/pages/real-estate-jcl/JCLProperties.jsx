@@ -8,6 +8,8 @@ import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -466,13 +468,7 @@ export default function JCLProperties() {
                   className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
                 >
                   {/* Colour Banner Header */}
-                  <div className={cn(
-                    "relative h-28 flex flex-col justify-between p-4 overflow-hidden",
-                    property.status === 'active' ? 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500' :
-                    property.status === 'pending' ? 'bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-400' :
-                    property.status === 'sold' ? 'bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-500' :
-                    'bg-gradient-to-br from-slate-600 via-slate-500 to-slate-400'
-                  )}>
+                  <div className="relative h-28 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600">
                     <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
                     <div className="flex items-start justify-between relative z-10">
                       <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">

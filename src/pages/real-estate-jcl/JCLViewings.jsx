@@ -405,13 +405,7 @@ export default function JCLViewings() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredViewings.map(v => {
                 const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
-                const bannerColor = v.status === 'completed'
-                  ? 'from-emerald-700 via-emerald-600 to-teal-500'
-                  : v.status === 'scheduled'
-                  ? 'from-blue-700 via-blue-600 to-indigo-500'
-                  : v.status === 'rescheduled'
-                  ? 'from-amber-600 via-amber-500 to-yellow-400'
-                  : 'from-rose-700 via-rose-600 to-red-500';
+                const bannerColor = 'from-emerald-800 via-emerald-700 to-emerald-600';
 
                 const clientInitials = (v.client_name || 'C').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 

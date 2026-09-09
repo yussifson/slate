@@ -424,15 +424,7 @@ export default function JCLOffers() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredOffers.map(offer => {
             const st = STATUS_CONFIG[offer.status] || STATUS_CONFIG.pending;
-            const bannerColor = offer.status === 'accepted'
-              ? 'from-emerald-700 via-emerald-600 to-teal-500'
-              : offer.status === 'pending'
-              ? 'from-amber-600 via-amber-500 to-yellow-400'
-              : offer.status === 'countered'
-              ? 'from-blue-700 via-blue-600 to-indigo-500'
-              : offer.status === 'rejected'
-              ? 'from-rose-700 via-rose-600 to-red-500'
-              : 'from-slate-600 via-slate-500 to-slate-400';
+            const bannerColor = 'from-emerald-800 via-emerald-700 to-emerald-600';
 
             const buyerInitials = (offer.buyer_name || 'B').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
