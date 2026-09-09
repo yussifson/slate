@@ -542,6 +542,7 @@ const SmartAuditLogRouter = () => {
 const JCLContractorsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractors'));
 const JCLContractorReviewsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractorReviews'));
 const JCLLeaseRenewalsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeaseRenewals'));
+const JCLMaintenancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaintenance'));
 
 const SmartMaintenanceRouter = () => {
   const { user } = useAuth();
