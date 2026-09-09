@@ -528,65 +528,86 @@ function PipelineCard({ pipeline, onEdit, onDelete, itemCount }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative flex flex-col rounded-2xl border border-border/80 bg-card p-5 hover:border-emerald-500/40 hover:shadow-md transition-all duration-300 space-y-4"
+      className="bg-card/95 backdrop-blur-xl rounded-[26px] border border-border/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-emerald-500/50 transition-all flex flex-col justify-between overflow-hidden group relative"
     >
-      {/* Top Bar */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold shrink-0">
-            <GitBranch className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-bold text-foreground text-base tracking-tight">{pipeline.name}</h3>
-              {pipeline.is_default && (
-                <Badge variant="outline" className="text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
-                  Default Flow
-                </Badge>
-              )}
+      <div className="p-5 pb-4 space-y-3.5 flex-1">
+        {/* Top Bar */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-extrabold shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+              <GitBranch className="h-5 w-5" />
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5 font-medium">
-              {stages.length} Stages · <strong className="text-foreground">{itemCount}</strong> {pipeline.item_label || "Items"} Active
-            </p>
+            <div>
+              <h3 className="font-extrabold text-[15px] text-foreground group-hover:text-emerald-600 transition-colors tracking-tight">
+                {pipeline.name}
+              </h3>
+              <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">
+                {stages.length} Stages · <strong className="text-foreground">{itemCount}</strong> {pipeline.item_label || "Items"} Active
+              </p>
+            </div>
           </div>
+
+          {pipeline.is_default && (
+            <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-extrabold text-[10px] uppercase border-emerald-200">
+              Default
+            </Badge>
+          )}
         </div>
 
-        <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-emerald-600 hover:bg-muted" onClick={() => onEdit(pipeline)} title="Edit Pipeline">
-            <Edit2 className="w-4 h-4" />
+        {/* Description Strip */}
+        <div className="text-xs text-muted-foreground bg-muted/30 p-3 rounded-2xl border border-border/50">
+          <p className="leading-relaxed line-clamp-2">
+            {pipeline.description || <span className="italic">Standard workflow pipeline for tracking company deals and processes.</span>}
+          </p>
+        </div>
+
+        {/* Stage Sequence */}
+        {stages.length > 0 && (
+          <div className="pt-2">
+            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-wider mb-2">Stage Sequence</p>
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+              {stages.map((stage, idx) => (
+                <React.Fragment key={stage.id}>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/40 bg-muted/20 text-[11px] font-bold text-foreground shrink-0 shadow-sm">
+                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: stage.color || "#10B981" }} />
+                    <span className="whitespace-nowrap">{stage.name}</span>
+                  </div>
+                  {idx < stages.length - 1 && (
+                    <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/40 shrink-0" />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Card Footer */}
+      <div className="p-4 px-5 border-t border-border/70 bg-muted/15 flex items-center justify-between">
+        <div>
+          <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider block">Status</span>
+          <span className="text-sm font-black text-emerald-600">Active Pipeline</span>
+        </div>
+
+        <div className="flex items-center gap-1.5" onClick={e => e.stopPropagation()}>
+          <Button
+            size="sm"
+            onClick={() => onEdit(pipeline)}
+            className="text-xs h-8 px-3 font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm gap-1"
+          >
+            <Edit2 className="w-3.5 h-3.5" /> Edit
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30" onClick={() => onDelete(pipeline.id)} title="Delete Pipeline">
-            <Trash2 className="w-4 h-4" />
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => onDelete(pipeline.id)}
+            className="h-8 w-8 rounded-xl text-rose-500 hover:bg-rose-50 hover:border-rose-200"
+            title="Delete Pipeline"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>
-
-      {/* Description */}
-      {pipeline.description ? (
-        <p className="text-xs text-muted-foreground leading-relaxed">{pipeline.description}</p>
-      ) : (
-        <p className="text-xs text-muted-foreground italic">Standard workflow pipeline for tracking company deals and processes.</p>
-      )}
-
-      {/* Stage Sequence */}
-      {stages.length > 0 && (
-        <div className="pt-3 border-t border-border/60">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Stage Sequence</p>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
-            {stages.map((stage, idx) => (
-              <React.Fragment key={stage.id}>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/80 bg-muted/30 text-xs font-semibold text-foreground shrink-0 shadow-xs">
-                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: stage.color || "#10B981" }} />
-                  <span>{stage.name}</span>
-                </div>
-                {idx < stages.length - 1 && (
-                  <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-      )}
     </motion.div>
   );
 }
