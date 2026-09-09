@@ -10,7 +10,7 @@ import TopBar from "./TopBar";
 import MobileBottomNav from "./MobileBottomNav";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
-import { Building2, X, Clock, CreditCard, WifiOff, MessageSquare } from "lucide-react";
+import { Building2, X, Clock, CreditCard, WifiOff} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import Paywall from "@/pages/Paywall";
 import AiAssistant from "@/components/AiAssistant";
@@ -23,7 +23,6 @@ import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
 import ElectronTitleBar from "./ElectronTitleBar";
 import DockResizer from "./DockResizer";
-import { useCompany } from "@/hooks/useCompanyId";
 
 import { cn } from "@/lib/utils";
 
@@ -77,7 +76,15 @@ export default function AppLayout() {
 }, [user, isPrefsLoaded]);
 
   // Reactive Brand Identity & Settings
-  const { company: currentCompany } = useCompany();
+  const { data: currentCompany } = useQuery({
+    queryKey: ["company", user?.company_id],
+    queryFn: async () => {
+      if (!user?.company_id) return null;
+      const { data } = await powerSync.execute('SELECT * FROM companies WHERE id = ?', [user.company_id]).then(res => ({ data: res.rows._array[0] || null }));
+      return data;
+    },
+    enabled: !!user?.company_id
+  });
 
   useEffect(() => {
     const host = window.location.hostname.toLowerCase();
@@ -128,40 +135,31 @@ export default function AppLayout() {
         else if (currentCompany.industry_type === 'orbit_build') suffix = "Digital Workspace";
         document.title = `${currentCompany.name} - ${suffix}`;
       }
-      if (currentCompany.primary_color && typeof currentCompany.primary_color === 'string') {
-        const hexToHSL = (hexStr) => {
-          let hex = hexStr.trim();
-          if (!hex.startsWith('#')) hex = '#' + hex;
+      if (currentCompany.primary_color) {
+        const hexToHSL = (hex) => {
           let r = 0, g = 0, b = 0;
-          if (hex.length === 4) {
-            r = parseInt(hex[1] + hex[1], 16);
-            g = parseInt(hex[2] + hex[2], 16);
-            b = parseInt(hex[3] + hex[3], 16);
-          } else if (hex.length === 7) {
-            r = parseInt(hex.substring(1, 3), 16);
-            g = parseInt(hex.substring(3, 5), 16);
-            b = parseInt(hex.substring(5, 7), 16);
-          } else {
-            return null;
+          if (hex.length == 4) {
+            r = "0x" + hex[1] + hex[1];
+            g = "0x" + hex[2] + hex[2];
+            b = "0x" + hex[3] + hex[3];
+          } else if (hex.length == 7) {
+            r = "0x" + hex[1] + hex[2];
+            g = "0x" + hex[3] + hex[4];
+            b = "0x" + hex[5] + hex[6];
           }
-          if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
           r /= 255; g /= 255; b /= 255;
           let cmin = Math.min(r,g,b), cmax = Math.max(r,g,b), delta = cmax - cmin, h = 0, s = 0, l = 0;
-          if (delta === 0) h = 0;
-          else if (cmax === r) h = ((g - b) / delta) % 6;
-          else if (cmax === g) h = (b - r) / delta + 2;
+          if (delta == 0) h = 0;
+          else if (cmax == r) h = ((g - b) / delta) % 6;
+          else if (cmax == g) h = (b - r) / delta + 2;
           else h = (r - g) / delta + 4;
           h = Math.round(h * 60);
           if (h < 0) h += 360;
           l = (cmax + cmin) / 2;
-          s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-          if (isNaN(h) || isNaN(s) || isNaN(l)) return null;
+          s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
           return `${h} ${+(s * 100).toFixed(1)}% ${+(l * 100).toFixed(1)}%`;
         };
-        const hsl = hexToHSL(currentCompany.primary_color);
-        if (hsl) {
-          document.documentElement.style.setProperty('--primary', hsl);
-        }
+        document.documentElement.style.setProperty('--primary', hexToHSL(currentCompany.primary_color));
       }
     }
   }, [currentCompany]);

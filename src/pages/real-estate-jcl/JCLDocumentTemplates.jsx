@@ -190,50 +190,27 @@ export default function JCLDocumentTemplates() {
             <p className="text-xs text-muted-foreground">No document templates found.</p>
           </div>
         ) : (
-          filteredTemplates.map(t => {
-            const catColor = t.document_category === 'sales'
-              ? 'from-blue-700 via-blue-600 to-indigo-500'
-              : t.document_category === 'lease'
-              ? 'from-emerald-700 via-emerald-600 to-teal-500'
-              : 'from-violet-700 via-violet-600 to-purple-500';
-            return (
-              <div key={t.id} className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                {/* Gradient Banner */}
-                <div className={cn('relative h-24 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br', catColor)}>
-                  <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-                  <div className="flex items-start justify-between relative z-10">
-                    <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                      {t.document_category || 'Sales'}
-                    </span>
-                    <span className="text-[9px] font-mono font-bold px-2 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                      v{t.version || '1.0'}
-                    </span>
-                  </div>
-                  <div className="relative z-10">
-                    <p className="text-white font-extrabold text-sm leading-snug line-clamp-1">{t.template_name}</p>
-                  </div>
+          filteredTemplates.map(t => (
+            <div key={t.id} className="p-5 rounded-2xl border border-border/80 bg-card hover:border-emerald-500/50 transition-all shadow-xs space-y-3 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <Badge variant="outline" className="text-[9px] uppercase font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
+                    {t.document_category || 'Sales'}
+                  </Badge>
+                  <span className="text-[10px] font-mono text-muted-foreground">v{t.version || '1.0'}</span>
                 </div>
-
-                {/* Body */}
-                <div className="p-4 flex flex-col gap-3 flex-1">
-                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                    {t.description || 'Standardized legal real estate document.'}
-                  </p>
-
-                  {/* Footer strip */}
-                  <div className="mt-auto pt-3 border-t border-border/60 flex items-center justify-between">
-                    <div className="text-center">
-                      <span className="block text-[9px] uppercase font-semibold text-muted-foreground mb-0.5">Signatures Required</span>
-                      <span className="text-xs font-bold text-foreground font-mono">{t.required_signatures || 2}</span>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={() => setPreviewTemplate(t)} className="h-7 text-xs px-3 font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">
-                      <Eye className="h-3.5 w-3.5 mr-1" /> Preview
-                    </Button>
-                  </div>
-                </div>
+                <h3 className="font-bold text-foreground text-sm line-clamp-1">{t.template_name}</h3>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{t.description || 'Standardized legal real estate document.'}</p>
               </div>
-            );
-          })
+
+              <div className="pt-3 border-t border-border/60 flex items-center justify-between text-xs">
+                <span className="text-muted-foreground text-[11px] font-mono">{t.required_signatures || 2} Signatures Required</span>
+                <Button variant="ghost" size="sm" onClick={() => setPreviewTemplate(t)} className="h-7 text-xs px-2">
+                  Preview
+                </Button>
+              </div>
+            </div>
+          ))
         )}
       </div>
 

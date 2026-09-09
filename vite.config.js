@@ -28,16 +28,7 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 2000,
     reportCompressedSize: false,
-    minify: false,
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes('@journeyapps/wa-sqlite') || id.includes('@powersync')) {
-            return 'powersync-sqlite-core';
-          }
-        }
-      }
-    }
+    minify: false
   },
   plugins: [
     react(),

@@ -382,23 +382,6 @@ powerSync.execute = async (sql, parameters) => {
   try {
     const res = await originalExecute(sql, parameters);
     
-    // Normalize res.rows so that res.rows._array is guaranteed to exist as an array
-    if (res && res.rows) {
-      if (!res.rows._array) {
-        const arr = [];
-        if (typeof res.rows.length === 'number') {
-          for (let i = 0; i < res.rows.length; i++) {
-            arr.push(res.rows.item ? res.rows.item(i) : res.rows[i]);
-          }
-        } else if (Array.isArray(res.rows)) {
-          arr.push(...res.rows);
-        }
-        try {
-          res.rows._array = arr;
-        } catch (e) {}
-      }
-    }
-
     // Determine if this is a mutation (write) query
     const upperSql = typeof sql === 'string' ? sql.trim().toUpperCase() : '';
     if (upperSql.startsWith('INSERT') || upperSql.startsWith('UPDATE') || upperSql.startsWith('DELETE')) {
@@ -428,13 +411,9 @@ let initPromise = null;
 export const initPowerSync = () => {
   if (!initPromise) {
     initPromise = (async () => {
-      try {
-        const connector = new SupabaseConnector();
-        await powerSync.init();
-        await powerSync.connect(connector);
-      } catch (err) {
-        console.warn('[PowerSync] Init/Connect warning:', err);
-      }
+      const connector = new SupabaseConnector();
+      await powerSync.init();
+      await powerSync.connect(connector);
     })();
   }
   return initPromise;

@@ -6,12 +6,10 @@ import { ErrorBoundary } from '@/components/ErrorBoundary.jsx'
 import { registerSW } from 'virtual:pwa-register'
 import i18n from '@/i18n/config.js'
 import { I18nextProvider } from 'react-i18next'
-import { Capacitor } from '@capacitor/core';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 
-if (Capacitor.isNativePlatform()) {
-  CapacitorUpdater.notifyAppReady().catch(console.error);
-}
+
+CapacitorUpdater.notifyAppReady();
 
 const updateSW = registerSW({
   onNeedRefresh() {
@@ -59,46 +57,30 @@ window.addEventListener('vite:preloadError', async (event) => {
 });
 
 window.addEventListener('unhandledrejection', async (event) => {
-  const msg = event.reason?.message || String(event.reason || '');
+  const msg = event.reason?.message || '';
 
-  // Ignore Service Worker Cache.put NetworkError (harmless browser background caching failure)
-  if (msg.includes("Failed to execute 'put' on 'Cache'") || msg.includes('NetworkError when attempting to fetch resource') || msg.includes('Cache.put')) {
-    console.warn('Service worker cache.put NetworkError ignored:', msg);
-    return;
-  }
-
-  // Handle stale Vercel chunks or wa-sqlite missing modules
-  if (
-    msg.includes('Failed to fetch dynamically imported module') ||
-    msg.includes('Importing a module script failed') ||
-    msg.includes('wa-sqlite')
-  ) {
-    console.warn('Stale deployment or wa-sqlite chunk error detected. Unregistering SW and reloading...');
-    if ('serviceWorker' in navigator) {
-      try {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const registration of registrations) {
-          await registration.unregister();
-        }
-        if ('caches' in window) {
-          const keys = await caches.keys();
-          for (const key of keys) {
-            await caches.delete(key);
-          }
-        }
-      } catch (errSW) {
-        console.error('Error clearing SW cache:', errSW);
-      }
-    }
-    if (!sessionStorage.getItem('wa-reload-attempted')) {
-      sessionStorage.setItem('wa-reload-attempted', 'true');
-      window.location.reload(true);
+  // Handle stale Vercel chunks: "Failed to fetch dynamically imported module"
+  if (msg.includes('Failed to fetch dynamically imported module') || msg.includes('Importing a module script failed')) {
+    if (sessionStorage.getItem('vite-reload')) {
+      sessionStorage.removeItem('vite-reload');
+      console.error('Dynamic import error persists. Stopping reload loop.');
       return;
     }
+    sessionStorage.setItem('vite-reload', 'true');
+    console.warn('Stale deployment chunk detected. Forcing hard reload...');
+    if ('serviceWorker' in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const registration of registrations) {
+        await registration.unregister();
+      }
+    }
+    window.location.reload(true);
+    return;
   }
 
   if (msg.includes('importScripts') && msg.includes('workbox')) {
     console.warn('Workbox importScripts failed.');
+    // CAUTION: Do not unregister the service worker if offline, as reloading will show the Dinosaur error.
     if (!navigator.onLine) {
       console.log('Currently offline, ignoring Workbox update failure.');
       return;

@@ -153,71 +153,60 @@ export default function JCLAgentMetrics() {
         </div>
       ) : view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {metrics.map((m, idx) => {
-            const rankColors = idx === 0
-              ? 'from-amber-500 via-yellow-400 to-orange-400'
-              : idx === 1
-              ? 'from-slate-500 via-slate-400 to-slate-300'
-              : idx === 2
-              ? 'from-orange-700 via-orange-600 to-amber-600'
-              : 'from-emerald-700 via-emerald-600 to-teal-500';
-            return (
-              <div key={m.id || idx} className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
-                {/* Gradient Banner */}
-                <div className={cn('relative h-28 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br', rankColors)}>
-                  <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-                  <div className="flex items-start justify-between relative z-10">
-                    <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                      Rank #{idx + 1} · {m.metric_period || 'Annual'}
-                    </span>
-                    <span className="flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                      <Star className="h-3 w-3 fill-white" />
-                      {m.average_client_rating || '5.0'} / 5
-                    </span>
+          {metrics.map((m, idx) => (
+            <div key={m.id || idx} className="p-5 rounded-2xl border border-border/80 bg-card hover:border-emerald-500/50 transition-all shadow-xs space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-600 to-teal-500 text-white font-extrabold flex items-center justify-center text-sm shadow-md">
+                    #{idx + 1}
                   </div>
-                  <div className="relative z-10">
-                    <p className="text-white font-extrabold text-sm leading-snug">Agent ID: {m.agent_id || 'Broker'}</p>
-                    <p className="text-white/80 text-[11px] font-mono font-bold">{formatCurrency(m.sales_volume || 0, 'USD')} closed volume</p>
+                  <div>
+                    <h3 className="font-bold text-foreground text-sm">Agent ID: {m.agent_id || 'Broker'}</h3>
+                    <p className="text-[11px] text-muted-foreground uppercase font-semibold">{m.metric_period || 'Annual'} Scorecard</p>
                   </div>
                 </div>
+                <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30 gap-1 text-xs font-bold">
+                  <Star className="h-3 w-3 fill-amber-500" /> {m.average_client_rating || '5.0'} / 5
+                </Badge>
+              </div>
 
-                {/* Body */}
-                <div className="p-4 flex flex-col gap-3 flex-1">
-                  {/* 4 Quick Stat Strip */}
-                  <div className="grid grid-cols-4 divide-x divide-border/60 rounded-xl border border-border/60 bg-muted/20 text-center py-2.5">
-                    <div>
-                      <span className="text-sm font-extrabold text-foreground block">{m.listings_taken_count || 0}</span>
-                      <span className="text-[9px] uppercase font-semibold text-muted-foreground">Listings</span>
-                    </div>
-                    <div>
-                      <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 block">{m.listings_sold_count || 0}</span>
-                      <span className="text-[9px] uppercase font-semibold text-muted-foreground">Sold</span>
-                    </div>
-                    <div>
-                      <span className="text-sm font-extrabold text-foreground block">{m.client_count || 0}</span>
-                      <span className="text-[9px] uppercase font-semibold text-muted-foreground">Clients</span>
-                    </div>
-                    <div>
-                      <span className="text-sm font-extrabold text-foreground block">{m.average_days_on_market || 0}d</span>
-                      <span className="text-[9px] uppercase font-semibold text-muted-foreground">DOM</span>
-                    </div>
-                  </div>
-
-                  {/* Financial box */}
-                  <div className="p-3.5 rounded-xl bg-muted/40 space-y-2 font-mono text-xs">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground font-sans">Avg Sale Price:</span>
-                      <span className="font-semibold text-foreground">{formatCurrency(m.average_sale_price || 0, 'USD')}</span>
-                    </div>
-                    <div className="flex justify-between items-center pt-1 border-t border-border/50">
-                      <span className="text-muted-foreground font-sans">Commission Earned:</span>
-                      <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrency(m.commission_earned || 0, 'USD')}</span>
-                    </div>
-                  </div>
+              {/* 4 Quick Stat Strip */}
+              <div className="grid grid-cols-4 divide-x divide-border/60 rounded-xl border border-border/60 bg-muted/20 text-center py-2.5">
+                <div>
+                  <span className="text-sm font-extrabold text-foreground block">{m.listings_taken_count || 0}</span>
+                  <span className="text-[9px] uppercase font-semibold text-muted-foreground">Listings</span>
+                </div>
+                <div>
+                  <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 block">{m.listings_sold_count || 0}</span>
+                  <span className="text-[9px] uppercase font-semibold text-muted-foreground">Sold</span>
+                </div>
+                <div>
+                  <span className="text-sm font-extrabold text-foreground block">{m.client_count || 0}</span>
+                  <span className="text-[9px] uppercase font-semibold text-muted-foreground">Clients</span>
+                </div>
+                <div>
+                  <span className="text-sm font-extrabold text-foreground block">{m.average_days_on_market || 0}d</span>
+                  <span className="text-[9px] uppercase font-semibold text-muted-foreground">DOM</span>
                 </div>
               </div>
-            );
-          })}
+
+              {/* Financial Box */}
+              <div className="p-3.5 rounded-xl bg-muted/40 space-y-2 font-mono text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground font-sans">Closed Sales Volume:</span>
+                  <span className="font-bold text-foreground">{formatCurrency(m.sales_volume || 0, 'USD')}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground font-sans">Avg Sale Price:</span>
+                  <span className="font-semibold text-foreground">{formatCurrency(m.average_sale_price || 0, 'USD')}</span>
+                </div>
+                <div className="flex justify-between items-center pt-1 border-t border-border/50">
+                  <span className="text-muted-foreground font-sans">Commission Earned:</span>
+                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrency(m.commission_earned || 0, 'USD')}</span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="rounded-2xl border border-border/80 bg-card overflow-hidden shadow-xs">

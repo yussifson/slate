@@ -443,8 +443,6 @@ const RealEstateRecommendations = React.lazy(() => import('./pages/real-estate/R
 const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/TeamManagement'));
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
 const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analytics'));
-const RealEstateTenantPortal = React.lazy(() => import('./pages/real-estate/TenantPortal'));
-const RealEstateLandlordPortal = React.lazy(() => import('./pages/real-estate/LandlordPortal'));
 
 // JCL Royal Group — Dedicated Isolated Vertical Components
 const JCLLandManagement = React.lazy(() => import('./pages/real-estate-jcl/LandManagement'));
@@ -544,7 +542,6 @@ const SmartAuditLogRouter = () => {
 const JCLContractorsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractors'));
 const JCLContractorReviewsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractorReviews'));
 const JCLLeaseRenewalsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeaseRenewals'));
-const JCLMaintenancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaintenance'));
 
 const SmartMaintenanceRouter = () => {
   const { user } = useAuth();
@@ -574,7 +571,6 @@ const SmartLeaseRenewalsRouter = () => {
   return <RealEstateLeaseRenewals />;
 };
 const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
-const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
 const JCLCounterOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCounterOffers'));
 const JCLPaymentSchedulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPaymentSchedules'));
 const JCLRentPaymentsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLRentPayments'));
@@ -1300,10 +1296,10 @@ function PlatformRoutes() {
       <Route path="/real-estate/rent-payments" element={<SmartRentPaymentsRouter />} />
       <Route path="/real-estate/maintenance" element={<SmartMaintenanceRouter />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
-      <Route path="/real-estate/agent-metrics" element={<SmartAgentMetricsRouter />} />
+      <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
       <Route path="/real-estate/audit-log" element={<SmartAuditLogRouter />} />
       <Route path="/real-estate/commission-rules" element={<SmartCommissionRulesRouter />} />
-      <Route path="/real-estate/comparable-properties" element={<SmartComparablePropertiesRouter />} />
+      <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
       <Route path="/real-estate/contractor-reviews" element={<SmartContractorReviewsRouter />} />
       <Route path="/real-estate/contractors" element={<SmartContractorsRouter />} />
       <Route path="/real-estate/counter-offers" element={<SmartCounterOffersRouter />} />
@@ -1312,13 +1308,11 @@ function PlatformRoutes() {
       <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/escrow" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/lease-renewals" element={<SmartLeaseRenewalsRouter />} />
-      <Route path="/real-estate/market-data" element={<SmartMarketDataRouter />} />
+      <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
       <Route path="/real-estate/payment-schedules" element={<SmartPaymentSchedulesRouter />} />
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
-      <Route path="/real-estate/team-management" element={<SmartTeamManagementRouter />} />
-      <Route path="/real-estate/tenant-portal" element={<SmartTenantPortalRouter />} />
-      <Route path="/real-estate/landlord-portal" element={<SmartLandlordPortalRouter />} />
+      <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
       <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
       <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
 

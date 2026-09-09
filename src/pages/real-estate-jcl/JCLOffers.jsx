@@ -426,107 +426,93 @@ export default function JCLOffers() {
             const st = STATUS_CONFIG[offer.status] || STATUS_CONFIG.pending;
 
             return (
-                <div
-                  key={offer.id}
-                  onClick={() => setInspectorOffer(offer)}
-                  className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
-                >
-                  {/* Colour Banner Header */}
-                  <div className={cn(
-                    "relative h-28 flex flex-col justify-between p-4 overflow-hidden",
-                    offer.status === 'accepted' ? 'bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500' :
-                    offer.status === 'pending' ? 'bg-gradient-to-br from-amber-600 via-amber-500 to-yellow-400' :
-                    offer.status === 'countered' ? 'bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-500' :
-                    'bg-gradient-to-br from-rose-700 via-rose-600 to-pink-500'
-                  )}>
-                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-                    <div className="flex items-start justify-between relative z-10">
-                      <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                        Purchase Bid
-                      </span>
-                      <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                        {st.label}
-                      </span>
-                    </div>
-                    <div className="relative z-10">
-                      <p className="text-white/70 text-[10px] font-semibold uppercase tracking-widest mb-0.5">Offered Amount</p>
-                      <p className="text-2xl font-extrabold text-white tracking-tight">
+              <Card
+                key={offer.id}
+                className="group border border-border/80 hover:border-emerald-500/40 transition-all duration-200 shadow-xs hover:shadow-md bg-card overflow-hidden flex flex-col"
+              >
+                <div className="p-4 pb-3 border-b border-border/50 bg-gradient-to-b from-muted/30 to-transparent">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted text-muted-foreground border border-border/60">
+                      Offer
+                    </span>
+                    <Badge variant="outline" className={cn("text-[10px] font-medium border", st.badge)}>
+                      {st.label}
+                    </Badge>
+                  </div>
+
+                  <h3 className="font-bold text-foreground text-base group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                    {offer.property_address}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Buyer: <strong className="text-foreground">{offer.buyer_name}</strong>
+                  </p>
+                </div>
+
+                <CardContent className="p-4 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="flex items-baseline justify-between">
+                    <div>
+                      <p className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Offered Price</p>
+                      <p className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400">
                         {formatCurrency(offer.offer_amount, 'USD')}
                       </p>
                     </div>
-                  </div>
-
-                  {/* Card Body */}
-                  <div className="p-4 flex flex-col gap-3 flex-1">
-                    <div>
-                      <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-                        {offer.property_address}
-                      </h3>
-                      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mt-0.5">
-                        <User className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span>Buyer: <strong className="text-foreground">{offer.buyer_name}</strong></span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-muted/30 border border-border/60 text-xs">
-                      <div>
-                        <span className="text-[9px] uppercase font-semibold text-muted-foreground block mb-0.5">Offer Date</span>
-                        <span className="font-bold text-foreground">{offer.offer_date || 'N/A'}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-[9px] uppercase font-semibold text-muted-foreground block mb-0.5">Expiration</span>
-                        <span className="font-bold text-foreground">{offer.expiration_date || 'N/A'}</span>
-                      </div>
-                    </div>
-
                     {offer.earnest_money > 0 && (
-                      <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                        <span className="text-muted-foreground font-medium">Earnest Money Deposit</span>
-                        <span className="font-bold text-emerald-700 dark:text-emerald-400">{formatCurrency(offer.earnest_money, 'USD')}</span>
+                      <div className="text-right">
+                        <p className="text-[10px] uppercase font-medium text-muted-foreground">Earnest Deposit</p>
+                        <p className="text-xs font-semibold text-foreground">{formatCurrency(offer.earnest_money, 'USD')}</p>
                       </div>
                     )}
+                  </div>
 
-                    <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
-                      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground min-w-0">
-                        <div className="h-5 w-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-[8px] font-extrabold shrink-0">
-                          {(offer.agent_name || 'A')[0].toUpperCase()}
-                        </div>
-                        <span className="truncate font-medium">{offer.agent_name || 'Assigned Agent'}</span>
-                      </div>
-                      <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-emerald-600"
-                          onClick={() => setInspectorOffer(offer)}
-                          title="Inspect Offer"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                          onClick={() => handleOpenEdit(offer)}
-                          title="Edit Offer"
-                        >
-                          <Edit className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                          onClick={() => setDeleteTarget(offer)}
-                          title="Delete Offer"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                  <div className="p-2.5 rounded-lg bg-muted/40 border border-border/50 text-xs flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] text-muted-foreground uppercase">Offer Date</p>
+                      <p className="font-semibold text-foreground">{offer.offer_date || 'N/A'}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-muted-foreground uppercase">Expiration</p>
+                      <p className="font-semibold text-foreground">{offer.expiration_date || 'N/A'}</p>
                     </div>
                   </div>
-                </div>
-              );
+
+                  <div className="pt-2 border-t border-border/50 flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground truncate max-w-[140px]">
+                      Agent: <strong className="text-foreground">{offer.agent_name || 'Assigned'}</strong>
+                    </span>
+
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                        onClick={() => setInspectorOffer(offer)}
+                        title="Inspect Offer"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                        onClick={() => handleOpenEdit(offer)}
+                        title="Edit Offer"
+                      >
+                        <Edit className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                        onClick={() => setDeleteTarget(offer)}
+                        title="Delete Offer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
           })}
         </div>
       ) : (
