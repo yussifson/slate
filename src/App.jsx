@@ -607,10 +607,7 @@ const SmartRentPaymentsRouter = () => {
 };
 
 const SmartTrustAccountingRouter = () => {
-  const { user } = useAuth();
-  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
-  if (ind === 'real_estate_jcl') return <JCLTrustAccountingPage />;
-  return <RealEstateTrustAccounting />;
+  return <JCLTrustAccountingPage />;
 };
 
 const SmartEscrowAccountsRouter = () => {

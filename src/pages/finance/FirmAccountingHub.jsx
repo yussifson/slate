@@ -196,128 +196,163 @@ export default function FirmAccountingHub() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-full">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
+    <div className="p-4 sm:p-6 pb-28 w-full max-w-full space-y-6 font-sans">
+      {/* ── 1. Executive Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-primary/10 text-primary rounded-xl">
-              <Building2 className="w-6 h-6" />
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+              <Building2 className="h-5 w-5" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">Firm & Corporate Accounting</h1>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                Firm & Corporate Accounting
+              </h1>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Enterprise double-entry general ledger, Chart of Accounts, Accounts Receivable (AR), Accounts Payable (AP), and Financial Statements
+              </p>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Enterprise double-entry ledger, Chart of Accounts, Invoicing (AR), Bills (AP), Assets & Financials
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadData} className="gap-2">
-            <RefreshCw className="w-4 h-4" /> Refresh
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadData}
+            className="h-9 px-3 text-xs gap-1.5 border-border rounded-xl"
+          >
+            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
+            Refresh
           </Button>
-          <Button size="sm" onClick={() => setShowInvoiceModal(true)} className="gap-2">
-            <Plus className="w-4 h-4" /> Create Invoice
+
+          <Button
+            onClick={() => setShowInvoiceModal(true)}
+            size="sm"
+            className="h-9 px-3.5 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 gap-1.5 rounded-xl"
+          >
+            <Plus className="h-4 w-4" />
+            Create Invoice
           </Button>
-          <Button size="sm" variant="secondary" onClick={() => setShowJVModal(true)} className="gap-2">
-            <Plus className="w-4 h-4" /> Post Journal Voucher
+
+          <Button
+            onClick={() => setShowJVModal(true)}
+            variant="outline"
+            size="sm"
+            className="h-9 px-3 text-xs font-semibold gap-1.5 border-purple-500/30 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 rounded-xl"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Journal Entry
           </Button>
         </div>
       </div>
 
-      {/* Corporate KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-              <DollarSign className="w-4 h-4 text-emerald-500" /> Total Accounts Receivable (AR)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-emerald-600">${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-            <p className="text-xs text-muted-foreground mt-1">{invoices.length} active invoices</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-              <Receipt className="w-4 h-4 text-rose-500" /> Total Accounts Payable (AP)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-rose-600">${totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-            <p className="text-xs text-muted-foreground mt-1">{bills.length} vendor bills</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-              <LineChart className="w-4 h-4 text-primary" /> Net Corporate Income
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className={`text-2xl font-bold ${netIncome >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-              ${netIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+      {/* ── 2. Corporate KPI Hero Cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Accounts Receivable (AR)</span>
+              <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
+                ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </p>
+              <p className="text-[11px] text-muted-foreground font-semibold">{invoices.length} active invoices</p>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Calculated from posted AR & AP</p>
+            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+              <DollarSign className="h-6 w-6" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="p-4 pb-2">
-            <CardTitle className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-              <BookOpen className="w-4 h-4 text-indigo-500" /> Chart of Accounts Code
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-indigo-600">{accounts.length} Accounts</div>
-            <p className="text-xs text-muted-foreground mt-1">Double-entry structure active</p>
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Accounts Payable (AP)</span>
+              <p className="text-2xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">
+                ${totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </p>
+              <p className="text-[11px] text-muted-foreground font-semibold">{bills.length} vendor bills</p>
+            </div>
+            <div className="h-12 w-12 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-500/20 shadow-inner">
+              <Receipt className="h-6 w-6" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Net Operating Income</span>
+              <p className={`text-2xl font-extrabold tracking-tight ${netIncome >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                ${netIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </p>
+              <p className="text-[11px] text-muted-foreground font-semibold">Real-time ledger net</p>
+            </div>
+            <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-500/20 shadow-inner">
+              <LineChart className="h-6 w-6" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+          <CardContent className="p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Chart of Accounts</span>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">
+                {accounts.length} Accounts
+              </p>
+              <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1">
+                <CheckCircle2 className="h-3.5 w-3.5" /> Double-Entry Active
+              </p>
+            </div>
+            <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20 shadow-inner">
+              <BookOpen className="h-6 w-6" />
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
-        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
-          <TabsTrigger value="coa" className="gap-2"><BookOpen className="w-4 h-4" /> Chart of Accounts</TabsTrigger>
-          <TabsTrigger value="jv" className="gap-2"><FileText className="w-4 h-4" /> Journal Vouchers (GL)</TabsTrigger>
-          <TabsTrigger value="invoices" className="gap-2"><Receipt className="w-4 h-4" /> Invoices (AR)</TabsTrigger>
-          <TabsTrigger value="bills" className="gap-2"><Receipt className="w-4 h-4" /> Bills Payable (AP)</TabsTrigger>
-          <TabsTrigger value="assets" className="gap-2"><Landmark className="w-4 h-4" /> Fixed Assets</TabsTrigger>
-          <TabsTrigger value="bankrec" className="gap-2"><CheckCircle2 className="w-4 h-4" /> Bank Feed Rec</TabsTrigger>
+      {/* ── 3. Executive Tabs Navigation & Content ── */}
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6">
+        <TabsList className="bg-muted/60 p-1.5 rounded-2xl border border-border/60 grid grid-cols-2 md:grid-cols-6 w-full h-auto gap-1">
+          <TabsTrigger value="coa" className="gap-2 rounded-xl text-xs font-semibold py-2.5 data-[state=active]:bg-card data-[state=active]:shadow-sm"><BookOpen className="w-4 h-4 text-indigo-500" /> Chart of Accounts</TabsTrigger>
+          <TabsTrigger value="jv" className="gap-2 rounded-xl text-xs font-semibold py-2.5 data-[state=active]:bg-card data-[state=active]:shadow-sm"><FileText className="w-4 h-4 text-purple-500" /> Journal Vouchers</TabsTrigger>
+          <TabsTrigger value="invoices" className="gap-2 rounded-xl text-xs font-semibold py-2.5 data-[state=active]:bg-card data-[state=active]:shadow-sm"><Receipt className="w-4 h-4 text-emerald-500" /> Invoices (AR)</TabsTrigger>
+          <TabsTrigger value="bills" className="gap-2 rounded-xl text-xs font-semibold py-2.5 data-[state=active]:bg-card data-[state=active]:shadow-sm"><Receipt className="w-4 h-4 text-rose-500" /> Bills Payable (AP)</TabsTrigger>
+          <TabsTrigger value="assets" className="gap-2 rounded-xl text-xs font-semibold py-2.5 data-[state=active]:bg-card data-[state=active]:shadow-sm"><Landmark className="w-4 h-4 text-amber-500" /> Fixed Assets</TabsTrigger>
+          <TabsTrigger value="bankrec" className="gap-2 rounded-xl text-xs font-semibold py-2.5 data-[state=active]:bg-card data-[state=active]:shadow-sm"><CheckCircle2 className="w-4 h-4 text-teal-500" /> Bank Feed Rec</TabsTrigger>
         </TabsList>
 
         {/* 1. CHART OF ACCOUNTS */}
         <TabsContent value="coa" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Corporate Chart of Accounts (CoA)</h3>
-            <Button size="sm" onClick={() => setShowAccountModal(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> Add Account Code
+          <div className="flex justify-between items-center px-1">
+            <h3 className="text-base font-bold text-foreground">Corporate Chart of Accounts (CoA)</h3>
+            <Button size="sm" onClick={() => setShowAccountModal(true)} className="gap-1.5 h-8 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white">
+              <Plus className="w-3.5 h-3.5" /> Add Account Code
             </Button>
           </div>
 
-          <Card>
+          <Card className="rounded-[24px] border border-border/80 bg-card/90 backdrop-blur-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead className="bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
                   <tr>
-                    <th className="text-left py-3 px-4">Code</th>
-                    <th className="text-left py-3 px-4">Account Name</th>
-                    <th className="text-left py-3 px-4">Category Type</th>
-                    <th className="text-left py-3 px-4">Status</th>
+                    <th className="text-left py-3.5 px-5">Code</th>
+                    <th className="text-left py-3.5 px-5">Account Name</th>
+                    <th className="text-left py-3.5 px-5">Category Type</th>
+                    <th className="text-left py-3.5 px-5">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-border/40">
                   {accounts.map(acc => (
-                    <tr key={acc.id} className="hover:bg-muted/30">
-                      <td className="py-3 px-4 font-mono font-bold">{acc.code}</td>
-                      <td className="py-3 px-4 font-medium">{acc.name}</td>
-                      <td className="py-3 px-4">
-                        <Badge variant="outline" className="capitalize">{acc.type}</Badge>
+                    <tr key={acc.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="py-3.5 px-5 font-mono font-bold text-indigo-600 dark:text-indigo-400">{acc.code}</td>
+                      <td className="py-3.5 px-5 font-bold text-foreground">{acc.name}</td>
+                      <td className="py-3.5 px-5">
+                        <Badge variant="outline" className="capitalize rounded-lg font-semibold border-border">{acc.type}</Badge>
                       </td>
-                      <td className="py-3 px-4">
-                        <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">Active</Badge>
+                      <td className="py-3.5 px-5">
+                        <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border-0 font-semibold rounded-lg">Active</Badge>
                       </td>
                     </tr>
                   ))}
@@ -329,39 +364,39 @@ export default function FirmAccountingHub() {
 
         {/* 2. JOURNAL VOUCHERS */}
         <TabsContent value="jv" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">General Ledger Journal Vouchers</h3>
-            <Button size="sm" onClick={() => setShowJVModal(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> New Journal Voucher
+          <div className="flex justify-between items-center px-1">
+            <h3 className="text-base font-bold text-foreground">General Ledger Journal Vouchers</h3>
+            <Button size="sm" onClick={() => setShowJVModal(true)} className="gap-1.5 h-8 text-xs font-semibold rounded-xl bg-purple-600 hover:bg-purple-700 text-white">
+              <Plus className="w-3.5 h-3.5" /> New Journal Voucher
             </Button>
           </div>
 
-          <Card>
+          <Card className="rounded-[24px] border border-border/80 bg-card/90 backdrop-blur-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead className="bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
                   <tr>
-                    <th className="text-left py-3 px-4">JV #</th>
-                    <th className="text-left py-3 px-4">Date</th>
-                    <th className="text-left py-3 px-4">Description</th>
-                    <th className="text-left py-3 px-4">Line Items</th>
-                    <th className="text-left py-3 px-4">Status</th>
+                    <th className="text-left py-3.5 px-5">JV #</th>
+                    <th className="text-left py-3.5 px-5">Date</th>
+                    <th className="text-left py-3.5 px-5">Description</th>
+                    <th className="text-left py-3.5 px-5">Line Items</th>
+                    <th className="text-left py-3.5 px-5">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-border/40">
                   {journalEntries.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center py-8 text-muted-foreground">No Journal Vouchers posted yet</td></tr>
+                    <tr><td colSpan="5" className="text-center py-10 text-muted-foreground font-medium">No Journal Vouchers posted yet</td></tr>
                   ) : (
                     journalEntries.map(jv => (
-                      <tr key={jv.id} className="hover:bg-muted/30">
-                        <td className="py-3 px-4 font-mono font-bold text-primary">{jv.entry_number}</td>
-                        <td className="py-3 px-4 text-muted-foreground">{new Date(jv.entry_date).toLocaleDateString()}</td>
-                        <td className="py-3 px-4 font-medium">{jv.description}</td>
-                        <td className="py-3 px-4 text-xs font-mono">
+                      <tr key={jv.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="py-3.5 px-5 font-mono font-bold text-purple-600 dark:text-purple-400">{jv.entry_number}</td>
+                        <td className="py-3.5 px-5 text-muted-foreground font-medium">{new Date(jv.entry_date).toLocaleDateString()}</td>
+                        <td className="py-3.5 px-5 font-bold text-foreground">{jv.description}</td>
+                        <td className="py-3.5 px-5 text-xs font-mono">
                           {jv.lineItems?.map(l => `${l.debit > 0 ? `Dr $${l.debit}` : `Cr $${l.credit}`}`).join(' | ')}
                         </td>
-                        <td className="py-3 px-4">
-                          <Badge variant="default" className="bg-emerald-600">Posted</Badge>
+                        <td className="py-3.5 px-5">
+                          <Badge className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border-0 font-semibold rounded-lg">Posted</Badge>
                         </td>
                       </tr>
                     ))
@@ -374,39 +409,39 @@ export default function FirmAccountingHub() {
 
         {/* 3. INVOICES */}
         <TabsContent value="invoices" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Accounts Receivable (Customer Invoices)</h3>
-            <Button size="sm" onClick={() => setShowInvoiceModal(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> Create Invoice
+          <div className="flex justify-between items-center px-1">
+            <h3 className="text-base font-bold text-foreground">Accounts Receivable (Customer Invoices)</h3>
+            <Button size="sm" onClick={() => setShowInvoiceModal(true)} className="gap-1.5 h-8 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Plus className="w-3.5 h-3.5" /> Create Invoice
             </Button>
           </div>
 
-          <Card>
+          <Card className="rounded-[24px] border border-border/80 bg-card/90 backdrop-blur-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead className="bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
                   <tr>
-                    <th className="text-left py-3 px-4">Invoice #</th>
-                    <th className="text-left py-3 px-4">Customer</th>
-                    <th className="text-left py-3 px-4">Due Date</th>
-                    <th className="text-right py-3 px-4">Total Amount</th>
-                    <th className="text-center py-3 px-4">Status</th>
+                    <th className="text-left py-3.5 px-5">Invoice #</th>
+                    <th className="text-left py-3.5 px-5">Customer</th>
+                    <th className="text-left py-3.5 px-5">Due Date</th>
+                    <th className="text-right py-3.5 px-5">Total Amount</th>
+                    <th className="text-center py-3.5 px-5">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-border/40">
                   {invoices.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center py-8 text-muted-foreground">No customer invoices created</td></tr>
+                    <tr><td colSpan="5" className="text-center py-10 text-muted-foreground font-medium">No customer invoices created</td></tr>
                   ) : (
                     invoices.map(inv => (
-                      <tr key={inv.id} className="hover:bg-muted/30">
-                        <td className="py-3 px-4 font-mono font-bold">{inv.invoice_number}</td>
-                        <td className="py-3 px-4 font-medium">{inv.customer_name}</td>
-                        <td className="py-3 px-4 text-muted-foreground">{new Date(inv.due_date).toLocaleDateString()}</td>
-                        <td className="py-3 px-4 text-right font-bold text-emerald-600">
+                      <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="py-3.5 px-5 font-mono font-bold text-foreground">{inv.invoice_number}</td>
+                        <td className="py-3.5 px-5 font-bold text-foreground">{inv.customer_name}</td>
+                        <td className="py-3.5 px-5 text-muted-foreground font-medium">{new Date(inv.due_date).toLocaleDateString()}</td>
+                        <td className="py-3.5 px-5 text-right font-extrabold text-emerald-600 dark:text-emerald-400">
                           ${(inv.total_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </td>
-                        <td className="py-3 px-4 text-center">
-                          <Badge variant="outline" className="capitalize">{inv.status}</Badge>
+                        <td className="py-3.5 px-5 text-center">
+                          <Badge variant="outline" className="capitalize rounded-lg font-semibold border-border">{inv.status}</Badge>
                         </td>
                       </tr>
                     ))
@@ -419,39 +454,39 @@ export default function FirmAccountingHub() {
 
         {/* 4. BILLS */}
         <TabsContent value="bills" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Accounts Payable (Vendor Bills)</h3>
-            <Button size="sm" onClick={() => setShowBillModal(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> Record Vendor Bill
+          <div className="flex justify-between items-center px-1">
+            <h3 className="text-base font-bold text-foreground">Accounts Payable (Vendor Bills)</h3>
+            <Button size="sm" onClick={() => setShowBillModal(true)} className="gap-1.5 h-8 text-xs font-semibold rounded-xl bg-rose-600 hover:bg-rose-700 text-white">
+              <Plus className="w-3.5 h-3.5" /> Record Vendor Bill
             </Button>
           </div>
 
-          <Card>
+          <Card className="rounded-[24px] border border-border/80 bg-card/90 backdrop-blur-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead className="bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
                   <tr>
-                    <th className="text-left py-3 px-4">Bill #</th>
-                    <th className="text-left py-3 px-4">Vendor</th>
-                    <th className="text-left py-3 px-4">Due Date</th>
-                    <th className="text-right py-3 px-4">Total Amount</th>
-                    <th className="text-center py-3 px-4">Status</th>
+                    <th className="text-left py-3.5 px-5">Bill #</th>
+                    <th className="text-left py-3.5 px-5">Vendor</th>
+                    <th className="text-left py-3.5 px-5">Due Date</th>
+                    <th className="text-right py-3.5 px-5">Total Amount</th>
+                    <th className="text-center py-3.5 px-5">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-border/40">
                   {bills.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center py-8 text-muted-foreground">No vendor bills recorded</td></tr>
+                    <tr><td colSpan="5" className="text-center py-10 text-muted-foreground font-medium">No vendor bills recorded</td></tr>
                   ) : (
                     bills.map(b => (
-                      <tr key={b.id} className="hover:bg-muted/30">
-                        <td className="py-3 px-4 font-mono font-bold">{b.bill_number}</td>
-                        <td className="py-3 px-4 font-medium">{b.vendor_name}</td>
-                        <td className="py-3 px-4 text-muted-foreground">{new Date(b.due_date).toLocaleDateString()}</td>
-                        <td className="py-3 px-4 text-right font-bold text-rose-600">
+                      <tr key={b.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="py-3.5 px-5 font-mono font-bold text-foreground">{b.bill_number}</td>
+                        <td className="py-3.5 px-5 font-bold text-foreground">{b.vendor_name}</td>
+                        <td className="py-3.5 px-5 text-muted-foreground font-medium">{new Date(b.due_date).toLocaleDateString()}</td>
+                        <td className="py-3.5 px-5 text-right font-extrabold text-rose-600 dark:text-rose-400">
                           ${(b.total_amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </td>
-                        <td className="py-3 px-4 text-center">
-                          <Badge variant="secondary" className="capitalize">{b.status}</Badge>
+                        <td className="py-3.5 px-5 text-center">
+                          <Badge variant="secondary" className="capitalize rounded-lg font-semibold">{b.status}</Badge>
                         </td>
                       </tr>
                     ))
@@ -464,39 +499,39 @@ export default function FirmAccountingHub() {
 
         {/* 5. FIXED ASSETS */}
         <TabsContent value="assets" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Fixed Assets & Depreciation</h3>
-            <Button size="sm" onClick={() => setShowAssetModal(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> Add Asset
+          <div className="flex justify-between items-center px-1">
+            <h3 className="text-base font-bold text-foreground">Fixed Assets & Depreciation</h3>
+            <Button size="sm" onClick={() => setShowAssetModal(true)} className="gap-1.5 h-8 text-xs font-semibold rounded-xl bg-amber-600 hover:bg-amber-700 text-white">
+              <Plus className="w-3.5 h-3.5" /> Add Asset
             </Button>
           </div>
 
-          <Card>
+          <Card className="rounded-[24px] border border-border/80 bg-card/90 backdrop-blur-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead className="bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
                   <tr>
-                    <th className="text-left py-3 px-4">Asset Code</th>
-                    <th className="text-left py-3 px-4">Name</th>
-                    <th className="text-right py-3 px-4">Cost</th>
-                    <th className="text-right py-3 px-4">Accum. Depreciation</th>
-                    <th className="text-right py-3 px-4">Net Book Value</th>
-                    <th className="text-center py-3 px-4">Action</th>
+                    <th className="text-left py-3.5 px-5">Asset Code</th>
+                    <th className="text-left py-3.5 px-5">Name</th>
+                    <th className="text-right py-3.5 px-5">Cost</th>
+                    <th className="text-right py-3.5 px-5">Accum. Depreciation</th>
+                    <th className="text-right py-3.5 px-5">Net Book Value</th>
+                    <th className="text-center py-3.5 px-5">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-border/40">
                   {fixedAssets.length === 0 ? (
-                    <tr><td colSpan="6" className="text-center py-8 text-muted-foreground">No fixed assets registered</td></tr>
+                    <tr><td colSpan="6" className="text-center py-10 text-muted-foreground font-medium">No fixed assets registered</td></tr>
                   ) : (
                     fixedAssets.map(ast => (
-                      <tr key={ast.id} className="hover:bg-muted/30">
-                        <td className="py-3 px-4 font-mono font-bold">{ast.asset_code}</td>
-                        <td className="py-3 px-4 font-medium">{ast.asset_name}</td>
-                        <td className="py-3 px-4 text-right font-medium">${(ast.purchase_cost || 0).toLocaleString()}</td>
-                        <td className="py-3 px-4 text-right text-rose-500">${(ast.accumulated_depreciation || 0).toLocaleString()}</td>
-                        <td className="py-3 px-4 text-right font-bold text-emerald-600">${(ast.net_book_value || 0).toLocaleString()}</td>
-                        <td className="py-3 px-4 text-center">
-                          <Button size="xs" variant="outline" onClick={() => handlePostDepreciation(ast.id)}>
+                      <tr key={ast.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="py-3.5 px-5 font-mono font-bold text-amber-600 dark:text-amber-400">{ast.asset_code}</td>
+                        <td className="py-3.5 px-5 font-bold text-foreground">{ast.asset_name}</td>
+                        <td className="py-3.5 px-5 text-right font-medium">${(ast.purchase_cost || 0).toLocaleString()}</td>
+                        <td className="py-3.5 px-5 text-right text-rose-500 font-medium">${(ast.accumulated_depreciation || 0).toLocaleString()}</td>
+                        <td className="py-3.5 px-5 text-right font-extrabold text-emerald-600 dark:text-emerald-400">${(ast.net_book_value || 0).toLocaleString()}</td>
+                        <td className="py-3.5 px-5 text-center">
+                          <Button size="xs" variant="outline" className="rounded-lg h-7 px-2.5 text-xs font-semibold" onClick={() => handlePostDepreciation(ast.id)}>
                             Depreciate Month
                           </Button>
                         </td>
@@ -511,39 +546,39 @@ export default function FirmAccountingHub() {
 
         {/* 6. BANK RECONCILIATION */}
         <TabsContent value="bankrec" className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">Bank Statement Reconciliation</h3>
-            <Button size="sm" onClick={() => setShowBankRecModal(true)} className="gap-2">
-              <Plus className="w-4 h-4" /> Start Reconciliation
+          <div className="flex justify-between items-center px-1">
+            <h3 className="text-base font-bold text-foreground">Bank Statement Reconciliation</h3>
+            <Button size="sm" onClick={() => setShowBankRecModal(true)} className="gap-1.5 h-8 text-xs font-semibold rounded-xl bg-teal-600 hover:bg-teal-700 text-white">
+              <Plus className="w-3.5 h-3.5" /> Start Reconciliation
             </Button>
           </div>
 
-          <Card>
+          <Card className="rounded-[24px] border border-border/80 bg-card/90 backdrop-blur-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted/50 border-b">
+                <thead className="bg-muted/40 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/60">
                   <tr>
-                    <th className="text-left py-3 px-4">Statement Date</th>
-                    <th className="text-right py-3 px-4">Bank Statement Balance</th>
-                    <th className="text-right py-3 px-4">GL Ledger Balance</th>
-                    <th className="text-right py-3 px-4">Difference</th>
-                    <th className="text-center py-3 px-4">Status</th>
+                    <th className="text-left py-3.5 px-5">Statement Date</th>
+                    <th className="text-right py-3.5 px-5">Bank Statement Balance</th>
+                    <th className="text-right py-3.5 px-5">GL Ledger Balance</th>
+                    <th className="text-right py-3.5 px-5">Difference</th>
+                    <th className="text-center py-3.5 px-5">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-border/40">
                   {bankReconciliations.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center py-8 text-muted-foreground">No bank reconciliations performed yet</td></tr>
+                    <tr><td colSpan="5" className="text-center py-10 text-muted-foreground font-medium">No bank reconciliations performed yet</td></tr>
                   ) : (
                     bankReconciliations.map(rec => (
-                      <tr key={rec.id} className="hover:bg-muted/30">
-                        <td className="py-3 px-4 font-mono font-medium">{new Date(rec.statement_date).toLocaleDateString()}</td>
-                        <td className="py-3 px-4 text-right font-medium">${(rec.statement_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                        <td className="py-3 px-4 text-right font-medium">${(rec.gl_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                        <td className={`py-3 px-4 text-right font-bold ${Math.abs(rec.difference || 0) < 0.01 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                      <tr key={rec.id} className="hover:bg-muted/30 transition-colors">
+                        <td className="py-3.5 px-5 font-mono font-medium text-foreground">{new Date(rec.statement_date).toLocaleDateString()}</td>
+                        <td className="py-3.5 px-5 text-right font-medium text-foreground">${(rec.statement_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                        <td className="py-3.5 px-5 text-right font-medium text-foreground">${(rec.gl_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                        <td className={`py-3.5 px-5 text-right font-extrabold ${Math.abs(rec.difference || 0) < 0.01 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                           ${(rec.difference || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                         </td>
-                        <td className="py-3 px-4 text-center">
-                          <Badge variant={rec.status === 'reconciled' ? 'default' : 'secondary'} className="capitalize">
+                        <td className="py-3.5 px-5 text-center">
+                          <Badge variant={rec.status === 'reconciled' ? 'default' : 'secondary'} className="capitalize rounded-lg font-semibold">
                             {rec.status}
                           </Badge>
                         </td>
