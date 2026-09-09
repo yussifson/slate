@@ -431,7 +431,6 @@ export default function CliPadBilling() {
           </button>
         </div>
       </div>
-      </div>
       {/* Billing History */}
       <div className="mt-12">
         <h3 className="text-xl font-bold text-foreground mb-6">Billing History & Receipts</h3>
