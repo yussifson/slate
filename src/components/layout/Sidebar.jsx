@@ -153,19 +153,6 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     || companyData?.industry_type 
     || user?.company_industry 
     || 'law';
-
-  if (activeIndustry === 'real_estate_jcl') {
-    return (
-      <JCLTwoPanelSidebar
-        user={user}
-        companyId={companyId}
-        companyData={companyData}
-        impersonatedCompany={impersonatedCompany}
-        isAdmin={isAdmin}
-        customRolePermissions={customRolePermissions}
-      />
-    );
-  }
   
   useEffect(() => {
   const fetchDynamicNav = async () => {

@@ -405,7 +405,7 @@ export default function JCLTransactions() {
       {/* ── 4. Main Body: Kanban or List ── */}
       {viewMode === 'kanban' ? (
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 overflow-x-auto pb-4">
+          <div className="flex flex-nowrap gap-4 overflow-x-auto pb-4 scrollbar-primary">
             {PIPELINE_STAGES.map(stage => {
               const stageDeals = filteredTransactions.filter(t => (t.status || 'offer_accepted') === stage.id);
               const stageVolume = stageDeals.reduce((sum, t) => sum + (Number(t.sale_price) || 0), 0);
@@ -414,7 +414,7 @@ export default function JCLTransactions() {
                 <div
                   key={stage.id}
                   className={cn(
-                    "flex flex-col rounded-xl border p-3 min-w-[240px] bg-card/50",
+                    "flex flex-col rounded-xl border p-3 flex-1 min-w-[260px] max-w-[300px] shrink-0 bg-card/50",
                     stage.color
                   )}
                 >
