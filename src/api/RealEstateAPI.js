@@ -2170,6 +2170,226 @@ export const RealEstateAPI = {
       throw e;
     }
   },
+
+  // ────────────────────────────────────────────────────────
+  // PHASE 2: TEAM MANAGEMENT
+  // ────────────────────────────────────────────────────────
+
+  async getTeamMembers(companyId) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_team_members WHERE company_id = ? ORDER BY name ASC',
+        [companyId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getTeamMembers failed:', e);
+      return [];
+    }
+  },
+
+  async createTeamMember(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `INSERT INTO univ_re_team_members (id, company_id, name, email, phone, role, status, bio, license_number, license_expiry, commission_rate, join_date, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.name, data.email, data.phone || null, data.role || 'agent', data.status || 'active',
+         data.bio || null, data.licenseNumber || null, data.licenseExpiry || null, data.commissionRate || 0, data.joinDate || now.split('T')[0], now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createTeamMember failed:', e);
+      throw e;
+    }
+  },
+
+  async updateTeamMember(companyId, memberId, data, userId) {
+    try {
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `UPDATE univ_re_team_members SET name = ?, email = ?, phone = ?, role = ?, status = ?, bio = ?, license_number = ?, license_expiry = ?, commission_rate = ?, updated_at = ?
+         WHERE company_id = ? AND id = ?`,
+        [data.name, data.email, data.phone, data.role, data.status, data.bio, data.licenseNumber, data.licenseExpiry, data.commissionRate, now, companyId, memberId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateTeamMember failed:', e);
+      throw e;
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // PHASE 2: MARKET INTELLIGENCE & CMA
+  // ────────────────────────────────────────────────────────
+
+  async getMLSListings(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_mls_listings WHERE company_id = ?';
+      const params = [companyId];
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getMLSListings failed:', e);
+      return [];
+    }
+  },
+
+  async createMLSListing(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `INSERT INTO univ_re_mls_listings (id, company_id, mls_id, property_address, city, state, zip_code, price, list_date, days_on_market, bedrooms, bathrooms, square_feet, status, agent_name, brokerage, description, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.mlsId || `MLS-${Date.now()}`, data.propertyAddress, data.city, data.state, data.zipCode, data.price, data.listDate || now.split('T')[0], data.daysOnMarket || 0, data.bedrooms, data.bathrooms, data.squareFeet, data.status || 'active', data.agentName || '', data.brokerage || '', data.description || '', now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createMLSListing failed:', e);
+      throw e;
+    }
+  },
+
+  async getComparableAnalysis(companyId, filters = {}) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_comparable_analysis WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getComparableAnalysis failed:', e);
+      return [];
+    }
+  },
+
+  async createComparableAnalysis(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `INSERT INTO univ_re_comparable_analysis (id, company_id, property_id, subject_address, subject_price, comparable_1_address, comparable_1_price, comparable_1_adjustment, comparable_2_address, comparable_2_price, comparable_2_adjustment, comparable_3_address, comparable_3_price, comparable_3_adjustment, estimated_value, confidence_level, notes, created_by, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.propertyId || null, data.subjectAddress, data.subjectPrice, data.comp1Address, data.comp1Price, data.comp1Adjustment || 0, data.comp2Address, data.comp2Price, data.comp2Adjustment || 0, data.comp3Address, data.comp3Price, data.comp3Adjustment || 0, data.estimatedValue, data.confidenceLevel || 85, data.notes || '', userId, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createComparableAnalysis failed:', e);
+      throw e;
+    }
+  },
+
+  async getMarketTrends(companyId, filters = {}) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_market_trends WHERE company_id = ? ORDER BY metric_date DESC',
+        [companyId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getMarketTrends failed:', e);
+      return [];
+    }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // PHASE 2: CRM LEADS & LIFECYCLE
+  // ────────────────────────────────────────────────────────
+
+  async getLeads(companyId, filters = {}) {
+    try {
+      let query = 'SELECT * FROM univ_re_leads WHERE company_id = ?';
+      const params = [companyId];
+      if (filters.status) {
+        query += ' AND status = ?';
+        params.push(filters.status);
+      }
+      query += ' ORDER BY created_at DESC';
+      const res = await powerSync.execute(query, params);
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeads failed:', e);
+      return [];
+    }
+  },
+
+  async createLead(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `INSERT INTO univ_re_leads (id, company_id, first_name, last_name, email, phone, source, property_interest, budget_min, budget_max, lead_type, status, stage, assigned_agent_id, lead_score, notes, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.firstName, data.lastName, data.email || '', data.phone || '', data.source || 'website', data.propertyInterest || '', data.budgetMin || 0, data.budgetMax || 0, data.leadType || 'buyer', data.status || 'new', data.stage || 'awareness', data.assignedAgentId || null, data.leadScore || 50, data.notes || '', now, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createLead failed:', e);
+      throw e;
+    }
+  },
+
+  async updateLead(companyId, leadId, data, userId) {
+    try {
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `UPDATE univ_re_leads SET first_name = ?, last_name = ?, email = ?, phone = ?, source = ?, property_interest = ?, budget_min = ?, budget_max = ?, lead_type = ?, status = ?, stage = ?, assigned_agent_id = ?, lead_score = ?, notes = ?, updated_at = ?
+         WHERE company_id = ? AND id = ?`,
+        [data.firstName, data.lastName, data.email, data.phone, data.source, data.propertyInterest, data.budgetMin, data.budgetMax, data.leadType, data.status, data.stage, data.assignedAgentId, data.leadScore, data.notes, now, companyId, leadId]
+      );
+    } catch (e) {
+      console.error('[RE API] updateLead failed:', e);
+      throw e;
+    }
+  },
+
+  async createLeadActivity(companyId, leadId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = getSafeISO8601();
+      await powerSync.execute(
+        `INSERT INTO univ_re_lead_activities (id, company_id, lead_id, activity_type, subject, description, duration_minutes, outcome, agent_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, leadId, data.activityType || 'call', data.subject || '', data.description || '', data.durationMinutes || 0, data.outcome || '', userId || null, now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[RE API] createLeadActivity failed:', e);
+      throw e;
+    }
+  },
+
+  async getLeadActivities(companyId, leadId) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_lead_activities WHERE company_id = ? AND lead_id = ? ORDER BY created_at DESC',
+        [companyId, leadId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeadActivities failed:', e);
+      return [];
+    }
+  },
+
+  async getLeadCampaigns(companyId, filters = {}) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_re_lead_campaigns WHERE company_id = ? ORDER BY created_at DESC',
+        [companyId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[RE API] getLeadCampaigns failed:', e);
+      return [];
+    }
+  }
 };
 
 export default RealEstateAPI;

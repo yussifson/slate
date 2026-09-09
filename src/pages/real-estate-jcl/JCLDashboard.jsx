@@ -67,8 +67,8 @@ export default function JCLDashboard() {
       setIsLoading(true);
       try {
         const [propRes, clientRes, leadRes, viewRes, txnRes, leaseRes, offerRes, taskRes, compRes] = await Promise.all([
-          powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]),
-          powerSync.execute('SELECT * FROM univ_re_clients WHERE company_id = ? ORDER BY created_at DESC', [companyId]),
+          powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
+          powerSync.execute('SELECT * FROM univ_re_clients WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
           powerSync.execute('SELECT * FROM univ_re_leads WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
           powerSync.execute('SELECT * FROM univ_re_viewings WHERE company_id = ? ORDER BY viewing_date DESC', [companyId]).catch(() => ({ rows: [] })),
           powerSync.execute('SELECT * FROM univ_re_transactions WHERE company_id = ? ORDER BY closing_date DESC', [companyId]).catch(() => ({ rows: [] })),
@@ -79,25 +79,32 @@ export default function JCLDashboard() {
         ]);
 
         if (active) {
-          setProperties(propRes.rows._array || Array.from(propRes.rows || []));
-          setClients(clientRes.rows._array || Array.from(clientRes.rows || []));
-          setLeads(leadRes.rows._array || Array.from(leadRes.rows || []));
-          setViewings(viewRes.rows._array || Array.from(viewRes.rows || []));
-          setTransactions(txnRes.rows._array || Array.from(txnRes.rows || []));
-          setLeases(leaseRes.rows._array || Array.from(leaseRes.rows || []));
-          setOffers(offerRes.rows._array || Array.from(offerRes.rows || []));
-          setTasks(taskRes.rows._array || Array.from(taskRes.rows || []));
-          if (compRes.rows?._array?.length > 0) {
-            setCompany(compRes.rows._array[0]);
+          const extractRows = (res) => res?.rows?._array || Array.from(res?.rows || []);
+          setProperties(extractRows(propRes));
+          setClients(extractRows(clientRes));
+          setLeads(extractRows(leadRes));
+          setViewings(extractRows(viewRes));
+          setTransactions(extractRows(txnRes));
+          setLeases(extractRows(leaseRes));
+          setOffers(extractRows(offerRes));
+          setTasks(extractRows(taskRes));
+          const compRows = extractRows(compRes);
+          if (compRows.length > 0) {
+            setCompany(compRows[0]);
           }
         }
       } catch (e) {
         console.error('[JCLDashboard] Data fetch failed:', e);
+      } finally {
+        if (active) setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
-    if (companyId) fetchData();
+    if (companyId) {
+      fetchData();
+    } else {
+      setIsLoading(false);
+    }
     return () => { active = false; };
   }, [companyId]);
 
