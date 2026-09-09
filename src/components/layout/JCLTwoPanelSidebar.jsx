@@ -123,9 +123,9 @@ const JCL_DEPARTMENTS = [
     icon: FileText,
     color: "teal",
     actionLabel: "New Smart Doc",
-    actionPath: "/real-estate/document-templates",
+    actionPath: "/smart-docs",
     items: [
-      { label: "Smart Docs", path: "/real-estate/document-templates", icon: FileText },
+      { label: "Smart Docs", path: "/smart-docs", icon: FileText },
       { label: "E-Signatures Hub", path: "/real-estate/e-signatures", icon: PenTool },
       { label: "Executive Reports", path: "/reports", icon: ClipboardList },
       { label: "Audit & Compliance Log", path: "/real-estate/audit-log", icon: ShieldCheck }

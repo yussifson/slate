@@ -805,7 +805,7 @@ export const INDUSTRIES = {
       { label: 'Contractor Reviews', path: '/real-estate/contractor-reviews', icon: 'Star' },
       
       { section: 'Documents & Agreements', label: 'Documents', path: '/documents', icon: 'FolderOpen' },
-      { label: 'Smart Docs', path: '/real-estate/document-templates', icon: 'FileText' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
       { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
       
       { section: 'Intelligence & Analytics', label: 'Market Intelligence', path: '/real-estate/market-data', icon: 'Globe' },
@@ -880,7 +880,7 @@ export const INDUSTRIES = {
       { label: 'Invoices', path: '/invoices', icon: 'Receipt' },
       { label: 'Projects', path: '/tasks', icon: 'Briefcase' },
       { label: 'HR & Team', path: '/hr', icon: 'HeartHandshake' },
-      { label: 'Smart Docs', path: '/real-estate/document-templates', icon: 'FileText' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
       { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
       { label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
       { label: 'Reports', path: '/reports', icon: 'FileText' },

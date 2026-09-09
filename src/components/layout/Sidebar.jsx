@@ -747,8 +747,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
     }
 
-    // Inject Firm Accounting system for all industries
-    if (!rawNavItems.some(n => n.path === '/finance/accounting')) {
+    // Inject Firm Accounting system — JCL only
+    if (activeIndustry === 'real_estate_jcl' && !rawNavItems.some(n => n.path === '/finance/accounting')) {
       rawNavItems.push({ label: "Firm Accounting", path: "/finance/accounting", icon: "Landmark" });
     }
 
