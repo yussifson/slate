@@ -8,7 +8,8 @@ import {
   Banknote, FileCheck, RotateCcw, Users2, Star, Lock, CreditCard,
   Calendar, TrendingUp, Receipt, HeartHandshake, PenTool, Globe,
   LineChart, ClipboardList, Blocks, Zap, ChevronDown, Plus,
-  MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck, Landmark
+  MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck, Landmark,
+  BookOpen, CheckCircle2, Building2
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -82,20 +83,25 @@ const JCL_DEPARTMENTS = [
   },
   {
     id: "finance",
-    label: "Finance & Escrow",
+    label: "Finance & Accounting",
     icon: Wallet,
     color: "indigo",
     actionLabel: "Record Payment",
     actionPath: "/real-estate/rent-payments",
     items: [
+      { label: "Firm Accounting Hub", path: "/finance/accounting", icon: Landmark },
       { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
-      { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
+      { label: "Chart of Accounts", path: "/finance/accounting?tab=coa", icon: BookOpen },
+      { label: "Invoices & AR", path: "/finance/accounting?tab=invoices", icon: Receipt },
+      { label: "Bills & AP", path: "/finance/accounting?tab=bills", icon: FileText },
+      { label: "General Ledger (JV)", path: "/finance/accounting?tab=jv", icon: LineChart },
+      { label: "Bank Feed Rec", path: "/finance/accounting?tab=bankrec", icon: CheckCircle2 },
+      { label: "Fixed Assets", path: "/finance/accounting?tab=assets", icon: Building2 },
       { label: "Escrow Accounts", path: "/real-estate/escrow", icon: Lock },
       { label: "Rent Payments", path: "/real-estate/rent-payments", icon: CreditCard },
       { label: "Payment Schedules", path: "/real-estate/payment-schedules", icon: Calendar },
       { label: "Agent Commissions", path: "/real-estate/commissions", icon: TrendingUp },
-      { label: "Commission Rules", path: "/real-estate/commission-rules", icon: Settings },
-      { label: "Invoices & Billing", path: "/invoices", icon: Receipt }
+      { label: "Commission Rules", path: "/real-estate/commission-rules", icon: Settings }
     ]
   },
   {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { 
   Building2, BookOpen, Receipt, FileText, Landmark, LineChart, 
@@ -20,8 +21,21 @@ export default function FirmAccountingHub() {
   const { t } = useTranslation();
   const companyId = useCompanyId();
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get('tab');
 
-  const [activeTab, setActiveTab] = useState('coa');
+  const [activeTab, setActiveTab] = useState(tabFromUrl || 'coa');
+
+  useEffect(() => {
+    if (tabFromUrl && tabFromUrl !== activeTab) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
+
+  const handleTabChange = (val) => {
+    setActiveTab(val);
+    setSearchParams({ tab: val });
+  };
   const [isLoading, setIsLoading] = useState(true);
 
   // Data states
@@ -264,7 +278,7 @@ export default function FirmAccountingHub() {
       </div>
 
       {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
         <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
           <TabsTrigger value="coa" className="gap-2"><BookOpen className="w-4 h-4" /> Chart of Accounts</TabsTrigger>
           <TabsTrigger value="jv" className="gap-2"><FileText className="w-4 h-4" /> Journal Vouchers (GL)</TabsTrigger>
