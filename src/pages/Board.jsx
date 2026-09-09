@@ -153,9 +153,10 @@ export default function Board() {
 }
 };
 
- const joinCall = (url) => {
- joinRoom(url);
-};
+  const joinCall = (item) => {
+    const url = typeof item === 'string' ? item : (item?.daily_room_url || item?.meeting_link);
+    if (url) joinRoom(url);
+  };
 
  const copyLink = (url) => {
  navigator.clipboard.writeText(url);
