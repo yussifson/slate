@@ -975,6 +975,8 @@ function PlatformRoutes() {
       {/* Core / Shared Pages */}
       <Route path="/ob/:pageName" element={<OrbitBuildPage />} />
       <Route path="/" element={<Dashboard />} />
+      <Route path="/custom-pricing" element={<CliPadCustomPricing />} />
+      <Route path="/pricing/custom" element={<CliPadCustomPricing />} />
       
       {/* Optavel OS Routes */}
       <Route path="/optavel" element={<OptavelCommandCenter />} />
@@ -1687,6 +1689,8 @@ function App() {
                   <React.Suspense fallback={null}>
                     <Routes>
                       <Route path="/" element={<MeetLandingPage />} />
+                      <Route path="/custom-pricing" element={<CliPadCustomPricing />} />
+                      <Route path="/pricing/custom" element={<CliPadCustomPricing />} />
                       <Route path="/login" element={<CliPadLogin />} />
                       <Route path="/signup" element={<CliPadSignUp />} />
                       <Route path="/auth/callback" element={<SSOCallback />} />

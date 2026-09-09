@@ -17,7 +17,6 @@ import {
   User,
   Phone,
   Globe,
-  Sparkles,
   Lock,
   Clock,
   Check
@@ -146,13 +145,11 @@ export default function CliPadCustomPricing() {
 
     try {
       // 1. Primary insert to clipad_custom_requests
-      let saved = false;
       try {
-        const { error: customErr } = await supabase.from('clipad_custom_requests').insert([payload]);
-        if (!customErr) saved = true;
+        await supabase.from('clipad_custom_requests').insert([payload]);
       } catch (_) {}
 
-      // 2. Also record in clipad_contact_requests for universal compatibility
+      // 2. Insert to clipad_contact_requests for universal compatibility
       try {
         await supabase.from('clipad_contact_requests').insert([{
           id: payload.id,
@@ -163,10 +160,9 @@ export default function CliPadCustomPricing() {
           status: 'pending',
           created_at: payload.created_at,
         }]);
-        saved = true;
       } catch (_) {}
 
-      // 3. Fallback record in optavel_transactions or audit_logs if needed
+      // 3. Redundant record in audit_logs
       try {
         await supabase.from('audit_logs').insert([{
           action: 'custom_pricing_request',
@@ -203,29 +199,30 @@ export default function CliPadCustomPricing() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-slate-900 selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-[#0b0f19]/80 border-b border-slate-200/80 dark:border-white/10 px-6 md:px-12 py-4">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/90 dark:bg-[#0b0f19]/90 border-b border-slate-200 dark:border-white/10 px-6 md:px-12 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2 group">
               <div className="text-primary transition-transform group-hover:scale-105">
                 <CliPadLogo size={28} />
               </div>
               <span className="font-bold text-lg tracking-tight">CliPad</span>
             </Link>
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-              Enterprise & Custom
-            </span>
+            <nav className="hidden md:flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
+              <Link to="/#features" className="hover:text-slate-900 dark:hover:text-white transition-colors">Features</Link>
+              <Link to="/#pricing" className="hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</Link>
+            </nav>
           </div>
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/')}
               className="flex items-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-xl transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              Back to Home
             </button>
             <Link
               to={user ? '/dashboard' : '/login'}
@@ -241,23 +238,23 @@ export default function CliPadCustomPricing() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 md:px-12 py-12 md:py-16">
         {submittedRequest ? (
           /* SUCCESS STATE */
-          <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl text-center animate-in fade-in zoom-in-95 duration-500">
-            <div className="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-3xl mx-auto flex items-center justify-center text-white shadow-xl shadow-emerald-500/20 mb-6">
-              <CheckCircle2 className="w-10 h-10" />
+          <div className="max-w-2xl mx-auto bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-400">
+            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-6">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <div className="inline-block px-3.5 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-full text-xs font-mono font-bold uppercase tracking-wider mb-4 border border-emerald-500/20">
-              Request Ref: {submittedRequest.requestId}
+            <div className="inline-block px-3 py-1 bg-secondary text-foreground rounded-full text-xs font-mono font-bold tracking-wider mb-4 border border-border">
+              Ref: {submittedRequest.requestId}
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-3">
-              Thank you, {submittedRequest.fullName.split(' ')[0]}!
+            <h1 className="text-3xl font-black tracking-tight mb-3">
+              Request Received, {submittedRequest.fullName.split(' ')[0]}
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed mb-8 max-w-md mx-auto">
-              Your custom enterprise inquiry for <strong className="text-foreground">{submittedRequest.companyName}</strong> has been assigned to our senior solutions architect team.
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
+              Our enterprise solutions team has received your inquiry for <strong className="text-foreground">{submittedRequest.companyName}</strong> and will follow up with a tailored proposal.
             </p>
 
-            <div className="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 text-left space-y-3 mb-8 text-sm">
+            <div className="bg-slate-50 dark:bg-secondary/30 border border-slate-200 dark:border-border rounded-2xl p-5 text-left space-y-2.5 mb-8 text-xs">
               <div className="flex justify-between items-center py-1 border-b border-border/50">
                 <span className="text-muted-foreground">Work Email:</span>
                 <span className="font-semibold text-foreground">{submittedRequest.workEmail}</span>
@@ -271,119 +268,119 @@ export default function CliPadCustomPricing() {
                 <span className="font-semibold capitalize text-foreground">{submittedRequest.deployment.replace('_', ' ')}</span>
               </div>
               <div className="flex justify-between items-center py-1">
-                <span className="text-muted-foreground">Expected Response:</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                  <Clock className="w-4 h-4" /> &lt; 2 Business Hours
+                <span className="text-muted-foreground">Response Time:</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> Within 2 Business Hours
                 </span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => navigate('/')}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-foreground font-semibold text-sm transition-all"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-secondary dark:hover:bg-secondary/80 text-foreground font-semibold text-xs transition-all"
               >
                 Return to Homepage
               </button>
               <button
                 onClick={() => setSubmittedRequest(null)}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all shadow-lg shadow-primary/20"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-xs transition-all shadow-sm"
               >
-                Submit Another Request
+                Submit Another Inquiry
               </button>
             </div>
           </div>
         ) : (
-          /* FORM + VALUE PROPOSITION GRID */
+          /* FORM + HIGHLIGHTS GRID */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left Column: Value Proposition & Highlights */}
+            {/* Left Column: Value Proposition */}
             <div className="lg:col-span-5 space-y-8">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-4 border border-indigo-500/20">
-                  <Sparkles className="w-3.5 h-3.5" /> Tailored Architecture
-                </div>
-                <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-[1.1] mb-4">
-                  CliPad Custom & Enterprise Solutions.
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-3 py-1 rounded-full bg-slate-200/70 dark:bg-white/10 inline-block mb-3">
+                  Tailored Solutions
+                </span>
+                <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3">
+                  Custom Plans & Enterprise Solutions
                 </h1>
-                <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
-                  Design a bespoke communication and intelligence stack tailored specifically to your organization's security posture, scale, and workflow integrations.
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                  Design a dedicated communication and intelligence environment tailored to your organization's security, integration, and infrastructure requirements.
                 </p>
               </div>
 
-              {/* Feature Highlights Cards */}
-              <div className="space-y-4">
-                <div className="p-5 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-4">
-                  <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
-                    <Server className="w-5 h-5" />
+              {/* Feature Highlight Cards */}
+              <div className="space-y-3.5">
+                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
+                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+                    <Server className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-foreground">Dedicated Cloud & Air-Gapped On-Premise</h3>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Deploy in your private AWS, GCP, or Azure VPC, or host on bare-metal with air-gapped data retention and BYO-S3 storage.
+                    <h3 className="font-bold text-xs text-foreground">Dedicated VPC & On-Premise Deployment</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                      Deploy inside your private AWS, GCP, or Azure VPC, or host on bare-metal with air-gapped storage and BYO-S3 buckets.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-4">
-                  <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 shrink-0">
-                    <Cpu className="w-5 h-5" />
+                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
+                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+                    <Cpu className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-foreground">Custom AI Fine-Tuning & LLM Endpoints</h3>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Connect your internal fine-tuned LLMs, proprietary terminology dictionaries, and custom meeting summary prompt workflows.
+                    <h3 className="font-bold text-xs text-foreground">Custom AI Endpoints & Domain Models</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                      Connect your internal fine-tuned LLMs, company-specific vocabularies, and customized executive summary templates.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-4">
-                  <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 shrink-0">
-                    <Workflow className="w-5 h-5" />
+                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
+                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+                    <Workflow className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-foreground">Bespoke Integrations & Data Pipelines</h3>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Bi-directional sync with Salesforce, HubSpot, Jira, Slack, Microsoft Teams, internal HRMS, and real-time Kafka/webhook streaming.
+                    <h3 className="font-bold text-xs text-foreground">Bespoke Integrations & Data Pipelines</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                      Two-way synchronization with Salesforce, HubSpot, Jira, Slack, internal HRMS, and real-time Kafka event streaming.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-4">
-                  <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
-                    <ShieldCheck className="w-5 h-5" />
+                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
+                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+                    <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-foreground">Enterprise SLAs & White-Glove Support</h3>
-                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                      Guaranteed 99.99% uptime SLA, dedicated Technical Account Manager, 24/7 incident hotline, and customized legal DPAs.
+                    <h3 className="font-bold text-xs text-foreground">Guaranteed SLA & Dedicated Support</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
+                      99.99% uptime guarantee, dedicated Technical Account Manager, 24/7 escalation hotline, and custom DPA terms.
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Trust Badge */}
-              <div className="p-5 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent border border-indigo-500/20 flex items-center gap-3">
-                <Lock className="w-5 h-5 text-indigo-500 shrink-0" />
+              <div className="p-4 rounded-2xl bg-white dark:bg-card border border-border flex items-center gap-3">
+                <Lock className="w-4 h-4 text-emerald-500 shrink-0" />
                 <p className="text-xs text-muted-foreground">
-                  <strong className="text-foreground">Enterprise-Grade Security:</strong> SOC2 Type II, HIPAA-ready, GDPR compliant, and end-to-end encryption.
+                  <strong className="text-foreground">Enterprise Security:</strong> SOC2 Type II, HIPAA-ready, GDPR compliant, and end-to-end encrypted.
                 </p>
               </div>
             </div>
 
-            {/* Right Column: Interactive Inquiry Form */}
-            <div className="lg:col-span-7 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-6 md:p-10 shadow-xl">
-              <div className="mb-8">
-                <h2 className="text-2xl font-black tracking-tight text-foreground">Request Custom Arrangement</h2>
-                <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                  Fill in your specifications below and our engineering & enterprise sales team will prepare a tailored proposal.
+            {/* Right Column: Clean Inquiry Form */}
+            <div className="lg:col-span-7 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-6 md:p-8 shadow-sm">
+              <div className="mb-6">
+                <h2 className="text-xl font-bold tracking-tight text-foreground">Contact Sales for Custom Arrangement</h2>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Tell us about your team size and infrastructure needs. No credit card required.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {/* 1. Contact Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -394,13 +391,13 @@ export default function CliPadCustomPricing() {
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                         placeholder="Sarah Jenkins"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Work Email <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -410,8 +407,8 @@ export default function CliPadCustomPricing() {
                         required
                         value={formData.workEmail}
                         onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
-                        placeholder="sarah@acmecorp.com"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        placeholder="sarah@acmeglobal.com"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                       />
                     </div>
                   </div>
@@ -419,7 +416,7 @@ export default function CliPadCustomPricing() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Company Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
@@ -430,13 +427,13 @@ export default function CliPadCustomPricing() {
                         value={formData.companyName}
                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                         placeholder="Acme Global Inc."
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Company Website
                     </label>
                     <div className="relative">
@@ -446,7 +443,7 @@ export default function CliPadCustomPricing() {
                         value={formData.companyWebsite}
                         onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })}
                         placeholder="https://acmeglobal.com"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                       />
                     </div>
                   </div>
@@ -454,7 +451,7 @@ export default function CliPadCustomPricing() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Phone Number
                     </label>
                     <div className="relative">
@@ -464,19 +461,19 @@ export default function CliPadCustomPricing() {
                         value={formData.phoneNumber}
                         onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                         placeholder="+1 (555) 000-0000"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Team / User Seats
                     </label>
                     <select
                       value={formData.teamSize}
                       onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                     >
                       {TEAM_SIZES.map((size) => (
                         <option key={size} value={size}>{size}</option>
@@ -485,12 +482,12 @@ export default function CliPadCustomPricing() {
                   </div>
                 </div>
 
-                {/* 2. Primary Use Cases */}
+                {/* 2. Target Use Cases */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                    Target Use Cases (Select all that apply)
+                  <label className="block text-xs font-semibold text-foreground mb-2">
+                    Primary Requirements (Select all that apply)
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {USE_CASES.map((item) => {
                       const isSelected = formData.selectedUseCases.includes(item);
                       return (
@@ -498,41 +495,41 @@ export default function CliPadCustomPricing() {
                           type="button"
                           key={item}
                           onClick={() => toggleUseCase(item)}
-                          className={`flex items-center gap-2.5 p-3 rounded-xl border text-left text-xs font-semibold transition-all ${
+                          className={`flex items-center gap-2 p-2.5 rounded-xl border text-left text-xs font-medium transition-colors ${
                             isSelected
-                              ? 'bg-primary/10 border-primary text-primary shadow-sm'
+                              ? 'bg-slate-100 dark:bg-white/10 border-slate-400 dark:border-slate-500 text-foreground font-semibold'
                               : 'bg-background hover:bg-secondary border-border text-muted-foreground'
                           }`}
                         >
-                          <div className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 ${
-                            isSelected ? 'bg-primary border-primary text-white' : 'border-slate-300 dark:border-slate-600'
+                          <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                            isSelected ? 'bg-slate-900 dark:bg-white border-slate-900 dark:border-white text-white dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'
                           }`}>
                             {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                           </div>
-                          <span>{item}</span>
+                          <span className="truncate">{item}</span>
                         </button>
                       );
                     })}
                   </div>
                 </div>
 
-                {/* 3. Deployment Preference */}
+                {/* 3. Preferred Deployment */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
-                    Preferred Deployment Architecture
+                  <label className="block text-xs font-semibold text-foreground mb-2">
+                    Deployment Preference
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     {DEPLOYMENT_PREFERENCES.map((dp) => (
                       <div
                         key={dp.id}
                         onClick={() => setFormData({ ...formData, deployment: dp.id })}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
                           formData.deployment === dp.id
-                            ? 'bg-indigo-500/10 border-indigo-500 text-foreground ring-2 ring-indigo-500/20'
+                            ? 'bg-slate-100 dark:bg-white/10 border-slate-900 dark:border-white text-foreground ring-1 ring-slate-900 dark:ring-white'
                             : 'bg-background hover:bg-secondary border-border text-muted-foreground'
                         }`}
                       >
-                        <div className="font-bold text-xs text-foreground mb-1">{dp.label}</div>
+                        <div className="font-bold text-xs text-foreground mb-0.5">{dp.label}</div>
                         <div className="text-[11px] text-muted-foreground leading-snug">{dp.desc}</div>
                       </div>
                     ))}
@@ -542,13 +539,13 @@ export default function CliPadCustomPricing() {
                 {/* 4. Timeline & Budget */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                      Target Implementation Timeline
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      Implementation Timeline
                     </label>
                     <select
                       value={formData.timeline}
                       onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                     >
                       {TIMELINES.map((t) => (
                         <option key={t} value={t}>{t}</option>
@@ -557,13 +554,13 @@ export default function CliPadCustomPricing() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Estimated Monthly Budget
                     </label>
                     <select
                       value={formData.budget}
                       onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
                     >
                       {BUDGET_RANGES.map((b) => (
                         <option key={b} value={b}>{b}</option>
@@ -572,17 +569,17 @@ export default function CliPadCustomPricing() {
                   </div>
                 </div>
 
-                {/* 5. Custom Requirements / Message */}
+                {/* 5. Custom Requirements Text */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-                    Additional Requirements / Specific Needs
+                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    Additional Requirements or Notes
                   </label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     value={formData.customRequirements}
                     onChange={(e) => setFormData({ ...formData, customRequirements: e.target.value })}
-                    placeholder="Describe any custom integrations, data governance needs, SAML providers, custom LLM weights, or specific team workflows..."
-                    className="w-full px-4 py-3 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 resize-y"
+                    placeholder="Provide details about your current infrastructure, compliance requirements, SSO providers, or specific integrations..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400 resize-y"
                   />
                 </div>
 
@@ -590,19 +587,19 @@ export default function CliPadCustomPricing() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-primary to-purple-600 hover:from-indigo-700 hover:via-primary/90 hover:to-purple-700 text-white font-bold text-base shadow-xl shadow-indigo-500/25 transition-all hover:scale-[1.01] flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <>Submitting Custom Arrangement...</>
+                    <>Submitting Inquiry...</>
                   ) : (
                     <>
-                      <Send className="w-5 h-5" /> Submit Custom Plan Request
+                      <Send className="w-4 h-4" /> Submit Custom Plan Inquiry
                     </>
                   )}
                 </button>
 
-                <p className="text-center text-xs text-muted-foreground">
-                  By submitting this request, you agree to our Enterprise Privacy Policy and Terms of Service. No credit card required.
+                <p className="text-center text-[11px] text-muted-foreground">
+                  By submitting, you agree to our Enterprise Privacy Policy and Terms of Service.
                 </p>
               </form>
             </div>

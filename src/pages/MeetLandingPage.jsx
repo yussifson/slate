@@ -104,10 +104,10 @@ const tiers = [
   {
     name: 'Custom',
     price: 'Contact Us',
-    period: 'tailored setup',
+    period: 'tailored plan',
     highlight: false,
-    badge: 'Enterprise & Beyond',
-    features: ['Everything in Enterprise', 'Dedicated infrastructure & on-prem options', 'Custom AI token budgets & domain fine-tuning', 'Tailored storage quota & unlimited seats', 'Bespoke enterprise integrations', 'Custom SLA, DPA & compliance terms', 'Dedicated Customer Success Manager'],
+    badge: 'Tailored Scale',
+    features: ['Everything in Enterprise', 'Dedicated VPC & on-premise deployment', 'Custom AI models & domain fine-tuning', 'Tailored storage quota & unlimited seats', 'Bespoke enterprise integrations & APIs', 'Custom SLA, DPA & compliance terms', 'Dedicated Customer Success Manager'],
   },
 ];
 
@@ -617,9 +617,22 @@ export default function MeetLandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {tiers.map((tier) => (
-              <div key={tier.name} className={`relative p-6 md:p-8 rounded-3xl border flex flex-col justify-between transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : tier.name === 'Custom' ? 'bg-gradient-to-b from-indigo-500/10 to-purple-500/5 border-indigo-500/30' : 'bg-secondary/50 border-border hover:border-border'}`}>
+              <div 
+                key={tier.name} 
+                className={`relative p-6 md:p-8 rounded-3xl border flex flex-col justify-between transition-all ${
+                  tier.highlight 
+                    ? 'bg-gradient-to-b from-primary/10 to-primary/5 border-primary/40 shadow-xl shadow-primary/10' 
+                    : tier.name === 'Custom'
+                    ? 'bg-card border-slate-300 dark:border-slate-700 shadow-sm'
+                    : 'bg-secondary/40 border-border hover:border-border'
+                }`}
+              >
                 {tier.badge && (
-                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white shadow-lg whitespace-nowrap ${tier.name === 'Custom' ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : 'bg-gradient-to-r from-primary to-primary'}`}>
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap ${
+                    tier.name === 'Custom' 
+                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' 
+                      : 'bg-primary text-white'
+                  }`}>
                     {tier.badge}
                   </div>
                 )}
@@ -634,8 +647,10 @@ export default function MeetLandingPage() {
                   <div className="space-y-3 mb-8">
                     {tier.features.map((f) => (
                       <div key={f} className="flex items-start gap-2.5">
-                        <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${tier.highlight ? 'text-primary' : tier.name === 'Custom' ? 'text-indigo-500' : 'text-emerald-400'}`} />
-                        <span className="text-xs text-foreground/80 leading-relaxed">{f}</span>
+                        <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${
+                          tier.highlight ? 'text-primary' : 'text-emerald-500'
+                        }`} />
+                        <span className="text-xs text-foreground/85 leading-relaxed">{f}</span>
                       </div>
                     ))}
                   </div>
@@ -643,9 +658,15 @@ export default function MeetLandingPage() {
                 <button
                   onClick={() => handlePricingAction(tier.name)}
                   disabled={isProcessingPay}
-                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-lg shadow-primary/25' : tier.name === 'Custom' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/20' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
+                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${
+                    tier.highlight 
+                      ? 'bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20' 
+                      : tier.name === 'Custom'
+                      ? 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 shadow-sm'
+                      : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'
+                  }`}
                 >
-                  {tier.name === 'Custom' ? 'Contact Us' : user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started'}
+                  {tier.name === 'Custom' ? 'Contact Sales' : user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started'}
                 </button>
               </div>
             ))}
@@ -654,251 +675,248 @@ export default function MeetLandingPage() {
           {/* Compare Plans Table */}
           <div className="mt-24 w-full overflow-hidden">
             <div className="text-center mb-12">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary px-3 py-1 rounded-full bg-primary/10 border border-primary/20 inline-block mb-3">
-                Feature Matrix
-              </span>
               <h3 className="text-3xl md:text-4xl font-black tracking-tight text-foreground">
-                Compare All Features & Capabilities
+                Compare Plans & Features
               </h3>
               <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
-                Detailed side-by-side comparison across video conferencing, async hubs, AI automation, and enterprise governance.
+                A clear breakdown of limits, collaboration tools, intelligence layers, and governance across all tiers.
               </p>
             </div>
 
-            <div className="w-full overflow-x-auto border border-border rounded-3xl bg-card shadow-lg">
-              <table className="w-full min-w-[880px] text-left border-collapse">
+            <div className="w-full overflow-x-auto border border-border rounded-3xl bg-card shadow-sm">
+              <table className="w-full min-w-[860px] text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-border bg-slate-50/80 dark:bg-white/5">
-                    <th className="p-5 font-bold text-foreground w-[30%] rounded-tl-3xl text-sm">Capabilities & Tiers</th>
+                  <tr className="border-b border-border bg-slate-50 dark:bg-white/5">
+                    <th className="p-5 font-bold text-foreground w-[32%] rounded-tl-3xl text-sm">Features & Limits</th>
                     <th className="p-5 font-bold text-foreground text-center text-sm w-[17%]">
                       <div>Free</div>
                       <div className="text-xs font-normal text-muted-foreground mt-0.5">$0 forever</div>
                     </th>
                     <th className="p-5 font-bold text-primary text-center bg-primary/5 text-sm w-[17%]">
-                      <div className="flex items-center justify-center gap-1">Pro <Sparkles className="w-3 h-3 text-primary" /></div>
+                      <div>Pro</div>
                       <div className="text-xs font-normal text-primary/80 mt-0.5">$15/mo</div>
                     </th>
-                    <th className="p-5 font-bold text-foreground text-center text-sm w-[18%]">
+                    <th className="p-5 font-bold text-foreground text-center text-sm w-[17%]">
                       <div>Enterprise</div>
                       <div className="text-xs font-normal text-muted-foreground mt-0.5">$39/mo</div>
                     </th>
-                    <th className="p-5 font-bold text-indigo-600 dark:text-indigo-400 text-center rounded-tr-3xl bg-indigo-500/5 text-sm w-[18%]">
+                    <th className="p-5 font-bold text-foreground text-center rounded-tr-3xl text-sm w-[17%]">
                       <div>Custom</div>
-                      <div className="text-xs font-normal text-indigo-600/80 dark:text-indigo-400/80 mt-0.5">Contact Us</div>
+                      <div className="text-xs font-normal text-muted-foreground mt-0.5">Tailored</div>
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-xs text-slate-600 dark:text-slate-300">
-                  {/* Category 1: Core Meetings */}
-                  <tr className="bg-slate-100/70 dark:bg-white/5 font-bold text-foreground border-y border-border">
-                    <td colSpan={5} className="py-3 px-5 text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                      Core Live Meetings & HD Video
+                  {/* Category 1: Live Video Meetings */}
+                  <tr className="bg-slate-100/60 dark:bg-white/5 font-bold text-foreground border-y border-border">
+                    <td colSpan={5} className="py-2.5 px-5 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                      Live Video Meetings
                     </td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
                     <td className="p-4 font-semibold text-foreground">Participants per Call</td>
-                    <td className="p-4 text-center">Up to 10</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Up to 300</td>
+                    <td className="p-4 text-center">10</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">300</td>
                     <td className="p-4 text-center font-bold text-foreground">Unlimited</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Bespoke Scale / Unlimited</td>
+                    <td className="p-4 text-center font-bold text-foreground">Unlimited (Custom)</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">HD 1080p / 4K Video Quality</td>
-                    <td className="p-4 text-center font-medium">Standard HD (720p)</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Full HD (1080p)</td>
-                    <td className="p-4 text-center font-bold text-foreground">Ultra HD (4K Ready)</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Ultra HD + Dedicated Media Relays</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Video & Audio Quality</td>
+                    <td className="p-4 text-center">720p HD</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">1080p Full HD</td>
+                    <td className="p-4 text-center font-bold text-foreground">4K Ultra HD</td>
+                    <td className="p-4 text-center font-bold text-foreground">4K + Media Relays</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Screen Sharing, Whiteboard & Multi-Presenter</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Screen Sharing & Whiteboard</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold bg-primary/5">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
-                    <td className="p-4 text-center text-emerald-500 font-bold bg-indigo-500/5">&check;</td>
+                    <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">In-Meeting Live Chat & Reactions</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Live Chat & Reactions</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold bg-primary/5">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
-                    <td className="p-4 text-center text-emerald-500 font-bold bg-indigo-500/5">&check;</td>
+                    <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
                   </tr>
 
                   {/* Category 2: Async Video & Recording */}
-                  <tr className="bg-slate-100/70 dark:bg-white/5 font-bold text-foreground border-y border-border">
-                    <td colSpan={5} className="py-3 px-5 text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                      Async Video & Screen Recording Studio (v2)
+                  <tr className="bg-slate-100/60 dark:bg-white/5 font-bold text-foreground border-y border-border">
+                    <td colSpan={5} className="py-2.5 px-5 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                      Async Video & Screen Recording
                     </td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Async Video Recordings Limit</td>
-                    <td className="p-4 text-center">10 videos/mo (15 min)</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Unlimited (1 hr limit)</td>
-                    <td className="p-4 text-center font-bold text-foreground">Unlimited (No time limits)</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Unlimited (Custom retention)</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Async Video Limit</td>
+                    <td className="p-4 text-center">10 videos/mo (15m)</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Unlimited (1 hr)</td>
+                    <td className="p-4 text-center font-bold text-foreground">Unlimited</td>
+                    <td className="p-4 text-center font-bold text-foreground">Unlimited</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">PiP Webcam + Screen Canvas Studio</td>
-                    <td className="p-4 text-center font-medium">Standard Studio</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">High-Res Canvas Studio</td>
-                    <td className="p-4 text-center font-bold text-foreground">Pro Canvas + Watermarking</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Custom Studio Branding</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">PiP Webcam + Screen Canvas</td>
+                    <td className="p-4 text-center">Standard</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">HD Studio</td>
+                    <td className="p-4 text-center font-bold text-foreground">4K Studio</td>
+                    <td className="p-4 text-center font-bold text-foreground">Custom Studio</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Video Viewer Engagement Analytics & Heatmaps</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Viewer Analytics & Drop-off Heatmaps</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">View Counts & Retention</td>
-                    <td className="p-4 text-center font-bold text-foreground">Deep Heatmaps & Pauses</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Full Event Telemetry & BI Stream</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Views & Retention</td>
+                    <td className="p-4 text-center font-bold text-foreground">Drop-off Heatmaps</td>
+                    <td className="p-4 text-center font-bold text-foreground">Custom BI & Telemetry</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Password Protection & Share Link Expiry</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Password Protection & Expiring Links</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold bg-primary/5">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Domain Gating & Custom DRM</td>
+                    <td className="p-4 text-center font-bold text-foreground">Domain Gating & Custom DRM</td>
                   </tr>
 
-                  {/* Category 3: Team Spaces & Collaboration */}
-                  <tr className="bg-slate-100/70 dark:bg-white/5 font-bold text-foreground border-y border-border">
-                    <td colSpan={5} className="py-3 px-5 text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                      Team Spaces & Persistent Knowledge (v2)
+                  {/* Category 3: Team Spaces */}
+                  <tr className="bg-slate-100/60 dark:bg-white/5 font-bold text-foreground border-y border-border">
+                    <td colSpan={5} className="py-2.5 px-5 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                      Team Spaces & Collaboration
                     </td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
                     <td className="p-4 font-semibold text-foreground">Persistent Team Spaces</td>
-                    <td className="p-4 text-center">Up to 5 Spaces</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Unlimited Spaces</td>
-                    <td className="p-4 text-center font-bold text-foreground">Unlimited Spaces</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Unlimited Multi-Tenant Spaces</td>
+                    <td className="p-4 text-center">Up to 5</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Unlimited</td>
+                    <td className="p-4 text-center font-bold text-foreground">Unlimited</td>
+                    <td className="p-4 text-center font-bold text-foreground">Multi-Tenant Spaces</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
                     <td className="p-4 font-semibold text-foreground">Shared Space Notes & Action Boards</td>
-                    <td className="p-4 text-center font-medium">Basic Notes</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Collaborative Action Boards</td>
-                    <td className="p-4 text-center font-bold text-foreground">Collaborative Action Boards</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Bi-directional Jira/Linear Sync</td>
+                    <td className="p-4 text-center">Basic</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Collaborative</td>
+                    <td className="p-4 text-center font-bold text-foreground">Collaborative</td>
+                    <td className="p-4 text-center font-bold text-foreground">Two-way Jira/CRM Sync</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Cross-Space AI Search & Discovery</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Cross-Space Search & Discovery</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold bg-primary/5">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Enterprise Semantic Vector Index</td>
+                    <td className="p-4 text-center font-bold text-foreground">Semantic Vector Index</td>
                   </tr>
 
-                  {/* Category 4: AI Intelligence & Automation */}
-                  <tr className="bg-slate-100/70 dark:bg-white/5 font-bold text-foreground border-y border-border">
-                    <td colSpan={5} className="py-3 px-5 text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                      AI Meeting Intelligence Layer (v2)
+                  {/* Category 4: Meeting Intelligence */}
+                  <tr className="bg-slate-100/60 dark:bg-white/5 font-bold text-foreground border-y border-border">
+                    <td colSpan={5} className="py-2.5 px-5 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                      Meeting Intelligence & Automation
                     </td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Automated Transcription & Multilingual</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Automated Multilingual Transcripts</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center font-bold text-primary bg-primary/5">30+ Languages</td>
-                    <td className="p-4 text-center font-bold text-foreground">50+ Languages + Live Translation</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">100+ Languages + Custom Vocabularies</td>
+                    <td className="p-4 text-center font-bold text-foreground">50+ Languages</td>
+                    <td className="p-4 text-center font-bold text-foreground">100+ & Custom Vocab</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Executive AI Summaries & Decision Ledger</td>
-                    <td className="p-4 text-center font-medium">Basic Highlights</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Full Intelligence & Decisions</td>
-                    <td className="p-4 text-center font-bold text-foreground">Full Intelligence & Decisions</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Custom Prompts & Brand Tone</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Executive Summaries & Action Items</td>
+                    <td className="p-4 text-center">Basic</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Full Extraction</td>
+                    <td className="p-4 text-center font-bold text-foreground">Full Extraction</td>
+                    <td className="p-4 text-center font-bold text-foreground">Custom Prompts & Tone</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Smart Follow-up (Personalized Action Emails)</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Smart Follow-up Action Emails</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold bg-primary/5">&check;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Custom SMTP & Branded Templates</td>
+                    <td className="p-4 text-center font-bold text-foreground">Custom SMTP & Templates</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Speaker Talk-Time & Sentiment Insights</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Speaker Talk-Time & Sentiment</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Talk Time Ratios</td>
-                    <td className="p-4 text-center font-bold text-foreground">Full Sentiment Analytics</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Executive Coaching Metrics</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Talk-time Ratio</td>
+                    <td className="p-4 text-center font-bold text-foreground">Full Sentiment</td>
+                    <td className="p-4 text-center font-bold text-foreground">Executive Metrics</td>
                   </tr>
 
-                  {/* Category 5: Security, Storage & Governance */}
-                  <tr className="bg-slate-100/70 dark:bg-white/5 font-bold text-foreground border-y border-border">
-                    <td colSpan={5} className="py-3 px-5 text-xs uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                      Security, Storage & Enterprise Governance (v2)
+                  {/* Category 5: Storage & Governance */}
+                  <tr className="bg-slate-100/60 dark:bg-white/5 font-bold text-foreground border-y border-border">
+                    <td colSpan={5} className="py-2.5 px-5 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                      Storage, Governance & Support
                     </td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Cloud Storage Allocation</td>
-                    <td className="p-4 text-center font-bold">2GB Max</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">15GB Max</td>
-                    <td className="p-4 text-center font-bold text-foreground">50GB Max</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Terabyte Scale / BYO-S3</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Cloud Storage Limit</td>
+                    <td className="p-4 text-center font-bold">2 GB</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">15 GB</td>
+                    <td className="p-4 text-center font-bold text-foreground">50 GB</td>
+                    <td className="p-4 text-center font-bold text-foreground">Terabyte Scale / BYO-S3</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
                     <td className="p-4 font-semibold text-foreground">Custom Branding & Branded Rooms</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center text-muted-foreground bg-primary/5">&mdash;</td>
-                    <td className="p-4 text-center font-bold text-foreground">Custom Logos & Colors</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Full White-Label & Custom Subdomains</td>
+                    <td className="p-4 text-center font-bold text-foreground">Logos & Colors</td>
+                    <td className="p-4 text-center font-bold text-foreground">Full White-Label & Subdomains</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Single Sign-On (SSO) & SCIM</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Single Sign-On (SSO)</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center text-muted-foreground bg-primary/5">&mdash;</td>
                     <td className="p-4 text-center font-bold text-foreground">Google & SAML 2.0</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Okta, Azure AD, SAML & SCIM</td>
+                    <td className="p-4 text-center font-bold text-foreground">Okta, Azure AD, SAML, SCIM</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Enterprise Audit Logs & Compliance</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">Enterprise Audit Trail</td>
                     <td className="p-4 text-center text-muted-foreground">&mdash;</td>
                     <td className="p-4 text-center text-muted-foreground bg-primary/5">&mdash;</td>
                     <td className="p-4 text-center text-emerald-500 font-bold">&check;</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">Immutable SIEM Stream / SOC2 Ready</td>
+                    <td className="p-4 text-center font-bold text-foreground">Immutable SIEM Stream</td>
                   </tr>
-                  <tr className="border-b border-border/60 hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-semibold text-foreground">Service Level Agreement & Support</td>
-                    <td className="p-4 text-center font-medium">Community Support</td>
-                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Priority Email Support</td>
-                    <td className="p-4 text-center font-bold text-foreground">99.9% SLA & Dedicated AM</td>
-                    <td className="p-4 text-center font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/5">99.99% SLA & 24/7 Dedicated Team</td>
+                  <tr className="border-b border-border/60 hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                    <td className="p-4 font-semibold text-foreground">SLA & Dedicated Support</td>
+                    <td className="p-4 text-center">Community</td>
+                    <td className="p-4 text-center font-bold text-primary bg-primary/5">Standard Email</td>
+                    <td className="p-4 text-center font-bold text-foreground">99.9% SLA + AM</td>
+                    <td className="p-4 text-center font-bold text-foreground">99.99% SLA + 24/7 CSM</td>
                   </tr>
 
                   {/* Bottom Action Row */}
-                  <tr className="bg-slate-50/80 dark:bg-white/5">
-                    <td className="p-5 font-bold text-foreground">Select Plan</td>
+                  <tr className="bg-slate-50 dark:bg-white/5">
+                    <td className="p-5 font-bold text-foreground">Choose Plan</td>
                     <td className="p-5 text-center">
                       <button
                         onClick={() => handlePricingAction('Free')}
                         className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-secondary hover:bg-secondary/80 text-foreground border border-border transition-all"
                       >
-                        {user ? 'Current Plan' : 'Get Started Free'}
+                        {user ? 'Current Plan' : 'Get Started'}
                       </button>
                     </td>
                     <td className="p-5 text-center bg-primary/5">
                       <button
                         onClick={() => handlePricingAction('Pro')}
                         disabled={isProcessingPay}
-                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20 transition-all"
+                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-primary hover:bg-primary/90 text-white shadow-sm transition-all"
                       >
-                        Upgrade to Pro
+                        Choose Pro
                       </button>
                     </td>
                     <td className="p-5 text-center">
                       <button
                         onClick={() => handlePricingAction('Enterprise')}
                         disabled={isProcessingPay}
-                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 transition-all shadow-sm"
+                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 shadow-sm transition-all"
                       >
-                        Upgrade to Enterprise
+                        Choose Enterprise
                       </button>
                     </td>
-                    <td className="p-5 text-center bg-indigo-500/5">
+                    <td className="p-5 text-center">
                       <button
                         onClick={() => navigate('/custom-pricing')}
-                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-md shadow-indigo-500/20 transition-all"
+                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 shadow-sm transition-all"
                       >
-                        Request Custom Plan
+                        Contact Sales
                       </button>
                     </td>
                   </tr>
