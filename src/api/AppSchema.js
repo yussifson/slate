@@ -7258,5 +7258,12 @@ export const AppSchema = new Schema({
         status: column.text, // in_progress, reconciled
         reconciled_by: column.text,
         reconciled_at: column.text
-    })
+    }),
+    jcl_office_income: new Table({ id: column.text, company_id: column.text, source: column.text, amount: column.real, category: column.text, description: column.text, date: column.text, created_at: column.text }),
+    jcl_office_expenses: new Table({ id: column.text, company_id: column.text, description: column.text, amount: column.real, category: column.text, vendor: column.text, date: column.text, created_at: column.text }),
+    jcl_project_expenses: new Table({ id: column.text, company_id: column.text, project_name: column.text, description: column.text, amount: column.real, category: column.text, date: column.text, created_at: column.text }),
+    jcl_payroll_employees: new Table({ id: column.text, company_id: column.text, name: column.text, position: column.text, department: column.text, basic_salary: column.real, ssnit_employee: column.real, ssnit_employer: column.real, paye: column.real, net_pay: column.real, start_date: column.text, status: column.text, created_at: column.text }),
+    jcl_payroll_runs: new Table({ id: column.text, company_id: column.text, period: column.text, employee_count: column.integer, total_gross: column.real, total_net: column.real, total_paye: column.real, total_ssnit: column.real, notes: column.text, status: column.text, created_at: column.text }),
+    jcl_installment_sales: new Table({ id: column.text, company_id: column.text, customer_name: column.text, customer_phone: column.text, item_description: column.text, total_price: column.real, deposit_paid: column.real, outstanding_balance: column.real, installment_months: column.integer, monthly_installment: column.real, amount_collected: column.real, status: column.text, created_at: column.text }),
+    jcl_installment_payments: new Table({ id: column.text, company_id: column.text, sale_id: column.text, amount: column.real, payment_date: column.text, notes: column.text, created_at: column.text })
 });

@@ -443,6 +443,12 @@ const RealEstateRecommendations = React.lazy(() => import('./pages/real-estate/R
 const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/TeamManagement'));
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
 const FirmAccountingHub = React.lazy(() => import('./pages/finance/FirmAccountingHub'));
+const SmartFirmAccountingRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <FirmAccountingHub />;
+  return <Navigate to="/" replace />;
+};
 const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analytics'));
 
 // JCL Royal Group — Dedicated Isolated Vertical Components
@@ -1314,7 +1320,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
       <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
-      <Route path="/finance/accounting" element={<FirmAccountingHub />} />
+      <Route path="/finance/accounting" element={<SmartFirmAccountingRouter />} />
       <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
 
       {/* Religion Suite */}
