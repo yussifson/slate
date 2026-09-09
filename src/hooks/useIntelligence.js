@@ -24,7 +24,7 @@ import analyzeReligion from '@/lib/intelligence/engines/religion';
 import analyzeMarketing from '@/lib/intelligence/engines/marketing';
 import analyzeUniversity from '@/lib/intelligence/engines/university';
 import analyzeOptavel from '@/lib/intelligence/engines/optavel-engine';
-
+import analyzeRealEstate from '@/lib/intelligence/engines/real-estate';
 
 const ENGINE_MAP = {
   universal: { fn: analyzeUniversal, name: 'universal-intelligence' },
@@ -34,6 +34,7 @@ const ENGINE_MAP = {
   healthcare: { fn: analyzeHospital, name: 'healthcare-intelligence' },
   school: { fn: analyzeSchool, name: 'education-intelligence' },
   education: { fn: analyzeSchool, name: 'education-intelligence' },
+  university: { fn: analyzeUniversity, name: 'university-intelligence' },
   hr: { fn: analyzeHR, name: 'hr-intelligence' },
   human_resources: { fn: analyzeHR, name: 'hr-intelligence' },
   retail: { fn: analyzeRetail, name: 'retail-intelligence' },
@@ -45,6 +46,9 @@ const ENGINE_MAP = {
   religion: { fn: analyzeReligion, name: 'religion-intelligence' },
   church: { fn: analyzeReligion, name: 'religion-intelligence' },
   marketing: { fn: analyzeMarketing, name: 'marketing-intelligence' },
+  real_estate: { fn: analyzeRealEstate, name: 'real-estate-intelligence' },
+  'real-estate': { fn: analyzeRealEstate, name: 'real-estate-intelligence' },
+  real_estate_jcl: { fn: analyzeRealEstate, name: 'real-estate-intelligence' },
   optavel: { fn: analyzeOptavel, name: 'optavel-intelligence' },
 };
 

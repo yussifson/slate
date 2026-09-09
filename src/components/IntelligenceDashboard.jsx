@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { Brain, Sparkles, RefreshCw, Shield, AlertTriangle, TrendingUp, Info, Filter, Zap, FileText, Activity, Database, Bot } from 'lucide-react';
+import {
+  Brain, Sparkles, RefreshCw, Shield, AlertTriangle, TrendingUp, Info,
+  Filter, Zap, FileText, Activity, Database, Bot, CheckCircle2, Play
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import InsightCard from '@/components/InsightCard';
 import { useIntelligence } from '@/hooks/useIntelligence';
 import { useCompany } from '@/hooks/useCompanyId';
+import { toast } from 'react-hot-toast';
 
 import DataOracle from '@/components/intelligence/DataOracle';
 import ReportGenerator from '@/components/intelligence/ReportGenerator';
@@ -29,7 +33,7 @@ const TYPE_FILTERS = [
 
 export default function IntelligenceDashboard({ vertical: verticalOverride, compact = false, maxItems = null }) {
   const { company } = useCompany();
-  const effectiveVertical = verticalOverride || company?.industry_type || null;
+  const effectiveVertical = verticalOverride || company?.industry_type || company?.industry || 'universal';
 
   const {
     insights,
@@ -42,6 +46,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
     runEngine,
     dismissInsight,
     submitFeedback,
+    refetch,
   } = useIntelligence(effectiveVertical);
 
   const [severityFilter, setSeverityFilter] = useState('all');
@@ -54,6 +59,18 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
   });
 
   const displayInsights = maxItems ? filteredInsights.slice(0, maxItems) : filteredInsights;
+
+  const handleRunDiagnostics = async () => {
+    try {
+      toast.loading('Scanning workspace & executing neural diagnostics...', { id: 'diag-toast' });
+      await runEngine(effectiveVertical);
+      await refetch();
+      toast.success(`Full workspace diagnostics complete! ${insights.length} pattern discoveries evaluated.`, { id: 'diag-toast' });
+    } catch (err) {
+      console.error('[Diagnostics] Failed:', err);
+      toast.error('Diagnostics scan encountered an issue. Re-evaluating cached records.', { id: 'diag-toast' });
+    }
+  };
 
   // Compact mode for embedding in other dashboards
   if (compact) {
@@ -79,7 +96,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
             size="sm"
             variant="ghost"
             className="h-7 text-xs gap-1"
-            onClick={() => runEngine(effectiveVertical)}
+            onClick={handleRunDiagnostics}
             disabled={isRunning}
           >
             <RefreshCw className={`w-3 h-3 ${isRunning ? 'animate-spin' : ''}`} />
@@ -116,11 +133,12 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
       </div>
     );
   }
+
   return (
-    <div className="space-y-8 pb-20 animate-in fade-in duration-500 font-sans">
+    <div className="space-y-6 pb-20 animate-in fade-in duration-500 font-sans">
       <Tabs defaultValue="insights" className="w-full">
-        {/* Luxury Navigation Header */}
-        <div className="bg-card/70 backdrop-blur-xl border border-border/80 rounded-2xl p-2 mb-8 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Luxury Navigation Header with Diagnostics Trigger */}
+        <div className="bg-card/70 backdrop-blur-xl border border-border/80 rounded-2xl p-2.5 mb-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-wrap gap-1 border-0">
             <TabsTrigger 
               value="insights" 
@@ -152,74 +170,61 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex items-center gap-2 px-3">
-            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs font-semibold text-muted-foreground">Neural Engine Online</span>
+          <div className="flex items-center gap-3 px-2">
+            <div className="flex items-center gap-1.5">
+              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-semibold text-muted-foreground hidden sm:inline">Engine Live</span>
+            </div>
+
+            <Button
+              onClick={handleRunDiagnostics}
+              disabled={isRunning}
+              size="sm"
+              className="h-9 gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-4 rounded-xl shadow-md shadow-emerald-900/20 text-xs border-0 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {isRunning ? (
+                <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Scanning...</>
+              ) : (
+                <><Zap className="w-3.5 h-3.5 fill-current" /> Execute Full Diagnostics</>
+              )}
+            </Button>
           </div>
         </div>
 
         {/* TAB 1: INSIGHTS ENGINE */}
         <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          {/* Executive Hero Banner */}
-          <div className="relative overflow-hidden rounded-3xl border border-emerald-200 dark:border-emerald-800/40 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 p-6 sm:p-8 text-white shadow-lg">
-            <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
-            <div className="absolute bottom-0 left-1/3 -mb-12 w-64 h-64 rounded-full bg-teal-400/10 blur-2xl pointer-events-none" />
-            
-            <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                  Executive Intelligence & Pattern Recognition
-                </h2>
-                <p className="text-sm text-emerald-50 max-w-xl font-normal">
-                  Continuous deep-learning audit of operational workflows, client behavior, anomalies, and financial performance.
-                </p>
-              </div>
-
-              <Button
-                onClick={() => runEngine(effectiveVertical)}
-                disabled={isRunning}
-                className="gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold px-6 py-6 rounded-2xl shadow-lg shadow-emerald-900/40 border-0 transition-all hover:scale-105 active:scale-95 shrink-0"
-              >
-                {isRunning ? (
-                  <><RefreshCw className="w-5 h-5 animate-spin" /> Deep Scanning Workspace...</>
-                ) : (
-                  <><Zap className="w-5 h-5 fill-current" /> Execute Full Diagnostics</>
-                )}
-              </Button>
-            </div>
-          </div>
-
-          {/* 4 Stat Metric Hero Strip */}
+          
+          {/* Top 4 Stat Metric Cards (Directly at top now) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-blue-500/40 transition-all">
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Discoveries</p>
-                <p className="text-3xl font-extrabold text-foreground">{insights.length}</p>
+                <p className="text-3xl font-extrabold text-foreground tracking-tight">{insights.length}</p>
                 <p className="text-[11px] text-muted-foreground">Active pattern markers</p>
               </div>
-              <div className="h-12 w-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+              <div className="h-12 w-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center">
                 <Brain className="w-6 h-6" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-rose-500/40 transition-all">
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Critical Escalations</p>
-                <p className="text-3xl font-extrabold text-rose-600 dark:text-rose-400">{criticalCount}</p>
-                <p className="text-[11px] text-rose-600/80">Immediate attention</p>
+                <p className="text-3xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">{criticalCount}</p>
+                <p className="text-[11px] text-rose-600/80 font-medium">Immediate attention</p>
               </div>
-              <div className="h-12 w-12 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+              <div className="h-12 w-12 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center justify-center">
                 <Shield className="w-6 h-6" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-amber-500/40 transition-all">
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Warning Flags</p>
-                <p className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">{warningCount}</p>
-                <p className="text-[11px] text-amber-600/80">Threshold alerts</p>
+                <p className="text-3xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">{warningCount}</p>
+                <p className="text-[11px] text-amber-600/80 font-medium">Threshold alerts</p>
               </div>
-              <div className="h-12 w-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+              <div className="h-12 w-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center">
                 <AlertTriangle className="w-6 h-6" />
               </div>
             </div>
@@ -227,10 +232,10 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
             <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
               <div className="space-y-1">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Positive Signals</p>
-                <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{positiveCount}</p>
-                <p className="text-[11px] text-emerald-600/80">Growth indicators</p>
+                <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">{positiveCount}</p>
+                <p className="text-[11px] text-emerald-600/80 font-medium">Growth indicators</p>
               </div>
-              <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
                 <TrendingUp className="w-6 h-6" />
               </div>
             </div>
@@ -246,7 +251,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
                     onClick={() => setSeverityFilter(f.key)}
                     className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                       severityFilter === f.key
-                        ? 'bg-background text-foreground shadow-xs'
+                        ? 'bg-background text-foreground shadow-xs font-bold'
                         : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -291,17 +296,17 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
               <h3 className="text-base font-bold text-foreground mb-1">Intelligence Database Ready</h3>
               <p className="text-xs text-muted-foreground max-w-md mb-6">
                 {insights.length === 0
-                  ? "Execute full diagnostics to evaluate your workspace and retrieve predictive AI insights."
+                  ? "Execute full diagnostics to evaluate your workspace and retrieve predictive AI insights across all active modules."
                   : 'No pattern markers match your currently selected filters.'}
               </p>
               {insights.length === 0 && (
                 <Button
-                  onClick={() => runEngine(effectiveVertical)}
+                  onClick={handleRunDiagnostics}
                   disabled={isRunning}
                   className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-md border-0"
                 >
                   <Zap className="w-4 h-4" />
-                  {isRunning ? 'Analyzing...' : 'Execute Diagnostics Now'}
+                  {isRunning ? 'Analyzing Workspace...' : 'Execute Diagnostics Now'}
                 </Button>
               )}
             </div>

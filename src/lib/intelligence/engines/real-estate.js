@@ -1,7 +1,7 @@
 // src/lib/intelligence/engines/real-estate.js
 // Real Estate Intelligence Engine — property valuation, market trends, agent performance, lease analysis
 import { generateInsight, groupByWeek, groupByDay } from '@/lib/intelligence/engine';
-import { usePowerSync } from '@powersync/react';
+import { powerSync } from '@/api/PowerSyncConnector';
 
 const VERTICAL = 'real-estate';
 
@@ -11,7 +11,6 @@ const VERTICAL = 'real-estate';
 // ────────────────────────────────────────────────────────
 async function propertyValuationPrediction(companyId) {
   const insights = [];
-  const powerSync = usePowerSync();
 
   const res = await powerSync.execute(
     `SELECT id, address, city, property_type, bedrooms, bathrooms, 
@@ -117,7 +116,6 @@ async function propertyValuationPrediction(companyId) {
 // ────────────────────────────────────────────────────────
 async function buyerReadinessScoring(companyId) {
   const insights = [];
-  const powerSync = usePowerSync();
 
   const res = await powerSync.execute(
     `SELECT c.id, c.name, c.email, c.type, c.budget, 
@@ -206,7 +204,6 @@ async function buyerReadinessScoring(companyId) {
 // ────────────────────────────────────────────────────────
 async function agentPerformanceAnalytics(companyId) {
   const insights = [];
-  const powerSync = usePowerSync();
 
   const res = await powerSync.execute(
     `SELECT c.agent_id, c.agent_name, COUNT(c.id) as client_count,
@@ -276,7 +273,6 @@ async function agentPerformanceAnalytics(companyId) {
 // ────────────────────────────────────────────────────────
 async function leaseRenewalRisk(companyId) {
   const insights = [];
-  const powerSync = usePowerSync();
 
   const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   const today = new Date().toISOString().split('T')[0];
@@ -340,7 +336,6 @@ async function leaseRenewalRisk(companyId) {
 // ────────────────────────────────────────────────────────
 async function maintenancePriorityAnalysis(companyId) {
   const insights = [];
-  const powerSync = usePowerSync();
 
   const res = await powerSync.execute(
     `SELECT id, property_address, issue_description, priority, status, cost, created_at
@@ -442,3 +437,5 @@ export async function runRealEstateIntelligence(companyId) {
 
   return allInsights;
 }
+
+export default runRealEstateIntelligence;

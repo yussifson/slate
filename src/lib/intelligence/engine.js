@@ -105,8 +105,8 @@ export async function storeEntityIntelligence(companyId, entityType, entityId, d
   } else {
     await powerSync.execute(
       `INSERT INTO entity_intelligence (id, company_id, entity_type, entity_id, summary, risk_score, risk_factors, next_actions, key_signals, computed_at)
-       VALUES (uuid(), ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-      [companyId, entityType, entityId, data.summary || null, data.risk_score || null, data.risk_factors ? JSON.stringify(data.risk_factors) : null, data.next_actions ? JSON.stringify(data.next_actions) : null, data.key_signals ? JSON.stringify(data.key_signals) : null]
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+      [crypto.randomUUID(), companyId, entityType, entityId, data.summary || null, data.risk_score || null, data.risk_factors ? JSON.stringify(data.risk_factors) : null, data.next_actions ? JSON.stringify(data.next_actions) : null, data.key_signals ? JSON.stringify(data.key_signals) : null]
     );
   }
 }
