@@ -161,7 +161,7 @@ export default function JCLCommissions() {
   };
 
   return (
-    <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
+    <div className="p-4 sm:p-6 pb-28 w-full max-w-full space-y-6 font-sans">
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

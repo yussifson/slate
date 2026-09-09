@@ -37,7 +37,7 @@ export default function JCLCommissionRules() {
   }, [companyId]);
 
   return (
-    <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
+    <div className="p-4 sm:p-6 pb-28 w-full max-w-full space-y-6 font-sans">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
