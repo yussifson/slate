@@ -116,10 +116,10 @@ const JCL_DEPARTMENTS = [
     label: "Docs & Governance",
     icon: FileText,
     color: "teal",
-    actionLabel: "New Template",
+    actionLabel: "New Smart Doc",
     actionPath: "/real-estate/document-templates",
     items: [
-      { label: "Document Templates", path: "/real-estate/document-templates", icon: FileText },
+      { label: "Smart Docs", path: "/real-estate/document-templates", icon: FileText },
       { label: "E-Signatures Hub", path: "/real-estate/e-signatures", icon: PenTool },
       { label: "Executive Reports", path: "/reports", icon: ClipboardList },
       { label: "Audit & Compliance Log", path: "/real-estate/audit-log", icon: ShieldCheck }

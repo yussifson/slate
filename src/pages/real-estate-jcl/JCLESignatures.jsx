@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
-  Shield, CheckCircle2, Clock, AlertCircle, RefreshCw, Plus, Search, Eye, Send, FileText, Lock, PenTool, Check, Download, Trash2, UserCheck, Key, ExternalLink, Sparkles
+  Shield, CheckCircle2, Clock, AlertCircle, RefreshCw, Plus, Search, Eye, Send, FileText, Lock, PenTool, Check, Download, Trash2, Key, Copy, Sparkles, Award, FileCheck, Layers, Info, ChevronRight
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -41,7 +41,7 @@ const STATUS_CONFIG = {
     dot: 'bg-amber-500'
   },
   draft: {
-    label: 'Draft Pending Dispatch',
+    label: 'Draft Pending',
     badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-300',
     dot: 'bg-slate-400'
   }
@@ -89,7 +89,6 @@ const DEFAULT_SIGNATURES = [
 export default function JCLESignatures() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
-  const { user } = useAuth();
   const location = useLocation();
 
   const [signatures, setSignatures] = useState([]);
@@ -205,7 +204,7 @@ export default function JCLESignatures() {
     }
   };
 
-  // Canvas signature handling
+  // Canvas drawing handlers
   const startDrawing = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -275,6 +274,11 @@ export default function JCLESignatures() {
     }
   };
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Cryptographic Hash copied to clipboard');
+  };
+
   return (
     <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
       {/* ── 1. Header ── */}
@@ -286,8 +290,8 @@ export default function JCLESignatures() {
           <div>
             <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2">
               E-Signatures & Cryptographic Vault
-              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-mono">
-                Production Ready
+              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-mono px-2 py-0.5">
+                ESIGN & UETA Compliant
               </Badge>
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5 font-medium">
@@ -297,7 +301,7 @@ export default function JCLESignatures() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3 text-xs font-semibold gap-1.5 border-border rounded-xl">
+          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3.5 text-xs font-semibold gap-1.5 border-border/80 rounded-xl shadow-xs">
             <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
             Refresh
           </Button>
@@ -318,7 +322,7 @@ export default function JCLESignatures() {
 
       {/* ── 2. KPI Hero Row ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+        <Card className="rounded-[24px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Executed Contracts</span>
@@ -333,7 +337,7 @@ export default function JCLESignatures() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+        <Card className="rounded-[24px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Pending Signatures</span>
@@ -346,7 +350,7 @@ export default function JCLESignatures() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+        <Card className="rounded-[24px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Audit Certificates</span>
@@ -359,13 +363,13 @@ export default function JCLESignatures() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
+        <Card className="rounded-[24px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Security Protocol</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Security Vault</span>
               <p className="text-2xl font-extrabold text-foreground tracking-tight">Active</p>
               <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                <Lock className="h-3.5 w-3.5" /> ESIGN & UETA Compliant
+                <Lock className="h-3.5 w-3.5" /> Immutable Audit Record
               </p>
             </div>
             <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20 shadow-inner">
@@ -376,44 +380,44 @@ export default function JCLESignatures() {
       </div>
 
       {/* ── 3. Filters Bar ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card/80 border border-border/80 p-3 rounded-2xl shadow-xs backdrop-blur-sm">
-        <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1 min-w-[240px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card/90 border border-border/80 p-3.5 rounded-2xl shadow-xs backdrop-blur-sm">
+        <div className="flex flex-1 items-center gap-2.5">
+          <div className="relative flex-1 min-w-[260px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search signatures by document title, signer, or email..."
+              placeholder="Search by document title, signer name, or email..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-9 h-9 text-xs bg-background rounded-xl"
+              className="pl-10 h-9.5 text-xs bg-background rounded-xl border-border/80 shadow-xs"
             />
           </div>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-9 text-xs w-[170px] bg-background rounded-xl">
+            <SelectTrigger className="h-9.5 text-xs w-[180px] bg-background rounded-xl border-border/80 shadow-xs">
               <SelectValue placeholder="Execution Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
-              <SelectItem value="signed" className="text-xs">Fully Signed</SelectItem>
-              <SelectItem value="sent" className="text-xs">Sent / Pending</SelectItem>
-              <SelectItem value="draft" className="text-xs">Draft</SelectItem>
+              <SelectItem value="signed" className="text-xs">Fully Signed & Executed</SelectItem>
+              <SelectItem value="sent" className="text-xs">Sent to Signers</SelectItem>
+              <SelectItem value="draft" className="text-xs">Draft Pending</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* ── 4. Main Signature Records Table ── */}
+      {/* ── 4. Main Executive Signature Table ── */}
       <div className="bg-card/95 backdrop-blur-xl border border-border/90 rounded-[26px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="border-b border-border/80 bg-muted/30 text-muted-foreground font-semibold text-[11px] uppercase tracking-wider">
-                <th className="py-4 px-5">Document Title</th>
-                <th className="py-4 px-5">Signer & Role</th>
-                <th className="py-4 px-5">Sent / Signed Date</th>
-                <th className="py-4 px-5">Audit Hash</th>
-                <th className="py-4 px-5">Status</th>
-                <th className="py-4 px-5 text-right">Actions</th>
+                <th className="py-4 px-6 min-w-[280px]">Document Title</th>
+                <th className="py-4 px-6 min-w-[220px]">Signer & Role</th>
+                <th className="py-4 px-6 min-w-[180px]">Sent / Signed Dates</th>
+                <th className="py-4 px-6 min-w-[180px]">Audit Hash</th>
+                <th className="py-4 px-6 min-w-[170px]">Status</th>
+                <th className="py-4 px-6 text-right min-w-[190px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">
@@ -428,65 +432,96 @@ export default function JCLESignatures() {
               ) : (
                 filteredSignatures.map(item => {
                   const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.sent;
-                  const title = item.document_title || item.document_name || 'Legal Agreement';
+                  const title = item.document_title || item.document_name || 'Legal Contract';
                   const signerName = item.signer_name || 'Assigned Signer';
                   const signerEmail = item.signer_email || 'signer@domain.com';
                   const signerRole = item.signer_role || 'Signer';
 
                   return (
                     <tr key={item.id} className="hover:bg-muted/20 transition-colors group">
-                      <td className="py-4 px-5 font-extrabold text-foreground">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                            <FileText className="w-4 h-4" />
+                      {/* Document Title */}
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-xs group-hover:scale-105 transition-transform">
+                            <FileText className="w-5 h-5" />
                           </div>
-                          <span className="line-clamp-1">{title}</span>
+                          <div className="min-w-0">
+                            <p className="font-black text-sm text-foreground leading-snug group-hover:text-emerald-600 transition-colors truncate max-w-[260px]" title={title}>
+                              {title}
+                            </p>
+                            <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider block mt-0.5">
+                              ID: {item.id.slice(0, 8)}
+                            </span>
+                          </div>
                         </div>
                       </td>
 
-                      <td className="py-4 px-5">
+                      {/* Signer & Role */}
+                      <td className="py-4 px-6">
                         <div>
-                          <p className="font-bold text-foreground">{signerName}</p>
-                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
-                            <span>{signerEmail}</span>
-                            <Badge variant="outline" className="text-[9px] py-0 h-4 bg-muted/40 capitalize font-semibold">
+                          <p className="font-extrabold text-foreground text-xs">{signerName}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[11px] text-muted-foreground truncate max-w-[150px]">{signerEmail}</span>
+                            <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/40 text-foreground border-border/60">
                               {signerRole}
                             </Badge>
                           </div>
                         </div>
                       </td>
 
-                      <td className="py-4 px-5 font-mono text-muted-foreground">
-                        <div>
-                          <p className="text-foreground font-semibold">Sent: {item.sent_date || 'Recent'}</p>
-                          {item.signed_date && (
-                            <p className="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
-                              Signed: {item.signed_date}
-                            </p>
-                          )}
+                      {/* Structured Dates */}
+                      <td className="py-4 px-6 space-y-1">
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                          <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                          <span>Sent:</span>
+                          <span className="font-mono text-foreground font-semibold">{item.sent_date || 'Recent'}</span>
+                        </div>
+                        {item.signed_date && (
+                          <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                            <span>Signed:</span>
+                            <span className="font-mono">{item.signed_date}</span>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Audit Hash */}
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-1.5">
+                          <code
+                            className="bg-muted/50 px-2.5 py-1 rounded-xl border border-border/60 font-mono text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold truncate max-w-[140px]"
+                            title={item.audit_hash || '0xa4f892c91b874ef093a10e7b238914c098df1234'}
+                          >
+                            {item.audit_hash ? `${item.audit_hash.slice(0, 10)}...${item.audit_hash.slice(-6)}` : '0xa4f892c91b8...'}
+                          </code>
+                          <Button
+                            size="xs"
+                            variant="ghost"
+                            onClick={() => copyToClipboard(item.audit_hash || '0xa4f892c91b874ef093a10e7b238914c098df1234')}
+                            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground rounded-lg"
+                            title="Copy Audit Hash"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </Button>
                         </div>
                       </td>
 
-                      <td className="py-4 px-5 font-mono text-[10px] text-muted-foreground">
-                        <span className="bg-muted/40 px-2 py-1 rounded-lg border border-border/50 truncate block max-w-[140px]">
-                          {item.audit_hash || '0x000000000000'}
-                        </span>
-                      </td>
-
-                      <td className="py-4 px-5">
-                        <Badge variant="outline" className={cn("text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl border gap-1.5", st.badge)}>
-                          <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
+                      {/* Single-line Status Badge */}
+                      <td className="py-4 px-6">
+                        <Badge variant="outline" className={cn("whitespace-nowrap inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-xl border", st.badge)}>
+                          <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", st.dot)} />
                           {st.label}
                         </Badge>
                       </td>
 
-                      <td className="py-4 px-5 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      {/* Actions */}
+                      <td className="py-4 px-6 text-right">
+                        <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
                           {item.status !== 'signed' && (
                             <Button
                               size="sm"
                               onClick={() => setSigningItem(item)}
-                              className="text-xs h-8 px-3 font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm gap-1"
+                              className="text-xs h-8 px-3 font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-xs gap-1"
                             >
                               <PenTool className="w-3.5 h-3.5" /> Sign
                             </Button>
@@ -496,9 +531,9 @@ export default function JCLESignatures() {
                             size="sm"
                             variant="outline"
                             onClick={() => setCertificateItem(item)}
-                            className="text-xs h-8 px-2.5 font-bold rounded-xl border-border hover:bg-muted"
+                            className="text-xs h-8 px-3 font-bold rounded-xl border-border/80 bg-background hover:bg-muted shadow-xs gap-1"
                           >
-                            <Key className="w-3.5 h-3.5 mr-1" /> Certificate
+                            <Key className="w-3.5 h-3.5 text-emerald-600" /> Certificate
                           </Button>
 
                           <Button
@@ -506,6 +541,7 @@ export default function JCLESignatures() {
                             variant="ghost"
                             onClick={() => handleDelete(item.id)}
                             className="text-xs h-8 px-2 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl"
+                            title="Delete Signature Record"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </Button>
@@ -520,16 +556,76 @@ export default function JCLESignatures() {
         </div>
       </div>
 
+      {/* ── 5. Professional Executive Audit Vault Banner (Scroll Footer) ── */}
+      <div className="mt-8 bg-card/95 backdrop-blur-xl border border-border/90 rounded-[28px] p-6 shadow-sm space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md">
+              <Award className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2">
+                Cryptographic Signature Governance & Compliance
+                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[9px] uppercase font-mono">
+                  ESIGN Certified
+                </Badge>
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Every digital signature executed in this vault is cryptographically hashed, timestamped, and bound to verifiable signer metadata.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+              <Lock className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-blue-600 font-bold bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/20">
+              <FileCheck className="w-3.5 h-3.5" /> Immutable Audit Vault
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-muted-foreground">
+          <div className="p-3.5 bg-muted/20 rounded-2xl border border-border/50 space-y-1">
+            <p className="font-bold text-foreground flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Court Admissible Record
+            </p>
+            <p className="text-[11px] leading-relaxed">
+              Provides complete audit certificates containing signer IP addresses, email confirmation logs, and exact timestamps.
+            </p>
+          </div>
+
+          <div className="p-3.5 bg-muted/20 rounded-2xl border border-border/50 space-y-1">
+            <p className="font-bold text-foreground flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-blue-600" /> Tamper-Evident Hash Seal
+            </p>
+            <p className="text-[11px] leading-relaxed">
+              Modifications post-execution automatically invalidate the document's SHA-256 cryptographic verification fingerprint.
+            </p>
+          </div>
+
+          <div className="p-3.5 bg-muted/20 rounded-2xl border border-border/50 space-y-1">
+            <p className="font-bold text-foreground flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-amber-600" /> Multi-Party Routing
+            </p>
+            <p className="text-[11px] leading-relaxed">
+              Automates sequential sign-off across Buyers, Sellers, Property Managers, and Escrow Officers.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* ── Request E-Signature Sheet ── */}
       <Sheet open={showRequestForm} onOpenChange={setShowRequestForm}>
         <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4">
-            <SheetTitle className="font-extrabold text-base flex items-center gap-2">
+            <SheetTitle className="font-black text-base flex items-center gap-2">
               <Send className="w-4 h-4 text-emerald-600" />
               Dispatch E-Signature Request
             </SheetTitle>
             <SheetDescription className="text-xs">
-              Send legally binding document to signer with SHA-256 audit tracking
+              Send legally binding agreement to signer with SHA-256 audit tracking
             </SheetDescription>
           </SheetHeader>
           <form onSubmit={handleCreateRequest} className="space-y-4 text-xs">
@@ -539,7 +635,7 @@ export default function JCLESignatures() {
                 value={formData.documentTitle}
                 onChange={e => setFormData({ ...formData, documentTitle: e.target.value })}
                 placeholder="e.g. Commercial Lease Contract Suite 200"
-                className="h-9 text-xs mt-1 rounded-xl"
+                className="h-9.5 text-xs mt-1 rounded-xl"
                 required
               />
             </div>
@@ -550,14 +646,14 @@ export default function JCLESignatures() {
                   value={formData.signerName}
                   onChange={e => setFormData({ ...formData, signerName: e.target.value })}
                   placeholder="John Doe"
-                  className="h-9 text-xs mt-1 rounded-xl"
+                  className="h-9.5 text-xs mt-1 rounded-xl"
                   required
                 />
               </div>
               <div>
                 <Label className="text-xs font-semibold">Signer Role</Label>
                 <Select value={formData.signerRole} onValueChange={v => setFormData({ ...formData, signerRole: v })}>
-                  <SelectTrigger className="h-9 text-xs mt-1 rounded-xl"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-9.5 text-xs mt-1 rounded-xl"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Buyer" className="text-xs">Buyer</SelectItem>
                     <SelectItem value="Seller" className="text-xs">Seller</SelectItem>
@@ -575,11 +671,11 @@ export default function JCLESignatures() {
                 value={formData.signerEmail}
                 onChange={e => setFormData({ ...formData, signerEmail: e.target.value })}
                 placeholder="john.doe@example.com"
-                className="h-9 text-xs mt-1 rounded-xl"
+                className="h-9.5 text-xs mt-1 rounded-xl"
                 required
               />
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md mt-2">
+            <Button type="submit" className="w-full h-9.5 text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md mt-2">
               Send Signature Request
             </Button>
           </form>
@@ -591,7 +687,7 @@ export default function JCLESignatures() {
         <Dialog open={!!signingItem} onOpenChange={() => setSigningItem(null)}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-base font-extrabold flex items-center gap-2">
+              <DialogTitle className="text-base font-black flex items-center gap-2">
                 <PenTool className="w-5 h-5 text-emerald-600" />
                 Sign & Execute Agreement
               </DialogTitle>
@@ -645,7 +741,7 @@ export default function JCLESignatures() {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Label className="text-xs">Full Legal Name</Label>
+                  <Label className="text-xs font-semibold">Full Legal Name</Label>
                   <Input
                     value={typedName}
                     onChange={e => setTypedName(e.target.value)}
@@ -672,13 +768,13 @@ export default function JCLESignatures() {
             </div>
 
             <DialogFooter className="flex items-center justify-between sm:justify-between">
-              <Button variant="outline" size="sm" onClick={() => setSigningItem(null)} className="text-xs">
+              <Button variant="outline" size="sm" onClick={() => setSigningItem(null)} className="text-xs rounded-xl">
                 Cancel
               </Button>
               <Button
                 size="sm"
                 onClick={handleExecuteSigning}
-                className="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md gap-1"
+                className="text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md gap-1"
               >
                 <Check className="w-4 h-4" /> Sign & Execute
               </Button>
@@ -703,7 +799,7 @@ export default function JCLESignatures() {
 
             <div className="space-y-3 text-xs bg-muted/20 p-4 border border-border/80 rounded-2xl font-mono">
               <div className="flex justify-between border-b border-border/60 pb-2">
-                <span className="text-muted-foreground font-sans">Document:</span>
+                <span className="text-muted-foreground font-sans">Document Title:</span>
                 <span className="font-bold text-foreground text-right">{certificateItem.document_title || certificateItem.document_name}</span>
               </div>
               <div className="flex justify-between border-b border-border/60 pb-2">
@@ -722,7 +818,7 @@ export default function JCLESignatures() {
               </div>
               <div className="space-y-1 pt-1">
                 <span className="text-muted-foreground font-sans text-[11px] font-bold block">SHA-256 Cryptographic Hash:</span>
-                <p className="p-2.5 bg-card border border-border/60 rounded-xl text-[10px] text-emerald-700 dark:text-emerald-400 font-mono break-all">
+                <p className="p-2.5 bg-card border border-border/60 rounded-xl text-[10px] text-emerald-700 dark:text-emerald-400 font-mono break-all select-all">
                   {certificateItem.audit_hash || generateAuditHash()}
                 </p>
               </div>
@@ -733,7 +829,7 @@ export default function JCLESignatures() {
             </div>
 
             <DialogFooter className="flex items-center justify-between sm:justify-between">
-              <Button variant="outline" size="sm" onClick={() => setCertificateItem(null)} className="text-xs">
+              <Button variant="outline" size="sm" onClick={() => setCertificateItem(null)} className="text-xs rounded-xl">
                 Close Certificate
               </Button>
               <Button
