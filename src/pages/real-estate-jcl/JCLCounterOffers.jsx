@@ -297,30 +297,53 @@ export default function JCLCounterOffers() {
         {filteredCounterOffers.map(item => {
           const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
           const delta = (item.counter_price || 0) - (item.original_price || 0);
+          const bannerColor = item.status === 'accepted'
+            ? 'from-emerald-700 via-emerald-600 to-teal-500'
+            : item.status === 'pending'
+            ? 'from-amber-600 via-amber-500 to-yellow-400'
+            : item.status === 'rejected'
+            ? 'from-rose-700 via-rose-600 to-red-500'
+            : 'from-slate-600 via-slate-500 to-slate-400';
+
+          const buyerInitials = (item.buyer_name || 'B').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
           return (
             <div
               key={item.id}
-              className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-xs hover:shadow-md transition-all duration-300"
+              className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
             >
-              <div className="p-4 border-b border-border/50 bg-muted/20 flex items-center justify-between">
-                <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1.5", st.badge)}>
-                  <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
-                  {st.label}
-                </Badge>
-                <span className="text-[10px] font-mono text-muted-foreground">Exp: {item.expiration_date || 'N/A'}</span>
+              {/* Gradient Banner Header */}
+              <div className={cn("relative h-28 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br", bannerColor)}>
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+                <div className="flex items-start justify-between relative z-10">
+                  <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                    Counter Proposal
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                    {st.label}
+                  </span>
+                </div>
+
+                <div className="relative z-10">
+                  <p className="text-white/70 text-[9px] font-semibold uppercase tracking-widest mb-0.5">Counter Price</p>
+                  <p className="text-2xl font-extrabold text-white tracking-tight">
+                    {formatCurrency(item.counter_price, 'USD')}
+                  </p>
+                </div>
               </div>
 
-              <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+              {/* Card Body */}
+              <div className="p-4 flex flex-col gap-3 flex-1 justify-between">
                 <div>
-                  <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 transition-colors line-clamp-1">
-                    {item.property_address || 'Property Offer'}
+                  <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                    {item.property_address || 'Property Counter Proposal'}
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">Buyer: <strong className="text-foreground">{item.buyer_name || 'Prospect'}</strong></p>
                 </div>
 
                 {/* Side-by-Side Comparison Box */}
-                <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-muted/40 border border-border/50 text-center font-mono">
+                <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-muted/30 border border-border/60 text-center font-mono">
                   <div>
                     <span className="text-[9px] uppercase text-muted-foreground block mb-0.5">Original Offer</span>
                     <span className="text-xs font-bold text-muted-foreground line-through">{formatCurrency(item.original_price, 'USD')}</span>
@@ -333,14 +356,24 @@ export default function JCLCounterOffers() {
 
                 {delta !== 0 && (
                   <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <span className="text-muted-foreground">Price Delta</span>
-                    <span className="font-bold font-mono text-emerald-600 dark:text-emerald-400">+{formatCurrency(delta, 'USD')}</span>
+                    <span className="text-muted-foreground font-medium">Price Delta</span>
+                    <span className="font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                      {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
+                    </span>
                   </div>
                 )}
 
-                <div className="pt-2 border-t border-border/50 flex items-center justify-between">
+                {/* Footer Strip */}
+                <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
+                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground min-w-0">
+                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-[9px] font-extrabold shrink-0">
+                      {buyerInitials}
+                    </div>
+                    <span className="truncate font-mono text-[10px]">Exp: {item.expiration_date || 'N/A'}</span>
+                  </div>
+
                   <Select value={item.status} onValueChange={v => handleStatusChange(item.id, v)}>
-                    <SelectTrigger className="h-7 text-[10px] w-[120px]">
+                    <SelectTrigger className="h-7 text-[10px] w-[120px] bg-background">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

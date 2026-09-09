@@ -402,79 +402,105 @@ export default function JCLViewings() {
               </Button>
             </div>
           ) : (
-            filteredViewings.map(v => {
-              const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
-              return (
-                <div
-                  key={v.id}
-                  onClick={() => setInspectorViewing(v)}
-                  className="p-4 rounded-xl border border-border/80 bg-card hover:border-emerald-500/40 hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer group"
-                >
-                  <div className="flex items-start sm:items-center gap-3">
-                    <div className="h-12 w-12 rounded-xl bg-muted/60 border border-border flex flex-col items-center justify-center shrink-0">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground">
-                        {v.viewing_date ? format(new Date(v.viewing_date), 'MMM') : 'TBD'}
-                      </span>
-                      <span className="text-sm font-black text-foreground">
-                        {v.viewing_date ? format(new Date(v.viewing_date), 'dd') : '--'}
-                      </span>
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredViewings.map(v => {
+                const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
+                const bannerColor = v.status === 'completed'
+                  ? 'from-emerald-700 via-emerald-600 to-teal-500'
+                  : v.status === 'scheduled'
+                  ? 'from-blue-700 via-blue-600 to-indigo-500'
+                  : v.status === 'rescheduled'
+                  ? 'from-amber-600 via-amber-500 to-yellow-400'
+                  : 'from-rose-700 via-rose-600 to-red-500';
 
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-sm text-foreground group-hover:text-emerald-600 transition-colors">
-                          {v.property_address}
+                const clientInitials = (v.client_name || 'C').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+                return (
+                  <div
+                    key={v.id}
+                    onClick={() => setInspectorViewing(v)}
+                    className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  >
+                    {/* Gradient Banner */}
+                    <div className={cn("relative h-28 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br", bannerColor)}>
+                      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+                      <div className="flex items-start justify-between relative z-10">
+                        <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                          Tour Inspection
                         </span>
-                        <Badge variant="outline" className={cn("text-[10px] font-medium border", st.badge)}>
+                        <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
+                          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                           {st.label}
-                        </Badge>
+                        </span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                        <span className="flex items-center gap-1 font-semibold text-foreground">
-                          <User className="h-3.5 w-3.5 text-muted-foreground" />
-                          {v.client_name}
-                        </span>
+                      <div className="flex items-end justify-between relative z-10">
+                        <div>
+                          <p className="text-white/70 text-[9px] font-semibold uppercase tracking-widest mb-0.5">Viewing Date</p>
+                          <p className="text-lg font-extrabold text-white tracking-tight">
+                            {v.viewing_date ? format(new Date(v.viewing_date), 'MMM dd, yyyy') : 'TBD'}
+                          </p>
+                        </div>
                         {v.viewing_time && (
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {v.viewing_time} ({v.duration_minutes || 45}m)
+                          <span className="text-[11px] font-bold text-white bg-white/20 px-2.5 py-1 rounded-lg backdrop-blur-sm">
+                            {v.viewing_time}
                           </span>
                         )}
-                        <span>Broker: <strong>{v.agent_name || 'Assigned'}</strong></span>
+                      </div>
+                    </div>
+
+                    {/* Card Body */}
+                    <div className="p-4 flex flex-col gap-3 flex-1 justify-between">
+                      <div>
+                        <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
+                          {v.property_address}
+                        </h3>
+                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-1">
+                          <Building2 className="h-3 w-3 text-emerald-500 shrink-0" />
+                          <span className="truncate">Prime Inspection Site</span>
+                        </div>
+                      </div>
+
+                      {/* 3-Spec Blueprint Strip */}
+                      <div className="grid grid-cols-2 divide-x divide-border/60 rounded-xl border border-border/60 bg-muted/30 overflow-hidden text-center">
+                        <div className="flex flex-col items-center py-2 gap-0.5">
+                          <User className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span className="text-xs font-bold text-foreground truncate max-w-[110px]">{v.client_name}</span>
+                          <span className="text-[8px] uppercase font-semibold text-muted-foreground tracking-wider">Client</span>
+                        </div>
+                        <div className="flex flex-col items-center py-2 gap-0.5">
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                          <span className="text-xs font-bold text-foreground">{v.duration_minutes || 45}m</span>
+                          <span className="text-[8px] uppercase font-semibold text-muted-foreground tracking-wider">Duration</span>
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
+                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground min-w-0">
+                          <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-[9px] font-extrabold shrink-0">
+                            {clientInitials}
+                          </div>
+                          <span className="truncate font-medium">{v.agent_name || 'Assigned Broker'}</span>
+                        </div>
+
+                        <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-emerald-600" onClick={() => setInspectorViewing(v)} title="Inspect">
+                            <Eye className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => handleOpenEdit(v)} title="Edit">
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30" onClick={() => setDeleteTarget(v)} title="Delete">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-                  <div className="flex items-center justify-end gap-1" onClick={e => e.stopPropagation()}>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => setInspectorViewing(v)}
-                    >
-                      <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={() => handleOpenEdit(v)}
-                    >
-                      <Edit className="h-3.5 w-3.5 text-muted-foreground" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-rose-500 hover:text-rose-600"
-                      onClick={() => setDeleteTarget(v)}
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-              );
-            })
+                );
+              })}
+            </div>
           )}
         </div>
       ) : (
