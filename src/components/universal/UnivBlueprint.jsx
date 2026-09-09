@@ -30,7 +30,7 @@ const UnivBlueprint = () => {
 
  const fetchData = async () => {
  setLoading(true);
- const __res = await powerSync.execute(`SELECT * FROM WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
+ const __res = await powerSync.execute(`SELECT * FROM univ_blueprints WHERE company_id = ? ORDER BY created_at DESC`, [companyId]);
  const records = __res.rows ? (__res.rows._array || Array.from(__res.rows)) : [];
  const error = null;
  if (error) {
@@ -49,7 +49,7 @@ const UnivBlueprint = () => {
  const handleSubmit = async (e) => {
  e.preventDefault();
  if (editId) {
- await (async () => { const _payload = { ...formData, id: crypto.randomUUID(), company_id: companyId}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);})();
+ await (async () => { const _payload = { ...formData, company_id: companyId}; const _keys = Object.keys(_payload); const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v); await powerSync.execute(`UPDATE univ_blueprints SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editId]);})();
  const error = null; const data = [];
  if (error) console.error('Error updating:', error);
 } else {
@@ -58,7 +58,7 @@ const UnivBlueprint = () => {
  const _keys = Object.keys(_payload);
  const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
  const _plhdr = _keys.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
+ await powerSync.execute(`INSERT INTO univ_blueprints (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals); return { error: null};})();
  if (error) console.error('Error inserting:', error);
 }
  setFormData({project_name: '', version: '', architect: '', status: ''});
@@ -74,7 +74,7 @@ const UnivBlueprint = () => {
 };
 
  const handleDelete = async (id) => {
- await powerSync.execute(`DELETE FROM WHERE id = ?`, [id]);
+ await powerSync.execute(`DELETE FROM univ_blueprints WHERE id = ?`, [id]);
  const error = null;
  if (error) console.error('Error deleting:', error);
  else fetchData();
