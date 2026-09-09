@@ -16,22 +16,20 @@ import {
   Mail,
   User,
   Phone,
-  Globe,
   Lock,
   Clock,
-  Check
+  Check,
+  Zap
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 
-const USE_CASES = [
-  'Live HD Meetings & Webinars',
-  'Async Video & Screen Recording Hub',
-  'Sales Proposals & Video Analytics',
-  'AI Meeting Intelligence & Transcripts',
-  'Automated Smart Follow-up Workflows',
-  'Custom BI & Data Pipelines',
-  'Dedicated / On-Premise Deployment',
-  'White-Labeling & Branded Subdomains',
+const INTEREST_TAGS = [
+  'HD Meetings & Webinars',
+  'AI Transcripts & Intelligence',
+  'Async Screen Recordings',
+  'Dedicated VPC / On-Premise',
+  'Custom BI & API Pipelines',
+  'SSO & Compliance Audit',
 ];
 
 const TEAM_SIZES = [
@@ -42,10 +40,10 @@ const TEAM_SIZES = [
   '2,000+ seats',
 ];
 
-const DEPLOYMENT_PREFERENCES = [
-  { id: 'cloud', label: 'Optavel Managed Cloud', desc: 'Zero maintenance, fully managed globally distributed cloud' },
-  { id: 'dedicated_cloud', label: 'Dedicated VPC / Private Cloud', desc: 'Isolated single-tenant environment on AWS, GCP, or Azure' },
-  { id: 'on_premise', label: 'On-Premise / Air-Gapped', desc: 'Self-hosted behind your enterprise firewall & private storage' },
+const DEPLOYMENT_OPTIONS = [
+  { value: 'cloud', label: 'Optavel Managed Cloud (Zero Ops)' },
+  { value: 'dedicated_cloud', label: 'Dedicated VPC (AWS / GCP / Azure)' },
+  { value: 'on_premise', label: 'On-Premise / Air-Gapped' },
 ];
 
 const TIMELINES = [
@@ -56,11 +54,11 @@ const TIMELINES = [
 ];
 
 const BUDGET_RANGES = [
+  'Flexible / Custom Allocation',
   'Under $1,000 / month',
   '$1,000 - $3,000 / month',
   '$3,000 - $10,000 / month',
   '$10,000+ / month',
-  'Custom / Flexible Allocation',
 ];
 
 export default function CliPadCustomPricing() {
@@ -73,27 +71,27 @@ export default function CliPadCustomPricing() {
     fullName: user?.user_metadata?.full_name || '',
     workEmail: user?.email || '',
     companyName: '',
-    companyWebsite: '',
     phoneNumber: '',
     teamSize: '21 - 100 seats',
     deployment: 'cloud',
     timeline: 'Immediately (< 30 days)',
     budget: '$1,000 - $3,000 / month',
-    selectedUseCases: ['Live HD Meetings & Webinars', 'AI Meeting Intelligence & Transcripts'],
+    selectedInterests: ['HD Meetings & Webinars', 'AI Transcripts & Intelligence'],
     customRequirements: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedRequest, setSubmittedRequest] = useState(null);
 
-  const toggleUseCase = (item) => {
+  const toggleInterest = (tag) => {
     setFormData((prev) => {
-      const exists = prev.selectedUseCases.includes(item);
-      if (exists) {
-        return { ...prev, selectedUseCases: prev.selectedUseCases.filter((x) => x !== item) };
-      } else {
-        return { ...prev, selectedUseCases: [...prev.selectedUseCases, item] };
-      }
+      const exists = prev.selectedInterests.includes(tag);
+      return {
+        ...prev,
+        selectedInterests: exists
+          ? prev.selectedInterests.filter((x) => x !== tag)
+          : [...prev.selectedInterests, tag],
+      };
     });
   };
 
@@ -111,35 +109,38 @@ export default function CliPadCustomPricing() {
     setIsSubmitting(true);
 
     const requestId = `REQ-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const nowIso = new Date().toISOString();
+
     const payload = {
       id: crypto.randomUUID(),
       request_code: requestId,
-      name: formData.fullName,
-      email: formData.workEmail,
-      company: formData.companyName,
-      website: formData.companyWebsite,
-      phone: formData.phoneNumber,
+      name: formData.fullName.trim(),
+      email: formData.workEmail.trim(),
+      company: formData.companyName.trim(),
+      phone: formData.phoneNumber.trim(),
       team_size: formData.teamSize,
       deployment: formData.deployment,
       timeline: formData.timeline,
       budget: formData.budget,
-      use_cases: formData.selectedUseCases,
-      requirements: formData.customRequirements,
+      use_cases: formData.selectedInterests,
+      requirements: formData.customRequirements.trim(),
       user_id: user?.id || null,
       company_id: companyId || null,
       status: 'pending',
-      created_at: new Date().toISOString(),
+      created_at: nowIso,
       message: JSON.stringify({
         requestId,
-        phone: formData.phoneNumber,
-        website: formData.companyWebsite,
+        fullName: formData.fullName.trim(),
+        workEmail: formData.workEmail.trim(),
+        company: formData.companyName.trim(),
+        phone: formData.phoneNumber.trim(),
         teamSize: formData.teamSize,
         deployment: formData.deployment,
         timeline: formData.timeline,
         budget: formData.budget,
-        useCases: formData.selectedUseCases,
-        requirements: formData.customRequirements,
-        submittedAt: new Date().toISOString(),
+        interests: formData.selectedInterests,
+        requirements: formData.customRequirements.trim(),
+        submittedAt: nowIso,
       }),
     };
 
@@ -147,32 +148,56 @@ export default function CliPadCustomPricing() {
       // 1. Primary insert to clipad_custom_requests
       try {
         await supabase.from('clipad_custom_requests').insert([payload]);
-      } catch (_) {}
+      } catch (err) {
+        console.warn('clipad_custom_requests insert notice:', err);
+      }
 
-      // 2. Insert to clipad_contact_requests for universal compatibility
+      // 2. Insert to clipad_contact_requests for Super Admin queries
       try {
         await supabase.from('clipad_contact_requests').insert([{
           id: payload.id,
-          name: formData.fullName,
-          email: formData.workEmail,
-          company: formData.companyName,
+          name: formData.fullName.trim(),
+          email: formData.workEmail.trim(),
+          company: formData.companyName.trim(),
           message: payload.message,
           status: 'pending',
-          created_at: payload.created_at,
+          created_at: nowIso,
         }]);
-      } catch (_) {}
+      } catch (err) {
+        console.warn('clipad_contact_requests insert notice:', err);
+      }
 
-      // 3. Redundant record in audit_logs
+      // 3. Insert to enterprise_requests for global admin visibility
+      try {
+        const nameParts = formData.fullName.trim().split(' ');
+        await supabase.from('enterprise_requests').insert([{
+          first_name: nameParts[0] || formData.fullName.trim(),
+          last_name: nameParts.slice(1).join(' ') || '',
+          work_email: formData.workEmail.trim(),
+          company_name: formData.companyName.trim(),
+          user_count: formData.teamSize,
+          deployment_type: formData.deployment,
+          message: formData.customRequirements.trim() || `Interests: ${formData.selectedInterests.join(', ')} | Budget: ${formData.budget} | Timeline: ${formData.timeline}`,
+          status: 'pending',
+          created_at: nowIso,
+        }]);
+      } catch (err) {
+        console.warn('enterprise_requests insert notice:', err);
+      }
+
+      // 4. Record in audit_logs
       try {
         await supabase.from('audit_logs').insert([{
           action: 'custom_pricing_request',
-          user_name: formData.fullName,
-          user_email: formData.workEmail,
+          user_name: formData.fullName.trim(),
+          user_email: formData.workEmail.trim(),
           company_id: companyId || null,
           details: payload.message,
-          created_at: new Date().toISOString(),
+          created_at: nowIso,
         }]);
-      } catch (_) {}
+      } catch (err) {
+        console.warn('audit_logs insert notice:', err);
+      }
 
       setSubmittedRequest({
         ...formData,
@@ -187,7 +212,7 @@ export default function CliPadCustomPricing() {
       console.error('Error submitting custom request:', err);
       toast({
         title: 'Submission Received',
-        description: `We have logged your request (#${requestId}). An enterprise representative will reach out shortly.`,
+        description: `We have logged your request (#${requestId}). An enterprise specialist will reach out shortly.`,
       });
       setSubmittedRequest({
         ...formData,
@@ -199,10 +224,10 @@ export default function CliPadCustomPricing() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0b0f19] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-slate-900 selection:text-white">
+    <div className="min-h-screen bg-[#fafbfc] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-orange-500 selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/90 dark:bg-[#0b0f19]/90 border-b border-slate-200 dark:border-white/10 px-6 md:px-12 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-[#090d16]/95 border-b border-slate-200/80 dark:border-white/10 px-6 md:px-12 py-3.5">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2 group">
               <div className="text-primary transition-transform group-hover:scale-105">
@@ -210,18 +235,14 @@ export default function CliPadCustomPricing() {
               </div>
               <span className="font-bold text-lg tracking-tight">CliPad</span>
             </Link>
-            <nav className="hidden md:flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
-              <Link to="/#features" className="hover:text-slate-900 dark:hover:text-white transition-colors">Features</Link>
-              <Link to="/#pricing" className="hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</Link>
-            </nav>
           </div>
 
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-xl transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-xl transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5" />
               Back to Home
             </button>
             <Link
@@ -234,41 +255,37 @@ export default function CliPadCustomPricing() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 md:px-12 py-12 md:py-16">
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 md:px-8 py-10 md:py-16">
         {submittedRequest ? (
-          /* SUCCESS STATE */
-          <div className="max-w-2xl mx-auto bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-400">
-            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-6">
+          /* SUCCESS CONFIRMATION */
+          <div className="max-w-xl mx-auto bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-300">
+            <div className="w-16 h-16 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-6">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <div className="inline-block px-3 py-1 bg-secondary text-foreground rounded-full text-xs font-mono font-bold tracking-wider mb-4 border border-border">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 rounded-full text-xs font-mono font-bold tracking-wider mb-4">
               Ref: {submittedRequest.requestId}
             </div>
 
-            <h1 className="text-3xl font-black tracking-tight mb-3">
-              Request Received, {submittedRequest.fullName.split(' ')[0]}
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2 text-foreground">
+              Request Received, {submittedRequest.fullName.split(' ')[0]}!
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-8 max-w-md mx-auto">
-              Our enterprise solutions team has received your inquiry for <strong className="text-foreground">{submittedRequest.companyName}</strong> and will follow up with a tailored proposal.
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+              Our enterprise solutions team has received your request for <strong className="text-foreground">{submittedRequest.companyName}</strong>. A dedicated specialist will review your requirements and reach out within 2 hours.
             </p>
 
-            <div className="bg-slate-50 dark:bg-secondary/30 border border-slate-200 dark:border-border rounded-2xl p-5 text-left space-y-2.5 mb-8 text-xs">
+            <div className="bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-left space-y-2 mb-8 text-xs">
               <div className="flex justify-between items-center py-1 border-b border-border/50">
                 <span className="text-muted-foreground">Work Email:</span>
                 <span className="font-semibold text-foreground">{submittedRequest.workEmail}</span>
               </div>
               <div className="flex justify-between items-center py-1 border-b border-border/50">
-                <span className="text-muted-foreground">Estimated Seats:</span>
+                <span className="text-muted-foreground">Team Size:</span>
                 <span className="font-semibold text-foreground">{submittedRequest.teamSize}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-border/50">
-                <span className="text-muted-foreground">Deployment:</span>
-                <span className="font-semibold capitalize text-foreground">{submittedRequest.deployment.replace('_', ' ')}</span>
-              </div>
               <div className="flex justify-between items-center py-1">
-                <span className="text-muted-foreground">Response Time:</span>
+                <span className="text-muted-foreground">Guaranteed Response:</span>
                 <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" /> Within 2 Business Hours
                 </span>
@@ -278,274 +295,222 @@ export default function CliPadCustomPricing() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => navigate('/')}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-secondary dark:hover:bg-secondary/80 text-foreground font-semibold text-xs transition-all"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-foreground font-semibold text-xs transition-all"
               >
                 Return to Homepage
               </button>
               <button
                 onClick={() => setSubmittedRequest(null)}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs transition-all shadow-md shadow-orange-500/20"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs transition-all shadow-md shadow-orange-500/20"
               >
                 Submit Another Inquiry
               </button>
             </div>
           </div>
         ) : (
-          /* FORM + HIGHLIGHTS GRID */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left Column: Value Proposition */}
-            <div className="lg:col-span-5 space-y-8">
+          /* ENHANCED CLEAN 2-COLUMN LAYOUT */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+            
+            {/* Left Column: Clean Value Proposition */}
+            <div className="lg:col-span-5 space-y-6">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 inline-block mb-3">
-                  Tailored Solutions
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 bg-orange-500/10 border border-orange-500/20 mb-4">
+                  Custom Enterprise Plan
                 </span>
-                <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3">
-                  Custom Plans & Enterprise Solutions
+                <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3 text-foreground">
+                  Tailored scale & dedicated infrastructure.
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                  Design a dedicated communication and intelligence environment tailored to your organization's security, integration, and infrastructure requirements.
+                  Design a dedicated communication and meeting intelligence stack configured to your exact security, data residency, and integration standards.
                 </p>
               </div>
 
-              {/* Feature Highlight Cards */}
-              <div className="space-y-3.5">
-                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
-                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+              {/* Clean Highlight List */}
+              <div className="space-y-4 pt-2">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
                     <Server className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xs text-foreground">Dedicated VPC & On-Premise Deployment</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
-                      Deploy inside your private AWS, GCP, or Azure VPC, or host on bare-metal with air-gapped storage and BYO-S3 buckets.
+                    <h3 className="font-bold text-xs text-foreground">Dedicated VPC & On-Premises</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                      Deploy inside your private AWS, GCP, Azure VPC, or air-gapped bare metal with BYO-S3 buckets.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
-                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
                     <Cpu className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xs text-foreground">Custom AI Endpoints & Domain Models</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
-                      Connect your internal fine-tuned LLMs, company-specific vocabularies, and customized executive summary templates.
+                    <h3 className="font-bold text-xs text-foreground">Domain AI Models & Private LLMs</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                      Connect your internal fine-tuned models, industry vocabulary, and bespoke executive summaries.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
-                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
-                    <Workflow className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-xs text-foreground">Bespoke Integrations & Data Pipelines</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
-                      Two-way synchronization with Salesforce, HubSpot, Jira, Slack, internal HRMS, and real-time Kafka event streaming.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-2xl border border-border bg-white dark:bg-card shadow-sm flex items-start gap-3.5">
-                  <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/10 text-foreground shrink-0">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xs text-foreground">Guaranteed SLA & Dedicated Support</h3>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">
-                      99.99% uptime guarantee, dedicated Technical Account Manager, 24/7 escalation hotline, and custom DPA terms.
+                    <h3 className="font-bold text-xs text-foreground">Enterprise Security & Compliance</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                      SOC-2 Type II, HIPAA-ready, GDPR compliant, custom DPA, and SAML 2.0 / Okta SSO integration.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5">
+                  <div className="w-9 h-9 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 mt-0.5">
+                    <Workflow className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xs text-foreground">99.99% SLA & Dedicated Support</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                      Financial-backed 99.99% uptime guarantee, dedicated TAM, and 24/7 priority escalation phone line.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Trust Badge */}
-              <div className="p-4 rounded-2xl bg-white dark:bg-card border border-border flex items-center gap-3">
-                <Lock className="w-4 h-4 text-emerald-500 shrink-0" />
-                <p className="text-xs text-muted-foreground">
-                  <strong className="text-foreground">Enterprise Security:</strong> SOC2 Type II, HIPAA-ready, GDPR compliant, and end-to-end encrypted.
+              {/* Fast Response Guarantee Box */}
+              <div className="p-4 rounded-2xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 flex items-center gap-3">
+                <Zap className="w-4 h-4 text-orange-500 shrink-0" />
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+                  <strong className="text-foreground font-bold">Fast SLA:</strong> Inquiries are assigned directly to an enterprise solution architect within 2 hours.
                 </p>
               </div>
             </div>
 
-            {/* Right Column: Clean Inquiry Form */}
-            <div className="lg:col-span-7 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-3xl p-6 md:p-8 shadow-sm">
+            {/* Right Column: Clean, High-Converting Form Card */}
+            <div className="lg:col-span-7 bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-sm">
               <div className="mb-6">
-                <h2 className="text-xl font-bold tracking-tight text-foreground">Contact Sales for Custom Arrangement</h2>
+                <h2 className="text-xl font-bold tracking-tight text-foreground">Contact Enterprise Sales</h2>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Tell us about your team size and infrastructure needs. No credit card required.
+                  Share your team requirements and our engineers will prepare a customized proposal.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* 1. Contact Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* 1. Name and Work Email */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-xs font-semibold text-foreground mb-1">
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                       <input
                         type="text"
                         required
                         value={formData.fullName}
                         onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                        placeholder="Sarah Jenkins"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                        placeholder="Jane Doe"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-xs font-semibold text-foreground mb-1">
                       Work Email <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                       <input
                         type="email"
                         required
                         value={formData.workEmail}
                         onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
-                        placeholder="sarah@acmeglobal.com"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                        placeholder="jane@company.com"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 2. Company Name and Phone Number */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-xs font-semibold text-foreground mb-1">
                       Company Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                       <input
                         type="text"
                         required
                         value={formData.companyName}
                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                         placeholder="Acme Global Inc."
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Company Website
-                    </label>
-                    <div className="relative">
-                      <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <input
-                        type="text"
-                        value={formData.companyWebsite}
-                        onChange={(e) => setFormData({ ...formData, companyWebsite: e.target.value })}
-                        placeholder="https://acmeglobal.com"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-xs font-semibold text-foreground mb-1">
                       Phone Number
                     </label>
                     <div className="relative">
-                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                       <input
                         type="tel"
                         value={formData.phoneNumber}
                         onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                         placeholder="+1 (555) 000-0000"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                       />
                     </div>
                   </div>
+                </div>
 
+                {/* 3. Team Size and Deployment Option */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Team / User Seats
+                    <label className="block text-xs font-semibold text-foreground mb-1">
+                      Estimated Team Size
                     </label>
                     <select
                       value={formData.teamSize}
                       onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                      className="w-full px-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                     >
                       {TEAM_SIZES.map((size) => (
                         <option key={size} value={size}>{size}</option>
                       ))}
                     </select>
                   </div>
-                </div>
 
-                {/* 2. Target Use Cases */}
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-2">
-                    Primary Requirements (Select all that apply)
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {USE_CASES.map((item) => {
-                      const isSelected = formData.selectedUseCases.includes(item);
-                      return (
-                        <button
-                          type="button"
-                          key={item}
-                          onClick={() => toggleUseCase(item)}
-                          className={`flex items-center gap-2 p-2.5 rounded-xl border text-left text-xs font-medium transition-colors ${
-                            isSelected
-                              ? 'bg-slate-100 dark:bg-white/10 border-slate-400 dark:border-slate-500 text-foreground font-semibold'
-                              : 'bg-background hover:bg-secondary border-border text-muted-foreground'
-                          }`}
-                        >
-                          <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                            isSelected ? 'bg-slate-900 dark:bg-white border-slate-900 dark:border-white text-white dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'
-                          }`}>
-                            {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                          </div>
-                          <span className="truncate">{item}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 3. Preferred Deployment */}
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-2">
-                    Deployment Preference
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                    {DEPLOYMENT_PREFERENCES.map((dp) => (
-                      <div
-                        key={dp.id}
-                        onClick={() => setFormData({ ...formData, deployment: dp.id })}
-                        className={`p-3 rounded-xl border cursor-pointer transition-all ${
-                          formData.deployment === dp.id
-                            ? 'bg-slate-100 dark:bg-white/10 border-slate-900 dark:border-white text-foreground ring-1 ring-slate-900 dark:ring-white'
-                            : 'bg-background hover:bg-secondary border-border text-muted-foreground'
-                        }`}
-                      >
-                        <div className="font-bold text-xs text-foreground mb-0.5">{dp.label}</div>
-                        <div className="text-[11px] text-muted-foreground leading-snug">{dp.desc}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 4. Timeline & Budget */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Implementation Timeline
+                    <label className="block text-xs font-semibold text-foreground mb-1">
+                      Deployment Preference
+                    </label>
+                    <select
+                      value={formData.deployment}
+                      onChange={(e) => setFormData({ ...formData, deployment: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
+                    >
+                      {DEPLOYMENT_OPTIONS.map((dp) => (
+                        <option key={dp.value} value={dp.value}>{dp.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* 4. Timeline and Budget */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1">
+                      Timeline
                     </label>
                     <select
                       value={formData.timeline}
                       onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                      className="w-full px-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                     >
                       {TIMELINES.map((t) => (
                         <option key={t} value={t}>{t}</option>
@@ -554,13 +519,13 @@ export default function CliPadCustomPricing() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      Estimated Monthly Budget
+                    <label className="block text-xs font-semibold text-foreground mb-1">
+                      Monthly Budget
                     </label>
                     <select
                       value={formData.budget}
                       onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400"
+                      className="w-full px-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all"
                     >
                       {BUDGET_RANGES.map((b) => (
                         <option key={b} value={b}>{b}</option>
@@ -569,17 +534,48 @@ export default function CliPadCustomPricing() {
                   </div>
                 </div>
 
-                {/* 5. Custom Requirements Text */}
+                {/* 5. Key Interests (Clean compact pill tags) */}
                 <div>
                   <label className="block text-xs font-semibold text-foreground mb-1.5">
-                    Additional Requirements or Notes
+                    Key Solution Requirements
+                  </label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {INTEREST_TAGS.map((tag) => {
+                      const isSelected = formData.selectedInterests.includes(tag);
+                      return (
+                        <button
+                          type="button"
+                          key={tag}
+                          onClick={() => toggleInterest(tag)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 border ${
+                            isSelected
+                              ? 'bg-orange-500/10 border-orange-500/40 text-orange-600 dark:text-orange-400 font-semibold'
+                              : 'bg-background hover:bg-secondary border-border text-muted-foreground'
+                          }`}
+                        >
+                          <div className={`w-3.5 h-3.5 rounded flex items-center justify-center border ${
+                            isSelected ? 'bg-orange-500 border-orange-500 text-white' : 'border-slate-300 dark:border-slate-600'
+                          }`}>
+                            {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
+                          </div>
+                          <span>{tag}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 6. Custom Requirements Textarea */}
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">
+                    Project Scope & Special Requirements
                   </label>
                   <textarea
                     rows={3}
                     value={formData.customRequirements}
                     onChange={(e) => setFormData({ ...formData, customRequirements: e.target.value })}
-                    placeholder="Provide details about your current infrastructure, compliance requirements, SSO providers, or specific integrations..."
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-input bg-background text-xs focus:outline-none focus:ring-2 focus:ring-slate-400 resize-y"
+                    placeholder="Tell us about your infrastructure requirements, compliance needs, SSO providers, or integrations..."
+                    className="w-full px-3 py-2 rounded-xl border border-input bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all resize-y"
                   />
                 </div>
 
@@ -587,22 +583,27 @@ export default function CliPadCustomPricing() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-md shadow-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs tracking-wide shadow-md shadow-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
                 >
                   {isSubmitting ? (
-                    <>Submitting Inquiry...</>
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Submitting Proposal Request...
+                    </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4" /> Submit Custom Plan Inquiry
+                      <Send className="w-3.5 h-3.5" /> Submit Custom Plan Request
                     </>
                   )}
                 </button>
 
-                <p className="text-center text-[11px] text-muted-foreground">
-                  By submitting, you agree to our Enterprise Privacy Policy and Terms of Service.
-                </p>
+                <div className="flex items-center justify-center gap-2 text-[11px] text-muted-foreground pt-1">
+                  <Lock className="w-3 h-3 text-emerald-500" />
+                  <span>Enterprise grade confidentiality. Data is never shared or sold.</span>
+                </div>
               </form>
             </div>
+
           </div>
         )}
       </main>

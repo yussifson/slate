@@ -4,28 +4,64 @@ import { Mail, Phone, MapPin, CheckCircle, Clock} from 'lucide-react';
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 
+import { supabase } from '@/api/supabaseClient';
+
 export default function Contact() {
- const { t} = useTranslation();
- const [formSubmitted, setFormSubmitted] = useState(false);
- const [formData, setFormData] = useState({
- name: '',
- email: '',
- company: '',
- phone: '',
- message: ''
-});
+  const { t } = useTranslation();
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    phone: '',
+    message: ''
+  });
 
- const handleInputChange = (e) => {
- const { name, value} = e.target;
- setFormData(prev => ({ ...prev, [name]: value}));
-};
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
- const handleSubmit = (e) => {
- e.preventDefault();
- if (!formData.name || !formData.email || !formData.message) return;
- setFormSubmitted(true);
- setFormData({ name: '', email: '', company: '', phone: '', message: ''});
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) return;
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        company: formData.company || '',
+        message: formData.message,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+      
+      try {
+        await supabase.from('clipad_contact_requests').insert([payload]);
+      } catch (_) {}
+
+      try {
+        await supabase.from('enterprise_requests').insert([{
+          first_name: formData.name.split(' ')[0] || formData.name,
+          last_name: formData.name.split(' ').slice(1).join(' ') || '',
+          work_email: formData.email,
+          company_name: formData.company || '',
+          message: formData.message,
+          status: 'pending'
+        }]);
+      } catch (_) {}
+
+      setFormSubmitted(true);
+      setFormData({ name: '', email: '', company: '', phone: '', message: '' });
+    } catch (err) {
+      console.error('Error submitting contact form:', err);
+      setFormSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
  const offices = [
  {

@@ -85,6 +85,12 @@ export default function CustomRequests() {
         .eq('action', 'custom_pricing_request')
         .order('created_at', { ascending: false });
 
+      // 4. Fetch from enterprise_requests
+      const { data: enterpriseData } = await supabase
+        .from('enterprise_requests')
+        .select('*')
+        .order('created_at', { ascending: false });
+
       const combinedMap = new Map();
 
       // Process customData
@@ -121,12 +127,41 @@ export default function CustomRequests() {
               deployment: parsedDetails.deployment || item.deployment || 'cloud',
               timeline: parsedDetails.timeline || item.timeline || 'Flexible',
               budget: parsedDetails.budget || item.budget || 'Custom',
-              use_cases: parsedDetails.useCases || item.use_cases || [],
+              use_cases: parsedDetails.useCases || parsedDetails.interests || item.use_cases || [],
               requirements: parsedDetails.requirements || item.message || '',
               status: item.status || 'pending',
               admin_notes: item.admin_notes || '',
               created_at: item.created_at,
               source: 'contact_requests',
+            });
+          }
+        });
+      }
+
+      // Process enterpriseData
+      if (enterpriseData) {
+        enterpriseData.forEach((item) => {
+          const key = item.id || item.work_email;
+          if (!combinedMap.has(key)) {
+            const fullName = [item.first_name, item.last_name].filter(Boolean).join(' ') || item.name || 'Enterprise Lead';
+            combinedMap.set(key, {
+              id: item.id,
+              request_code: `REQ-ENT-${item.id?.slice(0, 6)?.toUpperCase() || 'NEW'}`,
+              name: fullName,
+              email: item.work_email || item.email,
+              company: item.company_name || item.company || 'Enterprise',
+              phone: item.phone || '',
+              website: item.website || '',
+              team_size: item.user_count || 'N/A',
+              deployment: item.deployment_type || 'cloud',
+              timeline: 'Flexible',
+              budget: 'Custom',
+              use_cases: [],
+              requirements: item.message || '',
+              status: item.status || 'pending',
+              admin_notes: '',
+              created_at: item.created_at,
+              source: 'enterprise_requests',
             });
           }
         });
@@ -156,7 +191,7 @@ export default function CustomRequests() {
               deployment: parsedDetails.deployment || 'cloud',
               timeline: parsedDetails.timeline || 'Flexible',
               budget: parsedDetails.budget || 'Custom',
-              use_cases: parsedDetails.useCases || [],
+              use_cases: parsedDetails.useCases || parsedDetails.interests || [],
               requirements: parsedDetails.requirements || item.details || '',
               status: 'pending',
               admin_notes: '',

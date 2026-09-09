@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse } from 'lucide-react';
+import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
@@ -105,6 +105,11 @@ export default function ClipadSidebar({ forceMobile }) {
       label: 'Knowledge Health',
       path: '/health',
       icon: Activity
+    });
+    adminItems.push({
+      label: 'Custom Requests',
+      path: '/admin/custom-requests',
+      icon: Sparkles
     });
   }
   
