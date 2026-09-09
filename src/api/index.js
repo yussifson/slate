@@ -7,6 +7,7 @@
  */
 
 export { RealEstateTrustAccounting } from './RealEstateTrustAccounting';
+export { FirmAccountingAPI } from './FirmAccountingAPI';
 export { RealEstateOffers } from './RealEstateOffers';
 export { RealEstateDocuments } from './RealEstateDocuments';
 export { RealEstateContractors } from './RealEstateContractors';

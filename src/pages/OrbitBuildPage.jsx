@@ -50,6 +50,7 @@ const UnivEventManagement = React.lazy(() => import("@/components/universal/Univ
 const UnivBilling = React.lazy(() => import("@/components/universal/UnivBilling"));
 const SuperAdminBilling = React.lazy(() => import("@/components/orbitbolt/SuperAdminBilling"));
 
+const FirmAccountingHub = React.lazy(() => import("@/pages/finance/FirmAccountingHub"));
 const UnivDataGrid = React.lazy(() => import("@/components/universal/UnivDataGrid"));
 const UnivKanban = React.lazy(() => import("@/components/universal/UnivKanban"));
 const UnivCalendar = React.lazy(() => import("@/components/universal/UnivCalendar"));
@@ -824,6 +825,7 @@ export default function OrbitBuildPage() {
  case 'loyaltypoint': case 'loyalty': return <UnivLoyaltyPoint />;
 
  // Finance & Accounting Suite
+ case 'firmaccounting': case 'accounting': return <FirmAccountingHub />;
  case 'generalledger': case 'ledger': return <UnivGeneralLedger />;
  case 'expensereport': case 'expenses': return <UnivExpenseReport />;
  case 'taxfiling': case 'tax': return <UnivTaxFiling />;

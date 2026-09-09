@@ -7163,5 +7163,100 @@ export const AppSchema = new Schema({
         performed_by: column.text,
         performed_at: column.text,
         details: column.text
+    }),
+    univ_firm_invoices: new Table({
+        id: column.text,
+        company_id: column.text,
+        invoice_number: column.text,
+        customer_name: column.text,
+        customer_email: column.text,
+        issue_date: column.text,
+        due_date: column.text,
+        status: column.text, // draft, sent, paid, overdue, cancelled
+        subtotal: column.real,
+        tax_amount: column.real,
+        discount_amount: column.real,
+        total_amount: column.real,
+        amount_paid: column.real,
+        currency: column.text,
+        notes: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_firm_invoice_items: new Table({
+        id: column.text,
+        company_id: column.text,
+        invoice_id: column.text,
+        description: column.text,
+        quantity: column.real,
+        unit_price: column.real,
+        tax_rate: column.real,
+        total: column.real
+    }),
+    univ_firm_bills: new Table({
+        id: column.text,
+        company_id: column.text,
+        bill_number: column.text,
+        vendor_name: column.text,
+        vendor_email: column.text,
+        issue_date: column.text,
+        due_date: column.text,
+        status: column.text, // pending, approved, paid, overdue
+        subtotal: column.real,
+        tax_amount: column.real,
+        total_amount: column.real,
+        amount_paid: column.real,
+        currency: column.text,
+        notes: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    univ_firm_bill_items: new Table({
+        id: column.text,
+        company_id: column.text,
+        bill_id: column.text,
+        description: column.text,
+        quantity: column.real,
+        unit_price: column.real,
+        total: column.real
+    }),
+    univ_firm_fixed_assets: new Table({
+        id: column.text,
+        company_id: column.text,
+        asset_name: column.text,
+        asset_code: column.text,
+        category: column.text,
+        purchase_date: column.text,
+        purchase_cost: column.real,
+        salvage_value: column.real,
+        useful_life_years: column.integer,
+        depreciation_method: column.text, // straight_line, reducing_balance
+        accumulated_depreciation: column.real,
+        net_book_value: column.real,
+        status: column.text, // active, disposed, fully_depreciated
+        created_at: column.text
+    }),
+    univ_firm_depreciation_schedules: new Table({
+        id: column.text,
+        company_id: column.text,
+        asset_id: column.text,
+        period: column.text,
+        depreciation_amount: column.real,
+        accumulated_amount: column.real,
+        book_value_after: column.real,
+        status: column.text, // pending, posted
+        posted_at: column.text
+    }),
+    univ_firm_bank_reconciliations: new Table({
+        id: column.text,
+        company_id: column.text,
+        account_id: column.text,
+        statement_date: column.text,
+        statement_balance: column.real,
+        gl_balance: column.real,
+        difference: column.real,
+        status: column.text, // in_progress, reconciled
+        reconciled_by: column.text,
+        reconciled_at: column.text
     })
 });
