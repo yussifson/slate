@@ -61,22 +61,28 @@ export default function FirmAccountingHub() {
     assetName: '', category: 'Equipment', purchaseCost: 5000, salvageValue: 500, usefulLifeYears: 5
   });
 
+  const [bankReconciliations, setBankReconciliations] = useState([]);
+  const [showBankRecModal, setShowBankRecModal] = useState(false);
+  const [bankRecForm, setBankRecForm] = useState({ accountId: '', statementBalance: 0, glBalance: 0, statementDate: new Date().toISOString().split('T')[0] });
+
   const loadData = async () => {
     setIsLoading(true);
     try {
       if (companyId) {
-        const [accs, jvs, invs, bls, asts] = await Promise.all([
+        const [accs, jvs, invs, bls, asts, recs] = await Promise.all([
           FirmAccountingAPI.getAccounts(companyId),
           FirmAccountingAPI.getJournalEntries(companyId),
           FirmAccountingAPI.getInvoices(companyId),
           FirmAccountingAPI.getBills(companyId),
-          FirmAccountingAPI.getFixedAssets(companyId)
+          FirmAccountingAPI.getFixedAssets(companyId),
+          FirmAccountingAPI.getBankReconciliations(companyId)
         ]);
         setAccounts(accs);
         setJournalEntries(jvs);
         setInvoices(invs);
         setBills(bls);
         setFixedAssets(asts);
+        setBankReconciliations(recs);
       }
     } catch (e) {
       console.error('[FirmAccountingHub] Load failed:', e);
@@ -259,12 +265,13 @@ export default function FirmAccountingHub() {
 
       {/* Main Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid grid-cols-2 md:grid-cols-5 w-full">
+        <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full">
           <TabsTrigger value="coa" className="gap-2"><BookOpen className="w-4 h-4" /> Chart of Accounts</TabsTrigger>
           <TabsTrigger value="jv" className="gap-2"><FileText className="w-4 h-4" /> Journal Vouchers (GL)</TabsTrigger>
           <TabsTrigger value="invoices" className="gap-2"><Receipt className="w-4 h-4" /> Invoices (AR)</TabsTrigger>
           <TabsTrigger value="bills" className="gap-2"><Receipt className="w-4 h-4" /> Bills Payable (AP)</TabsTrigger>
           <TabsTrigger value="assets" className="gap-2"><Landmark className="w-4 h-4" /> Fixed Assets</TabsTrigger>
+          <TabsTrigger value="bankrec" className="gap-2"><CheckCircle2 className="w-4 h-4" /> Bank Feed Rec</TabsTrigger>
         </TabsList>
 
         {/* 1. CHART OF ACCOUNTS */}
@@ -487,6 +494,53 @@ export default function FirmAccountingHub() {
             </div>
           </Card>
         </TabsContent>
+
+        {/* 6. BANK RECONCILIATION */}
+        <TabsContent value="bankrec" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Bank Statement Reconciliation</h3>
+            <Button size="sm" onClick={() => setShowBankRecModal(true)} className="gap-2">
+              <Plus className="w-4 h-4" /> Start Reconciliation
+            </Button>
+          </div>
+
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 border-b">
+                  <tr>
+                    <th className="text-left py-3 px-4">Statement Date</th>
+                    <th className="text-right py-3 px-4">Bank Statement Balance</th>
+                    <th className="text-right py-3 px-4">GL Ledger Balance</th>
+                    <th className="text-right py-3 px-4">Difference</th>
+                    <th className="text-center py-3 px-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {bankReconciliations.length === 0 ? (
+                    <tr><td colSpan="5" className="text-center py-8 text-muted-foreground">No bank reconciliations performed yet</td></tr>
+                  ) : (
+                    bankReconciliations.map(rec => (
+                      <tr key={rec.id} className="hover:bg-muted/30">
+                        <td className="py-3 px-4 font-mono font-medium">{new Date(rec.statement_date).toLocaleDateString()}</td>
+                        <td className="py-3 px-4 text-right font-medium">${(rec.statement_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                        <td className="py-3 px-4 text-right font-medium">${(rec.gl_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                        <td className={`py-3 px-4 text-right font-bold ${Math.abs(rec.difference || 0) < 0.01 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                          ${(rec.difference || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <Badge variant={rec.status === 'reconciled' ? 'default' : 'secondary'} className="capitalize">
+                            {rec.status}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       {/* CREATE INVOICE MODAL */}
@@ -584,6 +638,148 @@ export default function FirmAccountingHub() {
               }} required />
             </div>
             <Button type="submit" className="w-full">Post Journal Entry</Button>
+          </form>
+        </SheetContent>
+      </Sheet>
+
+      {/* CREATE ACCOUNT CODE MODAL */}
+      <Sheet open={showAccountModal} onOpenChange={setShowAccountModal}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Add Account Code to CoA</SheetTitle>
+            <SheetDescription>Configure a new account in Chart of Accounts</SheetDescription>
+          </SheetHeader>
+          <form onSubmit={handleCreateAccount} className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium">Account Code (Numeric)</label>
+              <Input value={accountForm.code} onChange={e => setAccountForm({ ...accountForm, code: e.target.value })} placeholder="e.g. 1300" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Account Title / Name</label>
+              <Input value={accountForm.name} onChange={e => setAccountForm({ ...accountForm, name: e.target.value })} placeholder="Software Subscriptions" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Category Type</label>
+              <Select value={accountForm.type} onValueChange={v => setAccountForm({ ...accountForm, type: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Asset">Asset</SelectItem>
+                  <SelectItem value="Liability">Liability</SelectItem>
+                  <SelectItem value="Equity">Equity</SelectItem>
+                  <SelectItem value="Revenue">Revenue</SelectItem>
+                  <SelectItem value="Expense">Expense</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="w-full">Add Account</Button>
+          </form>
+        </SheetContent>
+      </Sheet>
+
+      {/* CREATE VENDOR BILL MODAL */}
+      <Sheet open={showBillModal} onOpenChange={setShowBillModal}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Record Vendor Bill (AP)</SheetTitle>
+            <SheetDescription>Log vendor liability & post AP journal</SheetDescription>
+          </SheetHeader>
+          <form onSubmit={handleCreateBill} className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium">Vendor Name</label>
+              <Input value={billForm.vendorName} onChange={e => setBillForm({ ...billForm, vendorName: e.target.value })} placeholder="Dell Commercial" required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Bill Item Description</label>
+              <Input value={billForm.items[0].description} onChange={e => {
+                const items = [...billForm.items];
+                items[0].description = e.target.value;
+                setBillForm({ ...billForm, items });
+              }} required />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Amount ($)</label>
+                <Input type="number" value={billForm.items[0].unitPrice} onChange={e => {
+                  const items = [...billForm.items];
+                  items[0].unitPrice = Number(e.target.value);
+                  setBillForm({ ...billForm, items });
+                }} required />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Due Date</label>
+                <Input type="date" value={billForm.dueDate} onChange={e => setBillForm({ ...billForm, dueDate: e.target.value })} required />
+              </div>
+            </div>
+            <Button type="submit" className="w-full">Record Vendor Bill</Button>
+          </form>
+        </SheetContent>
+      </Sheet>
+
+      {/* ADD FIXED ASSET MODAL */}
+      <Sheet open={showAssetModal} onOpenChange={setShowAssetModal}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Add Fixed Asset</SheetTitle>
+            <SheetDescription>Register capital expenditure asset</SheetDescription>
+          </SheetHeader>
+          <form onSubmit={handleCreateAsset} className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium">Asset Name</label>
+              <Input value={assetForm.assetName} onChange={e => setAssetForm({ ...assetForm, assetName: e.target.value })} placeholder="MacBook Pro Workstations" required />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-sm font-medium">Purchase Cost ($)</label>
+                <Input type="number" value={assetForm.purchaseCost} onChange={e => setAssetForm({ ...assetForm, purchaseCost: Number(e.target.value) })} required />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Salvage Value ($)</label>
+                <Input type="number" value={assetForm.salvageValue} onChange={e => setAssetForm({ ...assetForm, salvageValue: Number(e.target.value) })} required />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Useful Life (Years)</label>
+              <Input type="number" value={assetForm.usefulLifeYears} onChange={e => setAssetForm({ ...assetForm, usefulLifeYears: Number(e.target.value) })} required />
+            </div>
+            <Button type="submit" className="w-full">Register Asset</Button>
+          </form>
+        </SheetContent>
+      </Sheet>
+
+      {/* START BANK RECONCILIATION MODAL */}
+      <Sheet open={showBankRecModal} onOpenChange={setShowBankRecModal}>
+        <SheetContent className="w-full max-w-md overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Reconcile Bank Statement</SheetTitle>
+            <SheetDescription>Compare bank statement ending balance against GL</SheetDescription>
+          </SheetHeader>
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              const selectedAcc = accounts[0];
+              const glBal = totalRevenue - totalExpenses;
+              await FirmAccountingAPI.createBankReconciliation(companyId, {
+                accountId: selectedAcc?.id || 'bank-op',
+                statementBalance: bankRecForm.statementBalance,
+                glBalance: glBal,
+                statementDate: bankRecForm.statementDate
+              }, user?.id);
+              toast.success('Bank reconciliation entry recorded');
+              setShowBankRecModal(false);
+              loadData();
+            } catch (err) {
+              toast.error('Reconciliation failed');
+            }
+          }} className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium">Statement Date</label>
+              <Input type="date" value={bankRecForm.statementDate} onChange={e => setBankRecForm({ ...bankRecForm, statementDate: e.target.value })} required />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Bank Statement Ending Balance ($)</label>
+              <Input type="number" step="0.01" onChange={e => setBankRecForm({ ...bankRecForm, statementBalance: Number(e.target.value) })} required />
+            </div>
+            <Button type="submit" className="w-full">Run Reconciliation Match</Button>
           </form>
         </SheetContent>
       </Sheet>

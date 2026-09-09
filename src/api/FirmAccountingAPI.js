@@ -385,5 +385,42 @@ export const FirmAccountingAPI = {
       console.error('[FirmAccountingAPI] postAssetDepreciation failed:', e);
       throw e;
     }
+  },
+
+  // ────────────────────────────────────────────────────────
+  // 6. BANK RECONCILIATION & STATEMENTS
+  // ────────────────────────────────────────────────────────
+
+  async getBankReconciliations(companyId) {
+    try {
+      const res = await powerSync.execute(
+        'SELECT * FROM univ_firm_bank_reconciliations WHERE company_id = ? ORDER BY statement_date DESC',
+        [companyId]
+      );
+      return res.rows._array || Array.from(res.rows);
+    } catch (e) {
+      console.error('[FirmAccountingAPI] getBankReconciliations failed:', e);
+      throw e;
+    }
+  },
+
+  async createBankReconciliation(companyId, data, userId) {
+    try {
+      const id = generateUUID();
+      const now = getNowISO();
+      const stmtBal = Number(data.statementBalance) || 0;
+      const glBal = Number(data.glBalance) || 0;
+      const diff = stmtBal - glBal;
+
+      await powerSync.execute(
+        `INSERT INTO univ_firm_bank_reconciliations (id, company_id, account_id, statement_date, statement_balance, gl_balance, difference, status, reconciled_by, reconciled_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [id, companyId, data.accountId, data.statementDate || now, stmtBal, glBal, diff, Math.abs(diff) < 0.01 ? 'reconciled' : 'in_progress', userId || 'system', now]
+      );
+      return id;
+    } catch (e) {
+      console.error('[FirmAccountingAPI] createBankReconciliation failed:', e);
+      throw e;
+    }
   }
 };
