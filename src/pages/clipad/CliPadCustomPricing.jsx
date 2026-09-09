@@ -22,7 +22,7 @@ import {
   Clock,
   Check
 } from 'lucide-react';
-import CliPadLogo from '@/components/clipad/CliPadLogo';
+import CliPadLogo from '@/components/ui/CliPadLogo';
 
 const USE_CASES = [
   'Live HD Meetings & Webinars',
