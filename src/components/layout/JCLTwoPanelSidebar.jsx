@@ -8,7 +8,7 @@ import {
   Banknote, FileCheck, RotateCcw, Users2, Star, Lock, CreditCard,
   Calendar, TrendingUp, Receipt, HeartHandshake, PenTool, Globe,
   LineChart, ClipboardList, Blocks, Zap, ChevronDown, Plus,
-  MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck
+  MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck, Landmark
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -89,6 +89,7 @@ const JCL_DEPARTMENTS = [
     actionPath: "/real-estate/rent-payments",
     items: [
       { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
+      { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
       { label: "Escrow Accounts", path: "/real-estate/escrow", icon: Lock },
       { label: "Rent Payments", path: "/real-estate/rent-payments", icon: CreditCard },
       { label: "Payment Schedules", path: "/real-estate/payment-schedules", icon: Calendar },

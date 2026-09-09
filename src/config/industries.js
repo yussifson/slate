@@ -784,6 +784,7 @@ export const INDUSTRIES = {
       { label: 'Transactions', path: '/real-estate/transactions', icon: 'Banknote' },
       
       { section: 'Financial Management', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
+      { label: 'Firm Accounting', path: '/finance/accounting', icon: 'Landmark' },
       { label: 'Escrow Accounts', path: '/real-estate/escrow', icon: 'Lock' },
       { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
       { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
