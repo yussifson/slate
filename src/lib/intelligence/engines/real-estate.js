@@ -1,18 +1,27 @@
 // src/lib/intelligence/engines/real-estate.js
 // Real Estate Intelligence Engine — property valuation, market trends, agent performance, lease analysis
-import { generateInsight, groupByWeek, groupByDay } from '@/lib/intelligence/engine';
+import { generateInsight } from '@/lib/intelligence/engine';
 import { powerSync } from '@/api/PowerSyncConnector';
 
 const VERTICAL = 'real-estate';
 
+async function safeExec(sql, params = []) {
+  try {
+    const res = await powerSync.execute(sql, params);
+    return res.rows?._array || (res.rows ? Array.from(res.rows) : []);
+  } catch (err) {
+    console.warn('[RE Intelligence safeExec] Query warning:', err.message);
+    return [];
+  }
+}
+
 // ────────────────────────────────────────────────────────
 // Property Valuation Prediction
-// Estimates property values based on market data, features
 // ────────────────────────────────────────────────────────
 async function propertyValuationPrediction(companyId) {
   const insights = [];
 
-  const res = await powerSync.execute(
+  const properties = await safeExec(
     `SELECT id, address, city, property_type, bedrooms, bathrooms, 
             square_feet, price, year_built, status
      FROM univ_re_properties
@@ -21,8 +30,6 @@ async function propertyValuationPrediction(companyId) {
      LIMIT 100`,
     [companyId]
   );
-
-  const properties = res.rows._array || Array.from(res.rows);
 
   if (properties.length === 0) {
     return [{
@@ -112,12 +119,11 @@ async function propertyValuationPrediction(companyId) {
 
 // ────────────────────────────────────────────────────────
 // Buyer Readiness Scoring
-// Analyzes client activity to identify high-intent buyers
 // ────────────────────────────────────────────────────────
 async function buyerReadinessScoring(companyId) {
   const insights = [];
 
-  const res = await powerSync.execute(
+  const buyers = await safeExec(
     `SELECT c.id, c.name, c.email, c.type, c.budget, 
             COUNT(v.id) as viewing_count, MAX(v.viewing_date) as last_viewing
      FROM univ_re_clients c
@@ -127,8 +133,6 @@ async function buyerReadinessScoring(companyId) {
      ORDER BY viewing_count DESC`,
     [companyId]
   );
-
-  const buyers = res.rows._array || Array.from(res.rows);
 
   if (buyers.length === 0) {
     return [{
@@ -163,8 +167,8 @@ async function buyerReadinessScoring(companyId) {
       insight_type: 'info',
       insight_key: 're_buyer_readiness_low',
       title: 'Increase Buyer Engagement',
-      body: `No high-intent buyers identified. Consider implementing more targeted outreach campaigns.`,
-      severity: 'warning',
+      body: `No high-intent buyers identified yet. Consider implementing targeted outreach campaigns.`,
+      severity: 'info',
       confidence: 0.75,
     }];
   }
@@ -200,48 +204,51 @@ async function buyerReadinessScoring(companyId) {
 
 // ────────────────────────────────────────────────────────
 // Agent Performance Analytics
-// Tracks agent sales, commissions, and client satisfaction
+// Uses univ_re_transactions & univ_re_commissions & team members
 // ────────────────────────────────────────────────────────
 async function agentPerformanceAnalytics(companyId) {
   const insights = [];
 
-  const res = await powerSync.execute(
-    `SELECT c.agent_id, c.agent_name, COUNT(c.id) as client_count,
-            COUNT(v.id) as viewing_count, COUNT(t.id) as transaction_count,
-            SUM(t.sale_price) as total_sales, SUM(cm.commission_amount) as total_commissions
-     FROM univ_re_clients c
-     LEFT JOIN univ_re_viewings v ON c.id = v.client_id
-     LEFT JOIN univ_re_transactions t ON c.id = t.buyer_id
+  const agents = await safeExec(
+    `SELECT t.agent_id, t.agent_name,
+            COUNT(DISTINCT t.id) as transaction_count,
+            COALESCE(SUM(t.sale_price), 0) as total_sales,
+            COALESCE(SUM(cm.commission_amount), 0) as total_commissions
+     FROM univ_re_transactions t
      LEFT JOIN univ_re_commissions cm ON t.id = cm.transaction_id
-     WHERE c.company_id = ? AND c.agent_id IS NOT NULL
-     GROUP BY c.agent_id
+     WHERE t.company_id = ? AND (t.agent_id IS NOT NULL OR t.agent_name IS NOT NULL)
+     GROUP BY t.agent_id, t.agent_name
      ORDER BY total_sales DESC`,
     [companyId]
   );
 
-  const agents = res.rows._array || Array.from(res.rows);
-
   if (agents.length === 0) {
+    const team = await safeExec(
+      `SELECT name, role FROM univ_re_team_members WHERE company_id = ?`,
+      [companyId]
+    );
+
     return [{
       vertical: VERTICAL,
       insight_type: 'summary',
       insight_key: 're_agent_no_data',
       title: 'Agent Performance Tracking',
-      body: 'No agent data available yet. Performance analytics will populate as agents engage with clients.',
+      body: team.length > 0 
+        ? `${team.length} agents registered on the team roster. Performance analytics will populate as transactions and viewings are closed.`
+        : 'No agent transaction records found yet. Performance analytics will populate as agents engage with clients.',
       severity: 'info',
     }];
   }
 
   const topPerformers = agents.sort((a, b) => (Number(b.total_sales) || 0) - (Number(a.total_sales) || 0)).slice(0, 5);
   const avgSalesPerAgent = agents.reduce((sum, a) => sum + (Number(a.total_sales) || 0), 0) / agents.length;
-
   const underperformers = agents.filter(a => (Number(a.total_sales) || 0) < avgSalesPerAgent * 0.5);
 
   const aiBody = await generateInsight(
     `Analyze agent performance and recommend strategies for improvement. Identify best practices from top performers.`,
     {
       agentCount: agents.length,
-      topPerformers: topPerformers.map(a => ({ name: a.agent_name, sales: a.total_sales, commissions: a.total_commissions })),
+      topPerformers: topPerformers.map(a => ({ name: a.agent_name || a.agent_id, sales: a.total_sales, commissions: a.total_commissions })),
       underperformerCount: underperformers.length,
     }
   );
@@ -250,7 +257,7 @@ async function agentPerformanceAnalytics(companyId) {
     vertical: VERTICAL,
     insight_type: 'analysis',
     insight_key: 're_agent_performance',
-    title: `Agent Performance Report: ${topPerformers[0]?.agent_name || 'Team'} Leading`,
+    title: `Agent Performance Report: ${topPerformers[0]?.agent_name || 'Team Leader'} Leading`,
     body: aiBody,
     severity: underperformers.length > 0 ? 'warning' : 'info',
     confidence: 0.85,
@@ -269,7 +276,6 @@ async function agentPerformanceAnalytics(companyId) {
 
 // ────────────────────────────────────────────────────────
 // Lease Renewal Risk
-// Identifies leases expiring soon and renewal revenue risk
 // ────────────────────────────────────────────────────────
 async function leaseRenewalRisk(companyId) {
   const insights = [];
@@ -277,7 +283,7 @@ async function leaseRenewalRisk(companyId) {
   const thirtyDaysFromNow = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   const today = new Date().toISOString().split('T')[0];
 
-  const res = await powerSync.execute(
+  const expiringLeases = await safeExec(
     `SELECT id, property_address, tenant_name, end_date, monthly_rent, status
      FROM univ_re_leases
      WHERE company_id = ? AND end_date >= ? AND end_date <= ? AND status = 'active'
@@ -285,15 +291,13 @@ async function leaseRenewalRisk(companyId) {
     [companyId, today, thirtyDaysFromNow]
   );
 
-  const expiringLeases = res.rows._array || Array.from(res.rows);
-
   if (expiringLeases.length === 0) {
     return [{
       vertical: VERTICAL,
       insight_type: 'positive',
       insight_key: 're_lease_renewal_clear',
       title: 'No Leases Expiring Soon',
-      body: 'No leases are expiring within the next 30 days. Renewal planning ahead of schedule.',
+      body: 'No leases are expiring within the next 30 days. Renewal planning is fully on track.',
       severity: 'positive',
       confidence: 0.95,
     }];
@@ -332,20 +336,17 @@ async function leaseRenewalRisk(companyId) {
 
 // ────────────────────────────────────────────────────────
 // Maintenance Priority Analysis
-// Identifies critical maintenance issues that need attention
 // ────────────────────────────────────────────────────────
 async function maintenancePriorityAnalysis(companyId) {
   const insights = [];
 
-  const res = await powerSync.execute(
+  const maintenanceRequests = await safeExec(
     `SELECT id, property_address, issue_description, priority, status, cost, created_at
      FROM univ_re_maintenance_requests
      WHERE company_id = ? AND status IN ('open', 'in_progress')
      ORDER BY priority DESC, created_at ASC`,
     [companyId]
   );
-
-  const maintenanceRequests = res.rows._array || Array.from(res.rows);
 
   if (maintenanceRequests.length === 0) {
     return [{
@@ -406,31 +407,36 @@ export async function runRealEstateIntelligence(companyId) {
   const allInsights = [];
   
   try {
-    allInsights.push(...await propertyValuationPrediction(companyId));
+    const val = await propertyValuationPrediction(companyId);
+    if (Array.isArray(val)) allInsights.push(...val);
   } catch (e) {
     console.error('[RE Intelligence] Valuation prediction failed:', e);
   }
 
   try {
-    allInsights.push(...await buyerReadinessScoring(companyId));
+    const buy = await buyerReadinessScoring(companyId);
+    if (Array.isArray(buy)) allInsights.push(...buy);
   } catch (e) {
     console.error('[RE Intelligence] Buyer readiness scoring failed:', e);
   }
 
   try {
-    allInsights.push(...await agentPerformanceAnalytics(companyId));
+    const agt = await agentPerformanceAnalytics(companyId);
+    if (Array.isArray(agt)) allInsights.push(...agt);
   } catch (e) {
     console.error('[RE Intelligence] Agent performance failed:', e);
   }
 
   try {
-    allInsights.push(...await leaseRenewalRisk(companyId));
+    const lse = await leaseRenewalRisk(companyId);
+    if (Array.isArray(lse)) allInsights.push(...lse);
   } catch (e) {
     console.error('[RE Intelligence] Lease renewal risk failed:', e);
   }
 
   try {
-    allInsights.push(...await maintenancePriorityAnalysis(companyId));
+    const mnt = await maintenancePriorityAnalysis(companyId);
+    if (Array.isArray(mnt)) allInsights.push(...mnt);
   } catch (e) {
     console.error('[RE Intelligence] Maintenance priority failed:', e);
   }
