@@ -284,7 +284,7 @@ export default function CliPadCustomPricing() {
               </button>
               <button
                 onClick={() => setSubmittedRequest(null)}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-xs transition-all shadow-sm"
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs transition-all shadow-md shadow-orange-500/20"
               >
                 Submit Another Inquiry
               </button>
@@ -296,7 +296,7 @@ export default function CliPadCustomPricing() {
             {/* Left Column: Value Proposition */}
             <div className="lg:col-span-5 space-y-8">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-3 py-1 rounded-full bg-slate-200/70 dark:bg-white/10 inline-block mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 inline-block mb-3">
                   Tailored Solutions
                 </span>
                 <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3">
@@ -587,7 +587,7 @@ export default function CliPadCustomPricing() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-md shadow-orange-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>Submitting Inquiry...</>

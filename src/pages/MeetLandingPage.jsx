@@ -290,6 +290,11 @@ export default function MeetLandingPage() {
 
 
   const handlePricingAction = async (tierName) => {
+    if (tierName === 'Custom' || tierName === 'Contact Us') {
+      navigate('/custom-pricing');
+      return;
+    }
+
     if (!user) {
       navigate('/login');
       return;
@@ -297,11 +302,6 @@ export default function MeetLandingPage() {
 
     if (tierName === 'Free') {
       navigate('/dashboard');
-      return;
-    }
-
-    if (tierName === 'Custom' || tierName === 'Contact Us') {
-      navigate('/custom-pricing');
       return;
     }
 
@@ -623,14 +623,14 @@ export default function MeetLandingPage() {
                   tier.highlight 
                     ? 'bg-gradient-to-b from-primary/10 to-primary/5 border-primary/40 shadow-xl shadow-primary/10' 
                     : tier.name === 'Custom'
-                    ? 'bg-card border-slate-300 dark:border-slate-700 shadow-sm'
+                    ? 'bg-card border-orange-500/30 dark:border-orange-500/20 shadow-sm'
                     : 'bg-secondary/40 border-border hover:border-border'
                 }`}
               >
                 {tier.badge && (
                   <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap ${
                     tier.name === 'Custom' 
-                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' 
+                      ? 'bg-orange-500 text-white' 
                       : 'bg-primary text-white'
                   }`}>
                     {tier.badge}
@@ -648,7 +648,7 @@ export default function MeetLandingPage() {
                     {tier.features.map((f) => (
                       <div key={f} className="flex items-start gap-2.5">
                         <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${
-                          tier.highlight ? 'text-primary' : 'text-emerald-500'
+                          tier.highlight ? 'text-primary' : tier.name === 'Custom' ? 'text-orange-500' : 'text-emerald-500'
                         }`} />
                         <span className="text-xs text-foreground/85 leading-relaxed">{f}</span>
                       </div>
@@ -656,13 +656,19 @@ export default function MeetLandingPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => handlePricingAction(tier.name)}
+                  onClick={() => {
+                    if (tier.name === 'Custom') {
+                      navigate('/custom-pricing');
+                    } else {
+                      handlePricingAction(tier.name);
+                    }
+                  }}
                   disabled={isProcessingPay}
                   className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${
                     tier.highlight 
                       ? 'bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20' 
                       : tier.name === 'Custom'
-                      ? 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 shadow-sm'
+                      ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20'
                       : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'
                   }`}
                 >
@@ -906,7 +912,7 @@ export default function MeetLandingPage() {
                       <button
                         onClick={() => handlePricingAction('Enterprise')}
                         disabled={isProcessingPay}
-                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 shadow-sm transition-all"
+                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20 transition-all"
                       >
                         Choose Enterprise
                       </button>
@@ -914,7 +920,7 @@ export default function MeetLandingPage() {
                     <td className="p-5 text-center">
                       <button
                         onClick={() => navigate('/custom-pricing')}
-                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 shadow-sm transition-all"
+                        className="w-full py-2.5 px-3 rounded-xl font-bold text-xs bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20 transition-all"
                       >
                         Contact Sales
                       </button>
