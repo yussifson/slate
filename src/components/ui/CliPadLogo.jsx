@@ -37,3 +37,6 @@ export function CliPadLogo({ className = "", size = 24 }) {
     </svg>
   );
 }
+
+export default CliPadLogo;
+
