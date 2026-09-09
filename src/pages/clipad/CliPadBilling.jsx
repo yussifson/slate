@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
@@ -224,9 +224,10 @@ export default function CliPadBilling() {
     return <div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
-  const planRank = { free: 0, pro: 1, enterprise: 2 };
+  const planRank = { free: 0, pro: 1, enterprise: 2, custom: 3 };
   const getButtonText = (targetPlan) => {
     if (currentPlan === targetPlan) return 'Current Plan';
+    if (targetPlan === 'custom') return 'Contact Us';
     if ((planRank[currentPlan] || 0) > (planRank[targetPlan] || 0)) {
       if (targetPlan === 'free') return 'Downgrade to Free';
       return `Downgrade to ${targetPlan.charAt(0).toUpperCase() + targetPlan.slice(1)}`;
@@ -256,6 +257,10 @@ export default function CliPadBilling() {
 
   const handlePlanClick = (targetPlan) => {
     if (currentPlan === targetPlan) return;
+    if (targetPlan === 'custom') {
+      setIsContactModalOpen(true);
+      return;
+    }
     if ((planRank[currentPlan] || 0) > (planRank[targetPlan] || 0)) {
       handleDowngrade(targetPlan);
     } else {
@@ -339,7 +344,7 @@ export default function CliPadBilling() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* FREE PLAN */}
         <div className={`p-6 rounded-2xl border ${currentPlan === 'free' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
           <h3 className="text-xl font-bold">Free</h3>
@@ -402,6 +407,28 @@ export default function CliPadBilling() {
             {getButtonText('enterprise')}
           </button>
         </div>
+
+        {/* CUSTOM PLAN */}
+        <div className={`p-6 rounded-2xl border ${currentPlan === 'custom' ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+          <h3 className="text-xl font-bold">Custom</h3>
+          <p className="text-3xl font-bold mt-4">Contact Us</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Tailored deployment & licensing
+          </p>
+          <ul className="mt-6 space-y-3">
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Dedicated Infrastructure / On-Prem</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Custom AI Models & Fine-Tuning</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Bespoke Integrations & SLAs</li>
+            <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-500" /> Unlimited Cloud Storage</li>
+          </ul>
+          <button 
+            onClick={() => handlePlanClick('custom')}
+            disabled={currentPlan === 'custom' || loading}
+            className={`w-full mt-8 py-2 rounded-xl font-semibold border ${currentPlan === 'custom' ? 'bg-secondary text-foreground border-border' : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-md'}`}>
+            {getButtonText('custom')}
+          </button>
+        </div>
+      </div>
       </div>
       {/* Billing History */}
       <div className="mt-12">

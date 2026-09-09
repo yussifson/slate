@@ -48,6 +48,23 @@ export const PLAN_LIMITS = {
     hasBrandedRooms: true,
     hasComplianceRecording: true,
     hasVideoDownload: true,
+  },
+  custom: {
+    maxParticipants: Infinity,
+    maxVideoRecordingsPerMonth: Infinity,
+    maxStorageGB: Infinity,
+    maxTeamSpaces: Infinity,
+    maxAsyncVideoDurationSeconds: Infinity,
+    hasAdvancedAI: true,
+    aiTokens: Infinity,
+    hasAdvancedAnalytics: true,
+    hasEnterpriseAnalytics: true,
+    hasSmartFollowUps: true,
+    hasCustomIntegrations: true,
+    hasSLA: true,
+    hasBrandedRooms: true,
+    hasComplianceRecording: true,
+    hasVideoDownload: true,
   }
 };
 
@@ -63,12 +80,14 @@ export function getUserPlan(user) {
   const role = user?.role || user?.user_metadata?.role;
   if (['super_admin', 'admin'].includes(role)) return 'enterprise';
 
-  // Check clipad_plan if set to pro or enterprise
+  // Check clipad_plan if set to custom, enterprise, or pro
   const clipadPlan = (user?.clipad_plan || '').toLowerCase().trim();
+  if (clipadPlan === 'custom') return 'custom';
   if (clipadPlan === 'enterprise' || clipadPlan === 'pro') return clipadPlan;
 
   // Evaluate company subscription_plan
   const planStr = (user?.subscription_plan || user?.subscription_tier || '').toLowerCase().trim();
+  if (planStr.includes('custom')) return 'custom';
   if (planStr.includes('enterprise')) return 'enterprise';
   if (planStr.includes('pro') || planStr.includes('professional') || planStr.includes('firm_plus') || planStr.includes('starter')) return 'pro';
 
@@ -78,7 +97,7 @@ export function getUserPlan(user) {
 /**
  * Async function: fetches the real plan for a company from the DB.
  * Checks companies table subscription_plan & pricing_tag, then company_subscriptions.
- * Returns 'free' | 'pro' | 'enterprise'
+ * Returns 'free' | 'pro' | 'enterprise' | 'custom'
  */
 export async function getCompanyPlan(supabase, companyId) {
   if (!companyId) return 'free';
@@ -93,6 +112,7 @@ export async function getCompanyPlan(supabase, companyId) {
       const planStr = (companyData.subscription_plan || '').toLowerCase().trim();
       const tagName = (companyData.clipad_pricing_tags?.name || '').toLowerCase().trim();
 
+      if (planStr.includes('custom') || tagName.includes('custom')) return 'custom';
       if (planStr.includes('enterprise') || tagName.includes('enterprise')) return 'enterprise';
       if (planStr.includes('pro') || planStr.includes('professional') || planStr.includes('firm_plus') || planStr.includes('starter') || tagName.includes('pro')) return 'pro';
     }
@@ -106,6 +126,7 @@ export async function getCompanyPlan(supabase, companyId) {
 
     if (subData?.plan_id) {
       const subPlan = subData.plan_id.toLowerCase();
+      if (subPlan.includes('custom')) return 'custom';
       if (subPlan.includes('enterprise')) return 'enterprise';
       if (subPlan.includes('pro') || subPlan.includes('professional') || subPlan.includes('firm_plus') || subPlan.includes('starter')) return 'pro';
     }

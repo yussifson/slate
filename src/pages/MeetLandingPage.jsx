@@ -101,6 +101,14 @@ const tiers = [
     highlight: false,
     features: ['Everything in Pro', 'Unlimited participants', 'Branded meeting rooms', 'SSO & compliance recording', 'Unlimited async recordings', 'SLA & dedicated support', 'Custom integrations', '50GB Max Cloud Storage'],
   },
+  {
+    name: 'Custom',
+    price: 'Contact Us',
+    period: 'tailored setup',
+    highlight: false,
+    badge: 'Enterprise & Beyond',
+    features: ['Everything in Enterprise', 'Dedicated infrastructure & on-prem options', 'Custom AI token budgets & domain fine-tuning', 'Tailored storage quota & unlimited seats', 'Bespoke enterprise integrations', 'Custom SLA, DPA & compliance terms', 'Dedicated Customer Success Manager'],
+  },
 ];
 
 const slides = [
@@ -289,6 +297,16 @@ export default function MeetLandingPage() {
 
     if (tierName === 'Free') {
       navigate('/dashboard');
+      return;
+    }
+
+    if (tierName === 'Custom' || tierName === 'Contact Us') {
+      const contactEl = document.getElementById('contact');
+      if (contactEl) {
+        contactEl.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/support?subject=Custom%20Enterprise%20Plan%20Inquiry');
+      }
       return;
     }
 
@@ -595,42 +613,44 @@ export default function MeetLandingPage() {
         <WithoutCliPadSection />
         <WithCliPadSection />
 
-        <section id="pricing" className="py-24 px-6 md:px-12 max-w-6xl mx-auto w-full overflow-hidden md:overflow-visible">
+        <section id="pricing" className="py-24 px-6 md:px-12 max-w-7xl mx-auto w-full overflow-hidden md:overflow-visible">
           <div className="text-center mb-16">
 
             <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-5">Choose the perfect plan for your team.</h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">Scale your operations seamlessly with Clipad.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {tiers.map((tier) => (
-              <div key={tier.name} className={`relative p-6 md:p-8 rounded-3xl border transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : 'bg-secondary/50 border-border hover:border-border'}`}>
+              <div key={tier.name} className={`relative p-6 md:p-8 rounded-3xl border flex flex-col justify-between transition-all ${tier.highlight ? 'bg-gradient-to-b from-primary/20 to-primary/10 border-primary/40 shadow-2xl shadow-primary/10' : tier.name === 'Custom' ? 'bg-gradient-to-b from-indigo-500/10 to-purple-500/5 border-indigo-500/30' : 'bg-secondary/50 border-border hover:border-border'}`}>
                 {tier.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-primary to-primary rounded-full text-xs font-bold text-white shadow-lg">
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white shadow-lg whitespace-nowrap ${tier.name === 'Custom' ? 'bg-gradient-to-r from-indigo-600 to-purple-600' : 'bg-gradient-to-r from-primary to-primary'}`}>
                     {tier.badge}
                   </div>
                 )}
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-black text-foreground">{tier.price}</span>
-                    <span className="text-sm text-muted-foreground mb-1">/ {tier.period}</span>
-                  </div>
-                </div>
-                <div className="space-y-3 mb-8">
-                  {tier.features.map((f) => (
-                    <div key={f} className="flex items-start gap-3">
-                      <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${tier.highlight ? 'text-primary' : 'text-emerald-400'}`} />
-                      <span className="text-sm text-foreground/80">{f}</span>
+                <div>
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-foreground mb-2">{tier.name}</h3>
+                    <div className="flex items-end gap-1">
+                      <span className="text-3xl lg:text-4xl font-black text-foreground">{tier.price}</span>
+                      <span className="text-xs text-muted-foreground mb-1">/ {tier.period}</span>
                     </div>
-                  ))}
+                  </div>
+                  <div className="space-y-3 mb-8">
+                    {tier.features.map((f) => (
+                      <div key={f} className="flex items-start gap-2.5">
+                        <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${tier.highlight ? 'text-primary' : tier.name === 'Custom' ? 'text-indigo-500' : 'text-emerald-400'}`} />
+                        <span className="text-xs text-foreground/80 leading-relaxed">{f}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <button
                   onClick={() => handlePricingAction(tier.name)}
                   disabled={isProcessingPay}
-                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-lg shadow-primary/25' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
+                  className={`w-full py-3 rounded-xl font-semibold text-sm transition-all ${tier.highlight ? 'bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90 text-white shadow-lg shadow-primary/25' : tier.name === 'Custom' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/20' : 'bg-secondary hover:bg-secondary/80 text-foreground border border-border'}`}
                 >
-                  {user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started'}
+                  {tier.name === 'Custom' ? 'Contact Us' : user ? (tier.name === 'Free' ? 'Current Plan' : 'Upgrade') : 'Get Started'}
                 </button>
               </div>
             ))}
@@ -640,13 +660,14 @@ export default function MeetLandingPage() {
           <div className="mt-24 w-full overflow-hidden">
             <h3 className="text-3xl font-black text-center mb-10 tracking-tight">Compare Plans</h3>
             <div className="w-full overflow-x-auto border border-border rounded-3xl bg-secondary/30">
-              <table className="w-full min-w-[700px] text-left border-collapse">
+              <table className="w-full min-w-[800px] text-left border-collapse">
                 <thead>
                   <tr className="border-b border-border bg-slate-50/50">
-                    <th className="p-5 font-bold text-foreground w-[40%] rounded-tl-3xl">Features</th>
+                    <th className="p-5 font-bold text-foreground w-[32%] rounded-tl-3xl">Features</th>
                     <th className="p-5 font-bold text-foreground text-center">Free</th>
                     <th className="p-5 font-bold text-primary text-center bg-primary/5">Pro</th>
-                    <th className="p-5 font-bold text-foreground text-center rounded-tr-3xl">Enterprise</th>
+                    <th className="p-5 font-bold text-foreground text-center">Enterprise</th>
+                    <th className="p-5 font-bold text-indigo-600 text-center rounded-tr-3xl bg-indigo-500/5">Custom</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm text-muted-foreground">
@@ -655,42 +676,49 @@ export default function MeetLandingPage() {
                     <td className="p-5 text-center">15 minutes</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">1 hour</td>
                     <td className="p-5 text-center">Unlimited</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">Unlimited</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Team Spaces</td>
                     <td className="p-5 text-center">Up to 5</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">Unlimited</td>
                     <td className="p-5 text-center">Unlimited</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">Unlimited</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Participants per Call</td>
                     <td className="p-5 text-center">Up to 10</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">Up to 300</td>
                     <td className="p-5 text-center">Unlimited</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">Tailored / Unlimited</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">AI Meeting Summary</td>
                     <td className="p-5 text-center">Basic</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">Full Intelligence</td>
                     <td className="p-5 text-center">Full Intelligence</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">Custom Models & Fine-Tuning</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Video Analytics</td>
                     <td className="p-5 text-center">-</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">Yes</td>
                     <td className="p-5 text-center">Advanced</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">Custom BI & Data Pipelines</td>
                   </tr>
                   <tr className="border-b border-border hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Custom Branding & SSO</td>
                     <td className="p-5 text-center">-</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">-</td>
                     <td className="p-5 text-center">Yes</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">White-Label & SAML SSO</td>
                   </tr>
                   <tr className="hover:bg-slate-50/80 transition-colors">
                     <td className="p-5 font-semibold text-slate-700">Cloud Storage Limit</td>
                     <td className="p-5 text-center font-bold">2GB Max</td>
                     <td className="p-5 text-center text-primary font-bold bg-primary/5">15GB Max</td>
                     <td className="p-5 text-center font-bold">50GB Max</td>
+                    <td className="p-5 text-center text-indigo-600 font-bold bg-indigo-500/5">Terabyte Scale / On-Prem</td>
                   </tr>
                 </tbody>
               </table>
