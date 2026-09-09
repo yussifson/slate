@@ -89,8 +89,8 @@ const JCL_DEPARTMENTS = [
     actionLabel: "Record Payment",
     actionPath: "/real-estate/rent-payments",
     items: [
-      { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
       { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
+      { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
       { label: "Chart of Accounts", path: "/finance/accounting?tab=coa", icon: BookOpen },
       { label: "Invoices & AR", path: "/finance/accounting?tab=invoices", icon: Receipt },
       { label: "Bills & AP", path: "/finance/accounting?tab=bills", icon: FileText },

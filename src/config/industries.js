@@ -783,8 +783,8 @@ export const INDUSTRIES = {
       { label: 'Counter Offers', path: '/real-estate/counter-offers', icon: 'MessageCircle' },
       { label: 'Transactions', path: '/real-estate/transactions', icon: 'Banknote' },
       
-      { section: 'Finance & Accounting', label: 'Firm Accounting', path: '/finance/accounting', icon: 'Landmark' },
-      { label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
+      { section: 'Finance & Accounting', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
+      { label: 'Firm Accounting', path: '/finance/accounting', icon: 'Landmark' },
       { label: 'Chart of Accounts', path: '/finance/accounting?tab=coa', icon: 'BookOpen' },
       { label: 'Invoices (AR)', path: '/finance/accounting?tab=invoices', icon: 'Receipt' },
       { label: 'Bills Payable (AP)', path: '/finance/accounting?tab=bills', icon: 'FileText' },

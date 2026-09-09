@@ -820,10 +820,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       if (['/real-estate/transactions', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p)) {
         return "Tenancy & Operations";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees'].includes(p) ||
-          p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||
+          p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
           p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
-        return "Finance & Trust";
+        return "Finance & Accounting";
       }
       if (['/tasks', '/smart-docs', '/real-estate/document-templates', '/real-estate/e-signatures'].includes(p)) {
         return "Projects & Smart Docs";
@@ -847,10 +847,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
       return "Communications";
     }
-    if (['/billing', '/invoices', '/payroll', '/expenses', '/fees', '/donations', '/orders', '/pos'].includes(p) ||
-        p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
+    if (['/billing', '/invoices', '/payroll', '/expenses', '/fees', '/donations', '/orders', '/pos', '/finance/accounting'].includes(p) ||
+        p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
         p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
-      return "Finance";
+      return "Finance & Accounting";
     }
     if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
       return "Team & HR";
@@ -866,8 +866,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Executive Overview", "Sales & CRM", "Land & Property", "Tenancy & Operations", "Finance & Trust", "Projects & Smart Docs", "Human Resources", "System Admin", "Communications"]
-    : ["Platform", "Operations", "Communications", "Finance", "Team & HR", "Workspace", "System Administration"];
+    ? ["Executive Overview", "Sales & CRM", "Land & Property", "Tenancy & Operations", "Finance & Accounting", "Projects & Smart Docs", "Human Resources", "System Admin", "Communications"]
+    : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
  setDeleteData({ id, name});
