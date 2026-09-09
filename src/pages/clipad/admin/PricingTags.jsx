@@ -42,7 +42,7 @@ export default function PricingTags() {
     if (!error) {
       // Resolve canonical plan name from tag
       const name = (tagName || '').toLowerCase();
-      const resolvedPlan = name.includes('enterprise') ? 'enterprise' : name.includes('pro') ? 'pro' : 'free';
+      const resolvedPlan = name.includes('custom') ? 'custom' : name.includes('enterprise') ? 'enterprise' : name.includes('pro') ? 'pro' : 'free';
 
       // Also upsert company_subscriptions so billing page reflects the change immediately
       await supabase.from('company_subscriptions').upsert({

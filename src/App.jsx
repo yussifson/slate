@@ -44,6 +44,8 @@ const PricingTags = React.lazy(() => import('@/pages/clipad/admin/PricingTags'))
 const AuditMonitor = React.lazy(() => import('@/pages/clipad/admin/AuditMonitor'));
 const ClipadLiveSupport = React.lazy(() => import('@/pages/clipad/admin/LiveSupport'));
 const AdminAI = React.lazy(() => import('@/pages/clipad/admin/AdminAI'));
+const CliPadCustomPricing = React.lazy(() => import('@/pages/clipad/CliPadCustomPricing'));
+const CustomRequests = React.lazy(() => import('@/pages/clipad/admin/CustomRequests'));
 const AnalyticsPageRouter = () => {
   const { user } = useAuth();
   const plan = user?.clipad_plan || user?.user_metadata?.clipad_plan || 'free';
@@ -1175,11 +1177,16 @@ function PlatformRoutes() {
         <Route path="/clipad/cross-space" element={<CrossSpaceIntelligence />} />
       </Route>
 
+      <Route path="/custom-pricing" element={<CliPadCustomPricing />} />
+      <Route path="/clipad/custom-pricing" element={<CliPadCustomPricing />} />
+
       {/* Clipad Super Admin Routes */}
       <Route element={<ClipadAdminLayout />}>
         <Route path="/clipad/admin" element={<ClipadAdminOverview />} />
+        <Route path="/clipad/admin/support" element={<ClipadLiveSupport />} />
         <Route path="/clipad/admin/companies" element={<CompanyManagement />} />
         <Route path="/clipad/admin/pricing" element={<PricingTags />} />
+        <Route path="/clipad/admin/custom-requests" element={<CustomRequests />} />
         <Route path="/clipad/admin/audit" element={<AuditMonitor />} />
         <Route path="/clipad/admin/ai" element={<AdminAI />} />
       </Route>

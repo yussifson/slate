@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Building2, Tags, ShieldAlert, BrainCircuit, ArrowLeft, LogOut, Headset } from 'lucide-react';
+import { LayoutDashboard, Building2, Tags, ShieldAlert, BrainCircuit, ArrowLeft, LogOut, Headset, Sparkles } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
 export default function ClipadAdminLayout() {
@@ -30,6 +30,7 @@ export default function ClipadAdminLayout() {
     { name: 'Live Support', icon: Headset, path: `${basePath}/support` },
     { name: 'Companies', icon: Building2, path: `${basePath}/companies` },
     { name: 'Pricing & Plans', icon: Tags, path: `${basePath}/pricing` },
+    { name: 'Custom Requests', icon: Sparkles, path: `${basePath}/custom-requests` },
     { name: 'Audit Monitor', icon: ShieldAlert, path: `${basePath}/audit` },
     { name: 'Admin AI', icon: BrainCircuit, path: `${basePath}/ai` },
   ];

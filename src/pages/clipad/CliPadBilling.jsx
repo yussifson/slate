@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
@@ -10,6 +11,7 @@ import ContactSalesModal from '@/components/clipad/ContactSalesModal';
 import PaymentReceiptModal from '@/components/clipad/PaymentReceiptModal';
 
 export default function CliPadBilling() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const companyId = useCompanyId();
   const [currentPlan, setCurrentPlan] = useState('free');
@@ -258,7 +260,7 @@ export default function CliPadBilling() {
   const handlePlanClick = (targetPlan) => {
     if (currentPlan === targetPlan) return;
     if (targetPlan === 'custom') {
-      setIsContactModalOpen(true);
+      navigate('/custom-pricing');
       return;
     }
     if ((planRank[currentPlan] || 0) > (planRank[targetPlan] || 0)) {
