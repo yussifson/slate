@@ -161,19 +161,16 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
         {/* TAB 1: INSIGHTS ENGINE */}
         <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
           {/* Executive Hero Banner */}
-          <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
-            <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-1/3 -mb-12 w-64 h-64 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" />
+          <div className="relative overflow-hidden rounded-3xl border border-emerald-200 dark:border-emerald-800/40 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 p-6 sm:p-8 text-white shadow-lg">
+            <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+            <div className="absolute bottom-0 left-1/3 -mb-12 w-64 h-64 rounded-full bg-teal-400/10 blur-2xl pointer-events-none" />
             
             <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5" /> Autonomous Analytics & Market Intelligence
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
                   Executive Intelligence & Pattern Recognition
                 </h2>
-                <p className="text-sm text-slate-300 max-w-xl font-normal">
+                <p className="text-sm text-emerald-50 max-w-xl font-normal">
                   Continuous deep-learning audit of operational workflows, client behavior, anomalies, and financial performance.
                 </p>
               </div>
