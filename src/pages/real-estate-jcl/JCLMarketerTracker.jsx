@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   MapPin, Radio, Wifi, WifiOff, Clock, ShieldCheck, RefreshCw, Send,
-  Phone, User, ExternalLink, Activity, Search,
+  Phone, User, Activity, Search,
   Play, Square, AlertTriangle, Battery, Compass, Check, Users, Map, FileText, ArrowUpRight,
-  Sparkles, Layers
+  Sparkles, Layers, CheckCircle2, Globe, Navigation
 } from 'lucide-react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -294,122 +294,181 @@ export default function JCLMarketerTracker() {
   const currentMode = hasAdminPrivileges ? activeTab : 'marketer';
 
   return (
-    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto pb-16 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200 min-h-screen">
-      {/* HEADER BANNER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-lg shadow-emerald-500/5">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 flex items-center justify-center text-white shadow-xl shadow-emerald-500/20 dark:shadow-emerald-900/40">
-              <Compass className="h-7 w-7 animate-pulse" />
+    <div className="space-y-8 pb-12 font-sans min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 relative bg-background text-foreground">
+      
+      {/* ── FULL-BLEED EXECUTIVE HERO HEADER BANNER ── */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 p-6 lg:p-8 text-white shadow-2xl border border-emerald-500/20">
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-16 w-60 h-60 rounded-full bg-teal-500/10 blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
+            <div className="relative">
+              <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 flex items-center justify-center text-white shadow-xl shadow-emerald-500/30">
+                <Compass className="h-8 w-8 animate-pulse" />
+              </div>
+              {isTracking && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-900"></span>
+                </span>
+              )}
             </div>
-            {isTracking && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
-              </span>
+
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl lg:text-3xl font-black tracking-tight text-white">
+                  {currentMode === 'admin' ? 'Live GPS Operations Command' : 'Field GPS Tracker'}
+                </h1>
+                <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  JCL Real Estate
+                </Badge>
+              </div>
+              <p className="text-sm text-slate-300 mt-1 font-medium max-w-2xl">
+                {currentMode === 'admin'
+                  ? 'Real-Time Marketer Location Roster, Route Breadcrumbs & Client Meeting Feed'
+                  : 'High-Accuracy Geolocation Tracking & Offline Client Meeting Check-ins'}
+              </p>
+            </div>
+          </div>
+
+          {/* Right Action Controls */}
+          <div className="flex flex-wrap items-center gap-3">
+            {queueStatus.isOnline ? (
+              <Badge variant="outline" className="bg-emerald-950/60 text-emerald-300 border-emerald-700/60 gap-1.5 py-2 px-3.5 font-bold text-xs rounded-xl backdrop-blur-md">
+                <Wifi className="h-4 w-4 text-emerald-400" />
+                Online Auto-Sync
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="bg-amber-950/60 text-amber-300 border-amber-700/60 gap-1.5 py-2 px-3.5 font-bold text-xs rounded-xl backdrop-blur-md">
+                <WifiOff className="h-4 w-4 text-amber-400" />
+                Offline ({queueStatus.totalPending} Queued)
+              </Badge>
+            )}
+
+            {queueStatus.totalPending > 0 && (
+              <Button
+                size="sm"
+                onClick={handleManualSync}
+                disabled={isSyncing || !queueStatus.isOnline}
+                className="gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl px-4 text-xs shadow-lg shadow-emerald-600/30"
+              >
+                <RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} />
+                Sync ({queueStatus.totalPending})
+              </Button>
+            )}
+
+            {/* Admin Switcher Tab */}
+            {hasAdminPrivileges && (
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+                <TabsList className="bg-slate-900/90 p-1 rounded-xl border border-slate-700/60 backdrop-blur-md">
+                  <TabsTrigger value="marketer" className="gap-1.5 text-xs font-bold rounded-lg data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+                    <User className="h-3.5 w-3.5" />
+                    Field GPS
+                  </TabsTrigger>
+                  <TabsTrigger value="admin" className="gap-1.5 text-xs font-bold rounded-lg data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Live GPS
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                {hasAdminPrivileges && currentMode === 'admin' ? 'Live GPS Operations Dashboard' : 'Marketer GPS Field Portal'}
-              </h1>
-              <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 dark:border-emerald-500/30 text-xs font-bold px-2.5 py-0.5 rounded-md">
-                JCL Real Estate
-              </Badge>
-            </div>
-            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
-              {hasAdminPrivileges && currentMode === 'admin'
-                ? 'Executive Command Center — Monitor Field Marketers, GPS Routes & Client Check-ins'
-                : 'High-Precision Offline GPS Tracking & Field Client Meeting Logs'}
-            </p>
-          </div>
-        </div>
-
-        {/* Sync Status & Role Switcher */}
-        <div className="flex flex-wrap items-center gap-3">
-          {queueStatus.isOnline ? (
-            <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 gap-1.5 py-1.5 px-3 font-semibold text-xs">
-              <Wifi className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-              Online (Auto-Sync)
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800 gap-1.5 py-1.5 px-3 font-semibold text-xs">
-              <WifiOff className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-              Offline ({queueStatus.totalPending} Queued)
-            </Badge>
-          )}
-
-          {queueStatus.totalPending > 0 && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleManualSync}
-              disabled={isSyncing || !queueStatus.isOnline}
-              className="gap-1.5 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 bg-white dark:bg-slate-900 rounded-xl"
-            >
-              <RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} />
-              Sync ({queueStatus.totalPending})
-            </Button>
-          )}
-
-          {/* ADMIN ONLY TAB SWITCHER */}
-          {hasAdminPrivileges && (
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
-              <TabsList className="bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-                <TabsTrigger value="marketer" className="gap-1.5 text-xs font-semibold rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400 data-[state=active]:shadow-sm">
-                  <User className="h-3.5 w-3.5" />
-                  Marketer View
-                </TabsTrigger>
-                <TabsTrigger value="admin" className="gap-1.5 text-xs font-semibold rounded-lg data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-emerald-600 dark:data-[state=active]:text-emerald-400 data-[state=active]:shadow-sm">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  Admin Dashboard
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          )}
         </div>
       </div>
 
-      {/* MARKETER MODE CONTENT */}
+      {/* ── 4 KPI SUMMARY CARDS ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="border-border rounded-2xl shadow-sm bg-card">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground font-semibold block">Active Marketers</span>
+              <span className="text-2xl font-black text-foreground">{activeMarketers.length}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border rounded-2xl shadow-sm bg-card">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
+              <FileText className="h-6 w-6" />
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground font-semibold block">Meetings Logged Today</span>
+              <span className="text-2xl font-black text-foreground">{clientMeetings.length}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border rounded-2xl shadow-sm bg-card">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
+              <MapPin className="h-6 w-6" />
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground font-semibold block">GPS Locations Pinpointed</span>
+              <span className="text-2xl font-black text-foreground">
+                {clientMeetings.filter((m) => m.latitude && m.longitude).length}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border rounded-2xl shadow-sm bg-card">
+          <CardContent className="p-5 flex items-center gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+              <RefreshCw className="h-6 w-6" />
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground font-semibold block">Offline Queue</span>
+              <span className="text-2xl font-black text-foreground">{queueStatus.totalPending}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ── MARKETER / FIELD GPS VIEW ── */}
       {currentMode === 'marketer' && (
         <div className="space-y-6">
-          {/* TRACKING CONTROL & MEETING ACTION HERO CARD */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* GPS Tracker Switch Card */}
-            <Card className="lg:col-span-2 border-emerald-500/20 dark:border-emerald-500/30 bg-gradient-to-br from-white via-emerald-50/20 to-teal-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/20 rounded-2xl shadow-lg shadow-emerald-500/5 overflow-hidden backdrop-blur-xl">
-              <CardContent className="p-6 space-y-5">
+            
+            {/* GPS Tracker Switch & Precision Radar Card */}
+            <Card className="lg:col-span-2 border-emerald-500/20 bg-card rounded-2xl shadow-md overflow-hidden">
+              <CardContent className="p-6 space-y-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-4">
                     <div className={cn(
-                      "h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-md",
+                      "h-14 w-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-md",
                       isTracking
                         ? "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-emerald-500/30 animate-pulse"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500"
+                        : "bg-muted text-muted-foreground"
                     )}>
-                      <Radio className="h-6 w-6" />
+                      <Radio className="h-7 w-7" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        Live GPS Field Tracking
+                      <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                        Live GPS Field Tracker
                         <Sparkles className="h-4 w-4 text-emerald-500" />
                       </h2>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Enable when moving between clients or property sites</p>
+                      <p className="text-xs text-muted-foreground font-medium">Broadcast high-accuracy GPS coordinates during site visits</p>
                     </div>
                   </div>
 
                   <Badge className={cn(
-                    "text-xs font-bold px-3 py-1 rounded-lg border",
+                    "text-xs font-bold px-3 py-1.5 rounded-lg border",
                     isTracking
                       ? "bg-emerald-500 text-white border-emerald-400 shadow-md shadow-emerald-500/20"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700"
+                      : "bg-muted text-muted-foreground border-border"
                   )}>
-                    {isTracking ? 'Active & Tracking' : 'Paused / Off'}
+                    {isTracking ? 'Active & Tracking' : 'Paused'}
                   </Badge>
                 </div>
 
                 {trackingError && (
-                  <div className="flex items-center gap-2.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-3.5 rounded-xl border border-red-200 dark:border-red-900/60">
+                  <div className="flex items-center gap-2.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 p-4 rounded-xl border border-red-200 dark:border-red-900/60">
                     <AlertTriangle className="h-4 w-4 shrink-0" />
                     <span>{trackingError}</span>
                   </div>
@@ -417,26 +476,26 @@ export default function JCLMarketerTracker() {
 
                 {/* Live Position Specs */}
                 {isTracking && currentLocation && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-white/80 dark:bg-slate-900/90 rounded-xl border border-emerald-500/20 dark:border-emerald-500/30 backdrop-blur-md shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-muted/50 rounded-xl border border-emerald-500/20">
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Precision Address</span>
-                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1 flex items-center gap-1 mt-1">
-                        <MapPin className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Address Label</span>
+                      <span className="text-xs font-bold text-foreground line-clamp-1 flex items-center gap-1.5 mt-1">
+                        <MapPin className="h-4 w-4 text-emerald-500 shrink-0" />
                         {currentLocation.address_label || 'Locating GPS...'}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Coordinates</span>
-                      <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mt-1 block">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Coordinates</span>
+                      <span className="text-xs font-mono font-bold text-foreground mt-1 block">
                         {currentLocation.latitude?.toFixed(5)}, {currentLocation.longitude?.toFixed(5)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Signal Accuracy</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Signal Accuracy</span>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">±{currentLocation.accuracy}m</span>
-                        <span className="text-slate-300 dark:text-slate-700">|</span>
-                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-0.5">
+                        <span className="text-muted-foreground">|</span>
+                        <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
                           <Battery className="h-3.5 w-3.5 text-emerald-500" />
                           {currentLocation.battery_level}%
                         </span>
@@ -446,11 +505,11 @@ export default function JCLMarketerTracker() {
                 )}
 
                 {/* Primary Action Controls */}
-                <div className="flex flex-wrap items-center gap-3 pt-2">
+                <div className="flex flex-wrap items-center gap-4 pt-2">
                   <Button
                     onClick={handleToggleTracking}
                     className={cn(
-                      "flex-1 gap-2 font-bold h-11 rounded-xl transition-all shadow-md",
+                      "flex-1 gap-2 font-bold h-12 rounded-xl transition-all shadow-md text-sm",
                       isTracking
                         ? "bg-red-600 hover:bg-red-700 text-white shadow-red-500/20"
                         : "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 hover:from-emerald-700 hover:to-teal-800 text-white shadow-emerald-500/20"
@@ -472,7 +531,7 @@ export default function JCLMarketerTracker() {
                   <Button
                     onClick={handleOpenMeetingSheet}
                     variant="outline"
-                    className="flex-1 gap-2 font-bold h-11 rounded-xl border-emerald-600 dark:border-emerald-500 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 bg-white dark:bg-slate-900"
+                    className="flex-1 gap-2 font-bold h-12 rounded-xl border-emerald-600 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-sm"
                   >
                     <Send className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                     Log Client Meeting
@@ -481,32 +540,32 @@ export default function JCLMarketerTracker() {
               </CardContent>
             </Card>
 
-            {/* Quick Stats & Offline Status Card */}
-            <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
+            {/* Quick Summary Card */}
+            <Card className="border-border rounded-2xl shadow-sm bg-card">
               <CardContent className="p-6 space-y-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                   <Activity className="h-4 w-4 text-emerald-500" />
-                  My Activity Summary
+                  Activity & Status Overview
                 </h3>
 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
-                    <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">Logged Meetings</span>
-                    <span className="text-sm font-black text-slate-900 dark:text-white">{filteredMeetings.length}</span>
+                  <div className="flex items-center justify-between p-3.5 bg-muted/50 rounded-xl">
+                    <span className="text-xs text-muted-foreground font-semibold">Logged Meetings</span>
+                    <span className="text-sm font-black text-foreground">{filteredMeetings.length}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
-                    <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">Pending Sync</span>
+                  <div className="flex items-center justify-between p-3.5 bg-muted/50 rounded-xl">
+                    <span className="text-xs text-muted-foreground font-semibold">Pending Sync</span>
                     <Badge variant="outline" className={cn(
                       "text-xs font-bold px-2.5 py-0.5",
                       queueStatus.totalPending > 0
-                        ? "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800"
-                        : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"
+                        : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
                     )}>
                       {queueStatus.totalPending} items
                     </Badge>
                   </div>
-                  <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
-                    <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold">Signal Quality</span>
+                  <div className="flex items-center justify-between p-3.5 bg-muted/50 rounded-xl">
+                    <span className="text-xs text-muted-foreground font-semibold">GPS Mode</span>
                     <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <ShieldCheck className="h-3.5 w-3.5" /> High Precision
                     </span>
@@ -517,30 +576,30 @@ export default function JCLMarketerTracker() {
           </div>
 
           {/* MY LOGGED CLIENT MEETINGS FEED */}
-          <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
+          <Card className="border-border rounded-2xl shadow-sm bg-card">
             <CardContent className="p-6 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">My Field Check-ins</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">History of site visits and client meetings logged from the field</p>
+                  <h2 className="text-lg font-bold text-foreground">My Client Field Check-ins</h2>
+                  <p className="text-xs text-muted-foreground">History of site visits and client meetings logged from the field</p>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <div className="relative w-48 sm:w-64">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
                       placeholder="Search client, property..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-9 h-9 text-xs rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                      className="pl-9 h-9 text-xs rounded-xl"
                     />
                   </div>
 
                   <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
-                    <SelectTrigger className="w-36 h-9 text-xs rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white">
+                    <SelectTrigger className="w-36 h-9 text-xs rounded-xl">
                       <SelectValue placeholder="Outcome" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                    <SelectContent>
                       <SelectItem value="all">All Outcomes</SelectItem>
                       <SelectItem value="Successful">Successful</SelectItem>
                       <SelectItem value="Follow-up Scheduled">Follow-up</SelectItem>
@@ -553,50 +612,50 @@ export default function JCLMarketerTracker() {
 
               {filteredMeetings.length === 0 ? (
                 <div className="text-center py-12 space-y-3">
-                  <div className="h-12 w-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400 dark:text-slate-500">
+                  <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mx-auto text-muted-foreground">
                     <FileText className="h-6 w-6" />
                   </div>
-                  <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">No client meetings logged yet today</p>
-                  <p className="text-xs text-slate-400 dark:text-slate-500">Click "Log Client Meeting" above to record your site visit location.</p>
+                  <p className="text-sm font-semibold text-muted-foreground">No client meetings logged yet today</p>
+                  <p className="text-xs text-muted-foreground/70">Click "Log Client Meeting" above to record your site visit location.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredMeetings.map((m) => (
-                    <div key={m.id} className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-emerald-500/40 bg-white dark:bg-slate-900 transition-all space-y-3 shadow-xs">
+                    <div key={m.id} className="p-4 rounded-xl border border-border hover:border-emerald-500/40 bg-card transition-all space-y-3 shadow-xs">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="text-sm font-bold text-slate-900 dark:text-white">{m.client_name}</h4>
+                          <h4 className="text-sm font-bold text-foreground">{m.client_name}</h4>
                           <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">{m.property_interest || 'General Property Interest'}</span>
                         </div>
                         <Badge className={cn(
                           "text-[10px] font-bold px-2 py-0.5",
                           m.meeting_outcome === 'Successful' || m.meeting_outcome === 'Closed Sale'
-                            ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
-                            : "bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                            : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30"
                         )}>
                           {m.meeting_outcome}
                         </Badge>
                       </div>
 
-                      <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-400">
-                        <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
+                      <div className="space-y-1.5 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5 font-medium">
                           <MapPin className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
                           <span className="truncate">{m.address_text || 'GPS Captured'}</span>
                         </div>
                         {m.client_phone && (
-                          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                            <Phone className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                          <div className="flex items-center gap-1.5">
+                            <Phone className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                             <span>{m.client_phone}</span>
                           </div>
                         )}
                         {m.notes && (
-                          <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-2 rounded-lg italic line-clamp-2 mt-2">
+                          <p className="text-xs bg-muted/50 p-2.5 rounded-lg italic line-clamp-2 mt-2 text-foreground/90">
                             "{m.notes}"
                           </p>
                         )}
                       </div>
 
-                      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                      <div className="pt-2 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           {m.created_at ? format(new Date(m.created_at), 'h:mm a, MMM d') : 'Just now'}
@@ -604,11 +663,11 @@ export default function JCLMarketerTracker() {
 
                         <div className="flex items-center gap-2">
                           {m.sync_status === 'pending' ? (
-                            <Badge variant="outline" className="bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800 text-[10px]">
+                            <Badge variant="outline" className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 text-[10px]">
                               Queued
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px]">
+                            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px]">
                               Synced
                             </Badge>
                           )}
@@ -634,109 +693,57 @@ export default function JCLMarketerTracker() {
         </div>
       )}
 
-      {/* ADMIN DASHBOARD CONTENT (STRICTLY RESTRICTED TO ADMIN PRIVILEGED USERS) */}
+      {/* ── ADMIN / LIVE GPS DASHBOARD VIEW ── */}
       {currentMode === 'admin' && hasAdminPrivileges && (
         <div className="space-y-6">
-          {/* KPI COUNTERS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                  <Users className="h-6 w-6" />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold block">Active Marketers</span>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white">{activeMarketers.length}</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold">
-                  <FileText className="h-6 w-6" />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold block">Total Field Meetings</span>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white">{clientMeetings.length}</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-cyan-50 dark:bg-cyan-950/50 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
-                  <MapPin className="h-6 w-6" />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold block">Logged Locations</span>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white">
-                    {clientMeetings.filter((m) => m.latitude && m.longitude).length}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="h-12 w-12 rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
-                  <RefreshCw className="h-6 w-6" />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold block">Offline Pending</span>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white">{queueStatus.totalPending}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* ACTIVE MARKETERS ROSTER */}
-          <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
+          
+          {/* ACTIVE MARKETERS LIVE ROSTER GRID */}
+          <Card className="border-border rounded-2xl shadow-sm bg-card">
             <CardContent className="p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Marketer Live Field Roster</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Real-time GPS tracking positions reported by field staff</p>
+                  <h2 className="text-lg font-bold text-foreground">Marketer Live Field Roster</h2>
+                  <p className="text-xs text-muted-foreground">Real-time GPS tracking positions reported by field staff</p>
                 </div>
-                <Button size="sm" variant="outline" onClick={refreshData} className="gap-1.5 text-xs rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
+                <Button size="sm" variant="outline" onClick={refreshData} className="gap-1.5 text-xs rounded-xl">
                   <RefreshCw className="h-3.5 w-3.5" /> Refresh Roster
                 </Button>
               </div>
 
               {activeMarketers.length === 0 ? (
-                <div className="text-center py-10 text-slate-400 dark:text-slate-500 text-sm">
+                <div className="text-center py-10 text-muted-foreground text-sm">
                   No active marketers currently broadcasting GPS locations.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {activeMarketers.map((mk) => (
-                    <div key={mk.id || mk.user_id} className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-emerald-500/40 bg-white dark:bg-slate-900 transition-all space-y-3">
+                    <div key={mk.id || mk.user_id} className="p-4 rounded-xl border border-border hover:border-emerald-500/40 bg-card transition-all space-y-3">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-2.5">
-                          <div className="h-9 w-9 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-sm border border-emerald-500/20">
+                          <div className="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm border border-emerald-500/20">
                             {mk.user_name?.[0] || 'M'}
                           </div>
                           <div>
-                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">{mk.user_name}</h4>
-                            <span className="text-xs text-slate-400">{mk.user_email}</span>
+                            <h4 className="text-sm font-bold text-foreground">{mk.user_name}</h4>
+                            <span className="text-xs text-muted-foreground">{mk.user_email}</span>
                           </div>
                         </div>
                         <Badge className={cn(
-                          "text-[10px] font-bold px-2 py-0.5",
+                          "text-[10px] font-bold px-2.5 py-0.5",
                           mk.status === 'Active'
-                            ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                            : "bg-muted text-muted-foreground border-border"
                         )}>
                           {mk.status || 'Active'}
                         </Badge>
                       </div>
 
-                      <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-100 dark:border-slate-800/80">
-                        <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
+                      <div className="space-y-1 text-xs text-muted-foreground bg-muted/50 p-3 rounded-lg border border-border/60">
+                        <div className="flex items-center gap-1.5 font-semibold text-foreground">
                           <MapPin className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
                           <span className="truncate">{mk.address_label || 'Location pinpointed'}</span>
                         </div>
-                        <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 pt-1">
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
                           <span>GPS: {mk.latitude?.toFixed(4)}, {mk.longitude?.toFixed(4)}</span>
                           <span>Accuracy: ±{mk.accuracy}m</span>
                         </div>
@@ -747,7 +754,7 @@ export default function JCLMarketerTracker() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleViewRouteTrail(mk)}
-                          className="text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 h-8 text-xs font-bold px-2"
+                          className="text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 h-8 text-xs font-bold px-2"
                         >
                           <Map className="h-3.5 w-3.5 mr-1" /> View Route Trail
                         </Button>
@@ -757,7 +764,7 @@ export default function JCLMarketerTracker() {
                             href={`https://www.google.com/maps/search/?api=1&query=${mk.latitude},${mk.longitude}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-500 font-semibold flex items-center gap-1"
+                            className="text-xs text-muted-foreground hover:text-emerald-600 font-semibold flex items-center gap-1"
                           >
                             Google Maps <ArrowUpRight className="h-3 w-3" />
                           </a>
@@ -771,18 +778,18 @@ export default function JCLMarketerTracker() {
           </Card>
 
           {/* MASTER CLIENT MEETINGS LOG FEED */}
-          <Card className="border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm bg-white dark:bg-slate-900">
+          <Card className="border-border rounded-2xl shadow-sm bg-card">
             <CardContent className="p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Master Field Check-in Feed</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Complete record of client meetings logged across all marketers</p>
+                  <h2 className="text-lg font-bold text-foreground">Master Field Check-in Feed</h2>
+                  <p className="text-xs text-muted-foreground">Complete record of client meetings logged across all marketers</p>
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-xl border border-slate-200/80 dark:border-slate-800">
+              <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200/80 dark:border-slate-800">
+                  <thead className="bg-muted/80 text-muted-foreground font-bold border-b border-border">
                     <tr>
                       <th className="p-3.5">Marketer</th>
                       <th className="p-3.5">Client Details</th>
@@ -793,22 +800,22 @@ export default function JCLMarketerTracker() {
                       <th className="p-3.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                  <tbody className="divide-y divide-border text-foreground">
                     {filteredMeetings.map((m) => (
-                      <tr key={m.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="p-3.5 font-bold text-slate-900 dark:text-white">{m.marketer_name}</td>
+                      <tr key={m.id} className="hover:bg-muted/50 transition-colors">
+                        <td className="p-3.5 font-bold text-foreground">{m.marketer_name}</td>
                         <td className="p-3.5">
-                          <div className="font-semibold text-slate-900 dark:text-white">{m.client_name}</div>
-                          <div className="text-slate-400 text-[11px]">{m.client_phone}</div>
+                          <div className="font-semibold text-foreground">{m.client_name}</div>
+                          <div className="text-muted-foreground text-[11px]">{m.client_phone}</div>
                         </td>
                         <td className="p-3.5 font-bold text-emerald-600 dark:text-emerald-400">{m.property_interest || 'N/A'}</td>
-                        <td className="p-3.5 max-w-xs truncate text-slate-600 dark:text-slate-400">{m.address_text}</td>
+                        <td className="p-3.5 max-w-xs truncate text-muted-foreground">{m.address_text}</td>
                         <td className="p-3.5">
-                          <Badge className="bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 text-[10px] font-bold">
+                          <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-bold">
                             {m.meeting_outcome}
                           </Badge>
                         </td>
-                        <td className="p-3.5 text-slate-400 dark:text-slate-500 text-[11px]">
+                        <td className="p-3.5 text-muted-foreground text-[11px]">
                           {m.created_at ? format(new Date(m.created_at), 'MMM d, h:mm a') : 'N/A'}
                         </td>
                         <td className="p-3.5 text-right">
@@ -833,23 +840,23 @@ export default function JCLMarketerTracker() {
         </div>
       )}
 
-      {/* LOG CLIENT MEETING SLIDE-OVER SHEET */}
+      {/* ── LOG CLIENT MEETING SLIDE-OVER SHEET ── */}
       <Sheet open={showMeetingSheet} onOpenChange={setShowMeetingSheet}>
-        <SheetContent className="sm:max-w-lg overflow-y-auto bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
-          <SheetHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
-            <SheetTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <SheetContent className="sm:max-w-lg overflow-y-auto">
+          <SheetHeader className="pb-4 border-b border-border">
+            <SheetTitle className="text-lg font-bold text-foreground flex items-center gap-2">
               <Send className="h-5 w-5 text-emerald-500" />
               Log Client Meeting Check-in
             </SheetTitle>
-            <SheetDescription className="text-xs text-slate-500 dark:text-slate-400">
+            <SheetDescription className="text-xs text-muted-foreground">
               Record details and auto-capture precise GPS location for your client meeting.
             </SheetDescription>
           </SheetHeader>
 
           <form onSubmit={handleSubmitMeeting} className="space-y-4 pt-4">
             {/* Captured Location Box */}
-            <div className="p-3.5 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-1">
-              <div className="flex items-center justify-between text-xs font-bold text-emerald-900 dark:text-emerald-300">
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl space-y-1">
+              <div className="flex items-center justify-between text-xs font-bold text-emerald-700 dark:text-emerald-300">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4 text-emerald-500" />
                   Auto-Captured GPS Location
@@ -858,72 +865,72 @@ export default function JCLMarketerTracker() {
               </div>
 
               {meetingPositionPreview ? (
-                <div className="text-xs text-emerald-800 dark:text-emerald-200 space-y-0.5">
+                <div className="text-xs text-foreground space-y-0.5">
                   <p className="font-semibold line-clamp-1">{meetingPositionPreview.addr}</p>
                   <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
                     Lat: {meetingPositionPreview.lat?.toFixed(5)}, Lng: {meetingPositionPreview.lng?.toFixed(5)} (±{meetingPositionPreview.acc}m accuracy)
                   </p>
                 </div>
               ) : (
-                <p className="text-xs text-slate-500 dark:text-slate-400 italic">Capturing high-accuracy position...</p>
+                <p className="text-xs text-muted-foreground italic">Capturing high-accuracy position...</p>
               )}
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Client Name *</Label>
+              <Label className="text-xs font-bold text-foreground">Client Name *</Label>
               <Input
                 placeholder="e.g. Kwame Mensah"
                 value={meetingForm.client_name}
                 onChange={(e) => setMeetingForm({ ...meetingForm, client_name: e.target.value })}
                 required
-                className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                className="text-xs h-9 rounded-xl"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Phone Number</Label>
+                <Label className="text-xs font-bold text-foreground">Phone Number</Label>
                 <Input
                   placeholder="+233 24 000 0000"
                   value={meetingForm.client_phone}
                   onChange={(e) => setMeetingForm({ ...meetingForm, client_phone: e.target.value })}
-                  className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                  className="text-xs h-9 rounded-xl"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Email Address</Label>
+                <Label className="text-xs font-bold text-foreground">Email Address</Label>
                 <Input
                   type="email"
                   placeholder="client@gmail.com"
                   value={meetingForm.client_email}
                   onChange={(e) => setMeetingForm({ ...meetingForm, client_email: e.target.value })}
-                  className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                  className="text-xs h-9 rounded-xl"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Property / Site of Interest</Label>
+              <Label className="text-xs font-bold text-foreground">Property / Site of Interest</Label>
               <Input
                 placeholder="e.g. East Legon 4-Bedroom Villa / Airport Hills Land"
                 value={meetingForm.property_interest}
                 onChange={(e) => setMeetingForm({ ...meetingForm, property_interest: e.target.value })}
-                className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                className="text-xs h-9 rounded-xl"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Meeting Purpose</Label>
+                <Label className="text-xs font-bold text-foreground">Meeting Purpose</Label>
                 <Select
                   value={meetingForm.meeting_purpose}
                   onValueChange={(v) => setMeetingForm({ ...meetingForm, meeting_purpose: v })}
                 >
-                  <SelectTrigger className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white">
+                  <SelectTrigger className="text-xs h-9 rounded-xl">
                     <SelectValue placeholder="Purpose" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                  <SelectContent>
                     <SelectItem value="Initial Discussion">Initial Discussion</SelectItem>
                     <SelectItem value="Site Viewing">Site Viewing</SelectItem>
                     <SelectItem value="Contract Signing">Contract Signing</SelectItem>
@@ -934,15 +941,15 @@ export default function JCLMarketerTracker() {
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Meeting Outcome</Label>
+                <Label className="text-xs font-bold text-foreground">Meeting Outcome</Label>
                 <Select
                   value={meetingForm.meeting_outcome}
                   onValueChange={(v) => setMeetingForm({ ...meetingForm, meeting_outcome: v })}
                 >
-                  <SelectTrigger className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white">
+                  <SelectTrigger className="text-xs h-9 rounded-xl">
                     <SelectValue placeholder="Outcome" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                  <SelectContent>
                     <SelectItem value="Successful">Successful</SelectItem>
                     <SelectItem value="Follow-up Scheduled">Follow-up Scheduled</SelectItem>
                     <SelectItem value="Closed Sale">Closed Sale</SelectItem>
@@ -953,22 +960,22 @@ export default function JCLMarketerTracker() {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Follow-up Date</Label>
+              <Label className="text-xs font-bold text-foreground">Follow-up Date</Label>
               <Input
                 type="date"
                 value={meetingForm.follow_up_date}
                 onChange={(e) => setMeetingForm({ ...meetingForm, follow_up_date: e.target.value })}
-                className="text-xs h-9 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                className="text-xs h-9 rounded-xl"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Meeting Notes / Client Feedback</Label>
+              <Label className="text-xs font-bold text-foreground">Meeting Notes / Client Feedback</Label>
               <Textarea
                 placeholder="Enter client requirements, budget range, preferred location..."
                 value={meetingForm.notes}
                 onChange={(e) => setMeetingForm({ ...meetingForm, notes: e.target.value })}
-                className="text-xs rounded-xl min-h-[80px] border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white"
+                className="text-xs rounded-xl min-h-[80px]"
               />
             </div>
 
@@ -977,7 +984,7 @@ export default function JCLMarketerTracker() {
                 type="button"
                 variant="outline"
                 onClick={() => setShowMeetingSheet(false)}
-                className="rounded-xl text-xs border-slate-200 dark:border-slate-800"
+                className="rounded-xl text-xs"
               >
                 Cancel
               </Button>
@@ -994,45 +1001,45 @@ export default function JCLMarketerTracker() {
         </SheetContent>
       </Sheet>
 
-      {/* ROUTE TRAIL MODAL FOR ADMIN */}
+      {/* ── ROUTE TRAIL MODAL FOR ADMIN ── */}
       <Dialog open={Boolean(selectedRouteMarketer)} onOpenChange={() => setSelectedRouteMarketer(null)}>
-        <DialogContent className="sm:max-w-xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
               <Map className="h-5 w-5 text-emerald-500" />
               Route Trail: {selectedRouteMarketer?.user_name}
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
+            <DialogDescription className="text-xs text-muted-foreground">
               Sequence of GPS location pings recorded for this marketer
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
             {isLoadingRoute ? (
-              <div className="py-8 text-center text-xs text-slate-500 dark:text-slate-400 flex justify-center items-center gap-2">
+              <div className="py-8 text-center text-xs text-muted-foreground flex justify-center items-center gap-2">
                 <RefreshCw className="h-4 w-4 animate-spin text-emerald-500" /> Loading GPS route history...
               </div>
             ) : routeHistory.length === 0 ? (
-              <div className="py-8 text-center text-xs text-slate-400 dark:text-slate-500">
+              <div className="py-8 text-center text-xs text-muted-foreground">
                 No route location trail pings recorded yet today.
               </div>
             ) : (
               <div className="space-y-2">
                 {routeHistory.map((ping, idx) => (
-                  <div key={ping.id || idx} className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between text-xs">
+                  <div key={ping.id || idx} className="p-3.5 rounded-xl border border-border bg-muted/50 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-3">
                       <span className="h-6 w-6 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
                       <div>
-                        <span className="font-bold text-slate-900 dark:text-white block">{ping.address_label || 'Location'}</span>
-                        <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                        <span className="font-bold text-foreground block">{ping.address_label || 'Location'}</span>
+                        <span className="text-[10px] font-mono text-muted-foreground">
                           {ping.latitude?.toFixed(5)}, {ping.longitude?.toFixed(5)} (±{ping.accuracy}m)
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block font-medium">
+                      <span className="text-[11px] text-muted-foreground block font-medium">
                         {ping.tracked_at ? format(new Date(ping.tracked_at), 'h:mm:ss a') : 'N/A'}
                       </span>
                       <a
