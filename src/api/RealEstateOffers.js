@@ -14,6 +14,18 @@ function generateUUID() {
   });
 }
 
+function getSafeISO8601() {
+  try {
+    const date = new Date();
+    if (isNaN(date.getTime())) {
+      return new Date(Date.now()).toISOString();
+    }
+    return date.toISOString();
+  } catch (e) {
+    return new Date().toISOString();
+  }
+}
+
 export const RealEstateOffers = {
   // ────────────────────────────────────────────────────────
   // OFFER MANAGEMENT (Enhanced)

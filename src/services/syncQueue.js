@@ -72,6 +72,8 @@ class SyncQueue {
 export const syncQueue = new SyncQueue();
 
 // Listen to network status
-window.addEventListener('online', () => {
-  syncQueue.sync();
-});
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    syncQueue.sync();
+  });
+}

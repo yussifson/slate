@@ -552,6 +552,7 @@ const JCLContractorsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLC
 const JCLContractorReviewsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLContractorReviews'));
 const JCLLeaseRenewalsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeaseRenewals'));
 const JCLMaintenancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaintenance'));
+const JCLMarketerTrackerPage = React.lazy(() => import('./pages/real-estate-jcl/JCLMarketerTracker'));
 
 const SmartMaintenanceRouter = () => {
   const { user } = useAuth();
@@ -1331,6 +1332,8 @@ function PlatformRoutes() {
       <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
       <Route path="/finance/accounting" element={<SmartFirmAccountingRouter />} />
       <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
+      <Route path="/real-estate/field-tracker" element={<JCLMarketerTrackerPage />} />
+      <Route path="/real-estate/marketer-tracker" element={<JCLMarketerTrackerPage />} />
 
       {/* Religion Suite */}
       <Route path="/members" element={<Clients />} />

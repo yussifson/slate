@@ -45,6 +45,18 @@ export const REALESTATESYNCTABLES = {
     description: 'Maintenance tracking - synced for offline management',
     critical: false,
   },
+  'univ_re_marketer_locations': {
+    offline: true,
+    local_only: false,
+    description: 'Live marketer GPS location tracking - synced for field operations',
+    critical: true,
+  },
+  'univ_re_client_meetings': {
+    offline: true,
+    local_only: false,
+    description: 'Client meeting & field check-in logs - synced for offline field capture',
+    critical: true,
+  },
 
   // ────────────────────────────────────────────────────────
   // FINANCIAL TABLES (no offline sync - real-time only)

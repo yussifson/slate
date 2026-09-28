@@ -69,7 +69,7 @@ const getValidCols = (tableName) => {
 const SENSITIVE_FIELDS = ['notes', 'description', 'details', 'outcome_summary', 'content', 'resolution_notes'];
 
 const getPassphrase = () => {
-    return localStorage.getItem('slate_e2ee_passphrase') || null;
+    return (typeof localStorage !== 'undefined' ? localStorage.getItem('slate_e2ee_passphrase') : null) || null;
 };
 
 const securePayload = async (payload) => {

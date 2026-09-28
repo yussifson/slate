@@ -9,7 +9,7 @@ import {
   Calendar, TrendingUp, Receipt, HeartHandshake, PenTool, Globe,
   LineChart, ClipboardList, Blocks, Zap, ChevronDown, Plus,
   MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck, Landmark,
-  BookOpen, CheckCircle2, Building2
+  BookOpen, CheckCircle2, Building2, MapPin
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -51,7 +51,8 @@ const JCL_DEPARTMENTS = [
       { label: "Tours & Viewings", path: "/real-estate/viewings", icon: Eye, badgeKey: "viewings" },
       { label: "Purchase Offers", path: "/real-estate/offers", icon: FileText, badgeKey: "offers" },
       { label: "Counter Offers", path: "/real-estate/counter-offers", icon: MessageCircle },
-      { label: "Deals & Transactions", path: "/real-estate/transactions", icon: Banknote }
+      { label: "Deals & Transactions", path: "/real-estate/transactions", icon: Banknote },
+      { label: "GPS Field Tracker", path: "/real-estate/field-tracker", icon: MapPin }
     ]
   },
   {

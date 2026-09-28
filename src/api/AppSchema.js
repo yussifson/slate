@@ -604,6 +604,42 @@ export const AppSchema = new Schema({
         new_value: column.text,
         timestamp: column.text
     }),
+    univ_re_marketer_locations: new Table({
+        id: column.text,
+        company_id: column.text,
+        user_id: column.text,
+        user_name: column.text,
+        user_email: column.text,
+        latitude: column.real,
+        longitude: column.real,
+        accuracy: column.real,
+        speed: column.real,
+        battery_level: column.integer,
+        status: column.text,
+        address_label: column.text,
+        updated_at: column.text,
+        created_at: column.text
+    }),
+    univ_re_client_meetings: new Table({
+        id: column.text,
+        company_id: column.text,
+        marketer_id: column.text,
+        marketer_name: column.text,
+        client_name: column.text,
+        client_phone: column.text,
+        client_email: column.text,
+        property_interest: column.text,
+        meeting_purpose: column.text,
+        notes: column.text,
+        outcome: column.text,
+        follow_up_date: column.text,
+        latitude: column.real,
+        longitude: column.real,
+        accuracy: column.real,
+        address_text: column.text,
+        sync_status: column.text,
+        created_at: column.text
+    }),
 
     industry_records: new Table({
         id: column.text,

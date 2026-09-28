@@ -11,6 +11,8 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "cap:sync": "npm run build && npx cap sync",
     "cap:build": "npm run build && npx cap copy",
     "desktop:dev": "vite --mode electron",
