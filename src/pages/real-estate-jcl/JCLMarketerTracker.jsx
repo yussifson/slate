@@ -77,9 +77,9 @@ const JCLTrackerMap = ({ activeMarketers, selectedMarketer, routeHistory, curren
 
       mapInstanceRef.current = map;
 
-      // CartoDB Voyager tiles for modern clean map styling
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
+      // OpenStreetMap free tile server (No API key required, zero watermarks)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19,
       }).addTo(map);
 
