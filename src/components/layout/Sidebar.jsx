@@ -755,10 +755,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     // Inject GPS Operations (Executive) & GPS Field Tracker (Marketers) — JCL only
     if (activeIndustry === 'real_estate_jcl') {
       if (!rawNavItems.some(n => n.path === '/real-estate/field-tracker')) {
-        rawNavItems.push({ label: "Live GPS Operations", path: "/real-estate/field-tracker", icon: "Radio" });
+        rawNavItems.push({ label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" });
       }
       if (!rawNavItems.some(n => n.path === '/real-estate/marketer-tracker')) {
-        rawNavItems.push({ label: "GPS Field Tracker", path: "/real-estate/marketer-tracker", icon: "MapPin" });
+        rawNavItems.push({ label: "Field GPS", path: "/real-estate/marketer-tracker", icon: "MapPin" });
       }
     }
 
@@ -818,10 +818,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
     // Dedicated Department Grouping for JCL Royal Group
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/', '/my-dashboard', '/intelligence', '/real-estate/field-tracker'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview', 'Live GPS Operations'].includes(item.label)) {
+      if (['/', '/my-dashboard', '/intelligence', '/real-estate/field-tracker'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview', 'Live GPS', 'Live GPS Operations'].includes(item.label)) {
         return "Executive Overview";
       }
-      if (['/real-estate/crm-leads', '/real-estate/clients', '/real-estate/customer-timeline', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/marketer-tracker'].includes(p) || p.startsWith('/real-estate/crm') || ['GPS Field Tracker', 'Marketer GPS Tracker'].includes(item.label)) {
+      if (['/real-estate/crm-leads', '/real-estate/clients', '/real-estate/customer-timeline', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/marketer-tracker'].includes(p) || p.startsWith('/real-estate/crm') || ['Field GPS', 'GPS Field Tracker', 'Marketer GPS Tracker'].includes(item.label)) {
         return "Sales & CRM";
       }
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data'].includes(p) || p.startsWith('/real-estate/land')) {

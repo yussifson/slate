@@ -33,7 +33,7 @@ const JCL_DEPARTMENTS = [
     color: "emerald",
     items: [
       { label: "Dashboard", path: "/", icon: LayoutDashboard },
-      { label: "Live GPS Operations", path: "/real-estate/field-tracker", icon: MapPin },
+      { label: "Live GPS", path: "/real-estate/field-tracker", icon: MapPin },
       { label: "Customer Timeline", path: "/real-estate/customer-timeline", icon: Clock },
       { label: "Market Data", path: "/real-estate/market-data", icon: Globe },
       { label: "Analytics & Insights", path: "/real-estate/analytics", icon: LineChart }
@@ -53,7 +53,7 @@ const JCL_DEPARTMENTS = [
       { label: "Purchase Offers", path: "/real-estate/offers", icon: FileText, badgeKey: "offers" },
       { label: "Counter Offers", path: "/real-estate/counter-offers", icon: MessageCircle },
       { label: "Deals & Transactions", path: "/real-estate/transactions", icon: Banknote },
-      { label: "Marketer GPS Tracker", path: "/real-estate/marketer-tracker", icon: MapPin }
+      { label: "Field GPS", path: "/real-estate/marketer-tracker", icon: MapPin }
     ]
   },
   {
