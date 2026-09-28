@@ -1,15 +1,8 @@
 /**
  * JCLFieldTrackerEngine.js
  * 
- * High-accuracy, offline-first GPS field tracking and client meeting check-in engine
- * strictly built for JCL Real Estate marketers and admins.
- * 
- * Features:
- * - High-accuracy GPS geolocation watch with configurable throttling & distance filtering.
- * - Offline-first queueing (localStorage + IndexedDB / PowerSync SQLite) when in zero-coverage areas.
- * - Automatic background sync whenever network connectivity is restored (online event listener + retry interval).
- * - Precise Client Meeting Check-in with auto-captured coordinates, reverse geocoding address labels, and meeting notes.
- * - Real-time query helpers for Admin monitoring dashboard (active marketers roster, route history, meeting feed).
+ * Production-ready, high-accuracy, offline-first GPS field tracking & client meeting check-in engine.
+ * Powered by PowerSync SQLite + Supabase Postgres bidirectional sync for JCL Real Estate.
  */
 
 import { supabase } from './supabaseClient';
@@ -25,13 +18,12 @@ let lastPosition = null;
 const MIN_PING_INTERVAL_MS = 10000; // Minimum 10 seconds between pings
 const MIN_DISTANCE_METERS = 5; // Minimum 5 meters movement
 
-// Generate secure random ID
 const generateId = () => `jcl_ft_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 // Calculate distance between two coordinates in meters (Haversine formula)
 const calculateDistanceMeters = (lat1, lon1, lat2, lon2) => {
   if (!lat1 || !lon1 || !lat2 || !lon2) return 999999;
-  const R = 6371e3; // metres
+  const R = 6371e3;
   const φ1 = (lat1 * Math.PI) / 180;
   const φ2 = (lat2 * Math.PI) / 180;
   const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -45,13 +37,14 @@ const calculateDistanceMeters = (lat1, lon1, lat2, lon2) => {
   return R * c;
 };
 
-// Reverse geocoding helper with local caching
+// Production Reverse Geocoding helper with caching & dual API fallback
 const addressCache = new Map();
 export const reverseGeocode = async (lat, lng) => {
   if (!lat || !lng) return 'Unknown Location';
   const cacheKey = `${lat.toFixed(4)},${lng.toFixed(4)}`;
   if (addressCache.has(cacheKey)) return addressCache.get(cacheKey);
 
+  // Primary: Nominatim OpenStreetMap
   try {
     const res = await fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
@@ -65,15 +58,27 @@ export const reverseGeocode = async (lat, lng) => {
         return addr;
       }
     }
-  } catch (err) {
-    // Network or rate-limit error, fallback gracefully
-  }
-  const fallback = `GPS (${lat.toFixed(5)}, ${lng.toFixed(5)})`;
+  } catch (err) {}
+
+  // Fallback API: BigDataCloud Reverse Geocoding
+  try {
+    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
+    if (res.ok) {
+      const data = await res.json();
+      const addr = `${data.locality || data.city || ''}, ${data.principalSubdivision || data.countryName || ''}`.trim();
+      if (addr && addr.length > 3) {
+        addressCache.set(cacheKey, addr);
+        return addr;
+      }
+    }
+  } catch (err) {}
+
+  const fallback = `GPS Coordinates (${lat.toFixed(5)}, ${lng.toFixed(5)})`;
   addressCache.set(cacheKey, fallback);
   return fallback;
 };
 
-// Helper: Get offline queues from localStorage
+// Offline Queue Status Helper
 export const getOfflineQueueStatus = () => {
   try {
     const locations = JSON.parse(localStorage.getItem(OFFLINE_LOCATIONS_KEY) || '[]');
@@ -82,14 +87,13 @@ export const getOfflineQueueStatus = () => {
       pendingLocations: locations.length,
       pendingMeetings: meetings.length,
       totalPending: locations.length + meetings.length,
-      isOnline: navigator.onLine,
+      isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
     };
   } catch (e) {
-    return { pendingLocations: 0, pendingMeetings: 0, totalPending: 0, isOnline: navigator.onLine };
+    return { pendingLocations: 0, pendingMeetings: 0, totalPending: 0, isOnline: true };
   }
 };
 
-// Helper: Save to offline queue
 const queueLocationOffline = (record) => {
   try {
     const current = JSON.parse(localStorage.getItem(OFFLINE_LOCATIONS_KEY) || '[]');
@@ -112,12 +116,14 @@ const queueMeetingOffline = (record) => {
 
 // Auto-Sync Offline Queue to Database
 export const syncOfflineQueue = async () => {
-  if (!navigator.onLine) return { success: false, syncedCount: 0, error: 'Offline' };
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    return { success: false, syncedLocations: 0, syncedMeetings: 0, error: 'Offline' };
+  }
 
   let syncedLocations = 0;
   let syncedMeetings = 0;
 
-  // 1. Flush pending locations
+  // 1. Flush pending location pings
   try {
     const locations = JSON.parse(localStorage.getItem(OFFLINE_LOCATIONS_KEY) || '[]');
     if (locations.length > 0) {
@@ -139,7 +145,7 @@ export const syncOfflineQueue = async () => {
             );
             written = true;
           }
-          if (!written && supabase) {
+          if (supabase) {
             const { error } = await supabase.from('univ_re_marketer_locations').upsert(loc);
             if (!error) written = true;
           }
@@ -180,7 +186,7 @@ export const syncOfflineQueue = async () => {
             );
             written = true;
           }
-          if (!written && supabase) {
+          if (supabase) {
             const { error } = await supabase.from('univ_re_client_meetings').upsert(meetingRecord);
             if (!error) written = true;
           }
@@ -209,7 +215,7 @@ if (typeof window !== 'undefined') {
 
 // START Live Geolocation Tracking
 export const startLiveTracking = (userInfo, onUpdate, onError) => {
-  if (!navigator.geolocation) {
+  if (typeof navigator === 'undefined' || !navigator.geolocation) {
     if (onError) onError('Geolocation is not supported by this browser.');
     return false;
   }
@@ -226,27 +232,23 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
     const now = Date.now();
     const { latitude, longitude, accuracy, speed, heading } = position.coords;
 
-    // Check throttle and minimum movement distance
     if (now - lastPingTime < MIN_PING_INTERVAL_MS) return;
 
     if (lastPosition) {
       const dist = calculateDistanceMeters(lastPosition.latitude, lastPosition.longitude, latitude, longitude);
-      if (dist < MIN_DISTANCE_METERS && now - lastPingTime < 30000) return; // Keep updating every 30s even if stationary
+      if (dist < MIN_DISTANCE_METERS && now - lastPingTime < 30000) return;
     }
 
     lastPingTime = now;
     lastPosition = { latitude, longitude };
 
-    // Get battery status if available
     let batteryLevel = 100;
     try {
       if (navigator.getBattery) {
         const batt = await navigator.getBattery();
         batteryLevel = Math.round(batt.level * 100);
       }
-    } catch (e) {
-      // Ignore battery API failures
-    }
+    } catch (e) {}
 
     const addressLabel = await reverseGeocode(latitude, longitude);
 
@@ -268,28 +270,34 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
       created_at: new Date().toISOString(),
     };
 
-    // Store in DB / PowerSync / Offline Queue
     let savedLocallyOrOnline = false;
-    if (navigator.onLine) {
+
+    // Direct PowerSync SQLite execution
+    if (powerSync?.execute) {
       try {
-        if (powerSync?.execute) {
-          await powerSync.execute(
-            `INSERT OR REPLACE INTO univ_re_marketer_locations 
-             (id, company_id, user_id, user_name, user_email, latitude, longitude, accuracy, speed, heading, status, address_label, battery_level, tracked_at, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-              pingRecord.id, pingRecord.company_id, pingRecord.user_id, pingRecord.user_name, pingRecord.user_email,
-              pingRecord.latitude, pingRecord.longitude, pingRecord.accuracy, pingRecord.speed, pingRecord.heading,
-              pingRecord.status, pingRecord.address_label, pingRecord.battery_level, pingRecord.tracked_at, pingRecord.created_at
-            ]
-          );
-          savedLocallyOrOnline = true;
-        } else if (supabase) {
-          await supabase.from('univ_re_marketer_locations').upsert(pingRecord);
-          savedLocallyOrOnline = true;
-        }
+        await powerSync.execute(
+          `INSERT OR REPLACE INTO univ_re_marketer_locations 
+           (id, company_id, user_id, user_name, user_email, latitude, longitude, accuracy, speed, heading, status, address_label, battery_level, tracked_at, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            pingRecord.id, pingRecord.company_id, pingRecord.user_id, pingRecord.user_name, pingRecord.user_email,
+            pingRecord.latitude, pingRecord.longitude, pingRecord.accuracy, pingRecord.speed, pingRecord.heading,
+            pingRecord.status, pingRecord.address_label, pingRecord.battery_level, pingRecord.tracked_at, pingRecord.created_at
+          ]
+        );
+        savedLocallyOrOnline = true;
       } catch (e) {
-        console.warn('DB write error for live tracking ping, fallback to offline queue:', e);
+        console.warn('PowerSync tracking ping write error:', e);
+      }
+    }
+
+    // Direct Supabase upsert fallback
+    if (navigator.onLine && supabase) {
+      try {
+        await supabase.from('univ_re_marketer_locations').upsert(pingRecord);
+        savedLocallyOrOnline = true;
+      } catch (e) {
+        console.warn('Supabase tracking ping write error:', e);
       }
     }
 
@@ -297,7 +305,6 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
       queueLocationOffline(pingRecord);
     }
 
-    // Cache latest ping for UI
     localStorage.setItem('jcl_marketer_last_ping', JSON.stringify(pingRecord));
 
     if (onUpdate) onUpdate(pingRecord);
@@ -306,7 +313,7 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
   const handlePositionError = (error) => {
     console.error('Geolocation error:', error);
     let msg = 'Position unavailable';
-    if (error.code === 1) msg = 'Location access denied. Please grant GPS permission.';
+    if (error.code === 1) msg = 'Location access denied. Please grant GPS permission in your browser.';
     if (error.code === 2) msg = 'GPS signal lost or unavailable.';
     if (error.code === 3) msg = 'Location request timed out.';
     if (onError) onError(msg);
@@ -318,13 +325,12 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
 
 // STOP Live Geolocation Tracking
 export const stopLiveTracking = (userInfo) => {
-  if (activeWatchId !== null && navigator.geolocation) {
+  if (activeWatchId !== null && typeof navigator !== 'undefined' && navigator.geolocation) {
     navigator.geolocation.clearWatch(activeWatchId);
     activeWatchId = null;
   }
   localStorage.setItem(TRACKING_STATE_KEY, JSON.stringify({ active: false, stoppedAt: new Date().toISOString() }));
 
-  // Log status change ping as 'Paused' if user info provided
   if (userInfo && lastPosition) {
     const pausePing = {
       id: generateId(),
@@ -343,7 +349,18 @@ export const stopLiveTracking = (userInfo) => {
       tracked_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
     };
-    if (navigator.onLine && supabase) {
+    if (powerSync?.execute) {
+      powerSync.execute(
+        `INSERT OR REPLACE INTO univ_re_marketer_locations 
+         (id, company_id, user_id, user_name, user_email, latitude, longitude, accuracy, speed, heading, status, address_label, battery_level, tracked_at, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          pausePing.id, pausePing.company_id, pausePing.user_id, pausePing.user_name, pausePing.user_email,
+          pausePing.latitude, pausePing.longitude, pausePing.accuracy, pausePing.speed, pausePing.heading,
+          pausePing.status, pausePing.address_label, pausePing.battery_level, pausePing.tracked_at, pausePing.created_at
+        ]
+      ).catch(() => queueLocationOffline(pausePing));
+    } else if (navigator.onLine && supabase) {
       supabase.from('univ_re_marketer_locations').upsert(pausePing).catch(() => queueLocationOffline(pausePing));
     } else {
       queueLocationOffline(pausePing);
@@ -383,34 +400,41 @@ export const logClientMeeting = async (userInfo, meetingDetails) => {
         longitude: lng,
         accuracy: Math.round(acc || 0),
         address_text: addressText,
-        sync_status: navigator.onLine ? 'synced' : 'pending',
+        sync_status: (typeof navigator !== 'undefined' && navigator.onLine) ? 'synced' : 'pending',
         created_at: new Date().toISOString(),
       };
 
       let dbSaved = false;
-      if (navigator.onLine) {
+
+      // PowerSync SQLite Write
+      if (powerSync?.execute) {
         try {
-          if (powerSync?.execute) {
-            await powerSync.execute(
-              `INSERT OR REPLACE INTO univ_re_client_meetings 
-               (id, company_id, marketer_id, marketer_name, client_name, client_phone, client_email, property_interest, meeting_purpose, notes, meeting_outcome, follow_up_date, latitude, longitude, accuracy, address_text, sync_status, created_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-              [
-                meetingRecord.id, meetingRecord.company_id, meetingRecord.marketer_id, meetingRecord.marketer_name,
-                meetingRecord.client_name, meetingRecord.client_phone, meetingRecord.client_email,
-                meetingRecord.property_interest, meetingRecord.meeting_purpose, meetingRecord.notes,
-                meetingRecord.meeting_outcome, meetingRecord.follow_up_date, meetingRecord.latitude,
-                meetingRecord.longitude, meetingRecord.accuracy, meetingRecord.address_text, 'synced',
-                meetingRecord.created_at
-              ]
-            );
-            dbSaved = true;
-          } else if (supabase) {
-            const { error } = await supabase.from('univ_re_client_meetings').upsert(meetingRecord);
-            if (!error) dbSaved = true;
-          }
+          await powerSync.execute(
+            `INSERT OR REPLACE INTO univ_re_client_meetings 
+             (id, company_id, marketer_id, marketer_name, client_name, client_phone, client_email, property_interest, meeting_purpose, notes, meeting_outcome, follow_up_date, latitude, longitude, accuracy, address_text, sync_status, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              meetingRecord.id, meetingRecord.company_id, meetingRecord.marketer_id, meetingRecord.marketer_name,
+              meetingRecord.client_name, meetingRecord.client_phone, meetingRecord.client_email,
+              meetingRecord.property_interest, meetingRecord.meeting_purpose, meetingRecord.notes,
+              meetingRecord.meeting_outcome, meetingRecord.follow_up_date, meetingRecord.latitude,
+              meetingRecord.longitude, meetingRecord.accuracy, meetingRecord.address_text, 'synced',
+              meetingRecord.created_at
+            ]
+          );
+          dbSaved = true;
         } catch (e) {
-          console.warn('Meeting save DB error, storing offline:', e);
+          console.warn('PowerSync meeting write error:', e);
+        }
+      }
+
+      // Supabase Postgres Write
+      if (navigator.onLine && supabase) {
+        try {
+          const { error } = await supabase.from('univ_re_client_meetings').upsert(meetingRecord);
+          if (!error) dbSaved = true;
+        } catch (e) {
+          console.warn('Supabase meeting write error:', e);
         }
       }
 
@@ -422,8 +446,7 @@ export const logClientMeeting = async (userInfo, meetingDetails) => {
       resolve({ success: true, meeting: meetingRecord, isOffline: !dbSaved });
     };
 
-    // Obtain current high-accuracy position or fallback
-    if (navigator.geolocation) {
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           finishMeetingLog(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
@@ -444,12 +467,34 @@ export const logClientMeeting = async (userInfo, meetingDetails) => {
   });
 };
 
-// FETCH ACTIVE MARKETERS FOR ADMIN DASHBOARD
+// FETCH ACTIVE MARKETERS FOR ADMIN DASHBOARD (PowerSync SQLite + Supabase)
 export const fetchActiveMarketers = async (companyId) => {
   let marketers = [];
 
-  // Try fetching from PowerSync or Supabase
-  if (navigator.onLine && supabase) {
+  // Primary: PowerSync SQLite Query
+  if (powerSync?.execute) {
+    try {
+      const res = await powerSync.execute(
+        `SELECT * FROM univ_re_marketer_locations WHERE company_id = ? ORDER BY tracked_at DESC`,
+        [companyId || 'default']
+      );
+      const rows = res?.rows?._array || Array.from(res?.rows || []);
+      if (rows.length > 0) {
+        const latestByUser = new Map();
+        rows.forEach((row) => {
+          if (!latestByUser.has(row.user_id)) {
+            latestByUser.set(row.user_id, row);
+          }
+        });
+        marketers = Array.from(latestByUser.values());
+      }
+    } catch (e) {
+      console.warn('PowerSync fetchActiveMarketers error:', e);
+    }
+  }
+
+  // Fallback / Merge: Supabase Postgres Query
+  if (marketers.length === 0 && typeof navigator !== 'undefined' && navigator.onLine && supabase) {
     try {
       const { data, error } = await supabase
         .from('univ_re_marketer_locations')
@@ -458,7 +503,6 @@ export const fetchActiveMarketers = async (companyId) => {
         .order('tracked_at', { ascending: false });
 
       if (!error && data) {
-        // Group by user_id to get the latest position per marketer
         const latestByUser = new Map();
         data.forEach((row) => {
           if (!latestByUser.has(row.user_id)) {
@@ -468,11 +512,11 @@ export const fetchActiveMarketers = async (companyId) => {
         marketers = Array.from(latestByUser.values());
       }
     } catch (e) {
-      console.warn('Failed to fetch marketers from Supabase:', e);
+      console.warn('Supabase fetchActiveMarketers error:', e);
     }
   }
 
-  // Fallback / merge with local last ping
+  // Merge local last ping if available
   try {
     const lastPingStr = localStorage.getItem('jcl_marketer_last_ping');
     if (lastPingStr) {
@@ -489,11 +533,28 @@ export const fetchActiveMarketers = async (companyId) => {
   return marketers;
 };
 
-// FETCH CLIENT MEETINGS FOR FEED
+// FETCH CLIENT MEETINGS FOR FEED (PowerSync SQLite + Supabase)
 export const fetchClientMeetings = async (companyId) => {
   let meetings = [];
 
-  if (navigator.onLine && supabase) {
+  // Primary: PowerSync SQLite Query
+  if (powerSync?.execute) {
+    try {
+      const res = await powerSync.execute(
+        `SELECT * FROM univ_re_client_meetings WHERE company_id = ? ORDER BY created_at DESC`,
+        [companyId || 'default']
+      );
+      const rows = res?.rows?._array || Array.from(res?.rows || []);
+      if (rows.length > 0) {
+        meetings = rows;
+      }
+    } catch (e) {
+      console.warn('PowerSync fetchClientMeetings error:', e);
+    }
+  }
+
+  // Fallback / Merge: Supabase Postgres Query
+  if (meetings.length === 0 && typeof navigator !== 'undefined' && navigator.onLine && supabase) {
     try {
       const { data, error } = await supabase
         .from('univ_re_client_meetings')
@@ -505,11 +566,11 @@ export const fetchClientMeetings = async (companyId) => {
         meetings = data;
       }
     } catch (e) {
-      console.warn('Failed to fetch meetings from Supabase:', e);
+      console.warn('Supabase fetchClientMeetings error:', e);
     }
   }
 
-  // Merge with unsynced local offline meetings
+  // Merge unsynced offline meetings from localStorage
   try {
     const offlineStr = localStorage.getItem(OFFLINE_MEETINGS_KEY);
     if (offlineStr) {
@@ -526,9 +587,26 @@ export const fetchClientMeetings = async (companyId) => {
   return meetings;
 };
 
-// FETCH MARKETER ROUTE TRAIL
+// FETCH MARKETER ROUTE TRAIL (PowerSync SQLite + Supabase)
 export const fetchMarketerRouteHistory = async (companyId, userId, limit = 50) => {
-  if (navigator.onLine && supabase) {
+  let history = [];
+
+  if (powerSync?.execute) {
+    try {
+      const res = await powerSync.execute(
+        `SELECT * FROM univ_re_marketer_locations WHERE company_id = ? AND user_id = ? ORDER BY tracked_at ASC LIMIT ?`,
+        [companyId || 'default', userId, limit]
+      );
+      const rows = res?.rows?._array || Array.from(res?.rows || []);
+      if (rows.length > 0) {
+        return rows;
+      }
+    } catch (e) {
+      console.warn('PowerSync fetchMarketerRouteHistory error:', e);
+    }
+  }
+
+  if (typeof navigator !== 'undefined' && navigator.onLine && supabase) {
     try {
       const { data, error } = await supabase
         .from('univ_re_marketer_locations')
@@ -541,5 +619,5 @@ export const fetchMarketerRouteHistory = async (companyId, userId, limit = 50) =
       if (!error && data) return data;
     } catch (e) {}
   }
-  return [];
+  return history;
 };

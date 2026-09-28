@@ -45,7 +45,9 @@ const TABLE_MAP = {
     CasePipeline: 'case_pipelines',
     SmartFolder: 'smart_folders',
     SmartDocLink: 'smart_doc_links',
-    CasePipelineState: 'case_pipeline_states'
+    CasePipelineState: 'case_pipeline_states',
+    MarketerLocation: 'univ_re_marketer_locations',
+    ClientMeeting: 'univ_re_client_meetings'
 };
 
 

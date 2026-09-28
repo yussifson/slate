@@ -916,5 +916,7 @@ export const SCHEMA_COLUMNS = {
   "pod_records": ["id","created_at","updated_at","company_id","shipment_id","delivery_date","recipient_name","signature_data","photo_urls","delivery_notes","status"],
   "return_orders": ["id","created_at","updated_at","company_id","original_shipment_id","return_reason","status","initiation_date","expected_return_date","actual_return_date","notes"],
   "incident_reports": ["id","created_at","updated_at","company_id","shipment_id","incident_type","severity","description","location","reported_by","evidence_urls","resolution","status"],
-  "gps_tracking": ["id","created_at","company_id","shipment_id","driver_id","latitude","longitude","accuracy","speed","heading","timestamp"]
+  "gps_tracking": ["id","created_at","company_id","shipment_id","driver_id","latitude","longitude","accuracy","speed","heading","timestamp"],
+  "univ_re_marketer_locations": ["id", "company_id", "user_id", "user_name", "user_email", "latitude", "longitude", "accuracy", "speed", "heading", "status", "address_label", "battery_level", "tracked_at", "created_at"],
+  "univ_re_client_meetings": ["id", "company_id", "marketer_id", "marketer_name", "client_name", "client_phone", "client_email", "property_interest", "meeting_purpose", "notes", "meeting_outcome", "follow_up_date", "latitude", "longitude", "accuracy", "address_text", "sync_status", "created_at"]
 };
