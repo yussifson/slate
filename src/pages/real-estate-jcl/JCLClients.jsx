@@ -338,7 +338,7 @@ export default function JCLClients() {
   };
 
   return (
-    <div className="space-y-6 pb-12 font-sans min-h-screen -m-4 lg:-m-8 p-4 lg:p-8 relative bg-background">
+    <div className="space-y-6 pb-12 font-sans min-h-screen p-4 sm:p-6 lg:p-8 relative bg-background">
       
       {/* ── Top Header & Breadcrumbs Row ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
