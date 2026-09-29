@@ -52,7 +52,7 @@ export const reverseGeocode = async (lat, lng) => {
   if (addressCache.has(key)) return addressCache.get(key);
 
   // 1. Google Geocoding API (Hyper-accurate for Ghana landmarks, roads, suburbs)
-  const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyCTXanK0MuNMh-iIsSp2pe4DId9Ry3CEa0';
   if (googleKey) {
     try {
       const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${googleKey}`);

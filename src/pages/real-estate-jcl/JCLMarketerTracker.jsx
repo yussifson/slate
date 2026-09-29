@@ -62,8 +62,8 @@ const calculateDistanceMeters = (lat1, lon1, lat2, lon2) => {
   return R * c;
 };
 
-// Google Maps API Key from environment
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+// Google Maps API Key from environment (with direct key fallback)
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyCTXanK0MuNMh-iIsSp2pe4DId9Ry3CEa0';
 
 // Dynamically load Google Maps JavaScript API
 let googleMapsPromise = null;
