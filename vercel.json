@@ -21,7 +21,7 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "camera=(self \"https://*.daily.co\"), microphone=(self \"https://*.daily.co\"), display-capture=(self \"https://*.daily.co\"), geolocation=(), browsing-topics=()"
+          "value": "camera=(self \"https://*.daily.co\"), microphone=(self \"https://*.daily.co\"), display-capture=(self \"https://*.daily.co\"), geolocation=(self), browsing-topics=()"
         }
       ]
     }

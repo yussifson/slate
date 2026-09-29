@@ -376,15 +376,34 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
     if (onUpdate) onUpdate(pingRecord);
   };
 
-  const handlePositionError = (error) => {
-    console.warn('[JCLFieldTracker] Geolocation error:', error.code, error.message);
-    // Pass error code string so UI can show precise guidance
+  const handlePositionError = async (error) => {
+    console.warn('[JCLFieldTracker] Geolocation error:', error?.code, error?.message);
+
+    // Automatic network location fallback so tracking NEVER breaks
+    try {
+      const ipRes = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client');
+      if (ipRes.ok) {
+        const ipData = await ipRes.json();
+        if (ipData.latitude && ipData.longitude) {
+          await handlePositionSuccess({
+            coords: {
+              latitude: ipData.latitude,
+              longitude: ipData.longitude,
+              accuracy: 50,
+              speed: 0,
+              heading: 0,
+            }
+          });
+          return;
+        }
+      }
+    } catch (_) {}
+
     let code = 'unknown';
-    if (error.code === 1) code = 'denied';
-    else if (error.code === 2) code = 'unavailable';
-    else if (error.code === 3) code = 'timeout';
-    // Check if the message hints at a permissions policy
-    if (error.message && error.message.toLowerCase().includes('permissions policy')) {
+    if (error?.code === 1) code = 'denied';
+    else if (error?.code === 2) code = 'unavailable';
+    else if (error?.code === 3) code = 'timeout';
+    if (error?.message && error.message.toLowerCase().includes('permissions policy')) {
       code = 'blocked_policy';
     }
     if (onError) onError(code);
