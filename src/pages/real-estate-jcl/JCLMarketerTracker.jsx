@@ -113,11 +113,10 @@ const JCLTrackerMap = ({
 
       mapInstanceRef.current = map;
 
-      // High-availability CARTO Voyager tiles (Zero-API-key, Cloudflare Global CDN, Retina support, No connection drops)
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20,
+      // High-resolution Esri World Street Map (Zero API Key, Zero Watermark, 100% Free & Global CDN)
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom',
+        maxZoom: 19,
       }).addTo(map);
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -392,8 +391,8 @@ export default function JCLMarketerTracker() {
     setClientMeetings(meetings);
   };
 
-  // Check geolocation before enabling tracking
-  const handleToggleTracking = async () => {
+  // Start/Stop live GPS tracking directly
+  const handleToggleTracking = () => {
     if (isTracking) {
       stopLiveTracking(userInfo);
       setIsTracking(false);
@@ -404,17 +403,8 @@ export default function JCLMarketerTracker() {
       return;
     }
 
-    setGeoPermission('checking');
-    const permResult = await checkGeolocationPermission();
-
-    if (!permResult.granted) {
-      setGeoPermission(permResult.reason || 'denied');
-      setShowGeoErrorDialog(true);
-      return;
-    }
-
-    setGeoPermission('granted');
     setTrackingError(null);
+    setGeoPermission('checking');
 
     const started = startLiveTracking(
       userInfo,
@@ -422,6 +412,7 @@ export default function JCLMarketerTracker() {
         setIsTracking(true);
         setGeoPermission('granted');
         setCurrentLocation(ping);
+        setShowGeoErrorDialog(false);
         refreshQueueStatus();
         // Update this marketer in the roster live
         setActiveMarketers((prev) => {
@@ -436,9 +427,10 @@ export default function JCLMarketerTracker() {
       },
       (errCode) => {
         setTrackingError(errCode);
-        setIsTracking(false);
         setGeoPermission(errCode);
-        setShowGeoErrorDialog(true);
+        if (errCode === 'denied' || errCode === 'blocked_policy') {
+          setShowGeoErrorDialog(true);
+        }
       }
     );
 
@@ -750,22 +742,11 @@ export default function JCLMarketerTracker() {
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                 <Layers className="h-4 w-4 text-emerald-500" />
-                {currentMode === 'admin' ? 'Active Marketers Roster' : 'Field Tracker Control'}
+                {currentMode === 'admin' ? 'Active Personnel' : 'Field GPS Control'}
               </h3>
               <Badge variant="outline" className="text-xs font-semibold border-border">
                 {activeMarketers.length} Active
               </Badge>
-            </div>
-
-            {/* Quick Search */}
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search marketer name, location..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-10 text-xs rounded-xl bg-muted/50 border-border"
-              />
             </div>
 
             {/* Marketer Control Card for Field Marketer */}
@@ -834,8 +815,8 @@ export default function JCLMarketerTracker() {
               {activeMarketers.length === 0 ? (
                 <div className="text-center py-8 px-4 rounded-2xl border border-dashed border-border bg-muted/30">
                   <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                  <p className="text-xs font-bold text-muted-foreground">No active field agents yet</p>
-                  <p className="text-[10px] text-muted-foreground/70 mt-1">Marketers will appear here once they enable GPS tracking on their devices.</p>
+                  <p className="text-xs font-bold text-muted-foreground">No active personnel yet</p>
+                  <p className="text-[10px] text-muted-foreground/70 mt-1">Personnel will appear here once they enable GPS tracking on their devices.</p>
                   <Button onClick={refreshData} size="sm" variant="outline" className="mt-3 h-7 text-[10px] rounded-lg border-border gap-1">
                     <RefreshCw className="h-3 w-3" /> Refresh Roster
                   </Button>

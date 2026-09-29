@@ -371,6 +371,13 @@ export const startLiveTracking = (userInfo, onUpdate, onError) => {
   };
 
   try {
+    // Immediately attempt to fetch initial position without waiting for watch interval
+    navigator.geolocation.getCurrentPosition(
+      handlePositionSuccess,
+      () => {},
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 10000 }
+    );
+
     activeWatchId = navigator.geolocation.watchPosition(
       handlePositionSuccess,
       handlePositionError,
