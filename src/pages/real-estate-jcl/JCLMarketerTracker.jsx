@@ -127,6 +127,11 @@ const JCLTrackerMap = ({
 
     // 1. Try Loading Google Maps First
     if (GOOGLE_MAPS_API_KEY) {
+      window.gm_authFailure = () => {
+        console.warn('[JCLTracker] Google Maps billing/activation pending. Switching to Esri Map fallback.');
+        initLeafletMap();
+      };
+
       loadGoogleMaps()
         .then((googleMaps) => {
           if (!mapContainerRef.current) return;
