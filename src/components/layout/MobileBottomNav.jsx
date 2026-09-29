@@ -86,7 +86,9 @@ const SHORT_NAMES = {
   "Agent Metrics": "Metrics",
   "Audit Security Log": "Audit",
   "Audit Log": "Audit",
-  "Human Resources": "HR"
+  "Human Resources": "HR",
+  "Live GPS": "Live GPS",
+  "Field GPS": "Field GPS",
 };
 
 export default function MobileBottomNav() {

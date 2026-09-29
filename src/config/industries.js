@@ -857,6 +857,8 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
       { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
+      { label: 'Field GPS', path: '/real-estate/marketer-tracker', icon: 'MapPin' },
       { label: 'Land Parcels', path: '/real-estate/land', icon: 'Compass' },
       { label: 'Leads', path: '/real-estate/crm-leads', icon: 'Sparkles' },
       { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },

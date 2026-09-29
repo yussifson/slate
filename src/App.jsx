@@ -1505,7 +1505,7 @@ function PlatformRoutes() {
 }
 
 const AppPageSkeleton = () => (
-  <div className="flex flex-col h-full bg-slate-50 dark:bg-background p-4 sm:p-6 md:p-8 animate-pulse w-full min-h-screen">
+  <div className="flex flex-col bg-slate-50 dark:bg-background p-4 sm:p-6 md:p-8 animate-pulse w-full">
     <div className="flex justify-between items-start mb-8">
       <div>
         <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-48 mb-2"></div>
@@ -1521,6 +1521,7 @@ const AppPageSkeleton = () => (
     <div className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-64 mb-8"></div>
   </div>
 );
+
 
 function GlobalSystemListener() {
   const queryClient = useQueryClient();
