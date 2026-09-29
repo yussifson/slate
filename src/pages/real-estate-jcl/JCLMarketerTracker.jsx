@@ -62,8 +62,8 @@ const calculateDistanceMeters = (lat1, lon1, lat2, lon2) => {
   return R * c;
 };
 
-// Google Maps API Key from environment (with direct key fallback)
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyCTXanK0MuNMh-iIsSp2pe4DId9Ry3CEa0';
+// Use Google Maps only when explicitly enabled and verified; otherwise use zero-friction Esri World Street Map
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY && import.meta.env.VITE_ENABLE_GOOGLE_MAPS === 'true' ? import.meta.env.VITE_GOOGLE_MAPS_API_KEY : '';
 
 // Dynamically load Google Maps JavaScript API
 let googleMapsPromise = null;
@@ -85,7 +85,7 @@ const loadGoogleMaps = () => {
   return googleMapsPromise;
 };
 
-// Dynamically load Leaflet script & CSS for fallback
+// Dynamically load Leaflet script & CSS for smooth map rendering
 const loadLeaflet = () => {
   return new Promise((resolve) => {
     if (window.L) return resolve(window.L);
@@ -102,7 +102,7 @@ const loadLeaflet = () => {
   });
 };
 
-// High-Performance Dual-Engine Map Component (Google Maps + Leaflet Fallback)
+// High-Performance Map Component (Esri World Street Map / Leaflet)
 const JCLTrackerMap = ({
   activeMarketers,
   selectedMarketer,
@@ -125,10 +125,10 @@ const JCLTrackerMap = ({
     const centerLat = selectedMarketer?.latitude || currentLocation?.latitude || 5.6037;
     const centerLng = selectedMarketer?.longitude || currentLocation?.longitude || -0.1870;
 
-    // 1. Try Loading Google Maps First
+    // 1. Try Loading Google Maps if explicitly enabled
     if (GOOGLE_MAPS_API_KEY) {
       window.gm_authFailure = () => {
-        console.warn('[JCLTracker] Google Maps billing/activation pending. Switching to Esri Map fallback.');
+        console.warn('[JCLTracker] Google Maps billing pending. Falling back to Esri Map.');
         initLeafletMap();
       };
 

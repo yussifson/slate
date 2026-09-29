@@ -51,23 +51,19 @@ export const reverseGeocode = async (lat, lng) => {
   const key = `${lat.toFixed(4)},${lng.toFixed(4)}`;
   if (addressCache.has(key)) return addressCache.get(key);
 
-  // 1. Google Geocoding API (Hyper-accurate for Ghana landmarks, roads, suburbs)
-  const googleKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyCTXanK0MuNMh-iIsSp2pe4DId9Ry3CEa0';
-  if (googleKey) {
-    try {
-      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${googleKey}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.results && data.results.length > 0) {
-          const addr = data.results[0].formatted_address;
-          if (addr && addr.length > 3) {
-            addressCache.set(key, addr);
-            return addr;
-          }
-        }
-      }
-    } catch (_) {}
-  }
+  // 1. OpenStreetMap Nominatim
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+      { headers: { 'User-Agent': 'JCLRealEstateFieldTracker/1.0' } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      const addr = data.display_name ||
+        `${data.address?.road || ''}, ${data.address?.suburb || data.address?.city || ''}`.trim();
+      if (addr && addr.length > 3) { addressCache.set(key, addr); return addr; }
+    }
+  } catch (_) {}
 
   // 2. OpenStreetMap Nominatim Fallback
   try {
