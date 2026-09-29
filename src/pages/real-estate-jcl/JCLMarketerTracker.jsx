@@ -33,6 +33,7 @@ import {
   getOfflineQueueStatus,
   syncOfflineQueue,
   reverseGeocode,
+  checkGeolocationPermission,
 } from '@/api/JCLFieldTrackerEngine';
 
 // Known JCL Key Development Property Sites for Proximity Detection
@@ -263,6 +264,8 @@ export default function JCLMarketerTracker() {
   const [isTracking, setIsTracking] = useState(false);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [trackingError, setTrackingError] = useState(null);
+  const [geoPermission, setGeoPermission] = useState(null); // null | 'checking' | 'granted' | 'denied' | 'blocked_policy' | 'unavailable'
+  const [showGeoErrorDialog, setShowGeoErrorDialog] = useState(false);
 
   // Sync state
   const [queueStatus, setQueueStatus] = useState(getOfflineQueueStatus());
@@ -284,7 +287,7 @@ export default function JCLMarketerTracker() {
   const [searchQuery, setSearchQuery] = useState('');
   const [outcomeFilter, setOutcomeFilter] = useState('all');
 
-  // Sheet / Form Modal
+  // Meeting sheet state
   const [showMeetingSheet, setShowMeetingSheet] = useState(false);
   const [isSubmittingMeeting, setIsSubmittingMeeting] = useState(false);
   const [meetingForm, setMeetingForm] = useState({
@@ -300,12 +303,16 @@ export default function JCLMarketerTracker() {
 
   const [meetingPositionPreview, setMeetingPositionPreview] = useState(null);
   const [isCapturingLocation, setIsCapturingLocation] = useState(false);
+  // Manual lat/lng for when GPS is blocked
+  const [manualGpsInput, setManualGpsInput] = useState({ lat: '', lng: '' });
+  const [useManualGps, setUseManualGps] = useState(false);
 
   const userInfo = useMemo(() => ({
     id: user?.id || 'marketer_1',
     company_id: companyId || 'default',
     name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Field Marketer',
     email: user?.email || 'marketer@jclrealestate.com',
+    phone: user?.user_metadata?.phone || user?.phone || '',
   }), [user, companyId]);
 
   // Proximity Alert Detection
@@ -369,40 +376,74 @@ export default function JCLMarketerTracker() {
   const refreshData = async () => {
     const marketers = await fetchActiveMarketers(companyId);
     setActiveMarketers(marketers);
+    // Only auto-select first if nothing is selected yet
     if (marketers.length > 0 && !selectedRouteMarketer) {
-      setSelectedRouteMarketer(marketers[0]);
+      const first = marketers[0];
+      setSelectedRouteMarketer(first);
+      // Auto-load route history for first marketer
+      if (first.user_id) {
+        const hist = await fetchMarketerRouteHistory(companyId, first.user_id, 100);
+        setRouteHistory(hist);
+      }
     }
 
     const meetings = await fetchClientMeetings(companyId);
     setClientMeetings(meetings);
   };
 
-  const handleToggleTracking = () => {
+  // Check geolocation before enabling tracking
+  const handleToggleTracking = async () => {
     if (isTracking) {
       stopLiveTracking(userInfo);
       setIsTracking(false);
       setCurrentLocation(null);
+      setGeoPermission(null);
       toast.success('Live GPS tracking stopped.');
       refreshData();
-    } else {
-      setTrackingError(null);
-      const started = startLiveTracking(
-        userInfo,
-        (ping) => {
-          setIsTracking(true);
-          setCurrentLocation(ping);
-          refreshQueueStatus();
-        },
-        (err) => {
-          setTrackingError(err);
-          setIsTracking(false);
-          toast.error(err || 'Failed to start GPS tracking.');
-        }
-      );
-      if (started) {
+      return;
+    }
+
+    setGeoPermission('checking');
+    const permResult = await checkGeolocationPermission();
+
+    if (!permResult.granted) {
+      setGeoPermission(permResult.reason || 'denied');
+      setShowGeoErrorDialog(true);
+      return;
+    }
+
+    setGeoPermission('granted');
+    setTrackingError(null);
+
+    const started = startLiveTracking(
+      userInfo,
+      (ping) => {
         setIsTracking(true);
-        toast.success('High-precision GPS tracking enabled.');
+        setGeoPermission('granted');
+        setCurrentLocation(ping);
+        refreshQueueStatus();
+        // Update this marketer in the roster live
+        setActiveMarketers((prev) => {
+          const idx = prev.findIndex((m) => m.user_id === ping.user_id);
+          if (idx >= 0) {
+            const updated = [...prev];
+            updated[idx] = { ...updated[idx], ...ping };
+            return updated;
+          }
+          return [ping, ...prev];
+        });
+      },
+      (errCode) => {
+        setTrackingError(errCode);
+        setIsTracking(false);
+        setGeoPermission(errCode);
+        setShowGeoErrorDialog(true);
       }
+    );
+
+    if (started) {
+      setIsTracking(true);
+      toast.success('High-precision GPS tracking enabled.');
     }
   };
 
@@ -434,10 +475,25 @@ export default function JCLMarketerTracker() {
       notes: '',
       follow_up_date: format(new Date(Date.now() + 86400000 * 3), 'yyyy-MM-dd'),
     });
+    setManualGpsInput({ lat: '', lng: '' });
+    setUseManualGps(false);
+    setMeetingPositionPreview(null);
     setShowMeetingSheet(true);
 
+    // Use current tracked location if available
+    if (currentLocation?.latitude && currentLocation?.longitude) {
+      setMeetingPositionPreview({
+        lat: currentLocation.latitude,
+        lng: currentLocation.longitude,
+        acc: currentLocation.accuracy,
+        addr: currentLocation.address_label,
+      });
+      return;
+    }
+
+    // Try to get fresh location – handle policy blocks gracefully
     setIsCapturingLocation(true);
-    if (navigator.geolocation) {
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
           const lat = pos.coords.latitude;
@@ -449,20 +505,31 @@ export default function JCLMarketerTracker() {
         },
         (err) => {
           setIsCapturingLocation(false);
-          if (currentLocation) {
-            setMeetingPositionPreview({
-              lat: currentLocation.latitude,
-              lng: currentLocation.longitude,
-              acc: currentLocation.accuracy,
-              addr: currentLocation.address_label,
-            });
+          // If GPS is blocked/denied, switch to manual entry mode
+          const isBlocked = err.message?.toLowerCase().includes('permissions policy') || err.code === 1;
+          if (isBlocked) {
+            setUseManualGps(true);
           }
         },
-        { enableHighAccuracy: true, timeout: 10000 }
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
       );
     } else {
       setIsCapturingLocation(false);
+      setUseManualGps(true);
     }
+  };
+
+  const handleManualGpsCapture = async () => {
+    const lat = parseFloat(manualGpsInput.lat);
+    const lng = parseFloat(manualGpsInput.lng);
+    if (isNaN(lat) || isNaN(lng)) {
+      toast.error('Please enter valid latitude and longitude values.');
+      return;
+    }
+    setIsCapturingLocation(true);
+    const addr = await reverseGeocode(lat, lng);
+    setMeetingPositionPreview({ lat, lng, acc: 0, addr });
+    setIsCapturingLocation(false);
   };
 
   const handleSubmitMeeting = async (e) => {
@@ -473,7 +540,12 @@ export default function JCLMarketerTracker() {
     }
 
     setIsSubmittingMeeting(true);
-    const result = await logClientMeeting(userInfo, meetingForm);
+    // Pass manual coords if user entered them manually
+    const manualLatLng = (useManualGps && meetingPositionPreview?.lat)
+      ? { lat: meetingPositionPreview.lat, lng: meetingPositionPreview.lng, acc: 0 }
+      : null;
+
+    const result = await logClientMeeting(userInfo, meetingForm, manualLatLng);
     setIsSubmittingMeeting(false);
 
     if (result.success) {
@@ -519,7 +591,67 @@ export default function JCLMarketerTracker() {
 
   return (
     <div className="space-y-6 pb-20 font-sans min-h-screen text-foreground p-4 md:p-6 lg:p-8 bg-background">
-      
+
+      {/* ── GPS PERMISSION ERROR DIALOG ── */}
+      <Dialog open={showGeoErrorDialog} onOpenChange={setShowGeoErrorDialog}>
+        <DialogContent className="sm:max-w-md bg-card text-card-foreground border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold text-foreground">
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              {geoPermission === 'blocked_policy' ? 'GPS Access Blocked by Browser' : 'Location Access Required'}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              {geoPermission === 'blocked_policy'
+                ? 'The browser is blocking GPS access due to a permissions policy. This can happen when the app is embedded in a frame or when the browser has GPS disabled at the system level.'
+                : geoPermission === 'denied'
+                  ? 'You denied location access. GPS tracking requires your precise location to work correctly.'
+                  : 'Your GPS signal is currently unavailable. Please check your device settings.'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <div className="rounded-xl border border-border bg-muted/50 p-4 space-y-3 text-xs font-medium text-foreground">
+              <p className="font-bold text-sm text-foreground">How to fix this:</p>
+              {geoPermission === 'blocked_policy' ? (
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Open the site directly (not inside an embedded frame).</li>
+                  <li>Click the <strong>🔒 lock icon</strong> in your browser's address bar.</li>
+                  <li>Set <strong>Location</strong> to <strong>Allow</strong>.</li>
+                  <li>Reload the page and try again.</li>
+                </ol>
+              ) : geoPermission === 'denied' ? (
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Click the <strong>🔒 lock icon</strong> in your browser's address bar.</li>
+                  <li>Find <strong>Location</strong> and set it to <strong>Allow</strong>.</li>
+                  <li>Or go to your device <strong>Settings → Apps → Browser → Permissions → Location</strong>.</li>
+                  <li>Reload the page and tap <em>Enable Live GPS</em> again.</li>
+                </ol>
+              ) : (
+                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                  <li>Enable <strong>Location Services</strong> on your device settings.</li>
+                  <li>Move to an open area with clear sky for better GPS signal.</li>
+                  <li>Reload the page and try again.</li>
+                </ol>
+              )}
+            </div>
+            <div className="flex items-center gap-3 justify-end">
+              <Button variant="outline" onClick={() => setShowGeoErrorDialog(false)} className="rounded-xl text-xs border-border">
+                Close
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowGeoErrorDialog(false);
+                  // On iOS/Chrome, re-requesting triggers the permission prompt if 'prompt' state
+                  handleToggleTracking();
+                }}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold px-4 shadow-sm"
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* ── TOP EXECUTIVE BANNER (DESKTOP & MOBILE HEADER WITH FULL THEME HARMONY) ── */}
       <div className="relative overflow-hidden rounded-3xl bg-card text-card-foreground p-6 shadow-md border border-border">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -640,22 +772,50 @@ export default function JCLMarketerTracker() {
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md transition-colors", isTracking ? "bg-emerald-600 animate-pulse" : "bg-muted-foreground")}>
-                      <Radio className="h-5 w-5" />
+                    <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md transition-colors",
+                      isTracking ? "bg-emerald-600 animate-pulse" :
+                      geoPermission === 'checking' ? "bg-blue-500 animate-pulse" :
+                      (geoPermission === 'denied' || geoPermission === 'blocked_policy') ? "bg-red-500" :
+                      "bg-muted-foreground"
+                    )}>
+                      {geoPermission === 'checking' ? <RefreshCw className="h-5 w-5 animate-spin" /> : <Radio className="h-5 w-5" />}
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-foreground">GPS High-Precision Signal</h4>
-                      <span className="text-xs text-muted-foreground">{isTracking ? 'Broadcasting live coordinates' : 'Tracking paused'}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {isTracking ? 'Broadcasting live coordinates' :
+                         geoPermission === 'checking' ? 'Requesting GPS permission...' :
+                         geoPermission === 'denied' ? 'Permission denied — tap button to resolve' :
+                         geoPermission === 'blocked_policy' ? 'GPS blocked — tap to see fix' :
+                         'Tracking paused'}
+                      </span>
                     </div>
                   </div>
                 </div>
 
+                {/* Live coords display */}
+                {currentLocation && (
+                  <div className="text-[11px] font-mono bg-muted/60 text-emerald-600 dark:text-emerald-400 px-3 py-2 rounded-xl flex items-center gap-2">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{currentLocation.address_label || `${currentLocation.latitude?.toFixed(5)}, ${currentLocation.longitude?.toFixed(5)}`}</span>
+                    <span className="text-muted-foreground shrink-0">±{currentLocation.accuracy}m</span>
+                  </div>
+                )}
+
                 <div className="flex gap-2 pt-1">
                   <Button
                     onClick={handleToggleTracking}
-                    className={cn("flex-1 text-xs font-bold h-10 rounded-xl shadow-md", isTracking ? "bg-red-600 hover:bg-red-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white")}
+                    disabled={geoPermission === 'checking'}
+                    className={cn("flex-1 text-xs font-bold h-10 rounded-xl shadow-md",
+                      isTracking ? "bg-red-600 hover:bg-red-700 text-white" :
+                      (geoPermission === 'denied' || geoPermission === 'blocked_policy') ? "bg-amber-600 hover:bg-amber-700 text-white" :
+                      "bg-emerald-600 hover:bg-emerald-700 text-white"
+                    )}
                   >
-                    {isTracking ? 'Pause Tracking' : 'Enable Live GPS'}
+                    {geoPermission === 'checking' ? 'Checking Permission...' :
+                     isTracking ? 'Pause Tracking' :
+                     (geoPermission === 'denied' || geoPermission === 'blocked_policy') ? 'Fix GPS & Retry' :
+                     'Enable Live GPS'}
                   </Button>
                   <Button
                     onClick={() => handleOpenMeetingSheet()}
@@ -670,7 +830,16 @@ export default function JCLMarketerTracker() {
 
             {/* Marketer List matching Image 1 Design */}
             <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
-              {activeMarketers.map((mk) => {
+              {activeMarketers.length === 0 ? (
+                <div className="text-center py-8 px-4 rounded-2xl border border-dashed border-border bg-muted/30">
+                  <Users className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                  <p className="text-xs font-bold text-muted-foreground">No active field agents yet</p>
+                  <p className="text-[10px] text-muted-foreground/70 mt-1">Marketers will appear here once they enable GPS tracking on their devices.</p>
+                  <Button onClick={refreshData} size="sm" variant="outline" className="mt-3 h-7 text-[10px] rounded-lg border-border gap-1">
+                    <RefreshCw className="h-3 w-3" /> Refresh Roster
+                  </Button>
+                </div>
+              ) : activeMarketers.map((mk) => {
                 const isSel = selectedRouteMarketer?.user_id === mk.user_id;
                 return (
                   <div
@@ -1032,16 +1201,62 @@ export default function JCLMarketerTracker() {
           </SheetHeader>
 
           <form onSubmit={handleSubmitMeeting} className="space-y-4 pt-4">
-            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl space-y-1">
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-emerald-700 dark:text-emerald-400">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4 text-emerald-500" />
-                  Auto-Captured GPS Location
+                  Meeting Location
                 </span>
-                {isCapturingLocation && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 animate-pulse">Locating...</span>}
+                <div className="flex items-center gap-2">
+                  {isCapturingLocation && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 animate-pulse">Locating...</span>}
+                  <button
+                    type="button"
+                    onClick={() => setUseManualGps(!useManualGps)}
+                    className="text-[10px] underline text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {useManualGps ? 'Use Auto-GPS' : 'Enter Manually'}
+                  </button>
+                </div>
               </div>
 
-              {meetingPositionPreview ? (
+              {useManualGps ? (
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-[10px] font-bold text-muted-foreground">Latitude</Label>
+                      <Input
+                        placeholder="5.6037"
+                        value={manualGpsInput.lat}
+                        onChange={(e) => setManualGpsInput({ ...manualGpsInput, lat: e.target.value })}
+                        className="text-xs h-8 rounded-lg border-border bg-background"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-[10px] font-bold text-muted-foreground">Longitude</Label>
+                      <Input
+                        placeholder="-0.1870"
+                        value={manualGpsInput.lng}
+                        onChange={(e) => setManualGpsInput({ ...manualGpsInput, lng: e.target.value })}
+                        className="text-xs h-8 rounded-lg border-border bg-background"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleManualGpsCapture}
+                    disabled={isCapturingLocation}
+                    size="sm"
+                    className="w-full h-8 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                  >
+                    {isCapturingLocation ? 'Looking up address...' : 'Look Up Address from Coords'}
+                  </Button>
+                  {meetingPositionPreview && (
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold truncate">
+                      📍 {meetingPositionPreview.addr}
+                    </p>
+                  )}
+                </div>
+              ) : meetingPositionPreview ? (
                 <div className="text-xs text-foreground space-y-0.5">
                   <p className="font-semibold line-clamp-1">{meetingPositionPreview.addr}</p>
                   <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
@@ -1049,7 +1264,9 @@ export default function JCLMarketerTracker() {
                   </p>
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground italic">Capturing high-accuracy position...</p>
+                <p className="text-xs text-muted-foreground italic">
+                  {isCapturingLocation ? 'Capturing high-accuracy position...' : 'GPS unavailable. Tap "Enter Manually" to set location.'}
+                </p>
               )}
             </div>
 
