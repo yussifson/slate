@@ -657,9 +657,6 @@ export default function JCLMarketerTracker() {
                 <h1 className="text-xl lg:text-2xl font-black text-foreground">
                   {currentMode === 'admin' ? 'Live GPS Command Dashboard' : 'Field GPS Tracker'}
                 </h1>
-                <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                  JCL Real Estate
-                </Badge>
               </div>
               <p className="text-xs text-muted-foreground font-medium mt-0.5">
                 {currentMode === 'admin' ? 'Interactive Field Marketer Tracking, Site Geofencing & Route Breadcrumbs' : 'High-Precision GPS Location Watch & Property Site Meeting Check-ins'}
@@ -1009,87 +1006,140 @@ export default function JCLMarketerTracker() {
         </div>
       </div>
 
-      {/* ── MOBILE FULL-SCREEN MAP TRACKING INTERFACE MATCHING MOCKUP ── */}
-      <div className="block md:hidden space-y-4">
+      {/* ── MOBILE INTERACTIVE GPS TRACKING INTERFACE ── */}
+      <div className="block md:hidden space-y-3">
         
-        {/* TOP FLOATING SEARCH BAR MATCHING MOCKUP */}
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search marketer, site location..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-11 h-12 rounded-2xl bg-card border-border shadow-md text-xs"
-          />
-        </div>
+        {/* Admin Horizontal Personnel Quick-Select Chips (Mobile) */}
+        {currentMode === 'admin' && activeMarketers.length > 0 && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {activeMarketers.map((mk) => {
+              const isSel = selectedRouteMarketer?.user_id === mk.user_id;
+              return (
+                <button
+                  key={mk.id || mk.user_id}
+                  onClick={() => {
+                    setSelectedRouteMarketer(mk);
+                    handleViewRouteTrail(mk);
+                  }}
+                  className={cn(
+                    "flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap transition-all border shrink-0",
+                    isSel
+                      ? "bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20"
+                      : "bg-card text-foreground border-border hover:bg-muted"
+                  )}
+                >
+                  <span className={cn("w-2 h-2 rounded-full", mk.status === 'Active' ? "bg-emerald-400 animate-pulse" : "bg-amber-400")} />
+                  <span>{mk.user_name}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* FULL MOBILE INTERACTIVE MAP CANVAS */}
-        <div className="relative rounded-3xl overflow-hidden border border-border shadow-xl h-[480px]">
+        <div className="relative rounded-3xl overflow-hidden border border-border shadow-xl h-[460px]">
           <JCLTrackerMap
             activeMarketers={activeMarketers}
             selectedMarketer={selectedRouteMarketer}
             routeHistory={routeHistory}
             currentLocation={currentLocation}
-            onSelectMarketer={(mk) => setSelectedRouteMarketer(mk)}
+            onSelectMarketer={(mk) => {
+              setSelectedRouteMarketer(mk);
+              handleViewRouteTrail(mk);
+            }}
             replayStepIndex={isReplaying ? replayIndex : null}
           />
 
-          {/* FLOATING OVERLAY WIDGET CARD AT BOTTOM MATCHING MOCKUP */}
-          <div className="absolute bottom-4 left-4 right-4 bg-card/95 text-card-foreground p-5 rounded-3xl backdrop-blur-xl border border-border shadow-2xl space-y-3 z-10">
+          {/* FLOATING OVERLAY WIDGET CARD AT BOTTOM */}
+          <div className="absolute bottom-3 left-3 right-3 bg-card/95 text-card-foreground p-4 rounded-2xl backdrop-blur-xl border border-border shadow-xl space-y-2.5 z-10">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center shadow-md">
-                  {selectedRouteMarketer?.user_name?.[0] || 'M'}
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="h-9 w-9 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center shadow-md shrink-0 text-xs">
+                  {selectedRouteMarketer?.user_name?.[0] || userInfo.name?.[0] || 'M'}
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-foreground">{selectedRouteMarketer?.user_name || userInfo.name}</h4>
-                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono block">GPS: {selectedRouteMarketer?.latitude?.toFixed(4) || currentLocation?.latitude?.toFixed(4) || '5.6037'}, {selectedRouteMarketer?.longitude?.toFixed(4) || currentLocation?.longitude?.toFixed(4) || '-0.1870'}</span>
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-foreground truncate">
+                    {currentMode === 'admin' ? (selectedRouteMarketer?.user_name || 'Select Personnel') : userInfo.name}
+                  </h4>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono block truncate">
+                    {selectedRouteMarketer?.latitude ? `${selectedRouteMarketer.latitude.toFixed(4)}, ${selectedRouteMarketer.longitude.toFixed(4)}` : (currentLocation ? `${currentLocation.latitude.toFixed(4)}, ${currentLocation.longitude.toFixed(4)}` : 'No GPS Fix')}
+                  </span>
                 </div>
               </div>
 
-              <Badge className="bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1">
-                {isTracking ? 'Active Tracking' : 'Paused'}
+              <Badge className={cn(
+                "text-[10px] font-bold px-2 py-0.5 shrink-0",
+                (currentMode === 'admin' ? selectedRouteMarketer?.status : (isTracking ? 'Active' : 'Paused')) === 'Active'
+                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                  : "bg-amber-500/15 text-amber-600 border border-amber-500/30"
+              )}>
+                {currentMode === 'admin' ? (selectedRouteMarketer?.status || 'Active') : (isTracking ? 'Tracking Live' : 'Paused')}
               </Badge>
             </div>
 
-            <div className="text-xs text-muted-foreground font-medium flex items-center gap-1.5 truncate bg-muted/80 p-2.5 rounded-xl">
+            <div className="text-[11px] text-muted-foreground font-medium flex items-center gap-1.5 truncate bg-muted/60 p-2 rounded-xl">
               <MapPin className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-              <span className="truncate">{selectedRouteMarketer?.address_label || currentLocation?.address_label || 'Locating position...'}</span>
+              <span className="truncate">
+                {currentMode === 'admin'
+                  ? (selectedRouteMarketer?.address_label || 'Location pinpointed on map')
+                  : (currentLocation?.address_label || 'Enable GPS to broadcast location')}
+              </span>
             </div>
 
-            <div className="flex gap-2 pt-1">
-              <Button
-                onClick={handleToggleTracking}
-                className={cn("flex-1 text-xs font-bold h-11 rounded-xl shadow-md", isTracking ? "bg-red-600 text-white" : "bg-emerald-600 text-white")}
-              >
-                {isTracking ? 'Pause Tracking' : 'Enable Live GPS'}
-              </Button>
-              <Button
-                onClick={() => handleOpenMeetingSheet()}
-                className="flex-1 text-xs font-bold h-11 rounded-xl bg-card border border-border text-foreground hover:bg-muted"
-              >
-                Log Meeting
-              </Button>
-            </div>
+            {/* Field Marketer Controls: ONLY for Field GPS Mode */}
+            {currentMode === 'marketer' && (
+              <div className="flex gap-2 pt-0.5">
+                <Button
+                  onClick={handleToggleTracking}
+                  className={cn(
+                    "flex-1 text-xs font-bold h-9 rounded-xl shadow-md",
+                    isTracking ? "bg-red-600 hover:bg-red-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  )}
+                >
+                  {isTracking ? 'Pause Tracking' : 'Enable Live GPS'}
+                </Button>
+                <Button
+                  onClick={() => handleOpenMeetingSheet()}
+                  variant="outline"
+                  className="flex-1 text-xs font-bold h-9 rounded-xl border-emerald-500 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                >
+                  Log Meeting
+                </Button>
+              </div>
+            )}
+
+            {/* Admin Controls: Contact & Route for Admin Mode */}
+            {currentMode === 'admin' && selectedRouteMarketer && (
+              <div className="flex items-center justify-between pt-1 border-t border-border">
+                <div className="flex items-center gap-2">
+                  {selectedRouteMarketer.user_phone && (
+                    <a
+                      href={`tel:${selectedRouteMarketer.user_phone}`}
+                      className="h-7 px-2.5 rounded-lg bg-muted flex items-center gap-1.5 text-xs text-foreground font-semibold hover:bg-emerald-500/10 hover:text-emerald-600"
+                    >
+                      <Phone className="h-3 w-3 text-emerald-600" /> Call
+                    </a>
+                  )}
+                  {selectedRouteMarketer.user_email && (
+                    <a
+                      href={`mailto:${selectedRouteMarketer.user_email}`}
+                      className="h-7 px-2.5 rounded-lg bg-muted flex items-center gap-1.5 text-xs text-foreground font-semibold hover:bg-emerald-500/10 hover:text-emerald-600"
+                    >
+                      <Mail className="h-3 w-3 text-emerald-600" /> Email
+                    </a>
+                  )}
+                </div>
+                <Button
+                  onClick={() => handleViewRouteTrail(selectedRouteMarketer)}
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-[11px] rounded-lg border-border font-bold gap-1"
+                >
+                  <Navigation className="h-3 w-3 text-emerald-600" /> Route Trail
+                </Button>
+              </div>
+            )}
           </div>
-        </div>
-
-        {/* FLOATING MOBILE BOTTOM DOCK BAR MATCHING MOCKUP */}
-        <div className="fixed bottom-4 left-4 right-4 bg-card/95 text-card-foreground border border-border backdrop-blur-xl rounded-full px-6 py-3 shadow-2xl flex items-center justify-around z-50">
-          <button onClick={handleToggleTracking} className={cn("flex flex-col items-center gap-1 text-[10px] font-bold", isTracking ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground")}>
-            <Radio className="h-5 w-5" />
-            <span>Tracker</span>
-          </button>
-
-          <button onClick={() => handleOpenMeetingSheet()} className="flex flex-col items-center gap-1 text-[10px] font-bold text-muted-foreground hover:text-foreground">
-            <Send className="h-5 w-5" />
-            <span>Check-in</span>
-          </button>
-
-          <button onClick={refreshData} className="flex flex-col items-center gap-1 text-[10px] font-bold text-muted-foreground hover:text-foreground">
-            <RefreshCw className="h-5 w-5" />
-            <span>Refresh</span>
-          </button>
         </div>
       </div>
 
