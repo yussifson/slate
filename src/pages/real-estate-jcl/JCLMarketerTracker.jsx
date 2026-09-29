@@ -62,7 +62,30 @@ const calculateDistanceMeters = (lat1, lon1, lat2, lon2) => {
   return R * c;
 };
 
-// Dynamically load Leaflet script & CSS for smooth map rendering
+// Google Maps API Key from environment
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+
+// Dynamically load Google Maps JavaScript API
+let googleMapsPromise = null;
+const loadGoogleMaps = () => {
+  if (window.google && window.google.maps) return Promise.resolve(window.google.maps);
+  if (googleMapsPromise) return googleMapsPromise;
+
+  if (!GOOGLE_MAPS_API_KEY) return Promise.reject(new Error('No Google Maps API Key'));
+
+  googleMapsPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve(window.google.maps);
+    script.onerror = (err) => reject(err);
+    document.head.appendChild(script);
+  });
+  return googleMapsPromise;
+};
+
+// Dynamically load Leaflet script & CSS for fallback
 const loadLeaflet = () => {
   return new Promise((resolve) => {
     if (window.L) return resolve(window.L);
@@ -79,7 +102,7 @@ const loadLeaflet = () => {
   });
 };
 
-// Interactive Leaflet Map Component matching design mockups
+// High-Performance Dual-Engine Map Component (Google Maps + Leaflet Fallback)
 const JCLTrackerMap = ({
   activeMarketers,
   selectedMarketer,
@@ -90,138 +113,262 @@ const JCLTrackerMap = ({
 }) => {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const routePolylineRef = useRef(null);
-  const replayMarkerRef = useRef(null);
+  const isGoogleRef = useRef(false);
+  const googleMarkersRef = useRef([]);
+  const googlePolylineRef = useRef(null);
+  const googleReplayMarkerRef = useRef(null);
+  const leafletReplayMarkerRef = useRef(null);
 
   useEffect(() => {
-    let map = null;
-    loadLeaflet().then((L) => {
-      if (!mapContainerRef.current) return;
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
+    if (!mapContainerRef.current) return;
 
-      const centerLat = selectedMarketer?.latitude || currentLocation?.latitude || 5.6037;
-      const centerLng = selectedMarketer?.longitude || currentLocation?.longitude || -0.1870;
+    const centerLat = selectedMarketer?.latitude || currentLocation?.latitude || 5.6037;
+    const centerLng = selectedMarketer?.longitude || currentLocation?.longitude || -0.1870;
 
-      map = L.map(mapContainerRef.current, {
-        center: [centerLat, centerLng],
-        zoom: 14,
-        zoomControl: false,
-      });
+    // 1. Try Loading Google Maps First
+    if (GOOGLE_MAPS_API_KEY) {
+      loadGoogleMaps()
+        .then((googleMaps) => {
+          if (!mapContainerRef.current) return;
+          isGoogleRef.current = true;
 
-      mapInstanceRef.current = map;
+          const map = new googleMaps.Map(mapContainerRef.current, {
+            center: { lat: centerLat, lng: centerLng },
+            zoom: 14,
+            mapTypeId: 'roadmap',
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+              style: googleMaps.MapTypeControlStyle.DROPDOWN_MENU,
+              position: googleMaps.ControlPosition.TOP_RIGHT,
+            },
+            streetViewControl: false,
+            fullscreenControl: true,
+            zoomControl: true,
+            styles: [
+              { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'on' }] }
+            ],
+          });
 
-      // High-resolution Esri World Street Map (Zero API Key, Zero Watermark, 100% Free & Global CDN)
-      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom',
-        maxZoom: 19,
-      }).addTo(map);
+          mapInstanceRef.current = map;
 
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
+          // Render JCL Property Sites as Circles on Google Maps
+          JCL_PROPERTY_SITES.forEach((site) => {
+            new googleMaps.Circle({
+              strokeColor: '#10b981',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '#10b981',
+              fillOpacity: 0.15,
+              map,
+              center: { lat: site.lat, lng: site.lng },
+              radius: site.radiusMeters,
+            });
+          });
 
-      const bounds = [];
+          // Render Markers for Active Personnel
+          const bounds = new googleMaps.LatLngBounds();
+          googleMarkersRef.current = [];
 
-      // Render JCL Key Property Sites as circles
-      JCL_PROPERTY_SITES.forEach((site) => {
-        L.circle([site.lat, site.lng], {
-          color: '#10b981',
-          fillColor: '#10b981',
-          fillOpacity: 0.15,
-          radius: site.radiusMeters,
+          activeMarketers.forEach((mk) => {
+            if (mk.latitude && mk.longitude) {
+              const pos = { lat: mk.latitude, lng: mk.longitude };
+              bounds.extend(pos);
+              const isSelected = selectedMarketer?.user_id === mk.user_id;
+
+              const marker = new googleMaps.Marker({
+                position: pos,
+                map,
+                title: mk.user_name || 'Agent',
+                icon: {
+                  path: googleMaps.SymbolPath.CIRCLE,
+                  scale: isSelected ? 12 : 9,
+                  fillColor: mk.status === 'Active' ? '#10b981' : '#f59e0b',
+                  fillOpacity: 1,
+                  strokeColor: '#ffffff',
+                  strokeWeight: 3,
+                },
+              });
+
+              marker.addListener('click', () => {
+                if (onSelectMarketer) onSelectMarketer(mk);
+              });
+
+              googleMarkersRef.current.push(marker);
+            }
+          });
+
+          // Draw Route Polyline
+          if (routeHistory && routeHistory.length > 1) {
+            const pathCoords = routeHistory
+              .filter((p) => p.latitude && p.longitude)
+              .map((p) => ({ lat: p.latitude, lng: p.longitude }));
+
+            if (pathCoords.length > 1) {
+              googlePolylineRef.current = new googleMaps.Polyline({
+                path: pathCoords,
+                geodesic: true,
+                strokeColor: '#2563eb',
+                strokeOpacity: 0.9,
+                strokeWeight: 4,
+                map,
+              });
+            }
+          }
+
+          if (activeMarketers.length > 1 && !selectedMarketer) {
+            map.fitBounds(bounds);
+          }
         })
-          .addTo(map)
-          .bindTooltip(`<b>${site.name}</b><br/>JCL Property Site`, { permanent: false });
-      });
+        .catch(() => {
+          // Fall back to Leaflet if Google Maps fails
+          initLeafletMap();
+        });
+    } else {
+      initLeafletMap();
+    }
 
-      // Render markers for active marketers
-      activeMarketers.forEach((mk) => {
-        if (mk.latitude && mk.longitude) {
-          const latLng = [mk.latitude, mk.longitude];
-          bounds.push(latLng);
-          const isSelected = selectedMarketer?.user_id === mk.user_id;
-          const bg = mk.status === 'Active' ? '#10b981' : '#f59e0b';
+    function initLeafletMap() {
+      isGoogleRef.current = false;
+      loadLeaflet().then((L) => {
+        if (!mapContainerRef.current) return;
+        if (mapInstanceRef.current && mapInstanceRef.current.remove) {
+          mapInstanceRef.current.remove();
+        }
 
-          const icon = L.divIcon({
-            className: 'custom-map-pin',
-            html: `
-              <div style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                <div style="background-color: ${bg}; width: 38px; height: 38px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 14px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
-                  ${mk.user_name?.[0] || 'M'}
+        const map = L.map(mapContainerRef.current, {
+          center: [centerLat, centerLng],
+          zoom: 14,
+          zoomControl: false,
+        });
+
+        mapInstanceRef.current = map;
+
+        // High-resolution Esri World Street Map (Zero API Key, Zero Watermark, 100% Free)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
+          maxZoom: 19,
+        }).addTo(map);
+
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        const bounds = [];
+
+        // Render JCL Key Property Sites as circles
+        JCL_PROPERTY_SITES.forEach((site) => {
+          L.circle([site.lat, site.lng], {
+            color: '#10b981',
+            fillColor: '#10b981',
+            fillOpacity: 0.15,
+            radius: site.radiusMeters,
+          })
+            .addTo(map)
+            .bindTooltip(`<b>${site.name}</b><br/>JCL Property Site`, { permanent: false });
+        });
+
+        // Render markers for active personnel
+        activeMarketers.forEach((mk) => {
+          if (mk.latitude && mk.longitude) {
+            const latLng = [mk.latitude, mk.longitude];
+            bounds.push(latLng);
+            const isSelected = selectedMarketer?.user_id === mk.user_id;
+            const bg = mk.status === 'Active' ? '#10b981' : '#f59e0b';
+
+            const icon = L.divIcon({
+              className: 'custom-map-pin',
+              html: `
+                <div style="position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                  <div style="background-color: ${bg}; width: 38px; height: 38px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 14px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
+                    ${mk.user_name?.[0] || 'M'}
+                  </div>
+                  ${isSelected ? `<div style="position: absolute; width: 52px; height: 52px; border-radius: 50%; border: 3px solid ${bg}; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>` : ''}
                 </div>
-                ${isSelected ? `<div style="position: absolute; width: 52px; height: 52px; border-radius: 50%; border: 3px solid ${bg}; animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>` : ''}
-              </div>
-            `,
-            iconSize: [38, 38],
-            iconAnchor: [19, 19],
-          });
+              `,
+              iconSize: [38, 38],
+              iconAnchor: [19, 19],
+            });
 
-          const marker = L.marker(latLng, { icon }).addTo(map);
-          marker.on('click', () => {
-            if (onSelectMarketer) onSelectMarketer(mk);
-          });
+            const marker = L.marker(latLng, { icon }).addTo(map);
+            marker.on('click', () => {
+              if (onSelectMarketer) onSelectMarketer(mk);
+            });
+          }
+        });
+
+        // Render route trail polyline if available
+        if (routeHistory && routeHistory.length > 1) {
+          const polylineCoords = routeHistory
+            .filter((p) => p.latitude && p.longitude)
+            .map((p) => [p.latitude, p.longitude]);
+
+          if (polylineCoords.length > 1) {
+            L.polyline(polylineCoords, {
+              color: '#2563eb',
+              weight: 4,
+              opacity: 0.85,
+              dashArray: '8, 8',
+            }).addTo(map);
+          }
+        }
+
+        if (bounds.length > 0 && !selectedMarketer) {
+          map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15 });
         }
       });
-
-      // Render route trail polyline if available
-      if (routeHistory && routeHistory.length > 1) {
-        const polylineCoords = routeHistory
-          .filter((p) => p.latitude && p.longitude)
-          .map((p) => [p.latitude, p.longitude]);
-
-        if (polylineCoords.length > 1) {
-          L.polyline(polylineCoords, {
-            color: '#2563eb',
-            weight: 4,
-            opacity: 0.85,
-            dashArray: '8, 8',
-          }).addTo(map);
-        }
-      }
-
-      if (bounds.length > 0 && !selectedMarketer) {
-        map.fitBounds(bounds, { padding: [60, 60], maxZoom: 15 });
-      }
-    });
+    }
 
     return () => {
-      if (mapInstanceRef.current) {
+      if (mapInstanceRef.current && mapInstanceRef.current.remove) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
   }, [activeMarketers, selectedMarketer, routeHistory, currentLocation]);
 
-  // Handle Route Replay Marker Update
+  // Handle Route Replay Step Update (Google Maps & Leaflet)
   useEffect(() => {
-    if (!mapInstanceRef.current || !window.L || !routeHistory || routeHistory.length === 0) return;
-    const L = window.L;
+    if (!routeHistory || routeHistory.length === 0 || replayStepIndex === null) return;
+    const activePing = routeHistory[replayStepIndex];
+    if (!activePing || !activePing.latitude || !activePing.longitude) return;
 
-    if (replayStepIndex !== null && replayStepIndex >= 0 && replayStepIndex < routeHistory.length) {
-      const activePing = routeHistory[replayStepIndex];
-      if (activePing && activePing.latitude && activePing.longitude) {
-        const latLng = [activePing.latitude, activePing.longitude];
+    if (isGoogleRef.current && window.google?.maps && mapInstanceRef.current) {
+      const pos = { lat: activePing.latitude, lng: activePing.longitude };
+      mapInstanceRef.current.panTo(pos);
 
-        if (!replayMarkerRef.current) {
-          const replayIcon = L.divIcon({
-            className: 'replay-pin',
-            html: `
-              <div style="background-color: #2563eb; width: 34px; height: 34px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 14px rgba(37,99,235,0.5); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
-                ▶
-              </div>
-            `,
-            iconSize: [34, 34],
-            iconAnchor: [17, 17],
-          });
-
-          replayMarkerRef.current = L.marker(latLng, { icon: replayIcon }).addTo(mapInstanceRef.current);
-        } else {
-          replayMarkerRef.current.setLatLng(latLng);
-        }
-
-        mapInstanceRef.current.panTo(latLng, { animate: true });
+      if (!googleReplayMarkerRef.current) {
+        googleReplayMarkerRef.current = new window.google.maps.Marker({
+          position: pos,
+          map: mapInstanceRef.current,
+          icon: {
+            path: window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale: 6,
+            fillColor: '#2563eb',
+            fillOpacity: 1,
+            strokeColor: '#ffffff',
+            strokeWeight: 2,
+            rotation: activePing.heading || 0,
+          },
+        });
+      } else {
+        googleReplayMarkerRef.current.setPosition(pos);
       }
+    } else if (window.L && mapInstanceRef.current) {
+      const latLng = [activePing.latitude, activePing.longitude];
+      if (!leafletReplayMarkerRef.current) {
+        const replayIcon = window.L.divIcon({
+          className: 'replay-pin',
+          html: `
+            <div style="background-color: #2563eb; width: 34px; height: 34px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 14px rgba(37,99,235,0.5); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+              ▶
+            </div>
+          `,
+          iconSize: [34, 34],
+          iconAnchor: [17, 17],
+        });
+        leafletReplayMarkerRef.current = window.L.marker(latLng, { icon: replayIcon }).addTo(mapInstanceRef.current);
+      } else {
+        leafletReplayMarkerRef.current.setLatLng(latLng);
+      }
+      mapInstanceRef.current.panTo(latLng, { animate: true });
     }
   }, [replayStepIndex, routeHistory]);
 
