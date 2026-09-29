@@ -427,6 +427,7 @@ export default function JCLMarketerTracker() {
   const [activeMarketers, setActiveMarketers] = useState([]);
   const [clientMeetings, setClientMeetings] = useState([]);
   const [selectedRouteMarketer, setSelectedRouteMarketer] = useState(null);
+  const [showRouteModal, setShowRouteModal] = useState(false);
   const [routeHistory, setRouteHistory] = useState([]);
   const [isLoadingRoute, setIsLoadingRoute] = useState(false);
 
@@ -707,11 +708,15 @@ export default function JCLMarketerTracker() {
     }
   };
 
-  const handleViewRouteTrail = async (marketer) => {
+  const handleViewRouteTrail = async (marketer, openModal = false) => {
+    if (!marketer) return;
     setSelectedRouteMarketer(marketer);
     setIsLoadingRoute(true);
     setReplayIndex(0);
     setIsReplaying(false);
+    if (openModal) {
+      setShowRouteModal(true);
+    }
     const history = await fetchMarketerRouteHistory(companyId, marketer.user_id, 100);
     setRouteHistory(history);
     setIsLoadingRoute(false);
@@ -1097,6 +1102,16 @@ export default function JCLMarketerTracker() {
                       <div className="text-[11px] text-muted-foreground italic">No route breadcrumbs logged yet today.</div>
                     )}
                   </div>
+                  {routeHistory.length > 0 && (
+                    <Button
+                      onClick={() => setShowRouteModal(true)}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full h-7 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-500/10 rounded-lg mt-1"
+                    >
+                      View Full Ping History ({routeHistory.length}) →
+                    </Button>
+                  )}
                 </div>
               </div>
             )}
@@ -1579,8 +1594,8 @@ export default function JCLMarketerTracker() {
         </SheetContent>
       </Sheet>
 
-      {/* ── ROUTE TRAIL MODAL FOR ADMIN ── */}
-      <Dialog open={Boolean(selectedRouteMarketer)} onOpenChange={() => setSelectedRouteMarketer(null)}>
+      {/* ── ROUTE TRAIL MODAL FOR ADMIN (ONLY OPENS ON DEMAND) ── */}
+      <Dialog open={showRouteModal} onOpenChange={setShowRouteModal}>
         <DialogContent className="sm:max-w-xl bg-card text-card-foreground border-border">
           <DialogHeader>
             <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
