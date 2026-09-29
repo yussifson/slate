@@ -427,6 +427,7 @@ export default function JCLMarketerTracker() {
   const [activeMarketers, setActiveMarketers] = useState([]);
   const [clientMeetings, setClientMeetings] = useState([]);
   const [selectedRouteMarketer, setSelectedRouteMarketer] = useState(null);
+  const [selectedMeetingDetails, setSelectedMeetingDetails] = useState(null);
   const [showRouteModal, setShowRouteModal] = useState(false);
   const [routeHistory, setRouteHistory] = useState([]);
   const [isLoadingRoute, setIsLoadingRoute] = useState(false);
