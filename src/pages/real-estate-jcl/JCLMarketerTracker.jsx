@@ -4,7 +4,7 @@ import {
   MapPin, Radio, Wifi, WifiOff, Clock, ShieldCheck, RefreshCw, Send,
   Phone, User, Activity, Search, Mail, Copy, Check, ChevronRight,
   Play, Pause, Square, AlertTriangle, Battery, Compass, Users, Map, FileText, ArrowUpRight,
-  Sparkles, Layers, Navigation, Home, Heart, PhoneCall, MessageSquare, FastForward, Navigation2
+  Sparkles, Layers, Navigation, Home, Heart, PhoneCall, MessageSquare, FastForward, Navigation2, CheckCircle2
 } from 'lucide-react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -738,6 +738,13 @@ export default function JCLMarketerTracker() {
     });
   }, [clientMeetings, searchQuery, outcomeFilter, hasAdminPrivileges, userInfo.id]);
 
+  const myMeetings = useMemo(() => {
+    return clientMeetings.filter((m) => {
+      if (!m.marketer_id) return true;
+      return m.marketer_id === userInfo.id || m.marketer_id === userInfo.user_id || m.marketer_name === userInfo.name;
+    });
+  }, [clientMeetings, userInfo.id, userInfo.user_id, userInfo.name]);
+
   const currentMode = hasAdminPrivileges ? activeTab : 'marketer';
 
   return (
@@ -1311,181 +1318,254 @@ export default function JCLMarketerTracker() {
         </div>
       </div>
 
-      {/* ── MASTER CLIENT MEETINGS FEED TABLE ── */}
-      <Card className="border-border rounded-3xl shadow-sm bg-card mt-6">
-        <CardContent className="p-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
-            <div>
-              <h2 className="text-lg font-bold text-foreground">Master Field Check-in Feed</h2>
-              <p className="text-xs text-muted-foreground">Complete record of verified client meetings logged by field personnel</p>
+      {/* ── CONDITIONAL FEED: ADMIN MASTER FEED VS. FIELD MARKETER PERSONAL SUMMARY ── */}
+      {currentMode === 'admin' ? (
+        <Card className="border-border rounded-3xl shadow-sm bg-card mt-6">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Master Field Check-in Feed</h2>
+                <p className="text-xs text-muted-foreground">Complete record of verified client meetings logged by field personnel</p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
+                  <SelectTrigger className="w-40 h-9 text-xs rounded-xl border-border bg-background">
+                    <SelectValue placeholder="Filter Outcome" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Outcomes</SelectItem>
+                    <SelectItem value="Successful">Successful</SelectItem>
+                    <SelectItem value="Follow-up Scheduled">Follow-up Scheduled</SelectItem>
+                    <SelectItem value="Closed Sale">Closed Sale</SelectItem>
+                    <SelectItem value="Not Interested">Not Interested</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
-                <SelectTrigger className="w-40 h-9 text-xs rounded-xl border-border bg-background">
-                  <SelectValue placeholder="Filter Outcome" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Outcomes</SelectItem>
-                  <SelectItem value="Successful">Successful</SelectItem>
-                  <SelectItem value="Follow-up Scheduled">Follow-up Scheduled</SelectItem>
-                  <SelectItem value="Closed Sale">Closed Sale</SelectItem>
-                  <SelectItem value="Not Interested">Not Interested</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto rounded-2xl border border-border">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-muted/80 text-muted-foreground font-bold border-b border-border">
-                <tr>
-                  <th className="p-3.5">Field Personnel</th>
-                  <th className="p-3.5">Client Information</th>
-                  <th className="p-3.5">Purpose & Property</th>
-                  <th className="p-3.5">Verified GPS Location</th>
-                  <th className="p-3.5">Outcome & Follow-up</th>
-                  <th className="p-3.5">Check-in Time</th>
-                  <th className="p-3.5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border text-foreground">
-                {filteredMeetings.length === 0 ? (
+            <div className="overflow-x-auto rounded-2xl border border-border">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-muted/80 text-muted-foreground font-bold border-b border-border">
                   <tr>
-                    <td colSpan="7" className="p-8 text-center text-muted-foreground">
-                      <FileText className="h-8 w-8 mx-auto mb-2 opacity-40 text-muted-foreground" />
-                      <p className="font-bold text-xs">No client check-ins found</p>
-                      <p className="text-[11px] mt-0.5">Logged client meetings will appear here with verified GPS check-in data.</p>
-                    </td>
+                    <th className="p-3.5">Field Personnel</th>
+                    <th className="p-3.5">Client Information</th>
+                    <th className="p-3.5">Purpose & Property</th>
+                    <th className="p-3.5">Verified GPS Location</th>
+                    <th className="p-3.5">Outcome & Follow-up</th>
+                    <th className="p-3.5">Check-in Time</th>
+                    <th className="p-3.5 text-right">Actions</th>
                   </tr>
-                ) : (
-                  filteredMeetings.map((m) => (
-                    <tr key={m.id} className="hover:bg-muted/40 transition-colors">
-                      {/* Marketer */}
-                      <td className="p-3.5">
-                        <div className="flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center text-xs shrink-0">
-                            {m.marketer_name?.[0] || 'M'}
-                          </div>
-                          <span className="font-bold text-foreground truncate max-w-[120px]">{m.marketer_name}</span>
-                        </div>
-                      </td>
-
-                      {/* Client Details with Quick Call & WA */}
-                      <td className="p-3.5">
-                        <div className="font-bold text-foreground text-xs">{m.client_name}</div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          {m.client_phone && (
-                            <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
-                              <span>{m.client_phone}</span>
-                              <a
-                                href={`tel:${m.client_phone}`}
-                                title="Call Client"
-                                className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
-                              >
-                                <Phone className="h-3 w-3" />
-                              </a>
-                              <a
-                                href={`https://wa.me/${m.client_phone.replace(/[^0-9]/g, '')}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                title="WhatsApp Client"
-                                className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
-                              >
-                                <MessageSquare className="h-3 w-3" />
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                        {m.client_email && (
-                          <div className="text-muted-foreground text-[10px] truncate max-w-[140px]">{m.client_email}</div>
-                        )}
-                      </td>
-
-                      {/* Purpose & Property */}
-                      <td className="p-3.5">
-                        <div className="font-bold text-emerald-600 dark:text-emerald-400">{m.property_interest || 'General Property Inquiry'}</div>
-                        <div className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
-                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
-                          <span>{m.meeting_purpose || 'Client Discussion'}</span>
-                        </div>
-                      </td>
-
-                      {/* GPS Location Address */}
-                      <td className="p-3.5 max-w-xs">
-                        <div className="flex items-start gap-1.5">
-                          <MapPin className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                          <div>
-                            <p className="text-xs text-foreground font-medium line-clamp-2">{m.address_text || 'GPS Pinpointed'}</p>
-                            {m.latitude && m.longitude && (
-                              <span className="text-[10px] font-mono text-muted-foreground">
-                                {m.latitude.toFixed(4)}, {m.longitude.toFixed(4)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Outcome & Follow-up */}
-                      <td className="p-3.5">
-                        <Badge className={cn(
-                          "text-[10px] font-bold px-2 py-0.5",
-                          m.meeting_outcome === 'Closed Sale' ? "bg-emerald-600 text-white" :
-                          m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" :
-                          m.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
-                          "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border border-zinc-500/30"
-                        )}>
-                          {m.meeting_outcome || 'Successful'}
-                        </Badge>
-                        {m.follow_up_date && (
-                          <div className="text-[10px] text-muted-foreground font-medium mt-1 flex items-center gap-1">
-                            <span>Next: {m.follow_up_date}</span>
-                          </div>
-                        )}
-                      </td>
-
-                      {/* Time */}
-                      <td className="p-3.5 text-muted-foreground text-[11px]">
-                        <div className="font-semibold text-foreground">
-                          {m.created_at ? format(new Date(m.created_at), 'MMM d, yyyy') : 'N/A'}
-                        </div>
-                        <div className="text-[10px] text-muted-foreground">
-                          {m.created_at ? format(new Date(m.created_at), 'h:mm a') : ''}
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="p-3.5 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            onClick={() => setSelectedMeetingDetails(m)}
-                            size="sm"
-                            variant="outline"
-                            className="h-7 px-2.5 text-[11px] rounded-lg border-border font-bold text-foreground hover:bg-muted"
-                          >
-                            Details
-                          </Button>
-                          {m.latitude && m.longitude && (
-                            <a
-                              href={`https://www.google.com/maps/search/?api=1&query=${m.latitude},${m.longitude}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="h-7 px-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 inline-flex items-center justify-center font-bold text-xs"
-                              title="Open in Google Maps"
-                            >
-                              <ArrowUpRight className="h-3.5 w-3.5" />
-                            </a>
-                          )}
-                        </div>
+                </thead>
+                <tbody className="divide-y divide-border text-foreground">
+                  {filteredMeetings.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-muted-foreground">
+                        <FileText className="h-8 w-8 mx-auto mb-2 opacity-40 text-muted-foreground" />
+                        <p className="font-bold text-xs">No client check-ins found</p>
+                        <p className="text-[11px] mt-0.5">Logged client meetings will appear here with verified GPS check-in data.</p>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                  ) : (
+                    filteredMeetings.map((m) => (
+                      <tr key={m.id} className="hover:bg-muted/40 transition-colors">
+                        {/* Marketer */}
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-2">
+                            <div className="h-7 w-7 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center text-xs shrink-0">
+                              {m.marketer_name?.[0] || 'M'}
+                            </div>
+                            <span className="font-bold text-foreground truncate max-w-[120px]">{m.marketer_name}</span>
+                          </div>
+                        </td>
+
+                        {/* Client Details with Quick Call & WA */}
+                        <td className="p-3.5">
+                          <div className="font-bold text-foreground text-xs">{m.client_name}</div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {m.client_phone && (
+                              <div className="flex items-center gap-1.5 text-muted-foreground text-[11px]">
+                                <span>{m.client_phone}</span>
+                                <a
+                                  href={`tel:${m.client_phone}`}
+                                  title="Call Client"
+                                  className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
+                                >
+                                  <Phone className="h-3 w-3" />
+                                </a>
+                                <a
+                                  href={`https://wa.me/${m.client_phone.replace(/[^0-9]/g, '')}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  title="WhatsApp Client"
+                                  className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
+                                >
+                                  <MessageSquare className="h-3 w-3" />
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                          {m.client_email && (
+                            <div className="text-muted-foreground text-[10px] truncate max-w-[140px]">{m.client_email}</div>
+                          )}
+                        </td>
+
+                        {/* Purpose & Property */}
+                        <td className="p-3.5">
+                          <div className="font-bold text-emerald-600 dark:text-emerald-400">{m.property_interest || 'General Property Inquiry'}</div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
+                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
+                            <span>{m.meeting_purpose || 'Client Discussion'}</span>
+                          </div>
+                        </td>
+
+                        {/* GPS Location Address */}
+                        <td className="p-3.5 max-w-xs">
+                          <div className="flex items-start gap-1.5">
+                            <MapPin className="h-3.5 w-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs text-foreground font-medium line-clamp-2">{m.address_text || 'GPS Pinpointed'}</p>
+                              {m.latitude && m.longitude && (
+                                <span className="text-[10px] font-mono text-muted-foreground">
+                                  {m.latitude.toFixed(4)}, {m.longitude.toFixed(4)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Outcome & Follow-up */}
+                        <td className="p-3.5">
+                          <Badge className={cn(
+                            "text-[10px] font-bold px-2 py-0.5",
+                            m.meeting_outcome === 'Closed Sale' ? "bg-emerald-600 text-white" :
+                            m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" :
+                            m.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
+                            "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border border-zinc-500/30"
+                          )}>
+                            {m.meeting_outcome || 'Successful'}
+                          </Badge>
+                          {m.follow_up_date && (
+                            <div className="text-[10px] text-muted-foreground font-medium mt-1 flex items-center gap-1">
+                              <span>Next: {m.follow_up_date}</span>
+                            </div>
+                          )}
+                        </td>
+
+                        {/* Time */}
+                        <td className="p-3.5 text-muted-foreground text-[11px]">
+                          <div className="font-semibold text-foreground">
+                            {m.created_at ? format(new Date(m.created_at), 'MMM d, yyyy') : 'N/A'}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground">
+                            {m.created_at ? format(new Date(m.created_at), 'h:mm a') : ''}
+                          </div>
+                        </td>
+
+                        {/* Actions */}
+                        <td className="p-3.5 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              onClick={() => setSelectedMeetingDetails(m)}
+                              size="sm"
+                              variant="outline"
+                              className="h-7 px-2.5 text-[11px] rounded-lg border-border font-bold text-foreground hover:bg-muted"
+                            >
+                              Details
+                            </Button>
+                            {m.latitude && m.longitude && (
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${m.latitude},${m.longitude}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="h-7 px-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 inline-flex items-center justify-center font-bold text-xs"
+                                title="Open in Google Maps"
+                              >
+                                <ArrowUpRight className="h-3.5 w-3.5" />
+                              </a>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        /* ── FIELD PERSONNEL PERSONAL LOGS SUMMARY ── */
+        <Card className="border-border rounded-3xl shadow-sm bg-card mt-6">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">My Field Activity & Check-ins</h2>
+                <p className="text-xs text-muted-foreground">Confirmed record of client meetings you have logged from the field</p>
+              </div>
+
+              <Badge variant="outline" className="text-xs font-semibold border-border bg-muted/40 w-fit">
+                {myMeetings.length} Check-ins Logged
+              </Badge>
+            </div>
+
+            {myMeetings.length === 0 ? (
+              <div className="py-10 text-center text-muted-foreground">
+                <CheckCircle2 className="h-9 w-9 mx-auto mb-2 opacity-40 text-emerald-500" />
+                <p className="font-bold text-xs text-foreground">No client meetings logged yet today</p>
+                <p className="text-[11px] text-muted-foreground mt-1">Tap the <strong>"Log Meeting"</strong> button above when meeting with a client at a property site.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {myMeetings.map((m) => (
+                  <div key={m.id} className="p-4 rounded-2xl border border-border bg-muted/30 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h4 className="font-bold text-sm text-foreground">{m.client_name}</h4>
+                        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold block mt-0.5">
+                          {m.property_interest || 'General Property Inquiry'}
+                        </span>
+                      </div>
+                      <Badge className={cn(
+                        "text-[10px] font-bold px-2 py-0.5 shrink-0",
+                        m.meeting_outcome === 'Closed Sale' ? "bg-emerald-600 text-white" :
+                        m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" :
+                        m.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
+                        "bg-zinc-500/15 text-zinc-600 border border-zinc-500/30"
+                      )}>
+                        {m.meeting_outcome || 'Successful'}
+                      </Badge>
+                    </div>
+
+                    <div className="text-[11px] text-muted-foreground space-y-1 bg-background/60 p-2.5 rounded-xl border border-border/50">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">Meeting Purpose:</span>
+                        <span className="font-semibold text-foreground">{m.meeting_purpose || 'Client Discussion'}</span>
+                      </div>
+                      {m.client_phone && (
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Client Contact:</span>
+                          <span className="font-mono text-foreground">{m.client_phone}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border">
+                      <span className="flex items-center gap-1 text-[11px]">
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        {m.created_at ? format(new Date(m.created_at), 'MMM d, h:mm a') : 'Just now'}
+                      </span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 text-[11px]">
+                        <Check className="h-3 w-3" /> Synced to Admin
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* ── CLIENT MEETING FULL DETAILS MODAL ── */}
       <Dialog open={Boolean(selectedMeetingDetails)} onOpenChange={() => setSelectedMeetingDetails(null)}>
