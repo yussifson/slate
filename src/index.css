@@ -28,40 +28,40 @@ html, body {
 @layer base {
   :root, .light {
     --font-inter: 'Inter', sans-serif;
-    --background: 220 20% 97%; /* #f4f5f8 light neutral canvas */
-    --foreground: 222 47% 11%; /* #111827 dark gray text */
-    --card: 0 0% 100%; /* #ffffff pure white cards */
-    --card-foreground: 222 47% 11%;
+    --background: 174 100% 37%; /* #00beac light teal background */
+    --foreground: 0 0% 100%; /* white text on teal */
+    --card: 174 55% 90%; /* very light teal for cards */
+    --card-foreground: 173 100% 19%; /* deep green text on light cards */
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 14 100% 56%; /* #ff521d Vibrant Swiftpay Warm Orange */
+    --popover-foreground: 173 100% 19%;
+    --primary: 149 100% 33%; /* Vibrant Emerald Green */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 94%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 220 14% 94%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 220 14% 94%;
-    --accent-foreground: 222 47% 11%;
+    --secondary: 174 40% 82%;
+    --secondary-foreground: 173 100% 19%;
+    --muted: 174 40% 82%;
+    --muted-foreground: 173 50% 35%;
+    --accent: 174 40% 82%;
+    --accent-foreground: 173 100% 19%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 14 100% 56%;
-    --chart-1: 14 100% 56%;
+    --border: 174 40% 75%;
+    --input: 174 40% 80%;
+    --ring: 149 100% 33%;
+    --chart-1: 152 76% 41%;
     --chart-2: 160 60% 45%;
     --chart-3: 38 92% 50%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --radius: 1rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 14 100% 56%; /* orange accent */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 94%;
-    --sidebar-accent-foreground: 222 47% 11%;
+    --radius: 0.75rem;
+    --sidebar-background: 173 100% 19%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 48 97% 50%; /* yellow accent */
+    --sidebar-primary-foreground: 173 100% 19%;
+    --sidebar-accent: 174 50% 28%;
+    --sidebar-accent-foreground: 222 47% 15%;
     --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 14 100% 56%;
-    --bg-base-rgb: 244, 245, 248;
+    --sidebar-ring: 152 76% 41%;
+    --bg-base-rgb: 255, 255, 255;
 
     /* ────────────────────────────────── */
     /* HOTEL VERTICAL — Premium Hospitality Palette */
@@ -154,38 +154,171 @@ html, body {
   }
 
   /* ═══════════════════════════════════════════════════
-     Swiftpay Pro Design System Rules
-     Background: Soft Light Neutral #F4F5F8
-     Cards: Pure White #FFFFFF with shadow-sm & border-slate-100
-     Primary Accent: Warm Coral Orange #FF521D
-     Sidebar: Pure White #FFFFFF + border-slate-200
+     OmniImpressive Theme — Scoped Global Overrides
+     Palette: Deep Green #006065 | Teal #00BEAC | Yellow #FAD503
+     All rules scoped under [data-theme="omniimpressive"]
   ═══════════════════════════════════════════════════ */
 
-  /* Swiftpay Card Standard */
-  .swiftpay-card {
-    background-color: #ffffff;
-    border-radius: 1.25rem;
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
-    transition: all 0.2s ease-in-out;
-  }
-  .swiftpay-card:hover {
-    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.06);
+  /* Page root containers */
+  [data-theme="omniimpressive"] [class*="min-h-full"],
+  [data-theme="omniimpressive"] [class*="min-h-screen"] {
+    background-color: #00beac !important;
   }
 
-  /* Swiftpay Primary Orange Button */
-  .swiftpay-btn-primary {
-    background-color: #ff521d;
-    color: #ffffff;
-    font-weight: 700;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 14px rgba(255, 82, 29, 0.25);
-    transition: all 0.15s ease-in-out;
+  /* All plain white divs become teal-glass cards */
+  [data-theme="omniimpressive"] div.bg-white,
+  [data-theme="omniimpressive"] section.bg-white,
+  [data-theme="omniimpressive"] main.bg-white {
+    background-color: rgba(255, 255, 255, 0.10) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
   }
-  .swiftpay-btn-primary:hover {
-    background-color: #e04413;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(255, 82, 29, 0.35);
+
+  /* Slate backgrounds -> teal tints */
+  [data-theme="omniimpressive"] .bg-slate-50 { background-color: rgba(0,190,172,0.15) !important; }
+  [data-theme="omniimpressive"] .bg-slate-100 { background-color: rgba(0,190,172,0.22) !important; }
+  [data-theme="omniimpressive"] .bg-slate-200 { background-color: rgba(0,190,172,0.30) !important; }
+
+  /* Text colors */
+  [data-theme="omniimpressive"] .text-slate-900,
+  [data-theme="omniimpressive"] .text-slate-800 { color: #ffffff !important; }
+  [data-theme="omniimpressive"] .text-slate-700,
+  [data-theme="omniimpressive"] .text-slate-600 { color: rgba(255,255,255,0.85) !important; }
+  [data-theme="omniimpressive"] .text-slate-500,
+  [data-theme="omniimpressive"] .text-slate-400 { color: rgba(255,255,255,0.60) !important; }
+
+  /* Borders */
+  [data-theme="omniimpressive"] .border-slate-200,
+  [data-theme="omniimpressive"] .border-slate-100 { border-color: rgba(255,255,255,0.18) !important; }
+
+  /* Inputs & textareas */
+  [data-theme="omniimpressive"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  [data-theme="omniimpressive"] textarea,
+  [data-theme="omniimpressive"] select {
+    background-color: rgba(0, 96, 101, 0.35) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.25) !important;
+  }
+  [data-theme="omniimpressive"] input::placeholder,
+  [data-theme="omniimpressive"] textarea::placeholder { color: rgba(255,255,255,0.50) !important; }
+
+  /* Language/Theme buttons — no blurry frost effect */
+  [data-theme="omniimpressive"] [class*="backdrop-blur"]:not(nav):not(aside) {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(0, 96, 101, 0.92) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.20) !important;
+  }
+
+  /* Radix dropdown menus */
+  [data-theme="omniimpressive"] [data-radix-popper-content-wrapper] .bg-white,
+  [data-theme="omniimpressive"] [data-radix-popper-content-wrapper] [class*="bg-popover"] {
+    background-color: #005055 !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+
+  /* Yellow accent */
+  [data-theme="omniimpressive"] .border-primary { border-color: #fad503 !important; }
+  [data-theme="omniimpressive"] .ring-primary { --tw-ring-color: #fad503 !important; }
+  [data-theme="omniimpressive"] .text-primary { color: #fad503 !important; }
+  [data-theme="omniimpressive"] .bg-primary { background-color: #fad503 !important; color: #006065 !important; }
+
+  /* Card variants */
+  [data-theme="omniimpressive"] .bg-card { background-color: rgba(255,255,255,0.10) !important; }
+  [data-theme="omniimpressive"] .text-card-foreground { color: white !important; }
+
+  /* ── Phase 2: Inner page sticky headers & sub-nav bars ── */
+  /* These are the sticky bars inside pages (e.g. SpaceDashboard header row) */
+  [data-theme="omniimpressive"] [class*="sticky"][class*="bg-white"],
+  [data-theme="omniimpressive"] [class*="sticky"][class*="bg-slate"] {
+    background-color: #006065 !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Sub-navigation tab bars (scrollable horizontal tabs inside pages) */
+  [data-theme="omniimpressive"] [class*="overflow-x-auto"][class*="border-b"],
+  [data-theme="omniimpressive"] [class*="border-b"][class*="bg-white"] {
+    background-color: rgba(0, 96, 101, 0.5) !important;
+    border-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Tab buttons — inactive state */
+  [data-theme="omniimpressive"] button[class*="border-b-2"][class*="text-slate"] {
+    color: rgba(255,255,255,0.65) !important;
+    border-color: transparent !important;
+  }
+  /* Tab buttons — active state */
+  [data-theme="omniimpressive"] button[class*="border-b-2"][class*="border-primary"],
+  [data-theme="omniimpressive"] button[class*="border-b-2"][class*="text-primary"] {
+    color: #fad503 !important;
+    border-color: #fad503 !important;
+  }
+
+  /* AI Chat / Search input boxes at bottom of pages */
+  [data-theme="omniimpressive"] [class*="rounded-xl"][class*="border"][class*="bg-white"],
+  [data-theme="omniimpressive"] [class*="rounded-2xl"][class*="border"][class*="bg-white"] {
+    background-color: rgba(0, 96, 101, 0.5) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: white !important;
+  }
+
+  /* "Back" button bars at top of pages (e.g. SpaceDashboard) */
+  [data-theme="omniimpressive"] [class*="flex"][class*="items-center"][class*="bg-white"][class*="border-b"] {
+    background-color: #006065 !important;
+    border-color: rgba(255,255,255,0.10) !important;
+    color: white !important;
+  }
+
+  /* Timeline / filter sidebars */
+  [data-theme="omniimpressive"] [class*="rounded-2xl"][class*="bg-slate"],
+  [data-theme="omniimpressive"] [class*="rounded-xl"][class*="bg-slate"] {
+    background-color: rgba(255,255,255,0.10) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.12) !important;
+  }
+
+  /* Gradient cards (pink, purple, blue top-border cards) — keep the gradient border but fix bg */
+  [data-theme="omniimpressive"] [class*="border-t-4"] {
+    background-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Badges / pills / tags */
+  [data-theme="omniimpressive"] [class*="rounded-full"][class*="bg-slate-100"],
+  [data-theme="omniimpressive"] [class*="rounded-full"][class*="bg-slate-200"] {
+    background-color: rgba(255,255,255,0.15) !important;
+    color: white !important;
+  }
+
+  /* "New Space", "Billing" and similar action buttons — keep yellow */
+  [data-theme="omniimpressive"] button[class*="bg-primary"],
+  [data-theme="omniimpressive"] a[class*="bg-primary"] {
+    background-color: #fad503 !important;
+    color: #006065 !important;
+    border-color: #fad503 !important;
+  }
+
+  /* Outlined secondary buttons */
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-white"]:not([class*="rounded-full"]),
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-slate-50"] {
+    background-color: rgba(255,255,255,0.08) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.20) !important;
+  }
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-white"]:hover,
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-slate-50"]:hover {
+    background-color: rgba(255,255,255,0.15) !important;
+  }
+
+  /* Dividers */
+  [data-theme="omniimpressive"] .divide-slate-100 > * + *,
+  [data-theme="omniimpressive"] .divide-slate-200 > * + * { border-color: rgba(255,255,255,0.10) !important; }
+
+  /* "Daily Briefing" and collapsible section cards */
+  [data-theme="omniimpressive"] [class*="rounded-xl"][class*="border-slate"],
+  [data-theme="omniimpressive"] [class*="rounded-2xl"][class*="border-slate"] {
+    border-color: rgba(255,255,255,0.15) !important;
   }
 
   .bg-noise {

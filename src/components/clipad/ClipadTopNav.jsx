@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Sparkles, Video, Calendar } from 'lucide-react';
+import { LogOut, MessageSquare, Search, Plus, User, ChevronDown, Sparkles, Video, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -45,24 +45,24 @@ export default function ClipadTopNav({ forceMobile = false }) {
   };
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-[64px] bg-white text-slate-900 border-b border-slate-200/80 gap-3">
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-[64px] bg-[#006065] text-white border-b border-white/5 gap-3">
       <div className="flex items-center gap-3 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-[#ff521d] hover:bg-[#e04413] shadow-md transition-all active:scale-95">
-              <div className="flex items-center h-9 bg-[#ff521d] text-white rounded-full px-3.5 gap-1.5 font-extrabold">
-                <Video className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
-                <span className="text-[13px] font-extrabold text-slate-900 font-bold uppercase tracking-wide">Studio</span>
-                <ChevronDown className="w-3.5 h-3.5 text-white ml-0.5" />
+            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-[#fad503] hover:bg-[#fad503]/90 shadow-md transition-all active:scale-95">
+              <div className="flex items-center h-9 bg-[#fad503] text-[#006065] rounded-full px-3.5 gap-1.5 font-extrabold">
+                <Video className="w-4 h-4 text-[#006065] group-hover:scale-110 transition-transform" />
+                <span className="text-[13px] font-extrabold text-[#006065] uppercase tracking-wide">Studio</span>
+                <ChevronDown className="w-3.5 h-3.5 text-[#006065] ml-0.5" />
               </div>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 bg-white border-slate-200 text-slate-900 shadow-xl">
-            <DropdownMenuItem onClick={() => navigate('/videos')} className="cursor-pointer font-medium py-2 text-slate-900 hover:bg-slate-100 focus:bg-slate-100">
-              <Video className="w-4 h-4 mr-2 text-[#ff521d]" /> Recordings
+          <DropdownMenuContent align="start" className="w-48 bg-[#006065] border-white/10 text-white">
+            <DropdownMenuItem onClick={() => navigate('/videos')} className="cursor-pointer font-medium py-2 text-white hover:bg-white/10 focus:bg-white/10">
+              <Video className="w-4 h-4 mr-2 text-[#fad503]" /> Recordings
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/meetings')} className="cursor-pointer font-medium py-2 text-slate-900 hover:bg-slate-100 focus:bg-slate-100">
-              <Calendar className="w-4 h-4 mr-2 text-[#ff521d]" /> Meetings
+            <DropdownMenuItem onClick={() => navigate('/meetings')} className="cursor-pointer font-medium py-2 text-white hover:bg-white/10 focus:bg-white/10">
+              <Calendar className="w-4 h-4 mr-2 text-[#fad503]" /> Meetings
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -77,9 +77,9 @@ export default function ClipadTopNav({ forceMobile = false }) {
           onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))}
           className="flex-shrink-0 group relative p-[1.5px] rounded-full bg-gradient-to-r from-blue-500 to-pink-500 hover:shadow-md transition-shadow active:scale-95"
         >
-          <div className="flex items-center h-10 bg-slate-100 border border-slate-200 rounded-full px-4 gap-2">
-            <Sparkles className="w-[18px] h-[18px] text-[#ff521d] group-hover:rotate-12 transition-transform" />
-            <span className="text-[14px] font-bold text-slate-900 font-bold uppercase tracking-wide">AI</span>
+          <div className="flex items-center h-10 bg-[#006065] rounded-full px-4 gap-2">
+            <Sparkles className="w-[18px] h-[18px] text-blue-300 group-hover:rotate-12 transition-transform" />
+            <span className="text-[14px] font-bold text-white uppercase tracking-wide">AI</span>
           </div>
         </button>
       </div>
@@ -96,7 +96,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
         {/* Spotlight - Mobile Only */}
         <button 
           onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
-          className={cn("flex items-center justify-center w-[38px] h-[38px] rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all relative", forceMobile ? "flex" : "md:hidden")}
+          className={cn("flex items-center justify-center w-[38px] h-[38px] rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all relative", forceMobile ? "flex" : "md:hidden")}
           title="Search"
         >
           <Search className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
         {/* Chat - All Devices */}
         <button 
           onClick={() => navigate('/chat')}
-          className="flex items-center justify-center w-[38px] h-[38px] rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all ml-1 relative"
+          className="flex items-center justify-center w-[38px] h-[38px] rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all ml-1 relative"
           title="Chat"
         >
           <MessageSquare className="w-5 h-5" />

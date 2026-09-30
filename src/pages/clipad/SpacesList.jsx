@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -6,12 +6,11 @@ import { getPlanLimits, getUserPlan } from '@/lib/clipadPricing';
 import { useToast } from '@/components/ui/use-toast';
 
 import { 
-  Plus, Users, Video, Clock, ArrowRight, Settings, 
-  Search, Lock, Globe, Layout, Camera, Layers, ArrowLeft, UserCircle
+  Plus, Users, ArrowRight, 
+  Search, Lock, Globe, Layers
 } from 'lucide-react';
 import { getSpaceIcon } from '@/utils/spaceIcons';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { isAdmin, canCreateSpaces } from '@/lib/constants';
 import PaywallModal from '@/components/clipad/PaywallModal';
 
@@ -212,23 +211,23 @@ export default function SpacesList() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f4f5f8] text-slate-900 page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#00beac] text-white page-enter overflow-x-hidden pb-24 md:pb-8">
 
 
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Team Spaces</h1>
-            <p className="text-slate-500">Persistent rooms for projects, teams, or recurring syncs.</p>
+            <p className="text-white/70">Persistent rooms for projects, teams, or recurring syncs.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative w-full md:w-64">
-              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-white/60" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search spaces..."
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-slate-900 border border-slate-200/80 placeholder:text-slate-400 shadow-sm focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#005055] text-white border border-white/20 placeholder:text-white/50 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
               />
             </div>
             {isAdminUser && (
@@ -240,7 +239,7 @@ export default function SpacesList() {
               </button>
             )}
             {canCreateSpaces(user) && (
-              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ff521d] hover:bg-[#e04413] text-slate-900 font-bold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
+              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
                 <Plus className="w-4 h-4" /> New Space
               </button>
             )}
@@ -275,7 +274,7 @@ export default function SpacesList() {
                   <div
                     key={space.id}
                     onClick={() => navigate(`/spaces/${space.id}`)}
-                    className={`group p-5 rounded-2xl bg-white text-slate-900 border border-slate-100 rounded-3xl shadow-[0_2px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md relative overflow-hidden ${
+                    className={`group p-5 rounded-2xl bg-[#006065] text-white border border-white/15 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md relative overflow-hidden ${
                       isRestricted
                         ? 'border-slate-200 dark:border-border opacity-80 hover:opacity-95'
                         : 'border-slate-200 dark:border-border'
@@ -312,7 +311,7 @@ export default function SpacesList() {
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 font-semibold rounded-full border border-slate-200/50 shadow-sm">
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 rounded-full border border-white/10 shadow-sm">
                         <Users className="w-3.5 h-3.5 text-white/70" />
                         <span className="text-[11px] font-bold text-white">Members</span>
                       </div>
@@ -353,7 +352,7 @@ export default function SpacesList() {
                 />
               </div>
               
-              <div onClick={() => setIsPrivate(!isPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+              <div onClick={() => setIsPrivate(!isPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-white/15 bg-white/10 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <div className={`w-10 h-6 rounded-full transition-colors relative ${isPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
                 </div>
