@@ -6,11 +6,10 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { format } from 'date-fns';
 import {
   Scale, AlertCircle, FileText, Calendar, CheckCircle2, Search,
-  Target, Users, ChevronDown, RefreshCw, Sparkles, ArrowLeft, Filter,
-  Play, TrendingUp, Clock, Shield, GitBranch
+  Target, Users, RefreshCw, Sparkles, ArrowLeft, Filter,
+  Play
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
-import { OrbitLoader } from '@/components/ui/orbit-loader';
 
 export default function DecisionLedger() {
   const { user } = useAuth();
@@ -32,8 +31,7 @@ export default function DecisionLedger() {
       // Load from clipad_decisions (native AI-detected decisions)
       const { data: nativeDecisions } = await supabase
         .from('clipad_decisions')
-        .select('id, decision_text, rationale, status, importance_score, confidence_score, participants, outcome_status, ai_detected, created_at, team_space_id')
-        .eq('workspace_id', companyId)
+        .select('*').or(`workspace_id.eq.${companyId},company_id.eq.${companyId}`)
         .order('created_at', { ascending: false })
         .limit(150);
 

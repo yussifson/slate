@@ -4,12 +4,9 @@ import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { generateText } from '@/lib/cloudflareAI';
 import { subDays, format } from 'date-fns';
-import {
-  Activity, TrendingUp, TrendingDown, Minus, RefreshCw,
-  Sparkles, Shield, Target, CheckCircle2, AlertTriangle, Clock,
-  BarChart3, Zap, ChevronRight, ArrowLeft, GitMerge, Eye
+import { RefreshCw,
+  Sparkles, Shield, Target, CheckCircle2, Clock, ArrowLeft
 } from 'lucide-react';
-import { useNavigate as useNav } from 'react-router-dom';
 
 const GRADE_CONFIG = {
   A: { color: 'emerald', label: 'Excellent', emoji: 'ðŸ†' },
@@ -90,7 +87,7 @@ export default function OrgHealthPulse() {
       const [blockers, commitments, decisions, meetings, knowledge, videos] = await Promise.allSettled([
         supabase.from('clipad_blockers').select('id, resolved, created_at').eq('workspace_id', companyId).limit(200),
         supabase.from('clipad_commitments').select('id, status, due_date, created_at').eq('workspace_id', companyId).limit(500),
-        supabase.from('clipad_decisions').select('id, created_at').eq('workspace_id', companyId).gte('created_at', since30).limit(100),
+        supabase.from('clipad_decisions').select('id, created_at').or(`workspace_id.eq.${companyId},company_id.eq.${companyId}`).gte('created_at', since30).limit(100),
         supabase.from('clipad_meetings').select('id, created_at, duration_seconds').eq('workspace_id', companyId).gte('created_at', since30).limit(100),
         supabase.from('clipad_imported_knowledge').select('id, imported_at').eq('company_id', companyId).gte('imported_at', since7).limit(100),
         supabase.from('clipad_videos').select('id, created_at').eq('workspace_id', companyId).gte('created_at', since7).limit(50),

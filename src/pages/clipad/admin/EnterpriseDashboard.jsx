@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/AuthContext';
 import { EnterpriseAnalyticsAPI } from '@/api/EnterpriseAnalyticsAPI';
 import { 
-  Shield, Server, Video, Users, AlertCircle, CheckCircle, Clock, 
-  Activity, ArrowUpRight, ArrowDownRight, FolderKanban, Briefcase, Zap, Search, Eye, X, MessageSquare
+  Shield, Server, Video, AlertCircle, CheckCircle, Clock, 
+  Activity, ArrowUpRight, FolderKanban, Briefcase, Search, Eye, X, MessageSquare
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend
 } from 'recharts';
-import ClipadLoader from '@/components/ui/ClipadLoader';
 export default function EnterpriseDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -68,10 +67,10 @@ export default function EnterpriseDashboard() {
       <div className="flex flex-col h-full bg-transparent  p-4 sm:p-6 md:p-8 animate-pulse">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <div className="h-8 bg-white/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
-            <div className="h-4 bg-white/15 dark:bg-slate-800 rounded w-32"></div>
+            <div className="h-8 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
           </div>
-          <div className="h-10 bg-white/15 dark:bg-slate-800 rounded w-32"></div>
+          <div className="h-10 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[...Array(4)].map((_, i) => (
@@ -98,9 +97,9 @@ export default function EnterpriseDashboard() {
             </h1>
             <p className="text-white/70 dark:text-muted-foreground mt-1">Cross-tenant visibility and administrative oversight for your entire organization.</p>
           </div>
-          <div className="flex items-center gap-3 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-xl">
+          <div className="flex items-center gap-3 px-4 py-2 bg-[#006065] text-white border border-white/15/10 text-white border border-white/15 border border-indigo-100 dark:border-indigo-500/20 rounded-xl">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-sm font-bold text-indigo-700 dark:text-indigo-300">Live Status: Operational</span>
+            <span className="text-sm font-bold text-indigo-300 dark:text-indigo-300">Live Status: Operational</span>
           </div>
         </div>
       </div>
@@ -118,7 +117,7 @@ export default function EnterpriseDashboard() {
               value={`${metrics?.storageUsedGB || 0} GB`}
               subtext={`of 50GB Limit (${storagePercentage.toFixed(1)}%)`}
               progress={storagePercentage}
-              progressColor="bg-blue-500"
+              progressColor="bg-[#fad503]"
             />
             <MetricCard 
               icon={<FolderKanban className="w-5 h-5 text-amber-500" />} 
@@ -141,19 +140,19 @@ export default function EnterpriseDashboard() {
               <h2 className="text-lg font-bold text-white dark:text-white">Organizational Intelligence</h2>
             </div>
             <div className="grid grid-cols-3 gap-3 md:gap-6">
-              <div className="text-center p-4 bg-rose-50 dark:bg-rose-500/10 rounded-xl border border-rose-100 dark:border-rose-500/20">
+              <div className="text-center p-4 bg-[#006065] text-white border border-white/15/10 text-white border border-white/15 rounded-xl border border-rose-100 dark:border-rose-500/20">
                 <AlertCircle className="w-6 h-6 text-rose-500 mx-auto mb-2" />
-                <p className="text-3xl font-black text-rose-700 dark:text-rose-400">{intelligence?.openBlockers || 0}</p>
+                <p className="text-3xl font-black text-rose-300 dark:text-rose-400">{intelligence?.openBlockers || 0}</p>
                 <p className="text-xs font-semibold text-rose-600 dark:text-rose-300 uppercase tracking-wider mt-1">Open Blockers</p>
               </div>
-              <div className="text-center p-4 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
+              <div className="text-center p-4 bg-[#006065] text-white border border-white/15/10 text-white border border-white/15 rounded-xl border border-indigo-100 dark:border-indigo-500/20">
                 <Briefcase className="w-6 h-6 text-indigo-500 mx-auto mb-2" />
-                <p className="text-3xl font-black text-indigo-700 dark:text-indigo-400">{intelligence?.totalDecisions || 0}</p>
+                <p className="text-3xl font-black text-indigo-300 dark:text-indigo-400">{intelligence?.totalDecisions || 0}</p>
                 <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wider mt-1">Key Decisions</p>
               </div>
-              <div className="text-center p-4 bg-amber-50 dark:bg-amber-500/10 rounded-xl border border-amber-100 dark:border-amber-500/20">
+              <div className="text-center p-4 bg-[#006065] text-white border border-white/15/10 text-white border border-white/15 rounded-xl border border-amber-100 dark:border-amber-500/20">
                 <Clock className="w-6 h-6 text-amber-500 mx-auto mb-2" />
-                <p className="text-3xl font-black text-amber-700 dark:text-amber-400">{intelligence?.pendingCommitments || 0}</p>
+                <p className="text-3xl font-black text-amber-300 dark:text-amber-400">{intelligence?.pendingCommitments || 0}</p>
                 <p className="text-xs font-semibold text-amber-600 dark:text-amber-300 uppercase tracking-wider mt-1">Pending Commitments</p>
               </div>
             </div>
@@ -175,7 +174,7 @@ export default function EnterpriseDashboard() {
                   className="w-full text-left p-4 rounded-xl border border-white/15 dark:border-white/15 hover:bg-transparent dark:hover:bg-slate-800 active:scale-[0.98] transition-all flex items-center justify-between group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-[#006065] text-white border border-white/15/10 text-white border border-white/15 flex items-center justify-center shrink-0">
                       <Video className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div>
@@ -183,7 +182,7 @@ export default function EnterpriseDashboard() {
                         {asset.title || 'Untitled Asset'}
                       </p>
                       <p className="text-xs text-white/70 flex items-center gap-2 mt-1">
-                        <span className="capitalize text-[10px] px-1.5 py-0.5 rounded bg-white/15 dark:bg-slate-700 text-white/90 dark:text-foreground">{asset.type}</span>
+                        <span className="capitalize text-[10px] px-1.5 py-0.5 rounded bg-[#006065] text-white border border-white/15/15 dark:bg-slate-700 text-white/90 dark:text-foreground">{asset.type}</span>
                         Created by {asset.host_name} • {new Date(asset.created_at).toLocaleDateString()}
                       </p>
                     </div>
@@ -251,21 +250,21 @@ export default function EnterpriseDashboard() {
                 auditLogs.map((log) => (
                   <div key={log.id} className="flex gap-4 group">
                     <div className="relative flex flex-col items-center">
-                      <div className={`w-3 h-3 rounded-full z-10 flex items-center justify-center ${log.type === 'security' ? 'bg-emerald-500 ring-4 ring-emerald-500/20' : 'bg-indigo-500 ring-4 ring-indigo-500/20'}`} />
-                      <div className="w-px h-full bg-white/15 dark:bg-slate-700 absolute top-3 group-last:hidden" />
+                      <div className={`w-3 h-3 rounded-full z-10 flex items-center justify-center ${log.type === 'security' ? 'bg-emerald-500 ring-4 ring-emerald-500/20' : 'bg-[#006065] text-white border border-white/15/100 ring-4 ring-indigo-500/20'}`} />
+                      <div className="w-px h-full bg-[#006065] text-white border border-white/15/15 dark:bg-slate-700 absolute top-3 group-last:hidden" />
                     </div>
                     <div className="pb-5 w-full">
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-sm font-semibold text-white dark:text-white flex items-center gap-2">
                           {log.title}
-                          {log.type === 'security' && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-white/10 text-white/70 dark:bg-secondary dark:text-muted-foreground">Security</span>}
+                          {log.type === 'security' && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-[#006065] text-white border border-white/15/10 text-white/70 dark:bg-secondary dark:text-muted-foreground">Security</span>}
                         </p>
                         <span className="text-[10px] font-medium text-white/60 whitespace-nowrap">
                           {new Date(log.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 mt-2 bg-transparent dark:bg-secondary/50 p-2 rounded-lg border border-white/10 dark:border-white/15 w-fit">
-                        <div className="w-5 h-5 rounded-full overflow-hidden bg-white/15 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                        <div className="w-5 h-5 rounded-full overflow-hidden bg-[#006065] text-white border border-white/15/15 dark:bg-slate-700 flex items-center justify-center shrink-0">
                           {log.profiles?.avatar_url ? (
                             <img src={log.profiles.avatar_url} className="w-full h-full object-cover" />
                           ) : (
@@ -295,7 +294,7 @@ export default function EnterpriseDashboard() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-white/15 dark:border-white/15 bg-transparent dark:bg-[#006065]/50">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-[#006065] text-white border border-white/15/100/10 flex items-center justify-center">
                   <Video className="w-6 h-6 text-indigo-500" />
                 </div>
                 <div>
@@ -305,7 +304,7 @@ export default function EnterpriseDashboard() {
               </div>
               <button 
                 onClick={() => setSelectedAsset(null)}
-                className="w-10 h-10 rounded-full bg-white/15 dark:bg-secondary flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all"
+                className="w-10 h-10 rounded-full bg-[#006065] text-white border border-white/15/15 dark:bg-secondary flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all"
               >
                 <X className="w-5 h-5 text-white/80 dark:text-foreground" />
               </button>
@@ -335,7 +334,7 @@ export default function EnterpriseDashboard() {
                           <div className="divide-y divide-slate-200 dark:divide-slate-800">
                             {engagement.viewers.map(u => (
                               <div key={u.id} className="p-3 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center overflow-hidden shrink-0">
+                                <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-[#006065] text-white border border-white/15/100/20 flex items-center justify-center overflow-hidden shrink-0">
                                   {u.avatar_url ? <img src={u.avatar_url} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">{(u.full_name || u.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -362,7 +361,7 @@ export default function EnterpriseDashboard() {
                           <div className="divide-y divide-slate-200 dark:divide-slate-800">
                             {engagement.nonViewers.map(u => (
                               <div key={u.id} className="p-3 flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-                                <div className="w-8 h-8 rounded-full bg-white/15 dark:bg-secondary flex items-center justify-center overflow-hidden shrink-0">
+                                <div className="w-8 h-8 rounded-full bg-[#006065] text-white border border-white/15/15 dark:bg-secondary flex items-center justify-center overflow-hidden shrink-0">
                                   {u.avatar_url ? <img src={u.avatar_url} className="w-full h-full object-cover" /> : <span className="text-xs font-bold text-white/70">{(u.full_name || u.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -393,7 +392,7 @@ export default function EnterpriseDashboard() {
                           {engagement.comments.map(c => (
                             <div key={c.id} className="p-4">
                               <div className="flex items-center gap-2 mb-2">
-                                <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-500/20 flex items-center justify-center overflow-hidden">
+                                <div className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-[#006065] text-white border border-white/15/100/20 flex items-center justify-center overflow-hidden">
                                   {c.author?.avatar_url ? <img src={c.author?.avatar_url} className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{(c.author?.full_name || c.author?.email || 'U').charAt(0).toUpperCase()}</span>}
                                 </div>
                                 <p className="text-xs font-semibold text-white dark:text-white">{c.author?.full_name || c.author?.email || 'Unknown User'}</p>
@@ -423,7 +422,7 @@ function MetricCard({ icon, title, value, subtext, progress, progressColor }) {
   return (
     <div className="bg-[#006065] text-white dark:bg-[#006065] rounded-2xl border border-white/15 dark:border-white/15 p-5 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
       {progress !== undefined && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 dark:bg-secondary">
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#006065] text-white border border-white/15/10 dark:bg-secondary">
           <div className={`h-full ${progressColor} transition-all`} style={{ width: `${Math.min(progress, 100)}%` }} />
         </div>
       )}

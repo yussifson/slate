@@ -88,7 +88,7 @@ export default function LiveSupport() {
           <p className="text-muted-foreground mt-1">Monitor active chats and requested calls from the marketing page.</p>
         </div>
         
-        <div className="flex bg-white/10 dark:bg-secondary p-1 rounded-xl w-full sm:w-auto overflow-x-auto shrink-0">
+        <div className="flex bg-[#006065] text-white border border-white/15/10 dark:bg-secondary p-1 rounded-xl w-full sm:w-auto overflow-x-auto shrink-0">
           {['pending', 'contacted', 'resolved'].map(f => (
             <button
               key={f}
@@ -228,7 +228,7 @@ export default function LiveSupport() {
                       <button onClick={() => updateStatus(req.id, 'contacted')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors">
                         <Mail className="w-4 h-4" /> Mark Contacted
                       </button>
-                      <button onClick={() => updateStatus(req.id, 'resolved')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white/10 dark:bg-secondary hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-white/90 dark:text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 rounded-xl text-sm font-semibold transition-colors">
+                      <button onClick={() => updateStatus(req.id, 'resolved')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-[#006065] text-white border border-white/15/10 dark:bg-secondary hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-white/90 dark:text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 rounded-xl text-sm font-semibold transition-colors">
                         <CheckCircle2 className="w-4 h-4" /> Resolve
                       </button>
                     </>
