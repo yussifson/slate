@@ -617,6 +617,10 @@ const SmartRentPaymentsRouter = () => {
 };
 
 const SmartTrustAccountingRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLTrustAccountingPage />;
+  if (ind === 'real_estate') return <RealEstateTrustAccounting />;
   return <JCLTrustAccountingPage />;
 };
 
@@ -1018,6 +1022,7 @@ function PlatformRoutes() {
       <Route path="/leads" element={<UnivCRM />} />
       <Route path="/billing" element={<BillingDashboard />} />
       <Route path="/pipeline" element={<PipelinePage />} />
+      <Route path="/trust-accounting" element={<SmartTrustAccountingRouter />} />
       <Route path="/research" element={<LegalResearch />} />
       <Route path="/audit" element={<AuditLog />} />
       <Route path="/leave" element={<UnivLeaveManagement />} />
