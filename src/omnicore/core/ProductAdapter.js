@@ -33,9 +33,10 @@ export const ProductAdapter = {
           type: 'physical_good',
           price: Number(p.price || 0),
           cost: Number(p.cost || 0),
-          stockQuantity: Number(p.stock_quantity || 0),
+          stockQuantity: Number(p.stock ?? p.stock_quantity ?? 0),
+          reorderThreshold: p.reorder_level != null ? Number(p.reorder_level) : (p.reorder_threshold != null ? Number(p.reorder_threshold) : null),
           status: p.status || 'active',
-          metadata: { category: p.category, barcode: p.barcode }
+          metadata: { category: p.category, barcode: p.barcode, supplier: p.supplier }
         });
       });
     } catch (err) {
@@ -51,14 +52,22 @@ export const ProductAdapter = {
           id: d.id,
           sourceTable: 'univ_pharmacy_drugs',
           companyId: d.company_id,
-          name: d.brand_name || d.generic_name || 'Pharmacy Drug',
+          name: d.drug_name || d.brand_name || d.generic_name || 'Pharmacy Drug',
           sku: d.sku || d.ndc_code || null,
           type: 'pharmaceutical',
-          price: Number(d.price || 0),
+          price: Number(d.unit_price ?? d.price ?? 0),
           cost: Number(d.cost || 0),
-          stockQuantity: Number(d.stock_quantity || 0),
-          status: d.status || 'active',
-          metadata: { genericName: d.generic_name, dosageForm: d.dosage_form }
+          stockQuantity: Number(d.quantity_in_stock ?? d.stock_quantity ?? d.stock ?? 0),
+          reorderThreshold: d.reorder_level != null ? Number(d.reorder_level) : null,
+          status: d.is_active === 0 ? 'inactive' : (d.status || 'active'),
+          metadata: {
+            genericName: d.generic_name,
+            strength: d.strength,
+            drugForm: d.drug_form,
+            maximumStock: d.maximum_stock != null ? Number(d.maximum_stock) : null,
+            isControlled: Boolean(d.is_controlled),
+            requiresPrescription: Boolean(d.requires_prescription)
+          }
         });
       });
     } catch (err) {
@@ -78,7 +87,8 @@ export const ProductAdapter = {
           type: 'service',
           price: Number(te.hourly_rate || 0) * Number(te.hours || 0),
           cost: 0,
-          stockQuantity: 1,
+          stockQuantity: null,
+          reorderThreshold: null,
           status: 'active',
           metadata: { hours: te.hours, hourlyRate: te.hourly_rate, caseId: te.case_id }
         });

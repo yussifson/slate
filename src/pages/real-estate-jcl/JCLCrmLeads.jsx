@@ -627,8 +627,8 @@ export default function JCLCrmLeads() {
             </Select>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-            <TabsList className="bg-muted/60 p-1 rounded-xl h-10 border border-border/60">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            <TabsList className="bg-muted/60 p-1 rounded-xl h-10 border border-border/60 shrink-0">
               <TabsTrigger value="board" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 <LayoutGrid className="w-3.5 h-3.5" /> Board
               </TabsTrigger>

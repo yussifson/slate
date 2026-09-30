@@ -19,6 +19,7 @@ import remarkGfm from 'remark-gfm';
 import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAccordion';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth} from '@/lib/AuthContext';
+import { OrbitPilotGate } from '@/omnicore/orbit';
 
 
 const PAGE_SUGGESTIONS = {
@@ -252,6 +253,17 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  const [pendingHiddenContext, setPendingHiddenContext] = useState(null);
  const [chatMode, setChatMode] = useState('chat');
  const [automationRegistries, setAutomationRegistries] = useState({ triggers: [], actions: [] });
+ const [isOmniCorePilot, setIsOmniCorePilot] = useState(false);
+
+ useEffect(() => {
+   if (!companyId) {
+     setIsOmniCorePilot(false);
+     return;
+   }
+   OrbitPilotGate.isPilotCompanyActive(companyId)
+     .then(active => setIsOmniCorePilot(Boolean(active)))
+     .catch(() => setIsOmniCorePilot(false));
+ }, [companyId]);
 
  const [originalInputBeforeVoice, setOriginalInputBeforeVoice] = useState('');
  const messagesEndRef = useRef(null);
@@ -438,6 +450,19 @@ export default function GlobalAIAssistant({ isOpen = false, onClose, injectedCon
  toast(action.message || 'Done!', { icon: ''});
  results.push(`Toast shown`);
  break;
+ case 'query_omnicore': {
+  const res = await OrbitPilotGate.executeQuery(companyId, user?.role || 'user', {
+    category: action.category,
+    options: action.options || {},
+    customerId: action.customerId
+  });
+  if (res.authorized) {
+    results.push(`OmniCore Business Data (${action.category || 'general'}):\n` + JSON.stringify(res.data, null, 2));
+  } else {
+    results.push(`OmniCore Query Notice: ${res.error || 'Access not authorized for this category or company.'}`);
+  }
+  break;
+ }
  case 'create_record':
  case 'update_record': {
   if (action.tool === 'update_record' && !action.id) {
@@ -685,7 +710,7 @@ AGENT POWERS (return EXACTLY this JSON format inline to act):
 - Toast: <AGENT_ACTION>{"tool":"show_toast","message":"Done!"}</AGENT_ACTION>
 - Remember: <AGENT_ACTION>{"tool":"remember","fact":"User prefers dark mode"}</AGENT_ACTION>
 - Search Memory: <AGENT_ACTION>{"tool":"search_memory","query":"preferences"}</AGENT_ACTION>
-- Request Confirmation: <AGENT_ACTION>{"tool":"ask_confirmation","actionToConfirm":{"tool":"navigate_to","route":"/classes"},"message":"Did you mean the Classes page?"}</AGENT_ACTION>
+- Request Confirmation: <AGENT_ACTION>{"tool":"ask_confirmation","actionToConfirm":{"tool":"navigate_to","route":"/classes"},"message":"Did you mean the Classes page?"}</AGENT_ACTION>${isOmniCorePilot ? `\n- Business Analytics (Pilot): <AGENT_ACTION>{"tool":"query_omnicore","category":"sales|finance|customers|business_health|action_center|intelligence|business_profile","options":{}}</AGENT_ACTION>` : ''}
 
 RULES FOR MULTI-STEP REASONING & AUTOMATIONS:
 1. NEVER explain how the user can do something. YOU MUST do it for them.

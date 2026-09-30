@@ -5,6 +5,10 @@ import { ProductAdapter } from './ProductAdapter';
 import { SupplierAdapter } from './SupplierAdapter';
 import { TransactionAdapter } from './TransactionAdapter';
 import { PaymentAdapter } from './PaymentAdapter';
+import { EmployeeAdapter } from './EmployeeAdapter';
+import { DocumentAdapter } from './DocumentAdapter';
+import { ProjectAdapter } from './ProjectAdapter';
+import { LocationAdapter } from './LocationAdapter';
 
 /**
  * OmniCore Business Core Layer Module
@@ -20,7 +24,11 @@ export const BusinessCore = {
     Product: ProductAdapter,
     Supplier: SupplierAdapter,
     Transaction: TransactionAdapter,
-    Payment: PaymentAdapter
+    Payment: PaymentAdapter,
+    Employee: EmployeeAdapter,
+    Document: DocumentAdapter,
+    Project: ProjectAdapter,
+    Location: LocationAdapter
   }
 };
 
@@ -31,7 +39,11 @@ export {
   ProductAdapter,
   SupplierAdapter,
   TransactionAdapter,
-  PaymentAdapter
+  PaymentAdapter,
+  EmployeeAdapter,
+  DocumentAdapter,
+  ProjectAdapter,
+  LocationAdapter
 };
 
 export default BusinessCore;

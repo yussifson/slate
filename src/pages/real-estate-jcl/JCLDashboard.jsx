@@ -291,9 +291,9 @@ export default function JCLDashboard() {
         )}
 
         {/* ── Dashboard Header ── */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-[28px] font-bold text-foreground tracking-tight flex items-center gap-2">
+            <h1 className="text-2xl sm:text-[28px] font-bold text-foreground tracking-tight flex items-center gap-2">
               Good morning, {user?.full_name?.split(' ')[0] || user?.name?.split(' ')[0] || "Executive"} {greetingEmoji}
             </h1>
             <p className="text-[13px] font-medium text-muted-foreground mt-1">
@@ -301,9 +301,9 @@ export default function JCLDashboard() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link to="/real-estate/land">
-              <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold gap-1.5 shadow-sm h-9 px-4">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Link to="/real-estate/land" className="flex-1 sm:flex-none">
+              <Button size="sm" className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold gap-1.5 shadow-sm h-9 px-4 justify-center">
                 <Compass className="w-3.5 h-3.5" /> Land Parcels
               </Button>
             </Link>
@@ -312,7 +312,7 @@ export default function JCLDashboard() {
               size="sm"
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="rounded-xl border-border bg-card text-xs font-semibold gap-1.5 h-9 px-3"
+              className="flex-1 sm:flex-none justify-center rounded-xl border-border bg-card text-xs font-semibold gap-1.5 h-9 px-3"
             >
               <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
               Refresh
@@ -321,8 +321,8 @@ export default function JCLDashboard() {
         </div>
 
         {/* ── Unified Stats Container (Compact Frosted Glass) ── */}
-        <div className="px-2 pt-4 pb-2">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4">
+        <div className="px-1 sm:px-2 pt-2 sm:pt-4 pb-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-4">
 
             {/* Active Land / Properties */}
             <div className="flex flex-col items-center text-center">

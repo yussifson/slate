@@ -38,13 +38,23 @@ export const Sales = {
       // Combine sales transactions and payments into unified sales feed
       const salesFeed = [];
 
+      const isInPeriod = (dateStr) => {
+        if (!options.startDate && !options.endDate) return true;
+        if (!dateStr) return true;
+        const d = new Date(dateStr).getTime();
+        if (isNaN(d)) return true;
+        if (options.startDate && d < new Date(options.startDate).getTime()) return false;
+        if (options.endDate && d > new Date(options.endDate).getTime()) return false;
+        return true;
+      };
+
       (transactions || []).forEach(tx => {
-        if (tx.type === 'sale' || tx.type === 'journal_entry') {
+        if ((tx.type === 'sale' || tx.type === 'journal_entry') && isInPeriod(tx.date || tx.createdAt || tx.created_at)) {
           salesFeed.push({
             id: tx.id,
             type: tx.type,
             amount: Number(tx.amount || 0),
-            date: tx.date,
+            date: tx.date || tx.createdAt || tx.created_at,
             description: tx.description,
             customerId: tx.metadata?.customerId || tx.metadata?.clientId || null
           });
@@ -52,14 +62,16 @@ export const Sales = {
       });
 
       (payments || []).forEach(p => {
-        salesFeed.push({
-          id: p.id,
-          type: 'payment',
-          amount: Number(p.amount || 0),
-          date: p.paymentDate,
-          description: `Payment via ${p.paymentMethod}`,
-          customerId: p.customerId || null
-        });
+        if (isInPeriod(p.paymentDate || p.createdAt || p.created_at)) {
+          salesFeed.push({
+            id: p.id,
+            type: 'payment',
+            amount: Number(p.amount || 0),
+            date: p.paymentDate || p.createdAt || p.created_at,
+            description: `Payment via ${p.paymentMethod}`,
+            customerId: p.customerId || null
+          });
+        }
       });
 
       // Sort recent transactions descending by date

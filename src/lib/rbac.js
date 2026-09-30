@@ -45,11 +45,29 @@ export const ROLE_PERMISSIONS = {
   [ROLES.OWNER]: {
     all: ["create", "read", "update", "delete"]
   },
+  [ROLES.MANAGER]: {
+    cases: ["create", "read", "update"],
+    clients: ["create", "read", "update"],
+    documents: ["create", "read", "update", "delete"],
+    billing: ["create", "read", "update"],
+    sales: ["create", "read", "update"],
+    finance: ["create", "read", "update"],
+    business_health: ["read"],
+    action_center: ["create", "read", "update"],
+    intelligence: ["read"],
+    team: ["create", "read", "update"],
+    settings: ["read"]
+  },
   [ROLES.LAWYER]: {
     cases: ["create", "read", "update"],
     clients: ["create", "read", "update"],
     documents: ["create", "read", "update", "delete"],
     billing: ["create", "read", "update"],
+    sales: ["create", "read", "update"],
+    finance: ["create", "read", "update"],
+    business_health: ["read"],
+    action_center: ["create", "read", "update"],
+    intelligence: ["read"],
     team: ["read"],
     settings: ["read"]
   },
@@ -58,6 +76,11 @@ export const ROLE_PERMISSIONS = {
     clients: ["read", "update"],
     documents: ["create", "read", "update"], // Users generally can't delete globally
     billing: ["read"],
+    sales: ["read"],
+    finance: ["read"],
+    business_health: ["read"],
+    action_center: ["read"],
+    intelligence: ["read"],
     team: ["read"],
     settings: []
   },
@@ -66,6 +89,11 @@ export const ROLE_PERMISSIONS = {
     clients: [],
     documents: ["read"],
     billing: [],
+    sales: [],
+    finance: [],
+    business_health: [],
+    action_center: [],
+    intelligence: [],
     team: [],
     settings: []
   },
@@ -74,6 +102,11 @@ export const ROLE_PERMISSIONS = {
     clients: ["read", "update"],
     documents: ["create", "read", "update"],
     billing: ["read"],
+    sales: ["read"],
+    finance: ["read"],
+    business_health: ["read"],
+    action_center: ["read"],
+    intelligence: ["read"],
     team: ["read"],
     settings: []
   }
