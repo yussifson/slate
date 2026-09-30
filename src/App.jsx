@@ -205,13 +205,13 @@ class ErrorBoundary extends React.Component {
       
       if (isChunkError) {
         return (
-          <div className="min-h-[100dvh] bg-[#f0f2f5] dark:bg-background flex flex-col items-center justify-center p-6 font-sans">
-            <div className="hidden md:flex bg-white dark:bg-card p-8 md:p-12 rounded-[24px] border border-slate-200 dark:border-border shadow-md flex-col items-center text-center max-w-md w-full relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+          <div className="min-h-[100dvh] bg-[#00beac] flex flex-col items-center justify-center p-6 font-sans">
+            <div className="hidden md:flex bg-[#006065] p-8 md:p-12 rounded-[24px] border border-white/10 shadow-xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#fad503]"></div>
               
               <div className="w-20 h-20 relative flex items-center justify-center mb-6">
-                 <div className="absolute inset-0 rounded-full border-4 border-slate-100 dark:border-white/5" />
-                 <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+                 <div className="absolute inset-0 rounded-full border-4 border-white/10" />
+                 <div className="absolute inset-0 rounded-full border-4 border-[#fad503] border-t-transparent animate-spin" />
                  {(() => {
                    let logoSrc = '/optavel-favicon.svg';
                    try {
@@ -223,21 +223,21 @@ class ErrorBoundary extends React.Component {
                  })()}
               </div>
 
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-3">
+              <h2 className="text-2xl font-black text-white mb-3">
                 {this.state.isUpdating ? "Applying Update..." : "Updating Workspace"}
               </h2>
-              <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed">
+              <p className="text-white/80 mb-8 text-sm font-medium leading-relaxed">
                 {this.state.isUpdating ? "Please wait while we install the newest features." : "We've just released a new update to improve your experience. Please refresh the page to load the latest version."}
               </p>
               
               {this.state.isUpdating ? (
-                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 mb-2 overflow-hidden">
-                  <div className="bg-primary h-2.5 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                <div className="w-full bg-white/10 rounded-full h-2.5 mb-2 overflow-hidden">
+                  <div className="bg-[#fad503] h-2.5 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
                 </div>
               ) : (
                 <button 
                   onClick={this.handleUpdate} 
-                  className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full py-4 px-6 bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Refresh Page
                 </button>
@@ -246,30 +246,30 @@ class ErrorBoundary extends React.Component {
 
             {/* Native Mobile Version */}
             <div className="md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto">
-               <div className="w-16 h-16 bg-white dark:bg-card rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-black/5 dark:border-white/5 flex items-center justify-center mb-6 animate-bounce">
-                  <svg className="w-8 h-8 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
+               <div className="w-16 h-16 bg-[#006065] rounded-3xl shadow-xl border border-white/10 flex items-center justify-center mb-6 animate-bounce">
+                  <svg className="w-8 h-8 text-[#fad503] animate-spin" fill="none" viewBox="0 0 24 24">
                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                </div>
-               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">
+               <h2 className="text-xl font-bold text-white mb-2 text-center">
                  {this.state.isUpdating ? "Installing Update..." : "Update Available"}
                </h2>
-               <p className="text-slate-500 dark:text-muted-foreground mb-8 text-sm font-medium leading-relaxed text-center px-4">
+               <p className="text-white/80 mb-8 text-sm font-medium leading-relaxed text-center px-4">
                  {this.state.isUpdating ? "Please wait, do not close the app." : "Tap to update to the newest features and bug fixes."}
                </p>
                
                {this.state.isUpdating ? (
                  <div className="w-full mb-4">
-                   <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-3 overflow-hidden shadow-inner">
-                     <div className="bg-primary h-3 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                   <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden shadow-inner">
+                     <div className="bg-[#fad503] h-3 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
                    </div>
-                   <div className="text-center text-xs text-slate-500 font-bold mt-3">{this.state.updateProgress}%</div>
+                   <div className="text-center text-xs text-white/70 font-bold mt-3">{this.state.updateProgress}%</div>
                  </div>
                ) : (
                  <button 
                    onClick={this.handleUpdate} 
-                   className="w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
+                   className="w-full py-4 bg-[#fad503] text-[#006065] font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
                  >
                    Tap to Update Now
                  </button>

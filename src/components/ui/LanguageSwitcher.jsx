@@ -170,15 +170,15 @@ export function LanguageSwitcher({ currentLanguage, onChange, className }) {
   return (
     <div className="notranslate">
       <Select value={lang} onValueChange={handleLanguageChange}>
-        <SelectTrigger className={className || "h-11 bg-muted/40 hover:bg-muted/60 transition-colors"}>
+        <SelectTrigger className={className || "h-11 bg-[#006065] text-white border border-white/10 hover:bg-white/10 transition-colors"}>
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-slate-500 dark:text-muted-foreground" />
+            <Globe className="w-4 h-4 text-white/70" />
             <span className="truncate"><SelectValue /></span>
           </div>
         </SelectTrigger>
-        <SelectContent className="max-h-[300px] notranslate">
+        <SelectContent className="max-h-[300px] notranslate bg-[#006065] text-white border border-white/10 shadow-xl">
           {GOOGLE_LANGUAGES.map(l => (
-            <SelectItem key={l.code} value={l.code}>{l.name}</SelectItem>
+            <SelectItem key={l.code} value={l.code} className="text-white hover:bg-[#fad503] hover:text-[#006065] focus:bg-[#fad503] focus:text-[#006065] data-[highlighted]:bg-[#fad503] data-[highlighted]:text-[#006065] cursor-pointer font-medium">{l.name}</SelectItem>
           ))}
         </SelectContent>
       </Select>
