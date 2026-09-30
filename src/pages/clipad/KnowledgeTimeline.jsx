@@ -133,7 +133,7 @@ export default function KnowledgeTimeline() {
               placeholder="Search timeline..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-white/15/80 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-[#fad503] transition-all shadow-sm"
+              className="w-full bg-[#006065] text-white border border-white/15/80 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-[#fad503] transition-all shadow-sm"
             />
           </div>
 

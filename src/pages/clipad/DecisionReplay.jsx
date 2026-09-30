@@ -418,7 +418,7 @@ Respond in valid JSON only:
                   commitment: { icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', label: 'Commitment' },
                   blocker: { icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20', label: 'Blocker' },
                   knowledge: { icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20', label: 'Knowledge' },
-                }[item.type] || { icon: Link2, color: 'text-slate-400', bg: 'bg-slate-500/10 border-slate-500/20', label: 'Related' };
+                }[item.type] || { icon: Link2, color: 'text-white/60', bg: 'bg-transparent0/10 border-slate-500/20', label: 'Related' };
                 const TypeIcon = typeConfig.icon;
                 const text = item.commitment_text || item.description || item.title || '';
                 return (

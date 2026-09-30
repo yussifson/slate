@@ -199,27 +199,27 @@ export default function SaveMeetingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-full bg-slate-50 dark:bg-background flex items-center justify-center">
+      <div className="min-h-full bg-transparent  flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-full bg-slate-50 dark:bg-background p-6 md:p-12">
+    <div className="min-h-full bg-transparent  p-6 md:p-12">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Save Meeting Record</h1>
-          <p className="text-slate-500 dark:text-muted-foreground mt-2">
+          <h1 className="text-3xl font-bold text-white dark:text-white">Save Meeting Record</h1>
+          <p className="text-white/70 dark:text-muted-foreground mt-2">
             Your meeting has ended. Review the details and set access controls before publishing.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-slate-200 dark:border-border p-8 space-y-8">
+        <div className="bg-[#006065] text-white dark:bg-[#006065] rounded-2xl shadow-sm border border-white/15 dark:border-white/15 p-8 space-y-8">
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-foreground mb-2">Meeting Title</label>
+            <label className="block text-sm font-semibold text-white/90 dark:text-foreground mb-2">Meeting Title</label>
             <Input
               value={title}
               onChange={e => setTitle(e.target.value)}
@@ -230,11 +230,11 @@ export default function SaveMeetingPage() {
 
           {/* Visibility */}
           <div>
-            <label className="block text-sm font-semibold text-slate-700 dark:text-foreground mb-2">Visibility</label>
+            <label className="block text-sm font-semibold text-white/90 dark:text-foreground mb-2">Visibility</label>
             <select
               value={visibility}
               onChange={e => setVisibility(e.target.value)}
-              className="w-full pl-4 pr-10 py-3 rounded-xl bg-white dark:bg-card border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer shadow-sm"
+              className="w-full pl-4 pr-10 py-3 rounded-xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 text-white dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer shadow-sm"
             >
               <option value="internal">Internal (Company & Space Members Only)</option>
               <option value="external">External (Anyone with link)</option>
@@ -244,12 +244,12 @@ export default function SaveMeetingPage() {
           {/* Lock Settings */}
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <label className="text-sm font-semibold text-slate-700 dark:text-foreground uppercase tracking-wider shrink-0">Access Control</label>
+              <label className="text-sm font-semibold text-white/90 dark:text-foreground uppercase tracking-wider shrink-0">Access Control</label>
               <div className="relative inline-block min-w-[220px]">
                 <select
                   value={lockType}
                   onChange={e => setLockType(e.target.value)}
-                  className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-white dark:bg-card border border-slate-200 dark:border-border text-slate-900 dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold shadow-sm"
+                  className="w-full pl-10 pr-8 py-2.5 rounded-xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 text-white dark:text-white text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/60 transition-all cursor-pointer font-semibold shadow-sm"
                 >
                   <option value="none">Public (Space Members)</option>
                   <option value="manual">Locked (Only Me)</option>
@@ -260,7 +260,7 @@ export default function SaveMeetingPage() {
                   {lockType === 'manual' && <Lock className="w-4 h-4 text-indigo-500" />}
                   {lockType === 'scheduled' && <Clock className="w-4 h-4 text-amber-500" />}
                 </div>
-                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-white/60">
                   <ChevronDown className="w-4 h-4" />
                 </div>
               </div>
@@ -270,18 +270,18 @@ export default function SaveMeetingPage() {
               <div className="mt-4 p-5 bg-amber-50 dark:bg-amber-950/10 rounded-xl border border-amber-100 dark:border-amber-900/30 flex gap-4 animate-in fade-in slide-in-from-top-2">
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Date</label>
-                  <Input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="bg-white dark:bg-card" min={new Date().toISOString().split('T')[0]} />
+                  <Input type="date" value={unlockDate} onChange={e => setUnlockDate(e.target.value)} className="bg-[#006065] text-white dark:bg-[#006065]" min={new Date().toISOString().split('T')[0]} />
                 </div>
                 <div className="flex-1">
                   <label className="block text-xs font-semibold text-amber-800 dark:text-amber-500 mb-1.5">Unlock Time</label>
-                  <Input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="bg-white dark:bg-card" />
+                  <Input type="time" value={unlockTime} onChange={e => setUnlockTime(e.target.value)} className="bg-[#006065] text-white dark:bg-[#006065]" />
                 </div>
               </div>
             )}
           </div>
 
-          <div className="pt-6 border-t border-slate-100 dark:border-border flex justify-between items-center">
-            <div className="text-sm text-slate-500 flex items-center gap-2">
+          <div className="pt-6 border-t border-white/10 dark:border-white/15 flex justify-between items-center">
+            <div className="text-sm text-white/70 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-500" /> AI is processing the transcript in the background
             </div>
             <Button onClick={handleSave} disabled={saving} className="bg-primary text-white rounded-full px-8">

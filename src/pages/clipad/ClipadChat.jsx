@@ -622,7 +622,7 @@ export default function ClipadChat({ isDockedMode = false }) {
         return (
           <>
             {activeRoom?.room_type === "group" ? (
-              <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-primary/30 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-10 h-10 rounded-full bg-white/10 dark:bg-primary/30 flex items-center justify-center overflow-hidden shrink-0">
                 {activeRoom?.avatar_url ? (
                   <img src={activeRoom.avatar_url} alt={roomName} className="w-full h-full object-cover" />
                 ) : (
@@ -630,7 +630,7 @@ export default function ClipadChat({ isDockedMode = false }) {
                 )}
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-secondary flex items-center justify-center font-bold text-primary overflow-hidden shrink-0">
+              <div className="w-10 h-10 rounded-full bg-white/15 dark:bg-secondary flex items-center justify-center font-bold text-primary overflow-hidden shrink-0">
                 {otherProfile?.avatar_url ? (
                   <img src={otherProfile.avatar_url} className="w-full h-full object-cover" alt={roomName} />
                 ) : (
@@ -727,8 +727,8 @@ export default function ClipadChat({ isDockedMode = false }) {
  <div className="flex flex-col gap-4 p-4">
    {[1,2,3].map(i => (
      <div key={i} className={`flex items-end gap-2 max-w-[85%] animate-pulse ${i%2===0 ? "ml-auto flex-row-reverse" : "mr-auto"}`}>
-       <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0" />
-       <div className="h-10 w-48 bg-slate-200 dark:bg-slate-800 rounded-2xl" />
+       <div className="w-7 h-7 rounded-full bg-white/15 dark:bg-slate-800 shrink-0" />
+       <div className="h-10 w-48 bg-white/15 dark:bg-slate-800 rounded-2xl" />
      </div>
    ))}
  </div>
@@ -823,7 +823,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="p-0.5 bg-white/70 hover:bg-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-slate-500 dark:text-foreground backdrop-blur-sm shadow-sm transition-all" title="Message Options">
+        <button className="p-0.5 bg-white/70 hover:bg-[#006065] text-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-white/70 dark:text-foreground backdrop-blur-sm shadow-sm transition-all" title="Message Options">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
       </DropdownMenuTrigger>
@@ -894,16 +894,16 @@ export default function ClipadChat({ isDockedMode = false }) {
  </Button>
  </PopoverTrigger>
  <PopoverContent side="top" align="start" className="w-48 p-2 mb-2 rounded-2xl flex flex-col gap-2 ">
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-secondary/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-transparent dark:bg-secondary/50 hover:text-primary" onClick={() => document.getElementById('chat-doc-upload')?.click()}>
+ <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-primary"><FileText className="w-4 h-4"/></div>
  Document
  </Button>
  <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-rose-50 hover:text-rose-600" onClick={() => document.getElementById('chat-image-upload')?.click()}>
  <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600"><ImageIcon className="w-4 h-4"/></div>
  Photos & Videos
  </Button>
- <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-slate-50 dark:bg-secondary/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
- <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
+ <Button variant="ghost" className="justify-start gap-3 w-full rounded-xl hover:bg-transparent dark:bg-secondary/50 hover:text-primary" onClick={() => fileInputRef.current?.click()}>
+ <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-primary"><File className="w-4 h-4"/></div>
  File
  </Button>
  </PopoverContent>

@@ -224,9 +224,9 @@ export default function CliPadCustomPricing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafbfc] dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#fafbfc] dark:bg-[#090d16] text-white dark:text-slate-100 flex flex-col selection:bg-orange-500 selection:text-white">
       {/* Top Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-[#090d16]/95 border-b border-slate-200/80 dark:border-white/10 px-6 md:px-12 py-3.5">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-[#090d16]/95 border-b border-white/15/80 dark:border-white/10 px-6 md:px-12 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2 group">
@@ -240,14 +240,14 @@ export default function CliPadCustomPricing() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 py-2 rounded-xl transition-colors"
+              className="flex items-center gap-1.5 text-xs font-semibold text-white/80 dark:text-white/60 hover:text-white dark:hover:text-white px-3 py-2 rounded-xl transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Home
             </button>
             <Link
               to={user ? '/dashboard' : '/login'}
-              className="text-xs font-bold px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-200 dark:text-slate-900 transition-all shadow-sm"
+              className="text-xs font-bold px-4 py-2 rounded-xl bg-[#006065] hover:bg-slate-800 text-white dark:bg-[#006065] text-white dark:hover:bg-white/15 dark:text-white transition-all shadow-sm"
             >
               {user ? 'Go to Dashboard' : 'Sign In'}
             </Link>
@@ -259,7 +259,7 @@ export default function CliPadCustomPricing() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 md:px-8 py-10 md:py-16">
         {submittedRequest ? (
           /* SUCCESS CONFIRMATION */
-          <div className="max-w-xl mx-auto bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-300">
+          <div className="max-w-xl mx-auto bg-[#006065] text-white dark:bg-[#111625] border border-white/15 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-300">
             <div className="w-16 h-16 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-6">
               <CheckCircle2 className="w-8 h-8" />
             </div>
@@ -271,11 +271,11 @@ export default function CliPadCustomPricing() {
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2 text-foreground">
               Request Received, {submittedRequest.fullName.split(' ')[0]}!
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
+            <p className="text-white/80 dark:text-white/60 text-sm leading-relaxed mb-6">
               Our enterprise solutions team has received your request for <strong className="text-foreground">{submittedRequest.companyName}</strong>. A dedicated specialist will review your requirements and reach out within 2 hours.
             </p>
 
-            <div className="bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-left space-y-2 mb-8 text-xs">
+            <div className="bg-transparent dark:bg-white/[0.03] border border-white/15 dark:border-white/10 rounded-2xl p-4 text-left space-y-2 mb-8 text-xs">
               <div className="flex justify-between items-center py-1 border-b border-border/50">
                 <span className="text-muted-foreground">Work Email:</span>
                 <span className="font-semibold text-foreground">{submittedRequest.workEmail}</span>
@@ -295,7 +295,7 @@ export default function CliPadCustomPricing() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => navigate('/')}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-foreground font-semibold text-xs transition-all"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 dark:bg-white/10 dark:hover:bg-white/15 text-foreground font-semibold text-xs transition-all"
               >
                 Return to Homepage
               </button>
@@ -320,7 +320,7 @@ export default function CliPadCustomPricing() {
                 <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight mb-3 text-foreground">
                   Tailored scale & dedicated infrastructure.
                 </h1>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p className="text-white/80 dark:text-white/60 text-sm leading-relaxed">
                   Design a dedicated communication and meeting intelligence stack configured to your exact security, data residency, and integration standards.
                 </p>
               </div>
@@ -379,14 +379,14 @@ export default function CliPadCustomPricing() {
               {/* Fast Response Guarantee Box */}
               <div className="p-4 rounded-2xl bg-orange-500/5 dark:bg-orange-500/10 border border-orange-500/20 flex items-center gap-3">
                 <Zap className="w-4 h-4 text-orange-500 shrink-0" />
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+                <p className="text-xs text-white/90 dark:text-white/50 font-medium">
                   <strong className="text-foreground font-bold">Fast SLA:</strong> Inquiries are assigned directly to an enterprise solution architect within 2 hours.
                 </p>
               </div>
             </div>
 
             {/* Right Column: Clean, High-Converting Form Card */}
-            <div className="lg:col-span-7 bg-white dark:bg-[#111625] border border-slate-200 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-sm">
+            <div className="lg:col-span-7 bg-[#006065] text-white dark:bg-[#111625] border border-white/15 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-sm">
               <div className="mb-6">
                 <h2 className="text-xl font-bold tracking-tight text-foreground">Contact Enterprise Sales</h2>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -554,7 +554,7 @@ export default function CliPadCustomPricing() {
                           }`}
                         >
                           <div className={`w-3.5 h-3.5 rounded flex items-center justify-center border ${
-                            isSelected ? 'bg-orange-500 border-orange-500 text-white' : 'border-slate-300 dark:border-slate-600'
+                            isSelected ? 'bg-orange-500 border-orange-500 text-white' : 'border-white/20 dark:border-slate-600'
                           }`}>
                             {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                           </div>

@@ -438,7 +438,7 @@ export default function CustomRequests() {
           />
         </div>
 
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-card border border-border rounded-xl overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1 bg-white/10 dark:bg-[#006065] border border-border rounded-xl overflow-x-auto">
           {['all', 'pending', 'contacted', 'in_progress', 'closed'].map((st) => (
             <button
               key={st}
@@ -477,7 +477,7 @@ export default function CustomRequests() {
         ) : (
           <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-slate-50/50 dark:bg-white/5">
+              <TableHeader className="bg-transparent/50 dark:bg-white/5">
                 <TableRow className="border-b border-border">
                   <TableHead className="w-[180px] font-bold text-xs uppercase tracking-wider text-muted-foreground">Prospect & Company</TableHead>
                   <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Seats / Scale</TableHead>
@@ -492,7 +492,7 @@ export default function CustomRequests() {
                 {filteredRequests.map((req) => {
                   const statusInfo = STATUS_CONFIG[req.status] || STATUS_CONFIG.pending;
                   return (
-                    <TableRow key={req.id || req.request_code} className="hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors">
+                    <TableRow key={req.id || req.request_code} className="hover:bg-transparent/60 dark:hover:bg-[#006065]/40 transition-colors">
                       <TableCell className="py-4">
                         <div className="space-y-1">
                           <div className="font-bold text-sm text-foreground flex items-center gap-1.5">
@@ -518,7 +518,7 @@ export default function CustomRequests() {
                       </TableCell>
 
                       <TableCell className="py-4">
-                        <div className="text-xs font-medium capitalize text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <div className="text-xs font-medium capitalize text-white/90 dark:text-white/50 flex items-center gap-1.5">
                           <Server className="w-3.5 h-3.5 text-indigo-500" />
                           {(req.deployment || 'cloud').replace('_', ' ')}
                         </div>
@@ -566,21 +566,21 @@ export default function CustomRequests() {
                               setSelectedRequest(req);
                               setAdminNotes(req.admin_notes || '');
                             }}
-                            className="p-2 rounded-lg text-slate-500 hover:text-primary hover:bg-primary/10 transition-colors"
+                            className="p-2 rounded-lg text-white/70 hover:text-primary hover:bg-primary/10 transition-colors"
                             title="View Full Details"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <a
                             href={`mailto:${req.email}?subject=CliPad%20Enterprise%20Plan%20Arrangement%20-%20${encodeURIComponent(req.company || 'Inquiry')}&body=Hi%20${encodeURIComponent(req.name || 'there')},%0A%0AThank%20you%20for%20reaching%20out%20regarding%20a%20custom%20CliPad%20plan%20for%20${encodeURIComponent(req.company || 'your team')}.`}
-                            className="p-2 rounded-lg text-slate-500 hover:text-blue-500 hover:bg-blue-500/10 transition-colors"
+                            className="p-2 rounded-lg text-white/70 hover:text-blue-500 hover:bg-blue-500/10 transition-colors"
                             title="Send Email"
                           >
                             <Send className="w-4 h-4" />
                           </a>
                           <button
                             onClick={() => handleDeleteRequest(req.id)}
-                            className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                            className="p-2 rounded-lg text-white/60 hover:text-red-500 hover:bg-red-500/10 transition-colors"
                             title="Delete Request"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -684,7 +684,7 @@ export default function CustomRequests() {
               {selectedRequest.requirements && (
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">Custom Requirements & Notes</h4>
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-border text-xs text-foreground leading-relaxed whitespace-pre-wrap">
+                  <div className="p-4 rounded-xl bg-transparent dark:bg-white/5 border border-border text-xs text-foreground leading-relaxed whitespace-pre-wrap">
                     {selectedRequest.requirements}
                   </div>
                 </div>

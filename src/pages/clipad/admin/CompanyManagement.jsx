@@ -81,15 +81,15 @@ export default function CompanyManagement() {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-full bg-slate-50 dark:bg-background p-4 sm:p-6 md:p-8 animate-pulse">
+      <div className="flex flex-col h-full bg-transparent  p-4 sm:p-6 md:p-8 animate-pulse">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-48 mb-2"></div>
-            <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-32"></div>
+            <div className="h-8 bg-white/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-white/15 dark:bg-slate-800 rounded w-32"></div>
           </div>
-          <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded w-32"></div>
+          <div className="h-10 bg-white/15 dark:bg-slate-800 rounded w-32"></div>
         </div>
-        <div className="bg-white dark:bg-[#111111] p-6 rounded-2xl h-64 mb-8"></div>
+        <div className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-64 mb-8"></div>
       </div>
     );
   }
@@ -124,7 +124,7 @@ export default function CompanyManagement() {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="capitalize px-2 py-1 bg-slate-100 dark:bg-secondary text-slate-600 dark:text-foreground rounded-md text-xs font-medium">
+                  <span className="capitalize px-2 py-1 bg-white/10 dark:bg-secondary text-white/80 dark:text-foreground rounded-md text-xs font-medium">
                     {company.subscription_plan || 'N/A'}
                   </span>
                 </TableCell>

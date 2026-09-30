@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import GlobalAIAssistant from '@/components/layout/GlobalAIAssistant';
 import ClipadMobileNav from '@/components/clipad/ClipadMobileNav';
@@ -6,8 +6,7 @@ import ClipadTopNav from '@/components/clipad/ClipadTopNav';
 import ClipadSidebar from '@/components/clipad/ClipadSidebar';
 import { useChatDock } from '@/hooks/useChatDock';
 const ClipadChat = React.lazy(() => import('@/pages/clipad/ClipadChat'));
-import { MessageSquare, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { MessageSquare } from 'lucide-react';
 
 import PullToRefresh from '@/components/ui/PullToRefresh';
 
@@ -57,15 +56,15 @@ export default function ClipadLayout() {
   const isImmersive = false;
 
   return (
-    <div data-theme="omniimpressive" className="flex flex-row h-[100dvh] w-full overflow-hidden bg-[#00beac] dark:bg-background text-slate-900 dark:text-slate-100 pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+    <div data-theme="omniimpressive" className="flex flex-row h-[100dvh] w-full overflow-hidden bg-[#00beac] text-white pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
       
       {/* Premium Sidebar Component */}
       <ClipadSidebar forceMobile={forceMobile} />
 
       {/* Main Content Column */}
-      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container bg-[#00beac] dark:bg-background transition-all">
+      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container bg-[#00beac] transition-all">
         {!isImmersive && <ClipadTopNav forceMobile={forceMobile} />}
-        <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0 h-full overflow-y-auto overflow-x-hidden">
+        <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0 h-full overflow-y-auto overflow-x-hidden scrollbar-thin">
           {location.pathname === '/chat' && isChatDocked ? (
             <div className="flex items-center justify-center h-full text-white flex-col gap-3">
               <MessageSquare className="w-8 h-8 opacity-50" />
@@ -79,7 +78,6 @@ export default function ClipadLayout() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white/15 rounded-2xl" />)}
                 </div>
-                <div className="h-64 bg-white/15 rounded-2xl w-full" />
               </div>
             }>
               <Outlet />
@@ -88,29 +86,27 @@ export default function ClipadLayout() {
         </PullToRefresh>
       </div>
 
-      {/* Right Docked Portal for Orbit AI & Chat */}
-      <div 
-        id="right-docked-panel-portal" 
-        className={cn(
-          "hidden md:flex shrink-0 h-full relative bg-white dark:bg-background z-40",
-          isChatDocked ? "border-l border-black/5 dark:border-white/5 shadow-[-8px_0_30px_rgba(0,0,0,0.05)]" : "w-0 overflow-hidden border-none"
-        )}
-        style={{ width: isChatDocked ? dockWidth : 0 }}
-      >
-        {isChatDocked && <DockResizer />}
-        {isChatDocked && <ClipadChat isDockedMode={true} />}
-      </div>
+      {/* Persistent Docked Chat Window */}
+      {isChatDocked && location.pathname !== '/chat' && (
+        <div 
+          style={{ width: `${dockWidth}px` }} 
+          className="hidden md:flex flex-col h-full bg-[#006065] border-l border-white/15 shrink-0 relative z-30 shadow-2xl transition-all"
+        >
+          <DockResizer />
+          <React.Suspense fallback={<div className="p-4 text-white">Loading chat...</div>}>
+            <ClipadChat isDocked={true} onCloseDock={() => setChatDock(false)} />
+          </React.Suspense>
+        </div>
+      )}
 
+      {/* Global AI Assistant Floating Overlay */}
       <GlobalAIAssistant 
         isOpen={isAIOpen} 
-        onClose={() => setIsAIOpen(false)} 
-        injectedContext={injectedContext} 
-        onContextConsumed={() => setInjectedContext(null)} 
+        onClose={() => { setIsAIOpen(false); setInjectedContext(null); }} 
+        injectedContext={injectedContext}
       />
 
-      {/* Global OrbitFlow Button moved to ClipadTopNav */}
-
-
+      {/* Native Mobile Bottom Navigation Bar */}
       <ClipadMobileNav forceMobile={forceMobile} />
     </div>
   );

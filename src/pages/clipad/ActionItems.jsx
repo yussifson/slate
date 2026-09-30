@@ -6,9 +6,8 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { format } from 'date-fns';
 import { useToast } from '@/components/ui/use-toast';
 import {
-  CheckSquare, AlertCircle, RefreshCw, ExternalLink, Search,
-  Send, Filter, Calendar, Users, Zap, ChevronDown, Loader2,
-  Github, Trello, ClipboardList, Slack, CheckCircle2, Circle, Clock, ArrowLeft
+  CheckSquare, AlertCircle, RefreshCw, Search,
+  Send, ChevronDown, Loader2, CheckCircle2, Circle, Clock, ArrowLeft
 } from 'lucide-react';
 import { INTEGRATIONS } from '@/config/integrationsList';
 
@@ -270,7 +269,7 @@ export default function ActionItems() {
         {loading ? (
           <div className="space-y-4 animate-pulse">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-20"></div>
+              <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] border border-white/10 dark:border-white/5 rounded-2xl h-20"></div>
             ))}
           </div>
         ) : filtered.length === 0 ? (

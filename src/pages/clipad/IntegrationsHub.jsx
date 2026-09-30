@@ -6,9 +6,9 @@ import { supabase } from '@/api/supabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
-  Loader2, Clock, FileText, MessageSquare, Video, Github,
-  AlertCircle, Zap, Search, Filter, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff, Trash2,
-  Settings, FolderOpen, Hash, Sliders, Network, Scale, Link, CheckSquare,
+  Loader2, Clock, FileText,
+  AlertCircle, Zap, Search, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff, Trash2,
+  Settings, Sliders, Network, Scale, Link, CheckSquare,
   Lock, Globe, Users, User
 } from 'lucide-react';
 import {
@@ -76,7 +76,7 @@ export default function IntegrationsHub() {
       toast({ title: 'Connection Failed', description: message?.replace(/_/g, ' ') || 'Authentication failed.', variant: 'destructive' });
       setSearchParams({});
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, []);
 
   const loadConnected = useCallback(async () => {
@@ -522,7 +522,7 @@ export default function IntegrationsHub() {
               placeholder="Search integrations..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-3.5 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl text-[15px] focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
+              className="w-full pl-11 pr-4 py-3.5 bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 rounded-2xl text-[15px] focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm"
             />
           </div>
           <div className="flex gap-2 flex-wrap justify-center mb-4">
@@ -557,7 +557,7 @@ export default function IntegrationsHub() {
                   if (!intg) return null;
                   const canEdit = isAdmin || conn.connected_by_user_id === user?.id;
                   return (
-                    <div key={provider} className={`flex items-center gap-2 bg-white dark:bg-card border ${bg} rounded-xl px-3 py-1.5 group`}>
+                    <div key={provider} className={`flex items-center gap-2 bg-[#006065] text-white dark:bg-[#006065] border ${bg} rounded-xl px-3 py-1.5 group`}>
                       <span className="text-base">{intg.icon}</span>
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-foreground">{intg.name}</span>
@@ -891,30 +891,30 @@ export default function IntegrationsHub() {
       {/* â”€â”€ Scope Selector Modal â€” shown BEFORE connecting any integration â”€â”€â”€â”€â”€â”€â”€ */}
       {scopeModal && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-5 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md p-5 animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-lg shrink-0">
                 {scopeModal.integration?.emoji || <Plug className="w-4 h-4" />}
               </div>
               <div>
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h2 className="text-sm font-bold text-white dark:text-white">
                   Connect {scopeModal.integration?.name}
                 </h2>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">Choose who can access this integration</p>
+                <p className="text-[11px] text-white/70 dark:text-white/60">Choose who can access this integration</p>
               </div>
             </div>
 
             {/* Scope options - Sleek Segmented Control style */}
-            <div className="flex bg-slate-100 dark:bg-slate-800/80 p-1 mb-4" style={{ borderRadius: '10px' }}>
+            <div className="flex bg-white/10 dark:bg-slate-800/80 p-1 mb-4" style={{ borderRadius: '10px' }}>
               <button
                 type="button"
                 onClick={() => setSelectedScope('personal')}
                 style={{ borderRadius: '8px' }}
                 className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 cursor-pointer ${
                   selectedScope === 'personal'
-                    ? 'bg-white dark:bg-slate-700 text-primary shadow-sm border border-slate-200/50 dark:border-slate-600/50'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
+                    ? 'bg-[#006065] text-white dark:bg-slate-700 text-primary shadow-sm border border-white/15/50 dark:border-slate-600/50'
+                    : 'text-white/70 dark:text-white/60 hover:text-white/90 bg-transparent'
                 }`}
               >
                 Personal
@@ -925,8 +925,8 @@ export default function IntegrationsHub() {
                 style={{ borderRadius: '8px' }}
                 className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 cursor-pointer ${
                   selectedScope === 'space'
-                    ? 'bg-white dark:bg-slate-700 text-primary shadow-sm border border-slate-200/50 dark:border-slate-600/50'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
+                    ? 'bg-[#006065] text-white dark:bg-slate-700 text-primary shadow-sm border border-white/15/50 dark:border-slate-600/50'
+                    : 'text-white/70 dark:text-white/60 hover:text-white/90 bg-transparent'
                 }`}
               >
                 Space
@@ -937,10 +937,10 @@ export default function IntegrationsHub() {
                 disabled={!isAdmin}
                 style={{ borderRadius: '8px' }}
                 className={`flex-1 py-1.5 text-xs font-bold transition-all text-center border-0 ${
-                  !isAdmin ? 'opacity-40 cursor-not-allowed text-slate-400 bg-transparent' :
+                  !isAdmin ? 'opacity-40 cursor-not-allowed text-white/60 bg-transparent' :
                   selectedScope === 'company'
-                    ? 'bg-white dark:bg-slate-700 text-primary shadow-sm border border-slate-200/50 dark:border-slate-600/50'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 bg-transparent'
+                    ? 'bg-[#006065] text-white dark:bg-slate-700 text-primary shadow-sm border border-white/15/50 dark:border-slate-600/50'
+                    : 'text-white/70 dark:text-white/60 hover:text-white/90 bg-transparent'
                 }`}
               >
                 Company
@@ -950,12 +950,12 @@ export default function IntegrationsHub() {
             {/* Space Picker dropdown rendered below the cards when Space is selected */}
             {selectedScope === 'space' && (
               <div className="mb-4 p-2.5 rounded-xl bg-blue-50/30 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/30 animate-in slide-in-from-top-1 duration-150">
-                <label className="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Select Target Space</label>
+                <label className="block text-[10px] font-bold text-white/70 dark:text-white/60 uppercase tracking-wider mb-1.5">Select Target Space</label>
                 {userSpaces.length > 0 ? (
                   <select
                     value={selectedSpaceId}
                     onChange={e => setSelectedSpaceId(e.target.value)}
-                    className="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-slate-800 dark:text-slate-100"
+                    className="w-full px-2.5 py-1.5 text-xs bg-[#006065] text-white dark:bg-slate-800 border border-white/15 dark:border-slate-700 rounded-lg focus:outline-none focus:border-blue-500 text-white dark:text-slate-100"
                   >
                     {userSpaces.map(s => (
                       <option key={s.id} value={s.id}>{s.name}</option>
@@ -970,9 +970,9 @@ export default function IntegrationsHub() {
             )}
 
             {/* Footer info note */}
-            <div className="flex items-start gap-2 bg-slate-50 dark:bg-slate-800/40 rounded-xl p-2.5 mb-4">
-              <Lock className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
+            <div className="flex items-start gap-2 bg-transparent dark:bg-slate-800/40 rounded-xl p-2.5 mb-4">
+              <Lock className="w-3.5 h-3.5 text-white/60 mt-0.5 shrink-0" />
+              <p className="text-[10px] text-white/70 dark:text-white/60 leading-relaxed">
                 {selectedScope === 'personal' && 'Only you can access this connection data â€” not even admins.'}
                 {selectedScope === 'space' && `Only members of "${userSpaces.find(s => s.id === selectedSpaceId)?.name || 'the space'}" will see this.`}
                 {selectedScope === 'company' && 'All members of the company can query this integration via Orbit and Spotlight.'}
@@ -984,7 +984,7 @@ export default function IntegrationsHub() {
               <button
                 onClick={() => setScopeModal(null)}
                 style={{ borderRadius: '8px' }}
-                className="flex-1 px-4 py-2 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                className="flex-1 px-4 py-2 border border-white/15 dark:border-slate-800 text-xs font-bold text-white/90 dark:text-white/50 hover:bg-transparent dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
@@ -1005,37 +1005,37 @@ export default function IntegrationsHub() {
       {/* â”€â”€ Change Scope Modal â€” for already-connected integrations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {changeScopeModal && createPortal(
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xl shrink-0">
                 {changeScopeModal.integration?.icon || <Settings className="w-5 h-5 text-white" />}
               </div>
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">Change Access Scope</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{changeScopeModal.integration?.name} Â· Who can access this?</p>
+                <h2 className="text-base font-bold text-white dark:text-white">Change Access Scope</h2>
+                <p className="text-xs text-white/70 dark:text-white/60">{changeScopeModal.integration?.name} Â· Who can access this?</p>
               </div>
             </div>
 
             <div className="space-y-3 mb-5">
               {/* Personal */}
-              <button onClick={() => setSelectedScope('personal')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${selectedScope === 'personal' ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'personal' ? 'bg-violet-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}><User className="w-4 h-4" /></div>
+              <button onClick={() => setSelectedScope('personal')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${selectedScope === 'personal' ? 'border-violet-500 bg-violet-50 dark:bg-violet-500/10' : 'border-white/15 dark:border-slate-700 hover:border-white/20 dark:hover:border-slate-600'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'personal' ? 'bg-violet-500 text-white' : 'bg-white/10 dark:bg-slate-800 text-white/70'}`}><User className="w-4 h-4" /></div>
                 <div>
-                  <div className="flex items-center gap-2"><span className="text-sm font-bold text-slate-900 dark:text-white">Personal</span><span className="text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full">Only you</span></div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Only you can see and query data from this connection.</p>
+                  <div className="flex items-center gap-2"><span className="text-sm font-bold text-white dark:text-white">Personal</span><span className="text-[10px] font-semibold bg-white/10 dark:bg-slate-800 text-white/70 px-2 py-0.5 rounded-full">Only you</span></div>
+                  <p className="text-xs text-white/70 dark:text-white/60 mt-0.5">Only you can see and query data from this connection.</p>
                 </div>
               </button>
 
               {/* Space */}
-              <button onClick={() => setSelectedScope('space')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${selectedScope === 'space' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'space' ? 'bg-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}><Users className="w-4 h-4" /></div>
+              <button onClick={() => setSelectedScope('space')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${selectedScope === 'space' ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10' : 'border-white/15 dark:border-slate-700 hover:border-white/20 dark:hover:border-slate-600'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'space' ? 'bg-blue-500 text-white' : 'bg-white/10 dark:bg-slate-800 text-white/70'}`}><Users className="w-4 h-4" /></div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2"><span className="text-sm font-bold text-slate-900 dark:text-white">Space</span><span className="text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Space members only</span></div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Only members of the selected space can access this data.</p>
+                  <div className="flex items-center gap-2"><span className="text-sm font-bold text-white dark:text-white">Space</span><span className="text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">Space members only</span></div>
+                  <p className="text-xs text-white/70 dark:text-white/60 mt-0.5">Only members of the selected space can access this data.</p>
                   {selectedScope === 'space' && (
                     <div className="mt-3" onClick={e => e.stopPropagation()}>
                       {userSpaces.length > 0 ? (
-                        <select value={selectedSpaceId} onChange={e => setSelectedSpaceId(e.target.value)} className="w-full px-3 py-2 text-xs font-medium bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-none">
+                        <select value={selectedSpaceId} onChange={e => setSelectedSpaceId(e.target.value)} className="w-full px-3 py-2 text-xs font-medium bg-[#006065] text-white dark:bg-slate-800 border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-none">
                           {userSpaces.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                         </select>
                       ) : (
@@ -1047,21 +1047,21 @@ export default function IntegrationsHub() {
               </button>
 
               {/* Company-wide */}
-              <button onClick={() => isAdmin && setSelectedScope('company')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${!isAdmin ? 'opacity-40 cursor-not-allowed' : selectedScope === 'company' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'}`}>
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'company' && isAdmin ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}><Globe className="w-4 h-4" /></div>
+              <button onClick={() => isAdmin && setSelectedScope('company')} className={`w-full flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${!isAdmin ? 'opacity-40 cursor-not-allowed' : selectedScope === 'company' ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10' : 'border-white/15 dark:border-slate-700 hover:border-white/20 dark:hover:border-slate-600'}`}>
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${selectedScope === 'company' && isAdmin ? 'bg-emerald-500 text-white' : 'bg-white/10 dark:bg-slate-800 text-white/70'}`}><Globe className="w-4 h-4" /></div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white">Company-wide</span>
+                    <span className="text-sm font-bold text-white dark:text-white">Company-wide</span>
                     <span className="text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-full">Everyone</span>
                     {!isAdmin && <span className="text-[10px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded-full flex items-center gap-1"><Lock className="w-2.5 h-2.5" /> Admin only</span>}
                   </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">All company members can see this data via OrbitFlow and Spotlight.</p>
+                  <p className="text-xs text-white/70 dark:text-white/60 mt-0.5">All company members can see this data via OrbitFlow and Spotlight.</p>
                 </div>
               </button>
             </div>
 
             <div className="flex gap-3">
-              <button onClick={() => setChangeScopeModal(null)} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+              <button onClick={() => setChangeScopeModal(null)} className="flex-1 px-4 py-2.5 rounded-xl border border-white/15 dark:border-slate-700 text-sm font-semibold text-white/90 dark:text-white/50 hover:bg-transparent dark:hover:bg-slate-800 transition-colors">Cancel</button>
               <button
                 onClick={handleChangeScope}
                 disabled={selectedScope === 'space' && (!selectedSpaceId || userSpaces.length === 0)}
@@ -1128,7 +1128,7 @@ const API_KEY_CONFIGS = {
       <div className="text-xs text-muted-foreground bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-xl mb-4 leading-relaxed">
         <strong>1.</strong> Get your API Key from <a href="https://trello.com/app-key" target="_blank" rel="noreferrer" className="text-indigo-600 dark:text-indigo-400 underline font-semibold">Trello Developer</a>.<br />
         <strong>2.</strong> Replace <code>YOUR_API_KEY</code> in the URL below and visit it in a new tab to authorize:<br />
-        <code className="block mt-1 p-1 bg-white dark:bg-black rounded border overflow-hidden whitespace-nowrap text-ellipsis">https://trello.com/1/authorize?expiration=never&name=CliPad&scope=read&response_type=token&key=YOUR_API_KEY</code><br />
+        <code className="block mt-1 p-1 bg-[#006065] text-white dark:bg-black rounded border overflow-hidden whitespace-nowrap text-ellipsis">https://trello.com/1/authorize?expiration=never&name=CliPad&scope=read&response_type=token&key=YOUR_API_KEY</code><br />
         <strong>3.</strong> Paste your API Key and the generated Token below.
       </div>
     )
@@ -1172,7 +1172,7 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 relative">
+      <div className="bg-[#006065] text-white dark:bg-[#006065] border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 relative">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
             <Key className="w-5 h-5 text-indigo-500" />
@@ -1188,14 +1188,14 @@ function ApiKeyModal({ integration, provider, onSave, onClose }) {
 
           {config.fields.map(field => (
             <div key={field.key}>
-              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">{field.label}</label>
+              <label className="block text-xs font-semibold text-white/80 dark:text-white/60 mb-1.5">{field.label}</label>
               <div className="relative">
                 <input
                   type={field.secret && !showSecrets[field.key] ? 'password' : 'text'}
                   required
                   value={values[field.key] || ''}
                   onChange={e => setValues(prev => ({ ...prev, [field.key]: e.target.value }))}
-                  className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 pr-10"
+                  className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 pr-10"
                   placeholder={field.secret ? 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢' : ''}
                 />
                 {field.secret && (
@@ -1246,7 +1246,7 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white dark:bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 relative">
+      <div className="bg-[#006065] text-white dark:bg-[#006065] border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in-95 duration-200 relative">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-xl">
             {integration?.icon || <Sliders className="w-5 h-5 text-blue-500" />}
@@ -1259,7 +1259,7 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold text-white/80 dark:text-white/60 mb-1.5">
               Max items per sync
             </label>
             <input
@@ -1268,13 +1268,13 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
               max={1000}
               value={importLimit}
               onChange={e => setImportLimit(e.target.value)}
-              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
             />
             <p className="text-[11px] text-muted-foreground mt-1">Higher limits increase sync time. Default: 100.</p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold text-white/80 dark:text-white/60 mb-1.5">
               Include filter (optional)
             </label>
             <input
@@ -1282,13 +1282,13 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
               value={includeFilter}
               onChange={e => setIncludeFilter(e.target.value)}
               placeholder="e.g. engineering, product, design"
-              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
             />
             <p className="text-[11px] text-muted-foreground mt-1">Comma-separated channels/folders/labels to include.</p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold text-white/80 dark:text-white/60 mb-1.5">
               Exclude filter (optional)
             </label>
             <input
@@ -1296,7 +1296,7 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
               value={excludeFilter}
               onChange={e => setExcludeFilter(e.target.value)}
               placeholder="e.g. random, general, archive"
-              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2.5 bg-transparent dark:bg-slate-800/50 border border-border rounded-xl text-sm focus:outline-none focus:border-blue-500"
             />
             <p className="text-[11px] text-muted-foreground mt-1">Comma-separated channels/folders/labels to skip.</p>
           </div>
@@ -1311,7 +1311,7 @@ function IntegrationConfigModal({ integration, conn, onSave, onClose }) {
               onClick={() => setSyncAttachments(p => !p)}
               className={`w-11 h-6 rounded-full transition-colors relative ${syncAttachments ? 'bg-blue-500' : 'bg-secondary border border-border'}`}
             >
-              <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${syncAttachments ? 'left-6' : 'left-1'}`} />
+              <div className={`w-4 h-4 bg-[#006065] text-white border border-white/15 rounded-full absolute top-1 transition-all shadow-sm ${syncAttachments ? 'left-6' : 'left-1'}`} />
             </button>
           </div>
 

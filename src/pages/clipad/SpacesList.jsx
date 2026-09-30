@@ -252,7 +252,7 @@ export default function SpacesList() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
-            <Layers className="w-16 h-16 text-slate-300 dark:text-white/90 mx-auto mb-4" />
+            <Layers className="w-16 h-16 text-white/50 dark:text-white/90 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-white/70 mb-2">No spaces yet</h3>
             <p className="text-white/60 mb-6 text-sm">Create a space for your first team or project.</p>
             {canCreateSpaces(user) && (
@@ -276,14 +276,14 @@ export default function SpacesList() {
                     onClick={() => navigate(`/spaces/${space.id}`)}
                     className={`group p-5 rounded-2xl bg-[#006065] text-white border border-white/15 rounded-3xl shadow-[0_2px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md relative overflow-hidden ${
                       isRestricted
-                        ? 'border-white/15 dark:border-border opacity-80 hover:opacity-95'
-                        : 'border-white/15 dark:border-border'
+                        ? 'border-white/15 dark:border-white/15 opacity-80 hover:opacity-95'
+                        : 'border-white/15 dark:border-white/15'
                     }`}
                   >
                     {/* Locked overlay for restricted private spaces */}
                     {isRestricted && (
                       <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-50/80 to-slate-100/60 dark:from-slate-950/80 dark:to-slate-900/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 rounded-2xl">
-                        <div className="w-10 h-10 rounded-full bg-white dark:bg-secondary border border-white/15 dark:border-border flex items-center justify-center shadow-sm">
+                        <div className="w-10 h-10 rounded-full bg-[#006065] text-white dark:bg-secondary border border-white/15 dark:border-white/15 flex items-center justify-center shadow-sm">
                           <Lock className="w-5 h-5 text-white/60" />
                         </div>
                         <span className="text-xs font-semibold text-white/70">Private — Request Access</span>
@@ -327,7 +327,7 @@ export default function SpacesList() {
       {/* Create Space Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-[#006065] text-white border border-white/15 border-white/15 dark:border-border rounded-3xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-[#006065] text-white border border-white/15 border-white/15 dark:border-white/15 rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <h2 className="text-xl font-bold text-white mb-1">Create a Space</h2>
             <p className="text-sm text-white/70 mb-6">A persistent room for your team, project, or recurring meetings.</p>
             <form onSubmit={createSpace} className="space-y-4">
@@ -337,7 +337,7 @@ export default function SpacesList() {
                   value={newName}
                   onChange={e => setNewName(e.target.value)}
                   placeholder="e.g. Product Team, Q3 Campaign..."
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 dark:bg-background border border-white/15 dark:border-border text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5  border border-white/15 dark:border-white/15 text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all"
                   required
                 />
               </div>
@@ -348,13 +348,13 @@ export default function SpacesList() {
                   onChange={e => setNewDesc(e.target.value)}
                   placeholder="What is this space for?"
                   rows={3}
-                  className="w-full px-4 py-3 rounded-xl bg-white/5 dark:bg-background border border-white/15 dark:border-border text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-white/5  border border-white/15 dark:border-white/15 text-white text-sm placeholder-slate-400 focus:outline-none focus:border-primary/50 transition-all resize-none"
                 />
               </div>
               
               <div onClick={() => setIsPrivate(!isPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-white/15 bg-white/5/50 hover:bg-white/5 dark:hover:bg-slate-800 transition-colors">
                 <div className={`w-10 h-6 rounded-full transition-colors relative ${isPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-[#006065] text-white border border-white/15 shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-white flex items-center gap-1.5">
@@ -365,7 +365,7 @@ export default function SpacesList() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-white dark:bg-secondary hover:bg-white/5 dark:hover:bg-slate-700 text-white/90 dark:text-foreground font-semibold text-sm transition-all border border-white/15 dark:border-border shadow-sm">Cancel</button>
+                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-[#006065] text-white dark:bg-secondary hover:bg-white/5 dark:hover:bg-slate-700 text-white/90 dark:text-foreground font-semibold text-sm transition-all border border-white/15 dark:border-white/15 shadow-sm">Cancel</button>
                 <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {creating ? 'Creating...' : 'Create Space'}
                 </button>

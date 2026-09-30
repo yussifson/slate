@@ -20,7 +20,7 @@ export default function ClipadAdminLayout() {
   }, [user, navigate]);
 
   if (!user || user.role !== 'super_admin') {
-    return null; // Don't render layout while redirecting
+    return null;
   }
 
   const basePath = window.location.pathname.startsWith('/clipad') ? '/clipad/admin' : '/admin';
@@ -36,16 +36,16 @@ export default function ClipadAdminLayout() {
   ];
 
   return (
-    <div className="flex h-[100dvh] w-full overflow-hidden bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100">
+    <div className="flex h-[100dvh] w-full overflow-hidden bg-[#00beac] text-white">
       
       {/* Sidebar */}
-      <aside className="w-64 border-r border-border bg-card flex flex-col hidden md:flex">
-        <div className="p-6 border-b border-border">
-          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">CliPad Super Admin</h2>
-          <p className="text-xs text-muted-foreground mt-1">Management Console</p>
+      <aside className="w-64 border-r border-white/10 bg-[#006065] text-white flex flex-col hidden md:flex shadow-xl">
+        <div className="p-6 border-b border-white/10">
+          <h2 className="text-xl font-black text-white">CliPad Super Admin</h2>
+          <p className="text-xs text-[#fad503] font-bold uppercase tracking-wider mt-1">Management Console</p>
         </div>
         
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -54,10 +54,10 @@ export default function ClipadAdminLayout() {
                 to={item.path}
                 end={item.path === basePath}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-bold transition-all ${
                     isActive
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      ? 'bg-[#fad503] text-[#006065] shadow-md'
+                      : 'text-white/75 hover:bg-white/10 hover:text-white'
                   }`
                 }
               >
@@ -68,17 +68,17 @@ export default function ClipadAdminLayout() {
           })}
         </nav>
 
-        <div className="p-4 border-t border-border space-y-2">
+        <div className="p-4 border-t border-white/10 space-y-2">
           <button 
             onClick={() => navigate('/clipad')}
-            className="flex items-center w-full gap-3 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+            className="flex items-center w-full gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-white/80 hover:bg-white/10 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Exit Admin
           </button>
           <button 
             onClick={handleLogout}
-            className="flex items-center w-full gap-3 px-3 py-2 rounded-lg text-sm font-medium text-red-500 hover:bg-red-500/10 transition-colors"
+            className="flex items-center w-full gap-3 px-3 py-2 rounded-xl text-sm font-semibold text-rose-300 hover:bg-rose-500/20 transition-colors"
           >
             <LogOut className="w-4 h-4" />
             Logout
@@ -87,10 +87,10 @@ export default function ClipadAdminLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter">
-        <div className="md:hidden p-4 border-b border-border bg-card flex items-center justify-between">
-            <h2 className="text-lg font-bold">CliPad Admin</h2>
-            <button onClick={() => navigate('/dashboard')}><ArrowLeft className="w-5 h-5"/></button>
+      <main className="flex-1 flex flex-col h-full overflow-y-auto relative z-30 page-enter bg-[#00beac] text-white scrollbar-thin">
+        <div className="md:hidden p-4 border-b border-white/10 bg-[#006065] text-white flex items-center justify-between">
+            <h2 className="text-lg font-black text-white">CliPad Admin</h2>
+            <button onClick={() => navigate('/dashboard')}><ArrowLeft className="w-5 h-5 text-white"/></button>
         </div>
         <div className={`flex-1 w-full ${location.pathname.endsWith('/ai') ? 'p-0' : 'p-6 md:p-8 max-w-7xl mx-auto'}`}>
             <Outlet />

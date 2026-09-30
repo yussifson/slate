@@ -73,20 +73,20 @@ export default function Overview() {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-full bg-slate-50 dark:bg-background p-4 sm:p-6 md:p-8 animate-pulse">
+      <div className="flex flex-col h-full bg-transparent  p-4 sm:p-6 md:p-8 animate-pulse">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-48 mb-2"></div>
-            <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-32"></div>
+            <div className="h-8 bg-white/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-white/15 dark:bg-slate-800 rounded w-32"></div>
           </div>
-          <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded w-32"></div>
+          <div className="h-10 bg-white/15 dark:bg-slate-800 rounded w-32"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-[#111111] p-6 rounded-2xl h-32"></div>
+            <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-32"></div>
           ))}
         </div>
-        <div className="bg-white dark:bg-[#111111] p-6 rounded-2xl h-64 mb-8"></div>
+        <div className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-64 mb-8"></div>
       </div>
     );
   }
@@ -149,7 +149,7 @@ export default function Overview() {
           <CardContent className="flex-1 overflow-y-auto max-h-[380px] space-y-1">
             {recentActivities.length > 0 ? (
               recentActivities.map((log) => {
-                const meta = ACTION_ICONS[log.action] || { icon: Activity, color: 'text-slate-500', bg: 'bg-slate-100 dark:bg-secondary' };
+                const meta = ACTION_ICONS[log.action] || { icon: Activity, color: 'text-white/70', bg: 'bg-white/10 dark:bg-secondary' };
                 const Icon = meta.icon;
                 return (
                   <div key={log.id} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
@@ -164,7 +164,7 @@ export default function Overview() {
                         )}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">{log.details || log.user_email || '—'}</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+                      <p className="text-[10px] text-white/60 mt-0.5 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
                         {log.ip_address && <span className="ml-2 font-mono">{log.ip_address}</span>}
@@ -175,9 +175,9 @@ export default function Overview() {
               })
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-muted-foreground py-12">
-                <Activity className="w-10 h-10 text-slate-300 dark:text-slate-700 mb-3" />
+                <Activity className="w-10 h-10 text-white/50 dark:text-white/90 mb-3" />
                 <p className="text-sm">No recent activity yet</p>
-                <p className="text-xs text-slate-400 mt-1">Events appear here as users take actions.</p>
+                <p className="text-xs text-white/60 mt-1">Events appear here as users take actions.</p>
               </div>
             )}
           </CardContent>
@@ -201,7 +201,7 @@ export default function Overview() {
                       <p className="text-xs text-muted-foreground">
                         {company.subdomain ? `${company.subdomain}.optavel.com` : 'No subdomain'}
                       </p>
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-[10px] text-white/60">
                         {formatDistanceToNow(new Date(company.created_at), { addSuffix: true })}
                       </p>
                     </div>
@@ -209,7 +209,7 @@ export default function Overview() {
                       'px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0 ml-3',
                       clipadPlan.toLowerCase().includes('enterprise') ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400' :
                       clipadPlan.toLowerCase().includes('pro') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                      'bg-slate-100 text-slate-600 dark:bg-secondary dark:text-muted-foreground'
+                      'bg-white/10 text-white/80 dark:bg-secondary dark:text-muted-foreground'
                     )}>
                       {clipadPlan}
                     </span>

@@ -16,11 +16,11 @@ const ACTION_COLORS = {
   video_recorded:  { bg: 'bg-orange-500/10',  text: 'text-orange-500', label: 'Recording' },
   impersonate:     { bg: 'bg-purple-500/10',  text: 'text-purple-500', label: 'Impersonate' },
   error:           { bg: 'bg-red-500/10',     text: 'text-red-500',    label: 'Error' },
-  update:          { bg: 'bg-slate-500/10',   text: 'text-slate-500',  label: 'Update' },
+  update:          { bg: 'bg-transparent0/10',   text: 'text-white/70',  label: 'Update' },
 };
 
 function ActionBadge({ action }) {
-  const c = ACTION_COLORS[action] || { bg: 'bg-slate-500/10', text: 'text-slate-500', label: action };
+  const c = ACTION_COLORS[action] || { bg: 'bg-transparent0/10', text: 'text-white/70', label: action };
   return (
     <span className={cn('px-2 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap', c.bg, c.text)}>
       {c.label}
@@ -108,7 +108,7 @@ export default function AuditMonitor() {
           <Wifi className="w-3.5 h-3.5 text-emerald-500" />
           Live
           {lastRefresh && (
-            <span className="text-slate-400 ml-1">· refreshed {formatDistanceToNow(lastRefresh, { addSuffix: true })}</span>
+            <span className="text-white/60 ml-1">· refreshed {formatDistanceToNow(lastRefresh, { addSuffix: true })}</span>
           )}
         </div>
       </div>
@@ -168,7 +168,7 @@ export default function AuditMonitor() {
       {/* Stats bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: 'Total Events', value: filteredLogs.length, color: 'text-slate-700 dark:text-foreground' },
+          { label: 'Total Events', value: filteredLogs.length, color: 'text-white/90 dark:text-foreground' },
           { label: 'Logins', value: filteredLogs.filter(l => l.action === 'login').length, color: 'text-blue-500' },
           { label: 'Plan Upgrades', value: filteredLogs.filter(l => l.action === 'plan_upgrade').length, color: 'text-emerald-500' },
           { label: 'Errors', value: filteredLogs.filter(l => l.action === 'error').length, color: 'text-red-500' },
@@ -184,7 +184,7 @@ export default function AuditMonitor() {
       <div className="border border-border rounded-xl bg-card overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50 dark:bg-card/50">
+            <TableRow className="bg-transparent dark:bg-[#006065]/50">
               <TableHead className="w-36"><Clock className="w-3.5 h-3.5 inline mr-1" />Timestamp</TableHead>
               <TableHead><User className="w-3.5 h-3.5 inline mr-1" />User</TableHead>
               <TableHead><Building2 className="w-3.5 h-3.5 inline mr-1" />Company</TableHead>
@@ -202,43 +202,43 @@ export default function AuditMonitor() {
               </TableRow>
             ) : filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
-                <TableRow key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                  <TableCell className="text-xs text-slate-500 whitespace-nowrap align-top pt-4">
-                    <div className="font-medium text-slate-700 dark:text-foreground">
+                <TableRow key={log.id} className="hover:bg-transparent dark:hover:bg-slate-800/50 transition-colors">
+                  <TableCell className="text-xs text-white/70 whitespace-nowrap align-top pt-4">
+                    <div className="font-medium text-white/90 dark:text-foreground">
                       {format(new Date(log.created_at), 'MMM d, yyyy')}
                     </div>
-                    <div className="text-slate-400 text-[11px]">
+                    <div className="text-white/60 text-[11px]">
                       {format(new Date(log.created_at), 'HH:mm:ss')}
                     </div>
-                    <div className="text-slate-300 dark:text-slate-600 text-[10px] mt-0.5">
+                    <div className="text-white/50 dark:text-white/80 text-[10px] mt-0.5">
                       {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
                     </div>
                   </TableCell>
                   <TableCell className="align-top pt-4">
-                    <div className="font-semibold text-sm text-slate-800 dark:text-foreground">
+                    <div className="font-semibold text-sm text-white dark:text-foreground">
                       {log.user_name || 'Unknown User'}
                     </div>
                     <div className="text-xs text-muted-foreground font-mono mt-0.5">
                       {log.user_email || (log.user_id ? `uid:${log.user_id.slice(0,8)}` : '—')}
                     </div>
                   </TableCell>
-                  <TableCell className="align-top pt-4 text-sm text-slate-500 font-mono text-xs">
+                  <TableCell className="align-top pt-4 text-sm text-white/70 font-mono text-xs">
                     {log.company_id
                       ? <span title={log.company_id}>{log.company_id.substring(0, 8)}…</span>
-                      : <span className="text-slate-300 dark:text-slate-600">—</span>
+                      : <span className="text-white/50 dark:text-white/80">—</span>
                     }
                   </TableCell>
                   <TableCell className="align-top pt-4">
                     <ActionBadge action={log.action} />
                   </TableCell>
                   <TableCell className="align-top pt-4 max-w-[200px]">
-                    <div className="text-xs text-slate-600 dark:text-muted-foreground line-clamp-2">
+                    <div className="text-xs text-white/80 dark:text-muted-foreground line-clamp-2">
                       {log.details || '—'}
                     </div>
                   </TableCell>
                   <TableCell className="align-top pt-4">
-                    <div className="text-xs font-mono text-slate-600 dark:text-muted-foreground">
-                      {log.ip_address || <span className="text-slate-300 dark:text-slate-600">—</span>}
+                    <div className="text-xs font-mono text-white/80 dark:text-muted-foreground">
+                      {log.ip_address || <span className="text-white/50 dark:text-white/80">—</span>}
                     </div>
                     {log.location && (
                       <div className="text-[11px] text-muted-foreground mt-0.5">{log.location}</div>
@@ -249,9 +249,9 @@ export default function AuditMonitor() {
             ) : (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-16">
-                  <ShieldAlert className="w-10 h-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                  <ShieldAlert className="w-10 h-10 text-white/50 dark:text-white/90 mx-auto mb-3" />
                   <p className="text-muted-foreground font-medium">No audit logs found</p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-white/60 mt-1">
                     New events will appear here automatically as users take actions.
                   </p>
                 </TableCell>

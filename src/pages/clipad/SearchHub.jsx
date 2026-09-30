@@ -624,7 +624,7 @@ export default function SearchHub() {
                     {isSearching ? (
                       <div className="flex items-center gap-3 py-16 justify-center">
                         <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                        <p className="text-sm text-slate-500 dark:text-slate-400">Searching your workspace...</p>
+                        <p className="text-sm text-white/70 dark:text-white/60">Searching your workspace...</p>
                       </div>
                     ) : (
                       filteredResults.map(item => {
@@ -638,7 +638,7 @@ export default function SearchHub() {
                             className={`p-4 rounded-xl border cursor-pointer transition-all ${
                               isSelected
                                 ? 'bg-primary/5 border-primary/30 dark:border-primary/40'
-                                : 'bg-white dark:bg-white/[0.03] border-slate-200/80 dark:border-white/8 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-50 dark:hover:bg-white/5'
+                                : 'bg-[#006065] text-white dark:bg-white/[0.03] border-white/15/80 dark:border-white/8 hover:border-white/20 dark:hover:border-white/15 hover:bg-transparent dark:hover:bg-white/5'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -648,22 +648,22 @@ export default function SearchHub() {
                                   {meta.label}
                                 </span>
                                 {item.provider && (
-                                  <span className="text-[10px] font-mono text-slate-400 truncate">
+                                  <span className="text-[10px] font-mono text-white/60 truncate">
                                     {item.provider}
                                   </span>
                                 )}
                               </div>
                               {item.created_at && (
-                                <span className="text-[11px] text-slate-400 shrink-0">
+                                <span className="text-[11px] text-white/60 shrink-0">
                                   {new Date(item.created_at).toLocaleDateString()}
                                 </span>
                               )}
                             </div>
-                            <h4 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug mb-1">
+                            <h4 className="font-semibold text-sm text-white dark:text-white leading-snug mb-1">
                               {item.label}
                             </h4>
                             {item.snippet && (
-                              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                              <p className="text-xs text-white/70 dark:text-white/60 line-clamp-2 leading-relaxed">
                                 {item.snippet}
                               </p>
                             )}
@@ -675,9 +675,9 @@ export default function SearchHub() {
 
                   {/* Selected record detail (Pinned inside the left results column at the bottom) */}
                   {selectedResult && (
-                    <div className="shrink-0 bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/8 rounded-xl p-5 space-y-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="shrink-0 bg-[#006065] text-white dark:bg-white/[0.03] border border-white/15/80 dark:border-white/8 rounded-xl p-5 space-y-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Record detail</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">Record detail</span>
                         {TYPE_META[selectedResult.type]?.route && (
                           <button
                             onClick={() => {
@@ -690,10 +690,10 @@ export default function SearchHub() {
                           </button>
                         )}
                       </div>
-                      <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-snug">
+                      <h3 className="font-semibold text-sm text-white dark:text-white leading-snug">
                         {selectedResult.label}
                       </h3>
-                      <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-h-40 overflow-y-auto">
+                      <div className="text-xs text-white/80 dark:text-white/60 leading-relaxed max-h-40 overflow-y-auto">
                         {selectedResult.snippet || 'No content preview available.'}
                       </div>
                     </div>
@@ -712,8 +712,8 @@ export default function SearchHub() {
                         <CliPadLogo size={20} className="text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-sm text-slate-900 dark:text-white leading-none">Orbit AI</h3>
-                        <span className="text-[10px] text-slate-400 mt-1 block">Executive synthesis</span>
+                        <h3 className="font-semibold text-sm text-white dark:text-white leading-none">Orbit AI</h3>
+                        <span className="text-[10px] text-white/60 mt-1 block">Executive synthesis</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -725,7 +725,7 @@ export default function SearchHub() {
                       )}
                       <button
                         onClick={handleNewSearch}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 border border-slate-200 dark:border-white/10 transition-all shadow-sm active:scale-95"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-white/50 hover:bg-white/10 dark:hover:bg-white/5 border border-white/15 dark:border-white/10 transition-all shadow-sm active:scale-95"
                       >
                         <Plus className="w-3.5 h-3.5 text-primary" />
                         New Search
@@ -738,11 +738,11 @@ export default function SearchHub() {
                     <div className="max-w-[680px] mx-auto w-full space-y-6 py-4">
                       {isSynthesizing && chatHistory.length === 0 ? (
                         <div className="space-y-3 py-4 animate-pulse">
-                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full" />
-                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-4/5" />
-                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-3/4" />
-                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-full mt-2" />
-                          <div className="h-3.5 bg-slate-100 dark:bg-white/10 rounded-full w-2/3" />
+                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-full" />
+                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-4/5" />
+                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-3/4" />
+                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-full mt-2" />
+                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-2/3" />
                         </div>
                       ) : (
                         <>
@@ -750,20 +750,20 @@ export default function SearchHub() {
                             <div key={i} className="w-full">
                               {msg.role === 'user' ? (
                                 <div className="flex flex-col items-end w-full mb-5 animate-in fade-in duration-200">
-                                  <div className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 px-5 py-3 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
+                                  <div className="bg-white/10 dark:bg-slate-800 text-white dark:text-slate-100 px-5 py-3 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
                                     {msg.content}
                                   </div>
-                                  <div className="flex items-center gap-2 mt-1 mr-1 text-slate-400 select-none">
+                                  <div className="flex items-center gap-2 mt-1 mr-1 text-white/60 select-none">
                                     <button 
                                       onClick={() => handleCopy(msg.content, i)} 
-                                      className="p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all"
+                                      className="p-1 hover:text-slate-650 dark:hover:text-white/50 hover:bg-transparent dark:hover:bg-slate-800/50 rounded transition-all"
                                       title="Copy message"
                                     >
                                       {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                                     </button>
                                     <button 
                                       onClick={() => setFollowUpInput(msg.content)} 
-                                      className="p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all"
+                                      className="p-1 hover:text-slate-650 dark:hover:text-white/50 hover:bg-transparent dark:hover:bg-slate-800/50 rounded transition-all"
                                       title="Edit message"
                                     >
                                       <Edit className="w-3.5 h-3.5" />
@@ -851,7 +851,7 @@ export default function SearchHub() {
                           value={followUpInput}
                           onChange={e => setFollowUpInput(e.target.value)}
                           placeholder="Ask Orbit AI..."
-                          className="flex-1 bg-transparent border-none outline-none ring-0 text-sm py-2 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none"
+                          className="flex-1 bg-transparent border-none outline-none ring-0 text-sm py-2 text-white dark:text-white placeholder:text-white/60 focus:outline-none focus:ring-0 focus:border-none focus:shadow-none"
                         />
                         
                         {/* Send button (Primary green, cleanly aligned) */}

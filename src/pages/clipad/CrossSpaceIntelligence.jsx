@@ -48,7 +48,7 @@ function CollisionCard({ type, items, spaceNames, onViewSpace }) {
       <div className="space-y-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-2 p-2 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-2 h-2 rounded-full bg-current opacity-60 shrink-0" style={{ color: i === 0 ? '#6366f1' : '#64748b' }} />
+            <div className="w-2 h-2 rounded-full bg-current opacity-60 shrink-0" style={{ color: i === 0 ? '#fad503' : '#64748b' }} />
             <p className="text-xs text-foreground/80 flex-1 min-w-0 truncate">{item.text}</p>
             <button
               onClick={() => onViewSpace(item.spaceId)}
@@ -383,7 +383,7 @@ Respond in valid JSON only:
             {siloedSpaces.length > 0 && (
               <section>
                 <div className="flex items-center gap-2 mb-3">
-                  <Network className="w-4 h-4 text-slate-400" />
+                  <Network className="w-4 h-4 text-white/60" />
                   <h2 className="font-semibold text-foreground text-sm">Knowledge-Isolated Spaces</h2>
                   <span className="text-xs text-muted-foreground ml-1">{siloedSpaces.length} space{siloedSpaces.length > 1 ? 's' : ''} with no cross-team knowledge sharing (30d)</span>
                 </div>
@@ -394,8 +394,8 @@ Respond in valid JSON only:
                       onClick={() => navigate(`${basePath}/spaces/${s.id}`)}
                       className="p-3 rounded-xl border border-dashed border-white/10 bg-white/[0.02] text-left hover:bg-white/[0.04] transition-colors group"
                     >
-                      <div className="w-6 h-6 rounded-lg bg-slate-500/10 border border-slate-500/20 flex items-center justify-center mb-2">
-                        <Shield className="w-3.5 h-3.5 text-slate-400" />
+                      <div className="w-6 h-6 rounded-lg bg-transparent0/10 border border-slate-500/20 flex items-center justify-center mb-2">
+                        <Shield className="w-3.5 h-3.5 text-white/60" />
                       </div>
                       <p className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">{s.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">No cross-sharing</p>

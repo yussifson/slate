@@ -304,7 +304,7 @@ Respond in valid JSON only:
                   {aiInsight.velocity_trend && (
                     <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
                       aiInsight.velocity_trend === 'improving' ? 'bg-emerald-500/10 text-emerald-400' :
-                      aiInsight.velocity_trend === 'declining' ? 'bg-red-500/10 text-red-400' : 'bg-slate-500/10 text-slate-400'
+                      aiInsight.velocity_trend === 'declining' ? 'bg-red-500/10 text-red-400' : 'bg-transparent0/10 text-white/60'
                     }`}>
                       {aiInsight.velocity_trend === 'improving' ? 'â†‘' : aiInsight.velocity_trend === 'declining' ? 'â†“' : 'â†’'} {aiInsight.velocity_trend}
                     </span>

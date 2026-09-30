@@ -230,7 +230,7 @@ export default function DecisionLedger() {
         {loading && decisions.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-48"></div>
+              <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] border border-white/10 dark:border-white/5 rounded-2xl h-48"></div>
             ))}
           </div>
         ) : filteredDecisions.length === 0 ? (

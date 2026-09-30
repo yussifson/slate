@@ -52,7 +52,7 @@ function SpaceCard({ space, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="group p-5 rounded-2xl bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
+      className="group p-5 rounded-2xl bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-white/15 hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
     >
       <div className="flex items-start gap-3 mb-4">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm bg-gradient-to-br ${color}`}>
@@ -119,7 +119,7 @@ function formatDuration(seconds, videoId) {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-white/15 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
       <div className="aspect-video bg-white/10 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
@@ -166,7 +166,7 @@ function ActionItemRow({ item }) {
   };
   return (
     <div className="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 dark:hover:bg-slate-800/50 transition-colors group">
-      <button onClick={toggle} className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${done ? 'bg-primary border-primary' : 'border-slate-300 dark:border-slate-600 hover:border-primary/50 dark:hover:border-primary/50'}`}>
+      <button onClick={toggle} className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-300 ${done ? 'bg-primary border-primary' : 'border-white/20 dark:border-slate-600 hover:border-primary/50 dark:hover:border-primary/50'}`}>
         {done && <CheckCircle className="w-3 h-3 text-[#fad503]-foreground" />}
       </button>
       <div className="flex-1 min-w-0">
@@ -391,7 +391,7 @@ export default function CliPadDashboard() {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className="relative overflow-hidden flex flex-col gap-2 p-4 rounded-2xl bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 group text-left active:scale-[0.98]"
+                className="relative overflow-hidden flex flex-col gap-2 p-4 rounded-2xl bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-white/15 hover:border-primary/30 hover:shadow-md transition-all duration-300 group text-left active:scale-[0.98]"
               >
                 <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${item.colorClass} rounded-t-2xl`} />
                 <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.colorClass} flex items-center justify-center shadow-sm`}>
@@ -458,7 +458,7 @@ export default function CliPadDashboard() {
                   <h2 className="text-xl font-bold text-white dark:text-white flex items-center gap-2"><Layers className="w-5 h-5 text-[#fad503]" /> Team Spaces</h2>
                   <button 
                     onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
-                    className="p-1.5 rounded-full bg-white/10 hover:bg-slate-200 dark:bg-secondary dark:hover:bg-slate-700 text-white/70 transition-colors"
+                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/15 dark:bg-secondary dark:hover:bg-slate-700 text-white/70 transition-colors"
                     title="Smart Global Search (Ctrl+K)"
                   >
                     <Search className="w-4 h-4" />
@@ -514,7 +514,7 @@ export default function CliPadDashboard() {
               <div className="p-2 md:p-4 max-h-[320px] overflow-y-auto scrollbar-primary">
                 {actionItems.length === 0 ? (
                   <div className="py-10 text-center">
-                    <Star className="w-10 h-10 text-slate-300 dark:text-white/80 mx-auto mb-3" />
+                    <Star className="w-10 h-10 text-white/50 dark:text-white/80 mx-auto mb-3" />
                     <p className="text-sm font-medium text-white/70 dark:text-muted-foreground">No open action items. Nice work!</p>
                   </div>
                 ) : (
@@ -569,7 +569,7 @@ export default function CliPadDashboard() {
               <div className="divide-y divide-black/5 dark:divide-white/5">
                 {meetings.length === 0 ? (
                   <div className="py-10 text-center">
-                    <Calendar className="w-10 h-10 text-slate-300 dark:text-white/80 mx-auto mb-3" />
+                    <Calendar className="w-10 h-10 text-white/50 dark:text-white/80 mx-auto mb-3" />
                     <p className="text-sm font-medium text-white/70 dark:text-muted-foreground">No meetings yet.</p>
                   </div>
                 ) : (
