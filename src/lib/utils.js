@@ -26,7 +26,7 @@ export async function forceDownload(url, filename) {
 }
 
 
-export const isIframe = window.self !== window.top;
+export const isIframe = typeof window !== 'undefined' ? (window.self !== window.top) : false;
 
 export const INDUSTRY_TERMS = {
   law: {
