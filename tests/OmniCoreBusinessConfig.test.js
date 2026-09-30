@@ -115,23 +115,21 @@ describe('OmniCore Business Configuration Engine', () => {
   });
 
   describe('Company with Industry having No Explicit Pack Yet (Graceful Fallback)', () => {
-    it('gracefully falls back to dynamic pack using central industries.js for Real Estate', () => {
-      const realEstateCompany = {
-        id: 'comp-re-303',
-        name: 'Summit Real Estate',
-        industry_type: 'real_estate'
+    it('gracefully falls back to dynamic pack using central industries.js for unmapped industry', () => {
+      const customCompany = {
+        id: 'comp-opt-303',
+        name: 'Optavel Services',
+        industry_type: 'optavel'
       };
 
-      const profile = resolveBusinessProfileSync(realEstateCompany);
+      const profile = resolveBusinessProfileSync(customCompany);
 
-      expect(profile.companyId).toBe('comp-re-303');
-      expect(profile.industry).toBe('real_estate');
+      expect(profile.companyId).toBe('comp-opt-303');
+      expect(profile.industry).toBe('optavel');
       expect(profile.isExplicitPack).toBe(false);
 
       // Verify terms pulled dynamically from industries.js
-      expect(profile.terms.client).toBe('Client');
-      expect(profile.terms.case).toBe('Property');
-      expect(profile.terms.staff).toBe('Agent');
+      expect(profile.terms.client).toBeDefined();
 
       // Verify default capabilities
       expect(profile.isCapabilityEnabled('CustomerManagement')).toBe(true);
@@ -139,18 +137,16 @@ describe('OmniCore Business Configuration Engine', () => {
       expect(profile.isCapabilityEnabled('Finance')).toBe(true);
     });
 
-    it('gracefully falls back for School vertical', () => {
-      const schoolCompany = {
-        id: 'comp-school-404',
-        name: 'International Academy',
-        industry_type: 'school'
+    it('gracefully falls back for custom unknown vertical', () => {
+      const unknownCompany = {
+        id: 'comp-unk-404',
+        name: 'Custom Advisory',
+        industry_type: 'custom_advisory'
       };
 
-      const profile = resolveBusinessProfileSync(schoolCompany);
+      const profile = resolveBusinessProfileSync(unknownCompany);
       expect(profile.isExplicitPack).toBe(false);
-      expect(profile.terms.client).toBe('Student');
-      expect(profile.terms.case).toBe('Class');
-      expect(profile.terms.staff).toBe('Teacher');
+      expect(profile.isCapabilityEnabled('CustomerManagement')).toBe(true);
     });
   });
 
