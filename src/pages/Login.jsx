@@ -3,16 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import React, { useState, useEffect, useMemo } from 'react';
 import { powerSync} from "@/api/PowerSyncConnector";
 import { supabase} from "@/api/supabaseClient";
-import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useAuth} from '@/lib/AuthContext';
 import { AlertCircle} from 'lucide-react';
-import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
-import { toast} from 'react-hot-toast';
-import SEO from '@/components/seo/SEO';
-import IndustryFeatureShowcase from '@/components/shared/IndustryFeatureShowcase';
 
 
 const LOGIN_QUOTES = [
@@ -540,232 +535,216 @@ export default function Login() {
 }
 
  return (
-  <div className="h-[100dvh] w-full overflow-y-auto bg-white">
- <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {/* Left Side: Form */}
- <div className="flex-1 flex flex-col pt-12 lg:pt-20 px-8 lg:px-16 pb-12">
- <div className="max-w-lg w-full mx-auto">
- <div className="flex flex-col mb-8">
- {branding.logo_url ? (
-   <img src={branding.logo_url} alt="Logo" className="h-10 object-contain w-fit" />
- ) : (
-   <>
-     <Logo className="w-10 h-10" />
-     {!isRootAccount && <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>}
-   </>
- )}
- </div>
- 
-  <div className="mb-8">
-  <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{isRootAccount ? 'Optavel Account' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : t("welcome_back", "Welcome back")}</h1>
-  </div>
-  
-  <div className="flex flex-col gap-3 mb-6">
-    <button
-      onClick={handleOptavelSSO}
-      type="button"
-      className="flex items-center justify-center gap-2 h-12 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-base font-semibold transition-colors shadow-sm"
-    >
-      <Logo hideText={true} className="w-5 h-5 text-primary" />
-      Continue with Optavel
-    </button>
-    <div className="h-12 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors shadow-sm">
-      <button 
-        onClick={handleGoogleOAuth}
-        type="button"
-        className="flex items-center justify-center gap-2 h-full w-full text-slate-700 dark:text-foreground font-medium text-base transition-colors"
-      >
-        <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        Sign in with Google
-      </button>
-    </div>
-    {/*
-    <button 
-      onClick={handleAppleSignIn}
-      type="button"
-      className="flex items-center justify-center gap-2 h-12 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-base font-medium transition-colors shadow-sm"
-    >
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M16.365 21.43c-1.39.95-2.81 1.05-4.14.04-1.36-.97-2.73-1.01-4.22.04-1.63 1.1-3.23.95-4.62-.54-1.22-1.29-2.3-3.26-3.08-5.72-.81-2.58-.87-5.01-.22-7.14.65-2.12 1.83-3.79 3.5-4.8 1.48-.89 3.09-1.04 4.54-.53 1.43.49 2.53 1.05 3.73 1.05 1.14 0 2.45-.63 4.12-1.18 1.87-.61 3.66-.45 5.15.54 1.17.76 2.05 1.83 2.55 3.04-1.6.93-2.45 2.37-2.37 4.18.09 1.94 1.17 3.44 2.89 4.25-1.1 2.3-2.5 4.39-4.22 6.01l-.23.23c-1.21 1.15-2.31 1.6-3.38.53z" />
-      </svg>
-      Sign in with Apple
-    </button>
-    */}
-  </div>
-
-  <div className="relative mb-6">
-    <div className="absolute inset-0 flex items-center">
-      <div className="w-full border-t border-slate-200 dark:border-border"></div>
-    </div>
-    <div className="relative flex justify-center text-xs uppercase">
-      <span className="bg-white dark:bg-card px-2 text-slate-500 font-semibold tracking-wider">Or continue with email</span>
-    </div>
-  </div>
-
-  <form onSubmit={handleLogin} className="space-y-4">
-    {error && (
-      <div className="rounded-xl bg-red-50 dark:bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400 border-[0.5px] border-red-100 dark:border-red-500/20 font-medium tracking-[0.04em]">
-        {error}
-      </div>
-    )}
-
-    {isRootAccount && !currentSubdomain && (
-      <div>
-        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
-          {t("workspace_url", "Workspace URL")}
-        </label>
-        <div className="relative flex items-center">
-          <Input
-            type="text"
-            required
-            placeholder="acme"
-            value={workspace}
-            onChange={(e) => setWorkspace(e.target.value)}
-            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 pr-32 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-          />
-          <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
-            .optavel.com
-          </div>
-        </div>
-      </div>
-    )}
-
-    <div>
-      <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
-        {t("email", "Email")}
-      </label>
-      <Input
-        type="email"
-        required
-        placeholder="name@company.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-      />
-    </div>
-
-    <div>
-      <div className="flex items-center justify-between mb-1.5">
-        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest tracking-[0.04em]">
-          {t("password", "Password")}
-        </label>
-        <Link to="/forgot-password" className="text-xs font-semibold text-primary hover:underline">
-          {t("forgot_password", "Forgot?")}
-        </Link>
-      </div>
-      <Input
-        type="password"
-        required
-        placeholder="••••••••"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-      />
-    </div>
-
-    <Button type="submit" className="w-full h-12 mt-2 text-base font-semibold transition-all active:scale-[0.98]" disabled={loading}>
-      {loading ? t("signing_in", "Signing in...") : t("sign_in", "Sign In")}
-    </Button>
-  </form>
-
-  {(!currentSubdomain && !isCustomDomain) && (
-    <div className="text-center mt-10">
-      <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("don_t_have_an_account", "Don't have an account?")} </span>
-      {isElectron ? (
-        <Link to="/signup" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-          {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
-        </Link>
-      ) : (
-        <a href={`${getMainAppUrl()}/signup`} className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
-          {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
-        </a>
-      )}
-    </div>
-  )}
- </div>
- </div>
-
-  {/* Right Side: Marketing Visual */}
-  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#F8FAFC] border-l border-slate-200/80 overflow-hidden p-6 sm:p-8">
-    {/* Ambient geometry */}
-    <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
-
-    {(currentSubdomain || isCustomDomain || branding.name !== 'Slate') ? (
-      <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
-    ) : (
-      <div className="relative z-10 w-full max-w-2xl bg-white/95 backdrop-blur-2xl rounded-3xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between text-slate-900 shadow-sm overflow-hidden">
-        <div>
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-bold text-emerald-800 mb-4 shadow-xs">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-            </span>
-            <span className="tracking-wide text-[11px] uppercase font-bold">Enterprise Operating System</span>
-          </div>
-
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2 tracking-tight leading-tight">
-            Modern Enterprise Workspace & Operations
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mb-5">
-            Integrated client management, real estate operations, cross-team collaboration, and executive intelligence.
-          </p>
-
-          {/* Operational Telemetry Card */}
-          <div className="mb-5 p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-2.5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-slate-700">
-              <span className="font-bold text-slate-900 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-                Executive Intelligence Hub
-              </span>
-              <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                Live & Synced
-              </span>
+    <div className="min-h-[100dvh] w-full bg-[#f4f5f8] flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans text-slate-900">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch my-auto">
+        
+        {/* Left Column: Form */}
+        <div className="lg:col-span-7 bg-white rounded-[32px] p-6 sm:p-10 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            {/* Logo & Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-2">
+                {branding.logo_url ? (
+                  <img src={branding.logo_url} alt="Logo" className="h-9 object-contain" />
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Logo className="w-8 h-8" />
+                    <span className="font-extrabold text-xl tracking-tight text-slate-900">
+                      {branding.name || 'Clipad'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              {!isRootAccount && (
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+                  Workspace
+                </span>
+              )}
             </div>
-            
-            <div className="grid grid-cols-3 gap-2 text-center text-xs pt-0.5">
-              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
-                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Operations</span>
-                <span className="text-xs font-bold text-slate-900">Real-Time</span>
+
+            {/* Welcome Heading */}
+            <div className="mb-6">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+                {isRootAccount ? 'Sign in to Optavel' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : 'Welcome back'}
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                Enter your account credentials to access your workspace.
+              </p>
+            </div>
+
+            {/* Social Logins */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <button
+                onClick={handleOptavelSSO}
+                type="button"
+                className="flex items-center justify-center gap-2 h-11 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+              >
+                <Logo hideText={true} className="w-4 h-4 text-primary" />
+                Optavel SSO
+              </button>
+              <button 
+                onClick={handleGoogleOAuth}
+                type="button"
+                className="flex items-center justify-center gap-2 h-11 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Google
+              </button>
+            </div>
+
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200"></div>
               </div>
-              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
-                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Security</span>
-                <span className="text-xs font-bold text-emerald-700">Encrypted</span>
-              </div>
-              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
-                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Cloud Sync</span>
-                <span className="text-xs font-bold text-indigo-700">99.9% Uptime</span>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider">Or email</span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
-              <span>Real-time updates active across team workspaces</span>
-              <span className="text-emerald-700 font-semibold shrink-0 ml-2">Active</span>
-            </div>
+            {/* Form */}
+            <form onSubmit={handleLogin} className="space-y-4">
+              {error && (
+                <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-200 font-medium">
+                  {error}
+                </div>
+              )}
+
+              {isRootAccount && !currentSubdomain && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">
+                    {t("workspace_url", "Workspace URL")}
+                  </label>
+                  <div className="relative flex items-center">
+                    <Input
+                      type="text"
+                      required
+                      placeholder="acme"
+                      value={workspace}
+                      onChange={(e) => setWorkspace(e.target.value)}
+                      className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 pr-32 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                    />
+                    <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
+                      .optavel.com
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">
+                  {t("email", "Email")}
+                </label>
+                <Input
+                  type="email"
+                  required
+                  placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-semibold text-slate-600">
+                    {t("password", "Password")}
+                  </label>
+                  <Link to="/forgot-password" className="text-xs font-semibold text-slate-600 hover:text-black hover:underline">
+                    {t("forgot_password", "Forgot?")}
+                  </Link>
+                </div>
+                <Input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 mt-2 bg-[#111827] hover:bg-black text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  t("sign_in", "Sign In")
+                )}
+              </button>
+            </form>
           </div>
+
+          {(!currentSubdomain && !isCustomDomain) && (
+            <div className="text-center pt-6 mt-6 border-t border-slate-100">
+              <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
+              {isElectron ? (
+                <Link to="/signup" className="text-xs font-bold text-slate-900 hover:underline">
+                  {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+                </Link>
+              ) : (
+                <a href={`${getMainAppUrl()}/signup`} className="text-xs font-bold text-slate-900 hover:underline">
+                  {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Testimonial Quote Footer */}
-        <div className="pt-4 border-t border-slate-200/80 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs shrink-0 shadow-xs">
-            {randomQuote.initials}
+        {/* Right Column: Hero Dark Card */}
+        <div className="lg:col-span-5 bg-[#0e1117] rounded-[32px] p-8 lg:p-10 text-white flex flex-col justify-between relative overflow-hidden shadow-2xl min-h-[520px]">
+          {/* Background ambient light */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-[#1e293b]/40 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#006065]/20 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Top Arcana style logo mark */}
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+              <div className="w-2 h-2 rounded-full bg-[#fad503] animate-pulse" />
+              <span className="text-xs font-bold tracking-wide uppercase text-white/90">Enterprise AI</span>
+            </div>
+            <div className="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center">
+              <Logo className="w-6 h-6 text-white" />
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs text-slate-600 italic line-clamp-2">
-              {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
+
+          {/* Middle content */}
+          <div className="relative z-10 my-auto py-8">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3 leading-tight">
+              Welcome to Clipad
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
+              Empower your organization with AI organizational memory, real-time workspace sync, and intelligent collaboration.
             </p>
-            <p className="text-xs font-semibold text-slate-900 mt-0.5">{randomQuote.name}</p>
+          </div>
+
+          {/* Charcoal Glass Sub-Card */}
+          <div className="relative z-10 bg-[#1e232d]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-3 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div className="flex -space-x-2 overflow-hidden">
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-slate-700 text-[10px] font-bold text-white flex items-center justify-center">MK</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-indigo-600 text-[10px] font-bold text-white flex items-center justify-center">DC</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-teal-600 text-[10px] font-bold text-white flex items-center justify-center">SJ</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-[#fad503] text-[10px] font-bold text-[#0e1117] flex items-center justify-center">+17k</div>
+              </div>
+              <div className="flex items-center gap-1 text-[#fad503] text-xs font-bold">
+                ★★★★★ <span className="text-white/80 text-[11px] ml-1">5.0</span>
+              </div>
+            </div>
+            <p className="text-xs text-slate-300 font-medium">
+              More than 17,000+ teams use Clipad to centralize their business operations and knowledge.
+            </p>
           </div>
         </div>
+
       </div>
-    )}
-  </div>
-  </div>
-  </div>
+    </div>
   );
 }
