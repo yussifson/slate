@@ -95,28 +95,28 @@ export default function KnowledgeTimeline() {
   const providers = [...new Set(events.map(e => e.provider))];
 
   return (
-    <div className="min-h-full bg-[#00beac] text-white font-sans page-enter pb-12">
+    <div className="min-h-full bg-[#00beac] text-slate-900 font-sans page-enter pb-12">
       {/* Header */}
-      <div className="relative overflow-hidden border-b border-white/10 bg-[#006065] px-6 py-8">
+      <div className="relative overflow-hidden border-b border-slate-200/80 bg-white text-slate-900 border-b border-slate-200/80 px-6 py-8">
         <div className="max-w-5xl mx-auto relative z-10 flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
+              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-slate-100 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
                 <ArrowLeft className="w-4 h-4 text-white" />
               </button>
               <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
-                <History className="w-5 h-5 text-[#fad503]" />
+                <History className="w-5 h-5 text-[#ff521d]" />
               </div>
               <h1 className="text-2xl font-bold text-white">Knowledge Timeline</h1>
             </div>
-            <p className="text-sm text-white/75 max-w-xl">
+            <p className="text-sm text-slate-500 max-w-xl">
               A chronological feed of all knowledge ingested across your connected applications. 
               See exactly what the AI is learning in real-time.
             </p>
           </div>
           <button 
             onClick={loadTimeline}
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors border border-white/15"
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors border border-slate-100"
           >
             <RefreshCw className="w-4 h-4" /> Refresh
           </button>
@@ -128,24 +128,24 @@ export default function KnowledgeTimeline() {
         {/* Left Sidebar: Filters */}
         <div className="w-full md:w-64 shrink-0 space-y-6">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/50" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input 
               type="text"
               placeholder="Search timeline..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#006065] border border-white/20 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-[#fad503] transition-all shadow-sm"
+              className="w-full bg-white border border-slate-200/80 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-[#ff521d] transition-all shadow-sm"
             />
           </div>
 
           <div className="bg-[#006065] border border-white/10 rounded-2xl overflow-hidden shadow-md">
-            <div className="px-4 py-3 border-b border-white/10 bg-white/5">
+            <div className="px-4 py-3 border-b border-white/10 bg-slate-50">
               <h3 className="font-bold text-sm text-white">Data Sources</h3>
             </div>
             <div className="p-2 space-y-1">
               <button
                 onClick={() => setActiveFilter('all')}
-                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === 'all' ? 'bg-[#fad503] text-[#006065] font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === 'all' ? 'bg-[#ff521d] text-[#006065] font-bold' : 'text-slate-600 hover:bg-white/10 hover:text-white'}`}
               >
                 <div className="flex items-center gap-2"><Database className="w-4 h-4" /> All Sources</div>
                 <span className="text-xs bg-white/10 px-1.5 py-0.5 rounded-md text-white">{events.length}</span>
@@ -183,7 +183,7 @@ export default function KnowledgeTimeline() {
             <div className="text-center p-12 border border-dashed border-white/20 rounded-2xl bg-[#006065] text-white">
               <Box className="w-8 h-8 text-white/50 mx-auto mb-3" />
               <h3 className="font-bold text-white mb-1">No knowledge found</h3>
-              <p className="text-sm text-white/70">Try adjusting your filters or search query.</p>
+              <p className="text-sm text-slate-500">Try adjusting your filters or search query.</p>
             </div>
           ) : (
             <div className="relative pl-6 border-l-2 border-[#fad503]/40 space-y-8">

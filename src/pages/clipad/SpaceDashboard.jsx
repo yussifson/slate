@@ -461,7 +461,7 @@ export default function SpaceDashboard() {
 
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#00beac] page-enter text-white overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f4f5f8] page-enter text-white overflow-x-hidden pb-24 md:pb-8">
       {/* Privacy Modal */}
       <Dialog open={showPrivacyModal} onOpenChange={setShowPrivacyModal}>
         <DialogContent className="sm:max-w-[440px]">
@@ -499,24 +499,24 @@ export default function SpaceDashboard() {
       </Dialog>
 
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-[#006065] text-white border-b border-white/10">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-white text-slate-900 border-b border-slate-200/80">
         <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all hover:-translate-y-0.5 active:scale-95"><ArrowLeft className="w-5 h-5 md:w-5 md:h-5 text-white" /></button>
+          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all hover:-translate-y-0.5 active:scale-95"><ArrowLeft className="w-5 h-5 md:w-5 md:h-5 text-white" /></button>
           <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
             {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4 md:w-4 md:h-4" })}
           </div>
           <span className="hidden md:block font-semibold text-base md:text-lg text-white line-clamp-1">{space.name}</span>
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 active:scale-95">
+          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all flex items-center gap-2 active:scale-95">
             <MessageSquare className="w-4 h-4" /> Chat
           </button>
-          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 active:scale-95">
+          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-slate-100 rounded-xl transition-all flex items-center gap-2 active:scale-95">
             <Camera className="w-4 h-4" /> Record
           </button>
           <button
             onClick={handleJoinMeeting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-[#fad503] text-[#006065] shadow-lg shadow-[#fad503]/25 hover:bg-[#fad503]/90'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-[#ff521d] text-white shadow-lg shadow-[#ff521d]/25 hover:bg-[#e04413]'}`}
           >
             {isLive ? <Activity className="w-4 h-4" /> : <Video className="w-4 h-4" />}
             {isLive ? 'Join Live' : 'Start Meeting'}
@@ -525,7 +525,7 @@ export default function SpaceDashboard() {
       </nav>
 
       {/* Space header */}
-      <div className="relative overflow-hidden bg-[#006065] text-white border-b border-white/10">
+      <div className="relative overflow-hidden bg-white text-slate-900 border-b border-slate-200/80">
         <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] dark:opacity-[0.08]`} />
         
         {/* Nature Design */}
@@ -557,15 +557,15 @@ export default function SpaceDashboard() {
                   </div>
                 )}
               </h1>
-              <p className="text-sm md:text-base text-white/70 mt-1 md:mt-1.5 leading-snug line-clamp-2 md:line-clamp-none">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
+              <p className="text-sm md:text-base text-slate-500 mt-1 md:mt-1.5 leading-snug line-clamp-2 md:line-clamp-none">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
               
               {/* Native Pill Stats */}
               <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-4 text-xs font-medium">
-                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Calendar className="w-3.5 h-3.5 text-[#fad503]" /> {meetings.length} meetings</span>
+                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Calendar className="w-3.5 h-3.5 text-[#ff521d]" /> {meetings.length} meetings</span>
                 <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Camera className="w-3.5 h-3.5 text-emerald-300" /> {videos.length} videos</span>
                 <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><CheckCircle className="w-3.5 h-3.5 text-amber-300" /> {openTasks.length} tasks</span>
                 {(isAdmin(user) || isSpacemanHere) && (
-                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-[#fad503]/20 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-[#fad503] font-bold hover:bg-[#fad503]/30 transition-colors active:scale-95">
+                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-[#ff521d]/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-[#fad503] font-bold hover:bg-[#ff521d]/20 transition-colors active:scale-95">
                     <Users className="w-3.5 h-3.5" /> Manage Members
                   </button>
                 )}
@@ -592,7 +592,7 @@ export default function SpaceDashboard() {
       </div>
 
       {/* Tab bar (Native Segmented Style) */}
-      <div className="border-b border-white/10 bg-[#006065]/90 backdrop-blur-md sticky top-[56px] md:top-16 z-30">
+      <div className="border-b border-white/10 bg-white/90 backdrop-blur-md sticky top-[56px] md:top-16 z-30">
         <div className="overflow-x-auto no-scrollbar scrollbar-hide py-2 px-4 md:px-10">
           <div className="flex gap-1.5 min-w-max">
             {TABS.filter(t => {
@@ -605,7 +605,7 @@ export default function SpaceDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#fad503] text-[#006065] font-bold shadow-md' : 'bg-white/10 text-white/80 hover:bg-white/20 hover:text-white'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#fad503] text-[#006065] font-bold shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'}`}
                 >
                   <Icon className="w-3.5 h-3.5" />{tab.label}
                 </button>
