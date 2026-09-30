@@ -383,11 +383,6 @@ export default function CliPadDashboard() {
           <p className="text-base text-white/80 font-medium">Here's what's happening across your spaces.</p>
         </div>
 
-        {/* Enterprise Knowledge Graph Card */}
-        <div className="mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-          <InstitutionalMemoryVault workspaceId={user?.company_id || user?.user_metadata?.company_id} />
-        </div>
-
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
           <StatCard icon={Calendar} accentColor="bg-indigo-500" bgColor="bg-indigo-50 dark:bg-indigo-500/10" iconColor="text-indigo-500" value={stats.meetings} label="Meetings" trend={12} />
