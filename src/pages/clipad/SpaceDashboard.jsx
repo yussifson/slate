@@ -461,7 +461,7 @@ export default function SpaceDashboard() {
 
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background page-enter text-foreground overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#00beac] page-enter text-white overflow-x-hidden pb-24 md:pb-8">
       {/* Privacy Modal */}
       <Dialog open={showPrivacyModal} onOpenChange={setShowPrivacyModal}>
         <DialogContent className="sm:max-w-[440px]">

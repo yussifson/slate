@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -227,33 +227,33 @@ Respond in valid JSON only:
   const totalCollisions = blockerCollisions.length + decisionCollisions.length + commitmentCollisions.length;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#00beac] text-white">
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8 space-y-6">
 
         {/* Header */}
         <div>
           <button
             onClick={() => navigate(`${basePath}/dashboard`)}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors group"
+            className="flex items-center gap-2 text-sm text-white/80 hover:text-white mb-4 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             Dashboard
           </button>
           <div className="flex items-start justify-between flex-wrap gap-3">
             <div>
-              <h1 className="text-2xl font-black text-foreground">Cross-Space Intelligence</h1>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h1 className="text-2xl font-black text-white">Cross-Space Intelligence</h1>
+              <p className="text-sm text-white/80 mt-1">
                 Orbit scans all spaces for duplicate blockers, conflicting decisions, and knowledge silos in real-time.
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={load} className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 text-muted-foreground rounded-xl text-xs font-semibold hover:text-foreground transition-colors">
+              <button onClick={load} className="flex items-center gap-1.5 px-3 py-2 bg-white/10 border border-white/15 text-white rounded-xl text-xs font-semibold hover:bg-white/20 transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh
               </button>
               <button
                 onClick={runAI}
                 disabled={loadingAI || loading}
-                className="flex items-center gap-2 px-4 py-2 bg-violet-500/10 border border-violet-500/30 text-violet-400 rounded-xl text-sm font-semibold hover:bg-violet-500/20 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] rounded-xl text-sm font-bold transition-all shadow-md disabled:opacity-50"
               >
                 {loadingAI ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                 AI Silo Report
@@ -265,14 +265,14 @@ Respond in valid JSON only:
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: 'Spaces Analyzed', value: spaces.length, color: 'blue' },
-            { label: 'Signal Collisions', value: totalCollisions, color: totalCollisions > 5 ? 'red' : totalCollisions > 2 ? 'amber' : 'emerald' },
-            { label: 'Siloed Spaces', value: siloedSpaces.length, color: siloedSpaces.length > 3 ? 'red' : 'amber' },
-            { label: 'Duplicate Blockers', value: blockerCollisions.length, color: blockerCollisions.length > 2 ? 'red' : 'amber' },
+            { label: 'Spaces Analyzed', value: spaces.length, color: 'text-white' },
+            { label: 'Signal Collisions', value: totalCollisions, color: totalCollisions > 5 ? 'text-rose-300' : totalCollisions > 2 ? 'text-[#fad503]' : 'text-emerald-300' },
+            { label: 'Siloed Spaces', value: siloedSpaces.length, color: siloedSpaces.length > 3 ? 'text-rose-300' : 'text-[#fad503]' },
+            { label: 'Duplicate Blockers', value: blockerCollisions.length, color: blockerCollisions.length > 2 ? 'text-rose-300' : 'text-[#fad503]' },
           ].map(s => (
-            <div key={s.label} className="rounded-2xl border border-border bg-card p-4 text-center">
-              <p className={`text-2xl font-black text-${s.color}-400`}>{s.value}</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground mt-1">{s.label}</p>
+            <div key={s.label} className="rounded-2xl border border-white/15 bg-[#006065] text-white p-4 text-center shadow-md">
+              <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-white/70 mt-1">{s.label}</p>
             </div>
           ))}
         </div>
