@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { LogOut, MessageSquare, Search, Plus, User, ChevronDown, Sparkles, Video, Calendar } from 'lucide-react';
+import { Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Sparkles, Video, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
@@ -49,11 +49,11 @@ export default function ClipadTopNav({ forceMobile = false }) {
       <div className="flex items-center gap-3 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-[#fad503] hover:bg-[#e0be00] shadow-md transition-all active:scale-95">
-              <div className="flex items-center h-9 bg-[#fad503] text-[#006065] rounded-full px-3.5 gap-1.5 font-extrabold">
-                <Video className="w-4 h-4 text-[#006065] group-hover:scale-110 transition-transform" />
-                <span className="text-[13px] font-extrabold text-[#006065] uppercase tracking-wide">Studio</span>
-                <ChevronDown className="w-3.5 h-3.5 text-[#006065] ml-0.5" />
+            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-[#ff521d] hover:bg-[#e04413] shadow-md transition-all active:scale-95">
+              <div className="flex items-center h-9 bg-[#ff521d] text-white rounded-full px-3.5 gap-1.5 font-extrabold">
+                <Video className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
+                <span className="text-[13px] font-extrabold text-slate-900 font-bold uppercase tracking-wide">Studio</span>
+                <ChevronDown className="w-3.5 h-3.5 text-white ml-0.5" />
               </div>
             </button>
           </DropdownMenuTrigger>

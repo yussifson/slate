@@ -103,11 +103,11 @@ export default function CliPadLogin() {
         <meta name="description" content="Sign in to your enterprise-grade collaborative productivity workspace." />
         <link rel="icon" type="image/svg+xml" href="/clipad-favicon-round.svg" />
       </Helmet>
-      <div className="min-h-[100dvh] w-full bg-[#00beac] flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans text-slate-900">
-        <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch my-auto">
+      <div className="min-h-[100dvh] w-full bg-[#00beac] flex items-center justify-center p-4 sm:p-8 lg:p-12 font-sans text-slate-900">
+        <div className="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch my-auto">
           
           {/* Left Column: Form */}
-          <div className="lg:col-span-7 bg-white rounded-[32px] p-6 sm:p-10 border border-white/30 shadow-2xl flex flex-col justify-between">
+          <div className="lg:col-span-7 bg-white rounded-[32px] p-8 sm:p-12 border border-white/30 shadow-2xl flex flex-col justify-between">
             <div>
               {/* Logo & Header */}
               <div className="flex items-center justify-between mb-8">
