@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { Settings, Shield, LogOut, MessageSquare, Search, Plus, User, Plug, Network, ChevronDown, Sparkles, Video, Calendar } from 'lucide-react';
+import { LogOut, MessageSquare, Search, Plus, User, ChevronDown, Sparkles, Video, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 import ThemeToggle from '@/components/layout/ThemeToggle';
