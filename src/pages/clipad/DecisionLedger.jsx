@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -149,7 +149,7 @@ export default function DecisionLedger() {
   });
 
   return (
-    <div className="min-h-full bg-background text-foreground pb-12 font-sans page-enter">
+    <div className="min-h-full bg-[#00beac] text-white font-sans page-enter pb-12">
       {/* Header */}
       <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-amber-500/5 via-background to-background px-6 py-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(245,158,11,0.08),transparent_60%)] pointer-events-none" />
@@ -227,7 +227,7 @@ export default function DecisionLedger() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8">
-        {loading ? (
+        {loading && decisions.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl h-48"></div>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -95,29 +95,28 @@ export default function KnowledgeTimeline() {
   const providers = [...new Set(events.map(e => e.provider))];
 
   return (
-    <div className="min-h-full bg-background text-foreground pb-12 font-sans page-enter">
+    <div className="min-h-full bg-[#00beac] text-white font-sans page-enter pb-12">
       {/* Header */}
-      <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-indigo-500/5 via-background to-background px-6 py-10">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(99,102,241,0.08),transparent_60%)] pointer-events-none" />
+      <div className="relative overflow-hidden border-b border-white/10 bg-[#006065] px-6 py-8">
         <div className="max-w-5xl mx-auto relative z-10 flex items-start justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
-                <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+              <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
+                <ArrowLeft className="w-4 h-4 text-white" />
               </button>
-              <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
-                <History className="w-5 h-5 text-indigo-500" />
+              <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
+                <History className="w-5 h-5 text-[#fad503]" />
               </div>
-              <h1 className="text-2xl font-bold text-foreground">Knowledge Timeline</h1>
+              <h1 className="text-2xl font-bold text-white">Knowledge Timeline</h1>
             </div>
-            <p className="text-sm text-muted-foreground max-w-xl">
+            <p className="text-sm text-white/75 max-w-xl">
               A chronological feed of all knowledge ingested across your connected applications. 
               See exactly what the AI is learning in real-time.
             </p>
           </div>
           <button 
             onClick={loadTimeline}
-            className="flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors border border-white/15"
           >
             <RefreshCw className="w-4 h-4" /> Refresh
           </button>
@@ -129,27 +128,27 @@ export default function KnowledgeTimeline() {
         {/* Left Sidebar: Filters */}
         <div className="w-full md:w-64 shrink-0 space-y-6">
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/50" />
             <input 
               type="text"
               placeholder="Search timeline..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-card border border-border rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all shadow-sm"
+              className="w-full bg-[#006065] border border-white/20 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder:text-white/50 focus:outline-none focus:border-[#fad503] transition-all shadow-sm"
             />
           </div>
 
-          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-            <div className="px-4 py-3 border-b border-border bg-secondary/30">
-              <h3 className="font-semibold text-sm">Data Sources</h3>
+          <div className="bg-[#006065] border border-white/10 rounded-2xl overflow-hidden shadow-md">
+            <div className="px-4 py-3 border-b border-white/10 bg-white/5">
+              <h3 className="font-bold text-sm text-white">Data Sources</h3>
             </div>
             <div className="p-2 space-y-1">
               <button
                 onClick={() => setActiveFilter('all')}
-                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === 'all' ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}
+                className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === 'all' ? 'bg-[#fad503] text-[#006065] font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
               >
                 <div className="flex items-center gap-2"><Database className="w-4 h-4" /> All Sources</div>
-                <span className="text-xs bg-background border border-border px-1.5 py-0.5 rounded-md">{events.length}</span>
+                <span className="text-xs bg-white/10 px-1.5 py-0.5 rounded-md text-white">{events.length}</span>
               </button>
               {providers.map(p => {
                 const count = events.filter(e => e.provider === p).length;
@@ -158,10 +157,10 @@ export default function KnowledgeTimeline() {
                   <button
                     key={p}
                     onClick={() => setActiveFilter(p)}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === p ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeFilter === p ? 'bg-[#fad503] text-[#006065] font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
                   >
-                    <div className="flex items-center gap-2"><span className="text-base">{intg?.icon || 'ðŸ“„'}</span> {intg?.name || p}</div>
-                    <span className="text-xs bg-background border border-border px-1.5 py-0.5 rounded-md">{count}</span>
+                    <div className="flex items-center gap-2"><span className="text-base">{intg?.icon || '📄'}</span> {intg?.name || p}</div>
+                    <span className="text-xs bg-white/10 px-1.5 py-0.5 rounded-md text-white">{count}</span>
                   </button>
                 );
               })}
@@ -171,69 +170,69 @@ export default function KnowledgeTimeline() {
 
         {/* Right Content: Timeline */}
         <div className="flex-1">
-          {loading ? (
+          {loading && events.length === 0 ? (
             <div className="space-y-6 animate-pulse p-4">
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="flex gap-4">
-                  <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0"></div>
-                  <div className="flex-1 bg-white dark:bg-[#111111] border border-slate-100 dark:border-white/5 rounded-2xl p-4 h-24"></div>
+                  <div className="w-10 h-10 rounded-full bg-white/10 shrink-0"></div>
+                  <div className="flex-1 bg-[#006065] border border-white/10 rounded-2xl p-4 h-24"></div>
                 </div>
               ))}
             </div>
           ) : filteredEvents.length === 0 ? (
-            <div className="text-center p-12 border border-dashed border-border rounded-2xl bg-card">
-              <Box className="w-8 h-8 text-muted-foreground mx-auto mb-3 opacity-50" />
-              <h3 className="font-semibold text-foreground mb-1">No knowledge found</h3>
-              <p className="text-sm text-muted-foreground">Try adjusting your filters or search query.</p>
+            <div className="text-center p-12 border border-dashed border-white/20 rounded-2xl bg-[#006065] text-white">
+              <Box className="w-8 h-8 text-white/50 mx-auto mb-3" />
+              <h3 className="font-bold text-white mb-1">No knowledge found</h3>
+              <p className="text-sm text-white/70">Try adjusting your filters or search query.</p>
             </div>
           ) : (
-            <div className="relative pl-6 border-l-2 border-indigo-500/20 space-y-8">
+            <div className="relative pl-6 border-l-2 border-[#fad503]/40 space-y-8">
               {filteredEvents.map((item, index) => {
                 const intg = INTEGRATIONS.find(i => i.id === item.provider || i.provider === item.provider);
                 
                 return (
                   <div key={item.id} className="relative group">
                     {/* Timeline node */}
-                    <div className="absolute -left-[35px] w-6 h-6 rounded-full bg-background border-2 border-indigo-500 flex items-center justify-center shadow-sm">
-                      <div className="w-2 h-2 rounded-full bg-indigo-500" />
+                    <div className="absolute -left-[35px] w-6 h-6 rounded-full bg-[#006065] border-2 border-[#fad503] flex items-center justify-center shadow-sm">
+                      <div className="w-2 h-2 rounded-full bg-[#fad503]" />
                     </div>
                     
-                    <div className="bg-card border border-border rounded-2xl p-5 hover:shadow-md hover:border-indigo-500/30 transition-all">
+                    <div className="bg-[#006065] border border-white/15 rounded-2xl p-5 hover:shadow-lg hover:border-[#fad503]/50 transition-all text-white">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-xl" title={intg?.name}>{intg?.icon || 'ðŸ“„'}</span>
-                          <span className="text-xs font-semibold px-2 py-1 bg-secondary text-secondary-foreground rounded-md uppercase tracking-wider">
+                          <span className="text-xl" title={intg?.name}>{intg?.icon || '📄'}</span>
+                          <span className="text-xs font-bold px-2.5 py-1 bg-white/15 text-white rounded-md uppercase tracking-wider">
                             {item.content_type || 'Document'}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5 text-xs text-white/70">
                           <Clock className="w-3.5 h-3.5" />
-                          {format(new Date(item.imported_at), 'MMM d, yyyy â€¢ h:mm a')}
+                          {format(new Date(item.imported_at), 'MMM d, yyyy • h:mm a')}
                         </div>
                       </div>
                       
-                      <h3 className="text-base font-bold text-foreground mb-2 line-clamp-1 group-hover:text-indigo-500 transition-colors">
+                      <h3 className="text-base font-bold text-white mb-2 line-clamp-1 group-hover:text-[#fad503] transition-colors">
                         {item.title || 'Untitled Knowledge Artifact'}
                       </h3>
                       
                       {item.ai_summary ? (
-                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+                        <p className="text-sm text-white/80 mb-4 line-clamp-2 leading-relaxed">
                           {item.ai_summary}
                         </p>
                       ) : item.content ? (
-                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed opacity-80">
+                        <p className="text-sm text-white/80 mb-4 line-clamp-2 leading-relaxed opacity-90">
                           {item.content.substring(0, 150)}...
                         </p>
                       ) : null}
                       
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                         <div className="flex items-center gap-2 text-xs">
                           {item.author && (
-                            <span className="flex items-center gap-1 text-muted-foreground bg-secondary/50 px-2 py-1 rounded-md">
-                              <span className="font-medium text-foreground">{item.author}</span>
+                            <span className="flex items-center gap-1 text-white/80 bg-white/10 px-2 py-1 rounded-md">
+                              <span className="font-medium text-white">{item.author}</span>
                             </span>
                           )}
-                          <span className="text-muted-foreground flex items-center gap-1">
+                          <span className="text-white/60 flex items-center gap-1">
                             <Database className="w-3.5 h-3.5" /> Indexed automatically
                           </span>
                         </div>
@@ -243,7 +242,7 @@ export default function KnowledgeTimeline() {
                             href={item.url} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 hover:underline"
+                            className="flex items-center gap-1 text-xs font-bold text-[#fad503] hover:underline"
                           >
                             Open Source <ExternalLink className="w-3 h-3" />
                           </a>

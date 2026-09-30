@@ -36,22 +36,22 @@ import GlobalSearch from '@/components/clipad/search/GlobalSearch';
 
 function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconColor }) {
   return (
-    <div className={`relative overflow-hidden rounded-2xl border transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-sm flex flex-col justify-between p-4 sm:p-5 bg-white dark:bg-card border-slate-200 dark:border-border hover:border-primary/40 dark:hover:border-primary/40`}>
+    <div className="relative overflow-hidden rounded-2xl border border-white/10 transition-all duration-300 group hover:-translate-y-1 hover:shadow-lg shadow-md flex flex-col justify-between p-4 sm:p-5 bg-[#006065] text-white">
       {/* Glowing top accent bar */}
       <div className={`absolute top-0 left-0 right-0 h-[3px] ${accentColor} rounded-t-2xl`} />
       {/* Large faint background icon */}
-      <div className={`absolute bottom-2 right-3 opacity-[0.07] group-hover:opacity-[0.12] transition-opacity duration-500`}>
-        <Icon className="w-20 h-20" strokeWidth={1} />
+      <div className="absolute bottom-2 right-3 opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-500">
+        <Icon className="w-20 h-20 text-white" strokeWidth={1} />
       </div>
       <div className="flex items-start justify-between">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${bgColor} shadow-sm mb-3`}>
-          <Icon className={`w-4.5 h-4.5 ${iconColor}`} strokeWidth={2} />
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-white/10 shadow-sm mb-3">
+          <Icon className="w-4.5 h-4.5 text-[#fad503]" strokeWidth={2} />
         </div>
-        {trend && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-600 bg-emerald-100 dark:text-emerald-400 dark:bg-emerald-500/10' : 'text-red-500 bg-red-100 dark:text-red-400 dark:bg-red-500/10'}`}>{trend > 0 ? '↑' : '↓'}{Math.abs(trend)}%</span>}
+        {trend && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-300 bg-emerald-500/20' : 'text-rose-300 bg-rose-500/20'}`}>{trend > 0 ? '↑' : '↓'}{Math.abs(trend)}%</span>}
       </div>
       <div>
-        <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight tabular-nums leading-none mb-1">{value}</div>
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{label}</div>
+        <div className="text-2xl font-black text-[#fad503] tracking-tight tabular-nums leading-none mb-1">{value}</div>
+        <div className="text-[11px] font-bold uppercase tracking-wide text-white/70">{label}</div>
       </div>
     </div>
   );
@@ -356,43 +356,24 @@ export default function CliPadDashboard() {
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-slate-50 dark:bg-background text-slate-900 dark:text-slate-100 overflow-x-hidden pb-24 md:pb-8">
+    <div className="min-h-full bg-[#00beac] text-white font-sans overflow-x-hidden pb-24 md:pb-8">
       <SpaceSelectorModal 
         open={showSpaceSelector} 
         onOpenChange={setShowSpaceSelector} 
         onConfirm={handleSpaceSelect} 
       />
-      {loading ? (
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12 w-full animate-pulse mt-8">
-          <div className="h-10 w-64 bg-slate-200 dark:bg-slate-800 rounded-lg mb-4" />
-          <div className="h-4 w-96 bg-slate-200 dark:bg-slate-800 rounded mb-12" />
+      {loading && stats.meetings === 0 ? (
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 w-full animate-pulse">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8">
-            {[1,2,3,4].map(i => <div key={i} className="h-32 bg-slate-200 dark:bg-slate-800 rounded-2xl" />)}
-          </div>
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            {[1,2,3].map(i => <div key={i} className="h-24 bg-slate-200 dark:bg-slate-800 rounded-2xl" />)}
+            {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white/10 rounded-2xl" />)}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {[1,2].map(i => <div key={i} className="h-64 bg-slate-200 dark:bg-slate-800 rounded-2xl" />)}
+            {[1,2].map(i => <div key={i} className="h-64 bg-white/10 rounded-2xl" />)}
           </div>
         </div>
       ) : (
 
-      
-
-
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12">
-
-        {/* Greeting */}
-        <div className="mb-6 md:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-3xl md:text-5xl font-black mb-2 tracking-tight">{greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">{getGreetingEmoji()}</span></h1>
-          <p className="text-lg text-slate-500 dark:text-muted-foreground font-medium">Here's what's happening across your spaces.</p>
-        </div>
-
-        {/* CliPad 2.0 Proactive Daily AI Briefing */}
-        <div className="mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
-          <DailyBriefingWidget />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8">
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">

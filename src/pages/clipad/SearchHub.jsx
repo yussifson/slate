@@ -549,41 +549,41 @@ export default function SearchHub() {
         <div className="flex flex-col items-center justify-center min-h-screen px-4 pb-20 -mt-12">
 
           {/* Orbit icon mark */}
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 shadow-sm">
-            <CliPadLogo size={36} className="text-primary" />
+          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-6 shadow-md border border-white/15">
+            <CliPadLogo size={36} className="text-[#fad503]" />
           </div>
 
-          {/* Greeting heading — minimal like ChatGPT */}
-          <h1 className="text-2xl md:text-3xl font-semibold text-slate-900 dark:text-white text-center mb-1 tracking-tight">
+          {/* Greeting heading */}
+          <h1 className="text-2xl md:text-3xl font-bold text-white text-center mb-1 tracking-tight">
             Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {firstName}.
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm text-center mb-10">
+          <p className="text-white/75 text-sm text-center mb-10 font-medium">
             Search everything across your organization, or ask Orbit AI anything.
           </p>
 
           {/* Central Search Bar */}
           <div className="w-full max-w-2xl">
             <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-              <div className="relative flex items-center bg-slate-100 dark:bg-[#1a1a1a] border border-slate-200 dark:border-white/10 rounded-2xl px-4 py-1 shadow-sm hover:border-slate-300 dark:hover:border-white/20 focus-within:border-primary dark:focus-within:border-primary focus-within:shadow-md transition-all">
-                <Search className="w-5 h-5 text-slate-400 dark:text-slate-500 shrink-0 mr-3" />
+              <div className="relative flex items-center bg-[#006065] border border-white/20 rounded-2xl px-4 py-1.5 shadow-xl hover:border-white/30 focus-within:border-[#fad503] focus-within:ring-2 focus-within:ring-[#fad503]/20 transition-all">
+                <Search className="w-5 h-5 text-white/60 shrink-0 mr-3" />
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Ask Orbit AI or search across your workspace..."
-                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[15px] font-normal placeholder:text-slate-400 dark:placeholder:text-slate-500 py-3.5 text-slate-900 dark:text-white"
+                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[16px] font-medium placeholder:text-white/45 py-3 text-white"
                 />
                 {query && (
-                  <button type="button" onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 mr-2">
+                  <button type="button" onClick={() => setQuery('')} className="p-1 text-white/60 hover:text-white mr-2">
                     <X className="w-4 h-4" />
                   </button>
                 )}
                 <button
                   type="submit"
                   disabled={!query.trim()}
-                  className="px-4 py-2 bg-primary hover:bg-primary/90 disabled:opacity-30 text-white font-semibold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0"
+                  className="px-4 py-2.5 bg-[#fad503] hover:bg-[#fad503]/90 disabled:opacity-30 text-[#006065] font-bold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md"
                 >
-                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-[#006065]" /> : <ArrowRight className="w-4 h-4 text-[#006065]" />}
                 </button>
               </div>
             </form>
@@ -596,9 +596,9 @@ export default function SearchHub() {
                   <button
                     key={idx}
                     onClick={() => { setQuery(item.desc); setSearchParams({ q: item.desc }); runSearch(item.desc); }}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/20 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all group"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#006065] border border-white/15 hover:bg-white/10 text-white text-xs font-semibold transition-all group shadow-sm active:scale-95"
                   >
-                    <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-[#fad503] shrink-0" />
                     {item.title}
                   </button>
                 );
