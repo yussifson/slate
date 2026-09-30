@@ -3,7 +3,7 @@ import React, { useState} from "react";
 import { useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { LayoutDashboard, LayoutGrid, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search, LifeBuoy, MessageSquare } from "lucide-react";
+import { LayoutDashboard, LayoutGrid, RefreshCw, Globe, PanelLeft, Sparkles, Layers, Component, ChevronDown, MoreHorizontal, Search, LifeBuoy, MessageSquare, CheckCircle2 } from "lucide-react";
 import {
  DropdownMenu,
  DropdownMenuContent,
@@ -52,6 +52,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
  const { company} = useCompany();
 
+ const [currentVersion, setCurrentVersion] = useState(() => {
+   return sessionStorage.getItem('slate_version_override') || localStorage.getItem('slate_version_override') || 'v1';
+ });
+
  const handleRefresh = async () => {
  setIsRefreshing(true);
  await queryClient.invalidateQueries();
@@ -60,6 +64,17 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  toast({ title: t('data_refreshed', "Data refreshed"), description: t('everything_up_to_date', "Everything is up to date.")});
 }, 500);
 };
+
+  const handleVersionChange = (newVersion) => {
+    sessionStorage.setItem('slate_version_override', newVersion);
+    localStorage.setItem('slate_version_override', newVersion);
+    setCurrentVersion(newVersion);
+    window.dispatchEvent(new CustomEvent('slate_version_change', { detail: { version: newVersion } }));
+    toast({
+      title: newVersion === 'v2' ? "Slate V2 OmniCore Activated" : "Slate V1 Classic Activated",
+      description: newVersion === 'v2' ? "Universal Adaptive Dashboard active across all verticals" : "Classic standard dashboard interface active"
+    });
+  };
 
   const handleIndustryChange = (newIndustry) => {
     if (!navigator.onLine) {
@@ -70,14 +85,18 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
       return;
     }
     sessionStorage.setItem('slate_industry_override', newIndustry);
+    window.dispatchEvent(new CustomEvent('slate_industry_change', { detail: { industry: newIndustry } }));
     queryClient.clear();
     toast({
       title: t('industry_switched', "Industry Switched"),
       description: t('active_industry_changed', "Active industry changed to " + newIndustry)});
-    // Super admins live on the base domain (slate.optavel.com) where / is the marketing page.
-    // Route them back to /admin. Company users are on subdomains where / is their dashboard.
+    // Route or stay on dashboard
     if (user?.role === 'super_admin') {
-      navigate('/admin');
+      if (location.pathname === '/' || location.pathname === '/v2/dashboard' || location.pathname === '/omnicore/dashboard') {
+        // stay on dashboard so preview is instant
+      } else {
+        navigate('/admin');
+      }
     } else {
       navigate('/');
     }
@@ -224,6 +243,38 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </div>
  {/* Right */}
  <div className="flex items-center justify-end gap-1.5 sm:gap-3 ml-auto">
+ {/* Super Admin Version Switcher (V1 Classic vs V2 OmniCore) */}
+ {user?.role === 'super_admin' && (
+ <DropdownMenu>
+ <DropdownMenuTrigger className="hidden sm:flex items-center gap-1.5 border-[0.5px] border-black/9 dark:border-white/8 border-emerald-300 dark:border-emerald-800 bg-emerald-500/10 dark:bg-emerald-950/20 px-2 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors focus:outline-none shadow-sm">
+ <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+ <span className="tracking-[0.02em]">{currentVersion === 'v2' ? 'Slate V2 OmniCore' : 'Slate V1 Classic'}</span>
+ <ChevronDown className="w-3 h-3 opacity-50 shrink-0" />
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end" className="w-60 p-1.5 shadow-xl rounded-xl">
+ <DropdownMenuItem
+   onClick={() => handleVersionChange('v1')}
+   className={cn("flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors", currentVersion !== 'v2' && "bg-muted font-bold")}
+ >
+   <div className="flex flex-col">
+     <span className="text-xs font-bold text-foreground">Slate V1 Classic</span>
+     <span className="text-[11px] text-muted-foreground">Original standard interface</span>
+   </div>
+   {currentVersion !== 'v2' && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
+ </DropdownMenuItem>
+ <DropdownMenuItem
+   onClick={() => handleVersionChange('v2')}
+   className={cn("flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-colors", currentVersion === 'v2' && "bg-muted font-bold")}
+ >
+   <div className="flex flex-col">
+     <span className="text-xs font-bold text-foreground">Slate V2 OmniCore</span>
+     <span className="text-[11px] text-muted-foreground">Universal Adaptive Engine</span>
+   </div>
+   {currentVersion === 'v2' && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
+ </DropdownMenuItem>
+ </DropdownMenuContent>
+ </DropdownMenu>
+ )}
  {/* Super Admin Industry Switcher */}
  {user?.role === 'super_admin' && (
  <DropdownMenu>

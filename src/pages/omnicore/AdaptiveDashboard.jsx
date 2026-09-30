@@ -73,8 +73,12 @@ export default function AdaptiveDashboard() {
     }
 
     try {
-      // 1. Resolve Profile & Context
-      const companyMock = { id: companyId, industry_type: user?.industry_type || user?.industry || 'retail' };
+      // 1. Resolve Profile & Context (supporting super admin industry override)
+      const overrideInd = sessionStorage.getItem('slate_industry_override');
+      const companyMock = {
+        id: companyId,
+        industry_type: overrideInd || user?.company_industry || user?.industry_type || user?.industry || 'retail'
+      };
       const resolvedProfile = BusinessProfileResolver.resolveSync(companyMock);
       setProfile(resolvedProfile);
 
@@ -111,6 +115,16 @@ export default function AdaptiveDashboard() {
 
   useEffect(() => {
     loadDashboardData();
+
+    const handleUpdate = () => {
+      loadDashboardData();
+    };
+    window.addEventListener('slate_industry_change', handleUpdate);
+    window.addEventListener('slate_version_change', handleUpdate);
+    return () => {
+      window.removeEventListener('slate_industry_change', handleUpdate);
+      window.removeEventListener('slate_version_change', handleUpdate);
+    };
   }, [companyId]);
 
   const handleRefresh = () => {
@@ -118,11 +132,39 @@ export default function AdaptiveDashboard() {
     loadDashboardData();
   };
 
+  const switchToV1 = () => {
+    sessionStorage.setItem('slate_version_override', 'v1');
+    localStorage.setItem('slate_version_override', 'v1');
+    window.dispatchEvent(new CustomEvent('slate_version_change', { detail: { version: 'v1' } }));
+  };
+
   const terms = profile?.terms || {};
   const contextPack = profile?.contextPack || {};
 
   return (
     <div className="flex-1 space-y-6 p-4 md:p-8 pt-6 max-w-7xl mx-auto">
+      {/* ── Super Admin Quick Switcher Banner ── */}
+      {user?.role === 'super_admin' && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-950 dark:text-emerald-200 px-4 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs sm:text-sm">
+          <div className="flex items-center gap-2 font-medium">
+            <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>
+              <strong>Super Admin View:</strong> Slate V2 OmniCore active for vertical <strong>{contextPack?.name || 'Current'}</strong>.
+            </span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={switchToV1}
+              className="h-7 text-xs border-emerald-500/40 text-emerald-800 dark:text-emerald-200 hover:bg-emerald-500/20"
+            >
+              Switch to V1 Classic
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* ── Pilot Status Notice Banner (Informative & Reversible) ── */}
       {!isPilotAuthorized && (
         <div className="bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-sm">
