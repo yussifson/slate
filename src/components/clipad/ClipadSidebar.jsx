@@ -163,7 +163,7 @@ export default function ClipadSidebar({ forceMobile }) {
   return (
     <aside 
       className={cn(
-        "hidden md:flex flex-col my-4 ml-4 rounded-[24px] bg-[#f8f9fc] dark:bg-background border border-slate-200/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 z-50 shrink-0 relative",
+        "hidden md:flex flex-col my-4 ml-4 rounded-[24px] bg-gradient-to-b from-indigo-50/80 to-white dark:from-slate-900 dark:to-background backdrop-blur-xl border border-indigo-100/50 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 z-50 shrink-0 relative",
         forceMobile && "hidden",
         isCollapsed ? "w-[72px]" : "w-[260px]",
         "h-[calc(100vh-32px)] overflow-hidden"
