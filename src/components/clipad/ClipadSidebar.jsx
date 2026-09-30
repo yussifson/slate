@@ -136,19 +136,14 @@ export default function ClipadSidebar({ forceMobile }) {
           "w-full flex items-center px-3 py-2.5 transition-all duration-200 group relative mb-0.5",
           isCollapsed ? "justify-center rounded-xl" : "gap-3 rounded-xl",
           isActive 
-            ? "bg-[#00beac] text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] font-semibold" 
+            ? "bg-[#fad503] text-[#006065] shadow-[0_2px_12px_rgba(250,213,3,0.35)] font-bold" 
             : "text-white/70 hover:bg-white/10 hover:text-white border border-transparent font-medium"
         )}
         title={isCollapsed ? item.label : undefined}
       >
-        {/* The Exact Yellow Edge Line for Active State */}
-        {isActive && (
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-[#fad503] rounded-r-full" />
-        )}
-
         <Icon className={cn("shrink-0 transition-transform duration-200 group-hover:scale-110", 
           isCollapsed ? "w-5 h-5" : "w-4 h-4",
-          isActive ? "text-white" : "text-white/70 group-hover:text-white"
+          isActive ? "text-[#006065]" : "text-white/70 group-hover:text-white"
         )} strokeWidth={isActive ? 2.5 : 2} />
         
         {!isCollapsed && <span className="truncate">{item.label}</span>}
@@ -163,10 +158,10 @@ export default function ClipadSidebar({ forceMobile }) {
   return (
     <aside 
       className={cn(
-        "hidden md:flex flex-col my-4 ml-4 rounded-[24px] bg-[#006065] text-white border border-black/10 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 z-50 shrink-0 relative",
+        "hidden md:flex flex-col bg-[#006065] text-white border-r border-black/20 dark:border-white/10 shadow-[4px_0_20px_rgba(0,0,0,0.15)] transition-all duration-300 z-50 shrink-0 relative",
         forceMobile && "hidden",
         isCollapsed ? "w-[72px]" : "w-[260px]",
-        "h-[calc(100vh-32px)] overflow-hidden"
+        "h-full overflow-hidden"
       )}
     >
       {/* Header */}

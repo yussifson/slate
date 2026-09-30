@@ -152,7 +152,75 @@ html, body {
   .glass-card {
     @apply bg-white/5 backdrop-blur-xl border border-white/10;
   }
-  
+
+  /* ═══════════════════════════════════════════════════
+     OmniImpressive Theme — Global Overrides
+     Palette: Deep Green #006065 | Teal #00BEAC | Yellow #FAD503
+  ═══════════════════════════════════════════════════ */
+
+  /* Nuke white/light backgrounds on page root containers */
+  .page-enter > [class*="bg-white"],
+  .page-enter > [class*="bg-slate-50"],
+  .page-enter > [class*="min-h-full"] {
+    background-color: #00beac !important;
+  }
+
+  /* Cards: give them a translucent teal-tinted glass look instead of white */
+  .bg-white:not([class*="sidebar"]):not([class*="topnav"]):not([class*="dropdown"]):not(nav):not(aside):not(button):not(input):not(img):not([class*="avatar"]):not([class*="rounded-full"]) {
+    background-color: rgba(0, 190, 172, 0.15) !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Inputs and selects — give clean teal-tinted fill */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select {
+    background-color: rgba(0, 96, 101, 0.25) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.25) !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(255,255,255,0.55) !important;
+  }
+
+  /* Language switcher and similar blurry buttons — override backdrop-blur */
+  [class*="backdrop-blur"]:not(nav):not(aside):not([id*="topnav"]) {
+    backdrop-filter: none !important;
+    background-color: rgba(0, 96, 101, 0.9) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.2) !important;
+  }
+
+  /* Yellow accent: apply to focus rings, active indicators, and highlight elements */
+  [class*="ring-primary"] { ring-color: #fad503 !important; }
+  [class*="border-primary"] { border-color: #fad503 !important; }
+
+  /* Dropdown menus — themed */
+  [data-radix-popper-content-wrapper] [class*="bg-white"],
+  [data-radix-popper-content-wrapper] [class*="bg-popover"] {
+    background-color: #006065 !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+
+  /* Stat cards in the dashboard — teal-glass */
+  [class*="rounded-2xl"][class*="bg-white"],
+  [class*="rounded-xl"][class*="bg-white"],
+  [class*="rounded-3xl"][class*="bg-white"] {
+    background-color: rgba(255,255,255,0.12) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.18) !important;
+  }
+
+  /* Slate-50 overrides */
+  [class*="bg-slate-50"] { background-color: rgba(0,190,172,0.12) !important; }
+  [class*="bg-slate-100"] { background-color: rgba(0,190,172,0.18) !important; }
+  [class*="text-slate-900"], [class*="text-slate-800"] { color: white !important; }
+  [class*="text-slate-700"], [class*="text-slate-600"] { color: rgba(255,255,255,0.85) !important; }
+  [class*="text-slate-500"], [class*="text-slate-400"] { color: rgba(255,255,255,0.6) !important; }
+
   .bg-noise {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     background-repeat: repeat;
