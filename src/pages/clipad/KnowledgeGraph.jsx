@@ -68,7 +68,7 @@ function KnowledgeNode({ data, selected }) {
 
   return (
     <div
-      className="relative rounded-2xl border-2 transition-all cursor-pointer bg-[#006065] text-white shadow-md p-3"
+      className="relative rounded-2xl border-2 transition-all cursor-pointer bg-white text-slate-900 shadow-md p-3"
       style={{
         borderColor: selected ? '#fad503' : color,
         boxShadow: selected ? '0 0 0 3px #fad503, 0 4px 24px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.15)',
@@ -80,12 +80,12 @@ function KnowledgeNode({ data, selected }) {
       <div>
         <div className="flex items-center gap-2 mb-2">
           <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0 bg-white/10 text-white"
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0 bg-slate-100 text-white"
           >
             {intg?.icon || '📄'}
           </div>
           <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#fad503]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#ff521d]">
               {data.provider?.replace('_', ' ')}
             </div>
           </div>
@@ -95,7 +95,7 @@ function KnowledgeNode({ data, selected }) {
         </p>
         {data.content_type && (
           <span
-            className="inline-block mt-1.5 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-white/15 text-white/90"
+            className="inline-block mt-1.5 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-white/15 text-slate-700"
           >
             {data.content_type}
           </span>
@@ -273,9 +273,9 @@ export default function KnowledgeGraph() {
   });
 
   return (
-    <div className="flex flex-col h-full min-h-screen bg-[#00beac] text-white font-sans page-enter">
+    <div className="flex flex-col h-full min-h-screen bg-[#f4f5f8] text-white font-sans page-enter">
       {/* Header */}
-      <div className="relative border-b border-white/10 bg-[#006065] px-6 py-6 shrink-0">
+      <div className="relative border-b border-slate-200/80 bg-[#006065] px-6 py-6 shrink-0">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
@@ -286,7 +286,7 @@ export default function KnowledgeGraph() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Knowledge Graph</h1>
-              <p className="text-xs text-white/70">AI-detected relationships across all your connected systems</p>
+              <p className="text-xs text-slate-500">AI-detected relationships across all your connected systems</p>
             </div>
           </div>
 
@@ -304,14 +304,14 @@ export default function KnowledgeGraph() {
             ))}
             <button
               onClick={loadGraph}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors border border-white/15"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors border border-slate-200/80"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
             <button
               onClick={generateAIInsights}
-              className="flex items-center gap-2 px-4 py-2 bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] rounded-xl text-sm font-bold transition-all shadow-md"
+              className="flex items-center gap-2 px-4 py-2 bg-[#ff521d] hover:bg-[#fad503]/90 text-[#006065] rounded-xl text-sm font-bold transition-all shadow-md"
             >
               <Sparkles className="w-4 h-4" />
               AI Insights
@@ -327,7 +327,7 @@ export default function KnowledgeGraph() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search nodes..."
-              className="pl-8 pr-3 py-1.5 text-xs bg-[#005055] text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#fad503] w-48 placeholder:text-white/50"
+              className="pl-8 pr-3 py-1.5 text-xs bg-white text-white border border-slate-200/80 rounded-xl focus:outline-none focus:border-[#fad503] w-48 placeholder:text-white/50"
             />
           </div>
 
@@ -356,7 +356,7 @@ export default function KnowledgeGraph() {
             {Object.entries(RELATIONSHIP_COLORS).map(([type, color]) => (
               <div key={type} className="flex items-center gap-1">
                 <div className="w-3 h-0.5 rounded-full" style={{ background: color }} />
-                <span className="text-[10px] text-white/80 capitalize">{type}</span>
+                <span className="text-[10px] text-slate-500 capitalize">{type}</span>
               </div>
             ))}
           </div>
