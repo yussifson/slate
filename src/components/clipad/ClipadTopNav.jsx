@@ -49,9 +49,12 @@ export default function ClipadTopNav({ forceMobile = false }) {
       <div className="flex items-center gap-3 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors border border-slate-200/50 dark:border-white/5 shadow-sm">
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">Media & Meetings</span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:shadow-md transition-shadow active:scale-95">
+              <div className="flex items-center h-9 bg-white dark:bg-slate-900 rounded-full px-3 gap-1.5">
+                <Video className="w-4 h-4 text-indigo-500 dark:text-indigo-400 group-hover:scale-110 transition-transform" />
+                <span className="text-[13px] font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">Studio</span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-500 ml-0.5" />
+              </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">

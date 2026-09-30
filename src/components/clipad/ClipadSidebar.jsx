@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse, Sparkles, Home } from 'lucide-react';
+import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, ChevronDown, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse, Sparkles, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
@@ -22,6 +22,11 @@ export default function ClipadSidebar({ forceMobile }) {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [openSections, setOpenSections] = useState({ intelligence: false, admin: false });
+
+  const toggleSection = (section) => {
+    setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   const currentPlan = user?.clipad_plan || 'free';
   const planRank = { free: 0, pro: 1, enterprise: 2 };
@@ -193,44 +198,46 @@ export default function ClipadSidebar({ forceMobile }) {
 
         {/* Intelligence */}
         <div className="py-1">
-          {!isCollapsed && <div className="px-3 py-2 text-[12px] font-semibold text-slate-400 tracking-wide uppercase">Intelligence</div>}
-          {intelligenceItems.map(renderNavItem)}
+          {!isCollapsed ? (
+            <button 
+              onClick={() => toggleSection('intelligence')}
+              className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 tracking-wide uppercase transition-colors"
+            >
+              <span>Intelligence</span>
+              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", openSections.intelligence && "rotate-180")} />
+            </button>
+          ) : (
+            <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 tracking-wide uppercase text-center cursor-pointer" onClick={() => setIsCollapsed(false)}>INT</div>
+          )}
+          {(openSections.intelligence || isCollapsed) && (
+            <div className="mt-1 space-y-0.5">
+              {intelligenceItems.map(renderNavItem)}
+            </div>
+          )}
         </div>
 
         {adminItems.length > 0 && (
           <>
             <div className="h-px bg-slate-200/70 dark:bg-white/5 my-2 mx-2" />
             <div className="py-1">
-              {!isCollapsed && <div className="px-3 py-2 text-[12px] font-semibold text-slate-400 tracking-wide uppercase">Admin</div>}
-              {adminItems.map(renderNavItem)}
+              {!isCollapsed ? (
+                <button 
+                  onClick={() => toggleSection('admin')}
+                  className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 tracking-wide uppercase transition-colors"
+                >
+                  <span>Admin</span>
+                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", openSections.admin && "rotate-180")} />
+                </button>
+              ) : (
+                <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 tracking-wide uppercase text-center cursor-pointer" onClick={() => setIsCollapsed(false)}>ADM</div>
+              )}
+              {(openSections.admin || isCollapsed) && (
+                <div className="mt-1 space-y-0.5">
+                  {adminItems.map(renderNavItem)}
+                </div>
+              )}
             </div>
           </>
-        )}
-
-        {/* Premium Callout (Hidden when collapsed) */}
-        {!isCollapsed && (
-          <div className="px-2 mt-6">
-            <div className="bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 rounded-2xl p-4">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-white dark:bg-primary/20 flex items-center justify-center shadow-sm text-primary">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-[11px] text-slate-500 uppercase tracking-wider font-semibold">Current plan</p>
-                  <p className="text-[14px] font-bold text-slate-900 dark:text-slate-100">{displayPlanName}</p>
-                </div>
-              </div>
-              <p className="text-[12px] text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">
-                {actionWord} to {targetPlanDisplay} to get the latest exclusive features
-              </p>
-              <button 
-                onClick={handleUpgradeClick}
-                className="w-full py-2 bg-white dark:bg-primary rounded-xl text-primary dark:text-white font-semibold text-[13px] shadow-sm border border-slate-200 dark:border-transparent flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
-              >
-                <Shield className="w-3.5 h-3.5" fill="currentColor" /> {actionWord} to {targetPlanDisplay}
-              </button>
-            </div>
-          </div>
         )}
 
         <div className="h-px bg-slate-200/70 dark:bg-white/5 my-4 mx-2" />
