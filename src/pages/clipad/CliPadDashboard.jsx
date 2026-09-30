@@ -35,7 +35,7 @@ function StatCard({ icon: Icon, value, label, trend, accentColor, bgColor, iconC
         <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[rgba(250, 213, 3, 0.15)] shadow-sm mb-3">
           <Icon className="w-4.5 h-4.5 text-[#fad503]" strokeWidth={2} />
         </div>
-        {trend && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-300 bg-emerald-500/20' : 'text-rose-300 bg-rose-500/20'}`}>{trend > 0 ? '↑' : '↓'}{Math.abs(trend)}%</span>}
+        {trend && <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${trend > 0 ? 'text-emerald-300 bg-emerald-500/20' : 'text-rose-300 bg-[#fad503] text-[#006065]/20'}`}>{trend > 0 ? '↑' : '↓'}{Math.abs(trend)}%</span>}
       </div>
       <div>
         <div className="text-3xl font-extrabold text-white tracking-tight tabular-nums leading-none mb-1">{value}</div>
@@ -52,7 +52,7 @@ function SpaceCard({ space, onClick }) {
   return (
     <div
       onClick={onClick}
-      className="group p-5 rounded-2xl bg-white dark:bg-card border border-white/15 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
+      className="group p-5 rounded-2xl bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md"
     >
       <div className="flex items-start gap-3 mb-4">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm bg-gradient-to-br ${color}`}>
@@ -67,7 +67,7 @@ function SpaceCard({ space, onClick }) {
       <div className="flex items-center justify-between mb-4">
         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
           space.is_private
-            ? 'bg-white border border-white/15 shadow-sm text-rose-600 dark:text-rose-400'
+            ? 'bg-[#006065] text-white border border-white/15 shadow-sm text-rose-600 dark:text-rose-400'
             : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
         }`}>
           {space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
@@ -119,7 +119,7 @@ function formatDuration(seconds, videoId) {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-card border border-white/15 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-border hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md flex flex-col">
       <div className="aspect-video bg-white/10 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
@@ -141,7 +141,7 @@ function VideoCard({ video, onClick }) {
           {video.space && (
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm ${
               video.space.is_private
-                ? 'bg-rose-50/90 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 backdrop-blur-md'
+                ? 'bg-rose-50/90 dark:bg-[#fad503] text-[#006065]/20 text-rose-600 dark:text-rose-400 backdrop-blur-md'
                 : 'bg-emerald-50/90 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 backdrop-blur-md'
             }`}>
               {video.space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
@@ -194,7 +194,7 @@ export default function CliPadDashboard() {
     
     // Enforce default light theme if none selected
     if (!localStorage.getItem('theme')) {
-       document.documentElement.classList.remove('dark');
+       
     }
   }, [user]);
 
@@ -373,8 +373,8 @@ export default function CliPadDashboard() {
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-          <StatCard icon={Calendar} accentColor="bg-indigo-500" bgColor="bg-white border border-white/15 shadow-sm" iconColor="text-indigo-500" value={stats.meetings} label="Meetings" trend={12} />
-          <StatCard icon={Camera} accentColor="bg-rose-500" bgColor="bg-rose-50 dark:bg-rose-500/10" iconColor="text-rose-500" value={stats.recordings} label="Videos" trend={8} />
+          <StatCard icon={Calendar} accentColor="bg-[#fad503] text-[#006065]" bgColor="bg-[#006065] text-white border border-white/15 shadow-sm" iconColor="text-indigo-500" value={stats.meetings} label="Meetings" trend={12} />
+          <StatCard icon={Camera} accentColor="bg-[#fad503] text-[#006065]" bgColor="bg-[#006065] text-white border border-white/15" iconColor="text-rose-500" value={stats.recordings} label="Videos" trend={8} />
           <StatCard icon={Target} accentColor="bg-cyan-500" bgColor="bg-cyan-50 dark:bg-cyan-500/10" iconColor="text-cyan-500" value={stats.actionItems} label="Action Items" />
           <StatCard icon={TrendingUp} accentColor="bg-emerald-500" bgColor="bg-emerald-50 dark:bg-emerald-500/10" iconColor="text-emerald-500" value={`${stats.completionRate}%`} label="Completed" trend={5} />
         </div>
@@ -391,7 +391,7 @@ export default function CliPadDashboard() {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className="relative overflow-hidden flex flex-col gap-2 p-4 rounded-2xl bg-white dark:bg-card border border-white/15 dark:border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 group text-left active:scale-[0.98]"
+                className="relative overflow-hidden flex flex-col gap-2 p-4 rounded-2xl bg-[#006065] text-white border border-white/15 border border-white/15 dark:border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 group text-left active:scale-[0.98]"
               >
                 <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${item.colorClass} rounded-t-2xl`} />
                 <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.colorClass} flex items-center justify-center shadow-sm`}>
@@ -412,7 +412,7 @@ export default function CliPadDashboard() {
           <button
             onClick={startInstantMeeting}
             disabled={isCreatingMeeting}
-            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-white border border-white/15 shadow-sm active:scale-95 transition-all duration-150 group"
+            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-[#006065] text-white border border-white/15 shadow-sm active:scale-95 transition-all duration-150 group"
           >
             <div className="w-12 h-12 rounded-2xl bg-[#fad503] flex items-center justify-center shadow-[0_4px_14px_rgba(25,184,110,0.4)] group-active:shadow-none transition-shadow">
               {isCreatingMeeting
@@ -425,9 +425,9 @@ export default function CliPadDashboard() {
           {/* Record Video */}
           <button
             onClick={() => navigate('/record')}
-            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-rose-50 dark:bg-rose-500/10 active:scale-95 transition-all duration-150 group"
+            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-[#006065] text-white border border-white/15 active:scale-95 transition-all duration-150 group"
           >
-            <div className="w-12 h-12 rounded-2xl bg-rose-500 flex items-center justify-center shadow-[0_4px_14px_rgba(244,63,94,0.35)] group-active:shadow-none transition-shadow">
+            <div className="w-12 h-12 rounded-2xl bg-[#fad503] text-[#006065] flex items-center justify-center shadow-[0_4px_14px_rgba(244,63,94,0.35)] group-active:shadow-none transition-shadow">
               <Camera className="w-5 h-5 text-white" />
             </div>
             <span className="text-[12px] font-semibold text-white font-bold leading-tight text-center">Record Video</span>
@@ -436,9 +436,9 @@ export default function CliPadDashboard() {
           {/* Team Spaces */}
           <button
             onClick={() => navigate('/spaces')}
-            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 active:scale-95 transition-all duration-150 group"
+            className="flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-2xl bg-[#006065] text-white border border-white/15 active:scale-95 transition-all duration-150 group"
           >
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center shadow-[0_4px_14px_rgba(99,102,241,0.35)] group-active:shadow-none transition-shadow">
+            <div className="w-12 h-12 rounded-2xl bg-[#fad503] text-[#006065] flex items-center justify-center shadow-[0_4px_14px_rgba(99,102,241,0.35)] group-active:shadow-none transition-shadow">
               <Layers className="w-5 h-5 text-white" />
             </div>
             <span className="text-[12px] font-semibold text-white font-bold leading-tight text-center">Team Spaces</span>
@@ -506,7 +506,7 @@ export default function CliPadDashboard() {
           <div className="space-y-8">
 
             {/* My Action Items */}
-            <div className="bg-white rounded-3xl border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] overflow-hidden shadow-sm">
+            <div className="bg-[#006065] text-white rounded-3xl border border-white/15 border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] overflow-hidden shadow-sm">
               <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-5 border-b border-black/5 dark:border-white/5">
                 <h2 className="font-bold text-white dark:text-white text-base flex items-center gap-2"><CheckCircle className="w-5 h-5 text-emerald-500" /> My Action Items</h2>
                 <span className="text-xs font-semibold px-2.5 py-1 bg-white/10 dark:bg-black/20 text-white/80 dark:text-foreground rounded-full">{actionItems.length} open</span>
@@ -524,7 +524,7 @@ export default function CliPadDashboard() {
             </div>
 
             {/* AI Intelligence Insight */}
-            <div className="bg-white rounded-3xl border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] p-4 md:p-6 shadow-sm">
+            <div className="bg-[#006065] text-white rounded-3xl border border-white/15 border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] p-4 md:p-6 shadow-sm">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Brain className="w-4.5 h-4.5 text-[#fad503]" />
@@ -545,9 +545,9 @@ export default function CliPadDashboard() {
 
             {/* Knowledge Health (Admin Only) */}
             {isAdmin(user) && hasFeature(user, 'hasEnterpriseAnalytics') && (
-              <div onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/health' : '/health')} className="bg-white rounded-3xl border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] p-6 shadow-sm hover:shadow-md hover:border-rose-500/30 transition-all cursor-pointer group">
+              <div onClick={() => navigate(window.location.pathname.startsWith('/clipad') ? '/clipad/health' : '/health')} className="bg-[#006065] text-white rounded-3xl border border-white/15 border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] p-6 shadow-sm hover:shadow-md hover:border-rose-500/30 transition-all cursor-pointer group">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-[#006065] text-white border border-white/15 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
                     <HeartPulse className="w-5 h-5" />
                   </div>
                   <div>
@@ -561,7 +561,7 @@ export default function CliPadDashboard() {
 
 
             {/* Recent Meetings */}
-            <div className="bg-white rounded-3xl border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] overflow-hidden shadow-sm">
+            <div className="bg-[#006065] text-white rounded-3xl border border-white/15 border border-white/15 shadow-[0_2px_16px_rgba(0,0,0,0.03)] overflow-hidden shadow-sm">
               <div className="flex items-center justify-between px-4 py-3 md:px-6 md:py-5 border-b border-black/5 dark:border-white/5">
                 <h2 className="font-bold text-white dark:text-white text-base flex items-center gap-2"><Calendar className="w-5 h-5 text-[#fad503]" /> Recent Meetings</h2>
                 <button onClick={() => navigate('/meetings')} className="text-xs font-semibold text-[#fad503] hover:text-[#fad503]/80 transition-colors">View all</button>
@@ -581,7 +581,7 @@ export default function CliPadDashboard() {
                           {m.space && (
                             <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${
                               m.space.is_private
-                                ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                                ? 'bg-[#006065] text-white border border-white/15 text-rose-600 dark:text-rose-400'
                                 : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                             }`}>
                               {m.space.is_private ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
