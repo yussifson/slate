@@ -13,11 +13,17 @@
  */
 import { ActionCenter } from '../intelligence/ActionCenter.js';
 import { TaskAdapter } from '../core/TaskAdapter.js';
+import { CustomerAdapter } from '../core/CustomerAdapter.js';
+import { Inventory } from '../capabilities/Inventory.js';
 import { OverdueInvoiceRule } from './rules/OverdueInvoiceRule.js';
+import { LowStockAlertRule } from './rules/LowStockAlertRule.js';
+import { CustomerOnboardingRule } from './rules/CustomerOnboardingRule.js';
 import { supabase } from '../../api/supabaseClient.js';
 
 const REGISTERED_RULES = [
-  OverdueInvoiceRule
+  OverdueInvoiceRule,
+  LowStockAlertRule,
+  CustomerOnboardingRule
 ];
 
 /**
@@ -117,9 +123,20 @@ export const AutomationEngine = {
     }
 
     try {
-      const [overdueInvoices, existingTasks] = await Promise.all([
-        ActionCenter.getOverdueInvoiceActions(companyId, options),
-        TaskAdapter.getTasks(companyId)
+      const safeFetch = async (fn) => {
+        try {
+          const res = await fn();
+          return Array.isArray(res) ? res : [];
+        } catch {
+          return [];
+        }
+      };
+
+      const [overdueInvoices, existingTasks, lowStockAlerts, customers] = await Promise.all([
+        safeFetch(() => ActionCenter.getOverdueInvoiceActions(companyId, options)),
+        safeFetch(() => TaskAdapter.getTasks(companyId)),
+        safeFetch(() => Inventory.getLowStockAlerts(companyId, options)),
+        safeFetch(() => CustomerAdapter.getCustomers(companyId, options))
       ]);
 
       const activeRules = REGISTERED_RULES.filter(r => {
@@ -134,6 +151,8 @@ export const AutomationEngine = {
         const matches = rule.evaluate({
           companyId,
           overdueInvoices,
+          lowStockAlerts,
+          customers,
           existingTasks,
           options
         });

@@ -1,13 +1,15 @@
 /**
- * OmniCore Action Center (Phase 8)
+ * OmniCore Action Center (Phase 8 & Phase B)
  * 
- * Transforms Business Intelligence, Finance receivables, and Business Health
- * indicators into a concrete, itemized list of actionable recommendations.
+ * Transforms Business Intelligence, Finance receivables, Business Health,
+ * Inventory alerts, and Operational deadlines into a concrete, itemized list of actionable recommendations.
  * 
  * Composition-only, tenant-scoped, and recommendation-only (zero writes/execution).
  */
 import { Finance } from '../capabilities/Finance.js';
 import { CustomerManagement } from '../capabilities/CustomerManagement.js';
+import { Inventory } from '../capabilities/Inventory.js';
+import { Scheduling } from '../capabilities/Scheduling.js';
 import { BusinessIntelligence } from './BusinessIntelligence.js';
 import { BusinessHealth } from './BusinessHealth.js';
 
@@ -176,6 +178,85 @@ export const ActionCenter = {
   },
 
   /**
+   * Get low-stock inventory replenishment action items.
+   *
+   * @param {string} companyId - Tenant company identifier
+   * @param {object} [options]
+   * @returns {Promise<Array>} List of low-stock replenishment action items
+   */
+  async getLowStockAlertActions(companyId, options = {}) {
+    if (!companyId) return [];
+
+    try {
+      const alerts = await Inventory.getLowStockAlerts(companyId, options);
+      return (alerts || []).map(item => {
+        const stock = Number(item.stockQuantity ?? 0);
+        const threshold = Number(item.reorderThreshold ?? 10);
+        const deficit = Number(item.deficit ?? (threshold - stock));
+        const priority = stock <= 0 ? 'high' : deficit >= 10 ? 'high' : 'medium';
+
+        return {
+          id: `action-stock-${item.id}`,
+          category: 'inventory',
+          priority,
+          title: `Low Stock: ${item.name}`,
+          backingData: {
+            productId: item.id,
+            name: item.name,
+            sku: item.sku,
+            stockQuantity: stock,
+            reorderThreshold: threshold,
+            deficit,
+            supplier: item.supplier
+          },
+          explanation: `${item.name} is below reorder threshold (${stock} units left, threshold: ${threshold}, deficit: ${deficit} units).`,
+          recommendedAction: `Reorder ${deficit} units of ${item.name} from supplier ${item.supplier || 'unassigned'}.`
+        };
+      });
+    } catch (err) {
+      console.warn('[ActionCenter] Failed to get low-stock alert actions:', err);
+      return [];
+    }
+  },
+
+  /**
+   * Get operational deadline and task urgency action items.
+   *
+   * @param {string} companyId - Tenant company identifier
+   * @param {object} [options]
+   * @returns {Promise<Array>} List of deadline action items
+   */
+  async getUpcomingDeadlineActions(companyId, options = {}) {
+    if (!companyId) return [];
+
+    try {
+      const deadlines = await Scheduling.getUpcomingDeadlines(companyId, { limit: 10, ...options });
+      return (deadlines || []).map(task => {
+        const priority = (task.priority === 'urgent' || task.priority === 'high') ? 'high' : 'medium';
+
+        return {
+          id: `action-task-${task.id}`,
+          category: 'operations',
+          priority,
+          title: `Approaching Deadline: ${task.title}`,
+          backingData: {
+            taskId: task.id,
+            title: task.title,
+            dueDate: task.dueDate,
+            assignedTo: task.assignedTo,
+            priority: task.priority
+          },
+          explanation: `Task "${task.title}" is scheduled due on ${task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'soon'} (assigned to: ${task.assignedTo || 'unassigned'}).`,
+          recommendedAction: `Follow up with assignee ${task.assignedTo || 'team'} to ensure timely completion.`
+        };
+      });
+    } catch (err) {
+      console.warn('[ActionCenter] Failed to get upcoming deadline actions:', err);
+      return [];
+    }
+  },
+
+  /**
    * Get complete Action Center feed composed for a tenant company.
    *
    * @param {string} companyId - Tenant company identifier
@@ -191,7 +272,7 @@ export const ActionCenter = {
           highPriorityCount: 0,
           mediumPriorityCount: 0,
           lowPriorityCount: 0,
-          categories: { invoices: 0, customers: 0, health: 0 }
+          categories: { invoices: 0, customers: 0, health: 0, inventory: 0, operations: 0 }
         },
         actions: [],
         metadata: {
@@ -202,13 +283,15 @@ export const ActionCenter = {
       };
     }
 
-    const [invoices, customers, health] = await Promise.all([
+    const [invoices, customers, health, inventory, operations] = await Promise.all([
       this.getOverdueInvoiceActions(companyId, options),
       this.getCustomerFollowUpActions(companyId, options),
-      this.getHealthAlertActions(companyId, options)
+      this.getHealthAlertActions(companyId, options),
+      this.getLowStockAlertActions(companyId, options),
+      this.getUpcomingDeadlineActions(companyId, options)
     ]);
 
-    const allActions = [...invoices, ...customers, ...health];
+    const allActions = [...invoices, ...customers, ...health, ...inventory, ...operations];
 
     // Priority rank: high (3) > medium (2) > low (1)
     const priorityWeight = { high: 3, medium: 2, low: 1 };
@@ -228,7 +311,9 @@ export const ActionCenter = {
         categories: {
           invoices: invoices.length,
           customers: customers.length,
-          health: health.length
+          health: health.length,
+          inventory: inventory.length,
+          operations: operations.length
         }
       },
       actions: allActions,

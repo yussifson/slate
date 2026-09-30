@@ -30,6 +30,18 @@ vi.mock('../src/omnicore/core/TaskAdapter', () => ({
   }
 }));
 
+vi.mock('../src/omnicore/capabilities/Inventory', () => ({
+  Inventory: {
+    getLowStockAlerts: vi.fn().mockResolvedValue([])
+  }
+}));
+
+vi.mock('../src/omnicore/core/CustomerAdapter', () => ({
+  CustomerAdapter: {
+    getCustomers: vi.fn().mockResolvedValue([])
+  }
+}));
+
 vi.mock('../src/api/supabaseClient', () => ({
   supabase: {
     from: vi.fn()

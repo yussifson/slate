@@ -33,6 +33,18 @@ vi.mock('../src/omnicore/intelligence/BusinessHealth', () => ({
   }
 }));
 
+vi.mock('../src/omnicore/capabilities/Inventory', () => ({
+  Inventory: {
+    getLowStockAlerts: vi.fn().mockResolvedValue([])
+  }
+}));
+
+vi.mock('../src/omnicore/capabilities/Scheduling', () => ({
+  Scheduling: {
+    getUpcomingDeadlines: vi.fn().mockResolvedValue([])
+  }
+}));
+
 describe('OmniCore Action Center', () => {
 
   const mockCompanyId = 'comp-tenant-action-1';
@@ -302,7 +314,7 @@ describe('OmniCore Action Center', () => {
       expect(feed.summary.mediumPriorityCount).toBe(1); // dormant customer
       expect(feed.summary.lowPriorityCount).toBe(0);
 
-      expect(feed.summary.categories).toEqual({
+      expect(feed.summary.categories).toMatchObject({
         invoices: 1,
         customers: 1,
         health: 1

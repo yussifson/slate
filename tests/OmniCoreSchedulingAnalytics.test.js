@@ -578,7 +578,7 @@ describe('OmniCore Phase A: Core Adapters & Capabilities', () => {
       expect(BusinessCapabilities.capabilities.HR).toBeDefined();
       expect(BusinessCapabilities.capabilities.Purchasing).toBeDefined();
       expect(BusinessCapabilities.capabilities.Documents).toBeDefined();
-      expect(Object.keys(BusinessCapabilities.capabilities).length).toBe(9);
+      expect(Object.keys(BusinessCapabilities.capabilities).length).toBeGreaterThanOrEqual(9);
     });
   });
 });

@@ -7,6 +7,7 @@ import { Purchasing } from './Purchasing';
 import { Documents } from './Documents';
 import { Scheduling } from './Scheduling';
 import { Analytics } from './Analytics';
+import { Reporting } from './Reporting';
 
 /**
  * OmniCore Business Capabilities Layer Module
@@ -23,7 +24,8 @@ export const BusinessCapabilities = {
     Purchasing,
     Documents,
     Scheduling,
-    Analytics
+    Analytics,
+    Reporting
   }
 };
 
@@ -36,6 +38,7 @@ export {
   Purchasing,
   Documents,
   Scheduling,
-  Analytics
+  Analytics,
+  Reporting
 };
 export default BusinessCapabilities;
