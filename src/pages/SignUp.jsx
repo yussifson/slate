@@ -307,31 +307,31 @@ export default function SignUp() {
 };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-[#f4f5f8] flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans text-slate-900">
+    <div className="min-h-[100dvh] w-full bg-[#00beac] flex items-center justify-center p-3 sm:p-6 lg:p-10 font-sans text-slate-900">
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch my-auto">
         
         {/* Left Column: Form */}
-        <div className="lg:col-span-7 bg-white rounded-[32px] p-6 sm:p-10 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-7 bg-white rounded-[32px] p-6 sm:p-10 border border-white/30 shadow-2xl flex flex-col justify-between">
           <div>
             {/* Logo & Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <Logo className="w-8 h-8" />
-                <span className="font-extrabold text-xl tracking-tight text-slate-900">
+                <Logo className="w-8 h-8 text-[#006065]" />
+                <span className="font-extrabold text-xl tracking-tight text-[#006065]">
                   Clipad
                 </span>
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#006065] bg-[#006065]/10 px-3 py-1 rounded-full">
                 Get Started
               </span>
             </div>
 
             {/* Welcome Heading */}
             <div className="mb-6">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#006065] tracking-tight mb-1">
                 {isAuthenticated ? t("complete_workslate_setup", "Complete your Workslate setup") : t("create_an_account", "Create your account")}
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium">
+              <p className="text-xs sm:text-sm text-slate-600 font-medium">
                 {isAuthenticated 
                   ? t("just_a_few_more_details", "Just a few more details to get your workspace ready.")
                   : t("create_an_account_to_start_man", "Create an account to start managing your business")
@@ -345,9 +345,9 @@ export default function SignUp() {
                   <button
                     onClick={handleOptavelSSO}
                     type="button"
-                    className="flex items-center justify-center gap-2 h-11 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                    className="flex items-center justify-center gap-2 h-11 px-4 bg-slate-50 hover:bg-slate-100 text-[#006065] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
                   >
-                    <Logo hideText={true} className="w-4 h-4 text-primary" />
+                    <Logo hideText={true} className="w-4 h-4 text-[#006065]" />
                     Optavel SSO
                   </button>
                   <div className="h-11 flex justify-center items-center w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors">
@@ -393,7 +393,7 @@ export default function SignUp() {
                       placeholder="Jane Doe"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                      className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#006065] focus:ring-1 focus:ring-[#006065]"
                     />
                   </div>
                   <div>
@@ -406,7 +406,7 @@ export default function SignUp() {
                       placeholder="name@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                      className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#006065] focus:ring-1 focus:ring-[#006065]"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -420,7 +420,7 @@ export default function SignUp() {
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                        className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#006065] focus:ring-1 focus:ring-[#006065]"
                       />
                     </div>
                     <div>
@@ -433,7 +433,7 @@ export default function SignUp() {
                         placeholder="••••••••"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                        className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#006065] focus:ring-1 focus:ring-[#006065]"
                       />
                     </div>
                   </div>
@@ -442,7 +442,7 @@ export default function SignUp() {
 
               <div className="pt-2 border-t border-slate-100">
                 <div className="mb-3">
-                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">{t("workslate_details", "Workslate Details")}</h3>
+                  <h3 className="text-xs font-bold text-[#006065] uppercase tracking-wider">{t("workslate_details", "Workslate Details")}</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -454,7 +454,7 @@ export default function SignUp() {
                       placeholder="Acme Corp"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                      className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#006065] focus:ring-1 focus:ring-[#006065]"
                     />
                   </div>
                   <div>
@@ -466,7 +466,7 @@ export default function SignUp() {
                         placeholder="acme"
                         value={subdomain}
                         onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                        className="w-full h-11 text-sm bg-slate-50/70 border-slate-200 text-slate-900 pr-24 rounded-xl focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                        className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 pr-24 rounded-xl focus:bg-white focus:border-[#006065] focus:ring-1 focus:ring-[#006065]"
                       />
                       <div className="absolute right-2 text-xs font-semibold text-slate-400 pointer-events-none">
                         .optavel.com
@@ -479,7 +479,7 @@ export default function SignUp() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 mt-2 bg-[#111827] hover:bg-black text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full h-12 mt-2 bg-[#006065] hover:bg-[#004d52] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -493,31 +493,31 @@ export default function SignUp() {
           <div className="text-center pt-4 mt-4 border-t border-slate-100">
             <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
             {isElectron ? (
-              <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-bold text-slate-900 p-0 h-auto hover:underline">
+              <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-bold text-[#006065] p-0 h-auto hover:underline">
                 {t("sign_in", "Sign In")}
               </Button>
             ) : (
-              <a href="/login" className="text-xs font-bold text-slate-900 hover:underline">
+              <a href="/login" className="text-xs font-bold text-[#006065] hover:underline">
                 {t("sign_in", "Sign In")}
               </a>
             )}
           </div>
         </div>
 
-        {/* Right Column: Hero Dark Card */}
-        <div className="lg:col-span-5 bg-[#0e1117] rounded-[32px] p-8 lg:p-10 text-white flex flex-col justify-between relative overflow-hidden shadow-2xl min-h-[520px]">
+        {/* Right Column: Hero Dark Green Card */}
+        <div className="lg:col-span-5 bg-[#006065] rounded-[32px] p-8 lg:p-10 text-white flex flex-col justify-between relative overflow-hidden shadow-2xl min-h-[520px]">
           {/* Background ambient light */}
-          <div className="absolute top-0 right-0 w-72 h-72 bg-[#1e293b]/40 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#006065]/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-72 h-72 bg-[#00beac]/25 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#fad503]/15 rounded-full blur-3xl pointer-events-none" />
 
           {/* Top Arcana style logo mark */}
           <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15">
               <div className="w-2 h-2 rounded-full bg-[#fad503] animate-pulse" />
               <span className="text-xs font-bold tracking-wide uppercase text-white/90">Instant Provisioning</span>
             </div>
-            <div className="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center">
-              <Logo className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-2xl bg-[#fad503] flex items-center justify-center text-[#006065] shadow-md">
+              <Logo className="w-6 h-6 text-[#006065]" />
             </div>
           </div>
 
@@ -526,25 +526,25 @@ export default function SignUp() {
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3 leading-tight">
               Join Clipad Today
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
+            <p className="text-xs sm:text-sm text-white/80 font-normal leading-relaxed">
               Deploy your dedicated multi-tenant operating system with end-to-end security, real-time database sync, and cross-department automation.
             </p>
           </div>
 
           {/* Charcoal Glass Sub-Card */}
-          <div className="relative z-10 bg-[#1e232d]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-3 shadow-xl">
+          <div className="relative z-10 bg-[#004d52]/90 backdrop-blur-xl border border-white/15 rounded-2xl p-5 space-y-3 shadow-xl">
             <div className="flex items-center justify-between">
               <div className="flex -space-x-2 overflow-hidden">
-                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-emerald-600 text-[10px] font-bold text-white flex items-center justify-center">✓</div>
-                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-indigo-600 text-[10px] font-bold text-white flex items-center justify-center">🔐</div>
-                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-teal-600 text-[10px] font-bold text-white flex items-center justify-center">⚡</div>
-                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#1e232d] bg-[#fad503] text-[10px] font-bold text-[#0e1117] flex items-center justify-center">AI</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#004d52] bg-emerald-600 text-[10px] font-bold text-white flex items-center justify-center">✓</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#004d52] bg-indigo-600 text-[10px] font-bold text-white flex items-center justify-center">🔐</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#004d52] bg-teal-600 text-[10px] font-bold text-white flex items-center justify-center">⚡</div>
+                <div className="inline-block h-8 w-8 rounded-full border-2 border-[#004d52] bg-[#fad503] text-[10px] font-extrabold text-[#006065] flex items-center justify-center">AI</div>
               </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#fad503] bg-white/10 px-2.5 py-1 rounded-full border border-white/15">
                 Ready in 60s
               </span>
             </div>
-            <p className="text-xs text-slate-300 font-medium">
+            <p className="text-xs text-white/90 font-medium">
               Join thousands of teams scaling their business with intelligent workflows and workspace memory.
             </p>
           </div>
