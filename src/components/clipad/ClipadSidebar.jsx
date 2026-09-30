@@ -158,25 +158,35 @@ export default function ClipadSidebar({ forceMobile }) {
   return (
     <aside 
       className={cn(
-        "hidden md:flex flex-col bg-[#006065] text-white border-r border-black/20 dark:border-white/10 shadow-[4px_0_20px_rgba(0,0,0,0.15)] transition-all duration-300 z-50 shrink-0 relative",
+        "hidden md:flex flex-col bg-[#006065] text-white transition-all duration-300 z-50 shrink-0 relative",
         forceMobile && "hidden",
         isCollapsed ? "w-[72px]" : "w-[260px]",
         "h-full overflow-hidden"
       )}
     >
       {/* Header */}
-      <div className={cn("h-[68px] flex items-center shrink-0 border-b border-transparent transition-all", isCollapsed ? "px-0 justify-center" : "px-4 justify-between")}>
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/search')}>
-          <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-transparent shadow-sm text-[#006065] group-hover:scale-105 transition-transform">
-            <CliPadLogo size={20} />
-          </div>
-          {!isCollapsed && <span className="font-bold text-[17px] text-white truncate">{workspaceName}</span>}
-        </div>
-        
-        {!isCollapsed && (
-          <button onClick={() => setIsCollapsed(true)} className="text-white/60 hover:text-white transition-colors p-1">
-            <PanelLeftClose className="w-5 h-5" />
+      <div className={cn("h-[64px] flex items-center shrink-0 transition-all border-b border-white/5", isCollapsed ? "px-0 justify-center" : "px-4 justify-between")}>
+        {isCollapsed ? (
+          /* When collapsed: show expand toggle in logo position */
+          <button 
+            onClick={() => setIsCollapsed(false)} 
+            className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-all hover:scale-105"
+            title="Expand sidebar"
+          >
+            <PanelLeft className="w-5 h-5" />
           </button>
+        ) : (
+          <>
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/dashboard')}>
+              <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm text-[#006065] group-hover:scale-105 transition-transform">
+                <CliPadLogo size={20} />
+              </div>
+              <span className="font-bold text-[17px] text-white truncate">{workspaceName}</span>
+            </div>
+            <button onClick={() => setIsCollapsed(true)} className="text-white/50 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10">
+              <PanelLeftClose className="w-5 h-5" />
+            </button>
+          </>
         )}
       </div>
 
@@ -309,15 +319,6 @@ export default function ClipadSidebar({ forceMobile }) {
         </DropdownMenu>
       </div>
 
-      {/* Expand Toggle (Visible when collapsed) */}
-      {isCollapsed && (
-        <button 
-          onClick={() => setIsCollapsed(false)}
-          className="absolute -right-3.5 top-6 w-7 h-7 bg-white dark:bg-card border border-slate-200 dark:border-white/10 rounded-full flex items-center justify-center shadow-sm text-slate-400 hover:text-slate-700 z-40 hover:scale-110 transition-all"
-        >
-          <PanelLeft className="w-4 h-4" />
-        </button>
-      )}
     </aside>
   );
 }

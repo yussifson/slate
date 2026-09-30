@@ -45,7 +45,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
   };
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-14 md:h-16 bg-[#006065] text-white border-b border-black/10 gap-3">
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-[64px] bg-[#006065] text-white border-b border-white/5 gap-3">
       <div className="flex items-center gap-3 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

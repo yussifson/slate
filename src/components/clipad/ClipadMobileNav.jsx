@@ -31,33 +31,37 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
 
   return (
     <>
-      <nav className={cn("fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-background/95 backdrop-blur-3xl rounded-full border border-slate-200/60 dark:border-border/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] w-[92%] max-w-[400px]", forceMobile ? "flex" : "md:hidden")}>
-        <div className="flex items-center justify-around px-2 h-[64px] w-full">
+      {/* Native Fixed Bottom Nav Bar */}
+      <nav className={cn(
+        "fixed bottom-0 left-0 right-0 z-40 bg-[#006065] border-t border-white/10",
+        "pb-[env(safe-area-inset-bottom,0px)]",
+        forceMobile ? "flex" : "md:hidden"
+      )}>
+        <div className="flex items-stretch justify-around w-full h-[60px]">
           {navItems.map((item) => {
             const isActive = item.path ? location.pathname.startsWith(item.path) : isMenuOpen;
             const Icon = item.icon;
             
             const content = (
-              <>
+              <div className={cn(
+                "flex flex-col items-center justify-center gap-1 flex-1 h-full px-2 transition-all duration-200 relative",
+                isActive ? "text-[#fad503]" : "text-white/55 hover:text-white"
+              )}>
+                {/* Yellow active top indicator bar */}
                 {isActive && (
-                  <div className="absolute top-0 w-8 h-1 bg-primary rounded-b-full shadow-[0_2px_8px_rgba(var(--primary),0.5)]" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#fad503] rounded-b-full" />
                 )}
-                <div className={cn(
-                  "relative flex items-center justify-center mb-1 transition-all duration-300", 
-                  isActive ? "text-primary -translate-y-0.5" : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
-                )}>
-                  <Icon className={cn(
-                    "transition-all duration-300", 
-                    isActive ? "w-6 h-6 scale-110 drop-shadow-md" : "w-5 h-5"
-                  )} strokeWidth={isActive ? 2.5 : 2} />
-                </div>
+                <Icon className={cn(
+                  "transition-all duration-200",
+                  isActive ? "w-[22px] h-[22px]" : "w-5 h-5"
+                )} strokeWidth={isActive ? 2.5 : 2} />
                 <span className={cn(
-                  "text-[10px] sm:text-[11px] font-semibold leading-none tracking-tight transition-all duration-300 text-center w-full", 
-                  isActive ? "text-primary opacity-100 font-bold" : "text-slate-400 dark:text-slate-500 opacity-80"
+                  "text-[10px] font-semibold leading-none tracking-tight",
+                  isActive ? "text-[#fad503]" : "text-white/55"
                 )}>
                   {item.label}
                 </span>
-              </>
+              </div>
             );
 
             if (item.action) {
@@ -65,7 +69,7 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
                 <button
                   key={item.label}
                   onClick={item.action}
-                  className="relative flex flex-col items-center justify-center flex-1 h-full min-w-0 py-1 active:scale-95 transition-transform duration-100 ease-out"
+                  className="flex flex-col items-center justify-center flex-1 h-full min-w-0 active:scale-95 transition-transform duration-100"
                 >
                   {content}
                 </button>
@@ -76,7 +80,7 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
               <Link
                 key={item.path}
                 to={item.path}
-                className="relative flex flex-col items-center justify-center flex-1 h-full min-w-0 py-1 active:scale-95 transition-transform duration-100 ease-out"
+                className="flex flex-col items-center justify-center flex-1 h-full min-w-0 active:scale-95 transition-transform duration-100"
               >
                 {content}
               </Link>
@@ -105,13 +109,13 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 10 }}
               transition={{ type: "spring", damping: 25, stiffness: 400 }}
-              className="lg:hidden fixed bottom-[76px] right-4 z-[60] w-[260px] overflow-hidden rounded-[24px] bg-white/80 dark:bg-[#09090b]/80 backdrop-blur-3xl saturate-[2] shadow-[0_16px_40px_-8px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_40px_-8px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-slate-200/50 dark:border-white/10"
+              className="lg:hidden fixed bottom-[72px] right-4 z-[60] w-[260px] overflow-hidden rounded-[20px] bg-[#006065] shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-white/10"
               onClick={(e) => e.stopPropagation()}
             >
               {/* User Info */}
               {user && (
-                <div className="flex items-center gap-3 px-4 py-4 border-b border-black/[0.04] dark:border-white/[0.06] bg-gradient-to-br from-slate-50/50 to-transparent dark:from-slate-900/30 dark:to-transparent">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-md ring-2 ring-white/60 dark:ring-white/10">
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10 bg-white/5">
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-md text-[#006065]">
                     {user.avatar_url || user?.user_metadata?.avatar_url ? (
                       <img src={user.avatar_url || user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -119,8 +123,8 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
                     )}
                   </div>
                   <div className="overflow-hidden flex-1">
-                    <p className="font-semibold text-[14px] text-slate-900 dark:text-slate-100 truncate leading-tight">{user.full_name || user?.user_metadata?.full_name || 'User'}</p>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">{user.email}</p>
+                    <p className="font-semibold text-[14px] text-white truncate leading-tight">{user.full_name || user?.user_metadata?.full_name || 'User'}</p>
+                    <p className="text-[11px] text-white/60 truncate mt-0.5">{user.email}</p>
                   </div>
                 </div>
               )}

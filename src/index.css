@@ -228,6 +228,99 @@ html, body {
   [data-theme="omniimpressive"] .bg-card { background-color: rgba(255,255,255,0.10) !important; }
   [data-theme="omniimpressive"] .text-card-foreground { color: white !important; }
 
+  /* ── Phase 2: Inner page sticky headers & sub-nav bars ── */
+  /* These are the sticky bars inside pages (e.g. SpaceDashboard header row) */
+  [data-theme="omniimpressive"] [class*="sticky"][class*="bg-white"],
+  [data-theme="omniimpressive"] [class*="sticky"][class*="bg-slate"] {
+    background-color: #006065 !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Sub-navigation tab bars (scrollable horizontal tabs inside pages) */
+  [data-theme="omniimpressive"] [class*="overflow-x-auto"][class*="border-b"],
+  [data-theme="omniimpressive"] [class*="border-b"][class*="bg-white"] {
+    background-color: rgba(0, 96, 101, 0.5) !important;
+    border-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Tab buttons — inactive state */
+  [data-theme="omniimpressive"] button[class*="border-b-2"][class*="text-slate"] {
+    color: rgba(255,255,255,0.65) !important;
+    border-color: transparent !important;
+  }
+  /* Tab buttons — active state */
+  [data-theme="omniimpressive"] button[class*="border-b-2"][class*="border-primary"],
+  [data-theme="omniimpressive"] button[class*="border-b-2"][class*="text-primary"] {
+    color: #fad503 !important;
+    border-color: #fad503 !important;
+  }
+
+  /* AI Chat / Search input boxes at bottom of pages */
+  [data-theme="omniimpressive"] [class*="rounded-xl"][class*="border"][class*="bg-white"],
+  [data-theme="omniimpressive"] [class*="rounded-2xl"][class*="border"][class*="bg-white"] {
+    background-color: rgba(0, 96, 101, 0.5) !important;
+    border-color: rgba(255,255,255,0.15) !important;
+    color: white !important;
+  }
+
+  /* "Back" button bars at top of pages (e.g. SpaceDashboard) */
+  [data-theme="omniimpressive"] [class*="flex"][class*="items-center"][class*="bg-white"][class*="border-b"] {
+    background-color: #006065 !important;
+    border-color: rgba(255,255,255,0.10) !important;
+    color: white !important;
+  }
+
+  /* Timeline / filter sidebars */
+  [data-theme="omniimpressive"] [class*="rounded-2xl"][class*="bg-slate"],
+  [data-theme="omniimpressive"] [class*="rounded-xl"][class*="bg-slate"] {
+    background-color: rgba(255,255,255,0.10) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.12) !important;
+  }
+
+  /* Gradient cards (pink, purple, blue top-border cards) — keep the gradient border but fix bg */
+  [data-theme="omniimpressive"] [class*="border-t-4"] {
+    background-color: rgba(255,255,255,0.10) !important;
+  }
+
+  /* Badges / pills / tags */
+  [data-theme="omniimpressive"] [class*="rounded-full"][class*="bg-slate-100"],
+  [data-theme="omniimpressive"] [class*="rounded-full"][class*="bg-slate-200"] {
+    background-color: rgba(255,255,255,0.15) !important;
+    color: white !important;
+  }
+
+  /* "New Space", "Billing" and similar action buttons — keep yellow */
+  [data-theme="omniimpressive"] button[class*="bg-primary"],
+  [data-theme="omniimpressive"] a[class*="bg-primary"] {
+    background-color: #fad503 !important;
+    color: #006065 !important;
+    border-color: #fad503 !important;
+  }
+
+  /* Outlined secondary buttons */
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-white"]:not([class*="rounded-full"]),
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-slate-50"] {
+    background-color: rgba(255,255,255,0.08) !important;
+    color: white !important;
+    border-color: rgba(255,255,255,0.20) !important;
+  }
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-white"]:hover,
+  [data-theme="omniimpressive"] button[class*="border"][class*="bg-slate-50"]:hover {
+    background-color: rgba(255,255,255,0.15) !important;
+  }
+
+  /* Dividers */
+  [data-theme="omniimpressive"] .divide-slate-100 > * + *,
+  [data-theme="omniimpressive"] .divide-slate-200 > * + * { border-color: rgba(255,255,255,0.10) !important; }
+
+  /* "Daily Briefing" and collapsible section cards */
+  [data-theme="omniimpressive"] [class*="rounded-xl"][class*="border-slate"],
+  [data-theme="omniimpressive"] [class*="rounded-2xl"][class*="border-slate"] {
+    border-color: rgba(255,255,255,0.15) !important;
+  }
+
   .bg-noise {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     background-repeat: repeat;
