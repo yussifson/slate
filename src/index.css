@@ -28,24 +28,24 @@ html, body {
 @layer base {
   :root, .light {
     --font-inter: 'Inter', sans-serif;
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --background: 174 100% 37%; /* #00beac light teal background */
+    --foreground: 0 0% 100%; /* white text on teal */
+    --card: 174 55% 90%; /* very light teal for cards */
+    --card-foreground: 173 100% 19%; /* deep green text on light cards */
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 173 100% 19%;
     --primary: 149 100% 33%; /* Vibrant Emerald Green */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --secondary: 174 40% 82%;
+    --secondary-foreground: 173 100% 19%;
+    --muted: 174 40% 82%;
+    --muted-foreground: 173 50% 35%;
+    --accent: 174 40% 82%;
+    --accent-foreground: 173 100% 19%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 174 40% 75%;
+    --input: 174 40% 80%;
     --ring: 149 100% 33%;
     --chart-1: 152 76% 41%;
     --chart-2: 160 60% 45%;
@@ -53,11 +53,11 @@ html, body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 0.75rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 15%;
-    --sidebar-primary: 149 100% 33%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
+    --sidebar-background: 173 100% 19%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 48 97% 50%; /* yellow accent */
+    --sidebar-primary-foreground: 173 100% 19%;
+    --sidebar-accent: 174 50% 28%;
     --sidebar-accent-foreground: 222 47% 15%;
     --sidebar-border: 214 32% 91%;
     --sidebar-ring: 152 76% 41%;

@@ -63,25 +63,28 @@ export default function ClipadLayout() {
       <ClipadSidebar forceMobile={forceMobile} />
 
       {/* Main Content Column */}
-      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container bg-[#00beac] dark:bg-background md:rounded-tl-[24px] md:shadow-[-8px_0_30px_rgba(0,0,0,0.02)] dark:md:shadow-none border-l border-transparent dark:border-white/5 transition-all">
+      <div ref={containerRef} className="flex flex-col flex-1 w-0 overflow-hidden relative @container bg-[#006065] dark:bg-background transition-all">
         {!isImmersive && <ClipadTopNav forceMobile={forceMobile} />}
         
-        <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0 h-full overflow-y-auto overflow-x-hidden">
-          {location.pathname === '/chat' && isChatDocked ? (
-            <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
-              <MessageSquare className="w-8 h-8 opacity-50" />
-              <p>Chat is currently docked to the right sidebar.</p>
-            </div>
-          ) : (
-            <React.Suspense fallback={
-              <div className="flex items-center justify-center h-full w-full">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        {/* Inner content pane — light green bg, rounded top-left to show the deep green frame */}
+        <div className="flex-1 overflow-hidden md:rounded-tl-[20px] bg-[#00beac] dark:bg-background">
+          <PullToRefresh className="relative z-30 page-enter pb-[80px] md:pb-0 h-full overflow-y-auto overflow-x-hidden">
+            {location.pathname === '/chat' && isChatDocked ? (
+              <div className="flex items-center justify-center h-full text-white flex-col gap-3">
+                <MessageSquare className="w-8 h-8 opacity-50" />
+                <p>Chat is currently docked to the right sidebar.</p>
               </div>
-            }>
-              <Outlet />
-            </React.Suspense>
-          )}
-        </PullToRefresh>
+            ) : (
+              <React.Suspense fallback={
+                <div className="flex items-center justify-center h-full w-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                </div>
+              }>
+                <Outlet />
+              </React.Suspense>
+            )}
+          </PullToRefresh>
+        </div>
       </div>
 
       {/* Right Docked Portal for Orbit AI & Chat */}
