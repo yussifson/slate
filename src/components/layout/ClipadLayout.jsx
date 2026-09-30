@@ -73,8 +73,13 @@ export default function ClipadLayout() {
             </div>
           ) : (
             <React.Suspense fallback={
-              <div className="flex items-center justify-center h-full w-full">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+              <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 w-full animate-pulse space-y-6">
+                <div className="h-10 w-64 bg-white/20 rounded-xl" />
+                <div className="h-4 w-96 bg-white/15 rounded-lg" />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white/15 rounded-2xl" />)}
+                </div>
+                <div className="h-64 bg-white/15 rounded-2xl w-full" />
               </div>
             }>
               <Outlet />

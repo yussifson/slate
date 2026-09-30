@@ -4,6 +4,7 @@ import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import { Home, Layers, Video, Camera, User, MessageSquare, Bot, Sparkles, Menu, Settings, Shield, LogOut, X, Tag, Star, Phone, Globe, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/AuthContext';
+import { useTheme } from '@/lib/ThemeContext';
 import ThemeToggle from '@/components/layout/ThemeToggle';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -11,8 +12,11 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const [isOrbitOpen, setIsOrbitOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
   
   const marketingNavItems = [
     { label: 'Features', action: () => { window.location.href = '#features'; }, icon: Star },
@@ -132,22 +136,30 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
               {/* Action List */}
               <div className="p-2 flex flex-col gap-0.5">
                 {/* Theme */}
-                <div className="flex items-center gap-3 px-3 py-2.5 rounded-[14px] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors group">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm border border-slate-200/50 dark:border-transparent">
-                    <ThemeToggle iconOnly />
+                <button
+                  onClick={toggleTheme}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-[14px] hover:bg-white/10 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shadow-sm text-white">
+                      <ThemeToggle iconOnly />
+                    </div>
+                    <span className="text-[13px] font-medium text-white">Theme</span>
                   </div>
-                  <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Theme</span>
-                </div>
+                  <span className="text-xs font-bold text-[#fad503] uppercase tracking-wider">
+                    {theme === 'dark' ? 'Dark' : 'Light'}
+                  </span>
+                </button>
 
                 {/* Language Switcher */}
-                <div className="flex items-center justify-between px-3 py-2.5 rounded-[14px] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition-colors group">
+                <div className="flex items-center justify-between px-3 py-2.5 rounded-[14px] hover:bg-white/10 transition-colors group">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm border border-emerald-100/50 dark:border-transparent">
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shadow-sm text-white">
                       <Globe className="w-4 h-4" />
                     </div>
-                    <span className="text-[13px] font-medium text-slate-700 dark:text-slate-300">Language</span>
+                    <span className="text-[13px] font-medium text-white">Language</span>
                   </div>
-                  <LanguageSwitcher currentLanguage={user?.user_metadata?.language} />
+                  <LanguageSwitcher className="h-8 text-xs bg-white/10 text-white border-white/20" currentLanguage={user?.user_metadata?.language} />
                 </div>
 
                 {/* Settings */}

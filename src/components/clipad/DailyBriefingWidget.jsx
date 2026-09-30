@@ -144,11 +144,8 @@ export default function DailyBriefingWidget() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+              <span className="text-[11px] font-bold text-[#fad503] uppercase tracking-widest bg-[#fad503]/10 px-2 py-0.5 rounded-full border border-[#fad503]/20">
                 Daily Briefing
-              </span>
-              <span className="text-[10px] text-slate-400 font-medium">
-                {isExpanded ? '(Click to collapse)' : '(Click to expand)'}
               </span>
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">{briefing.greeting}</h3>

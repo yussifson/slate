@@ -333,7 +333,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
  return (
-   <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#f0f2f5] dark:bg-[#111b21] overflow-hidden page-enter">
+   <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#00beac] dark:bg-[#006065] overflow-hidden page-enter">
 
 
      {/* Main layout below nav */}
