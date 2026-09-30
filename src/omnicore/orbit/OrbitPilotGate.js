@@ -113,6 +113,16 @@ export const OrbitPilotGate = {
   fetchPilotConfig,
   isPilotCompanyActive,
   isPilotCompanyActiveSync,
+  /**
+   * List all currently active pilot companies from config.
+   *
+   * @param {object} [options]
+   * @returns {Promise<Array<string>>}
+   */
+  async getPilotCompanies(options = {}) {
+    const config = options.pilotConfig || await fetchPilotConfig();
+    return Array.isArray(config.pilot_companies) ? config.pilot_companies : [];
+  },
 
   /**
    * Execute an Orbit read query against OmniCore layers.
