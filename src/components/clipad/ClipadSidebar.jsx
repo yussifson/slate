@@ -136,19 +136,19 @@ export default function ClipadSidebar({ forceMobile }) {
           "w-full flex items-center px-3 py-2.5 transition-all duration-200 group relative mb-0.5",
           isCollapsed ? "justify-center rounded-xl" : "gap-3 rounded-xl",
           isActive 
-            ? "bg-white dark:bg-[#161e2e] text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.04)] font-semibold" 
-            : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/5 border border-transparent font-medium"
+            ? "bg-[#00beac] text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)] font-semibold" 
+            : "text-white/70 hover:bg-white/10 hover:text-white border border-transparent font-medium"
         )}
         title={isCollapsed ? item.label : undefined}
       >
-        {/* The Exact Green Edge Line for Active State */}
+        {/* The Exact Yellow Edge Line for Active State */}
         {isActive && (
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-primary rounded-r-full" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-[#fad503] rounded-r-full" />
         )}
 
         <Icon className={cn("shrink-0 transition-transform duration-200 group-hover:scale-110", 
           isCollapsed ? "w-5 h-5" : "w-4 h-4",
-          isActive ? "text-primary" : "text-slate-500 opacity-80"
+          isActive ? "text-white" : "text-white/70 group-hover:text-white"
         )} strokeWidth={isActive ? 2.5 : 2} />
         
         {!isCollapsed && <span className="truncate">{item.label}</span>}
@@ -163,7 +163,7 @@ export default function ClipadSidebar({ forceMobile }) {
   return (
     <aside 
       className={cn(
-        "hidden md:flex flex-col my-4 ml-4 rounded-[24px] bg-gradient-to-b from-indigo-50/80 to-white dark:from-slate-900 dark:to-background backdrop-blur-xl border border-indigo-100/50 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 z-50 shrink-0 relative",
+        "hidden md:flex flex-col my-4 ml-4 rounded-[24px] bg-[#006065] text-white border border-black/10 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300 z-50 shrink-0 relative",
         forceMobile && "hidden",
         isCollapsed ? "w-[72px]" : "w-[260px]",
         "h-[calc(100vh-32px)] overflow-hidden"
@@ -172,14 +172,14 @@ export default function ClipadSidebar({ forceMobile }) {
       {/* Header */}
       <div className={cn("h-[68px] flex items-center shrink-0 border-b border-transparent transition-all", isCollapsed ? "px-0 justify-center" : "px-4 justify-between")}>
         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/search')}>
-          <div className="w-8 h-8 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/10 shadow-sm text-primary group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-transparent shadow-sm text-[#006065] group-hover:scale-105 transition-transform">
             <CliPadLogo size={20} />
           </div>
-          {!isCollapsed && <span className="font-bold text-[17px] text-slate-800 dark:text-slate-100 truncate">{workspaceName}</span>}
+          {!isCollapsed && <span className="font-bold text-[17px] text-white truncate">{workspaceName}</span>}
         </div>
         
         {!isCollapsed && (
-          <button onClick={() => setIsCollapsed(true)} className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors p-1">
+          <button onClick={() => setIsCollapsed(true)} className="text-white/60 hover:text-white transition-colors p-1">
             <PanelLeftClose className="w-5 h-5" />
           </button>
         )}
@@ -190,24 +190,24 @@ export default function ClipadSidebar({ forceMobile }) {
 
         {/* Menu */}
         <div className="py-1">
-          {!isCollapsed && <div className="px-3 py-2 text-[12px] font-semibold text-slate-400 tracking-wide uppercase">Menu</div>}
+          {!isCollapsed && <div className="px-3 py-2 text-[12px] font-semibold text-white/50 tracking-wide uppercase">Menu</div>}
           {mainItems.map(renderNavItem)}
         </div>
         
-        <div className="h-px bg-slate-200/70 dark:bg-white/5 my-2 mx-2" />
+        <div className="h-px bg-white/10 my-2 mx-2" />
 
         {/* Intelligence */}
         <div className="py-1">
           {!isCollapsed ? (
             <button 
               onClick={() => toggleSection('intelligence')}
-              className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 tracking-wide uppercase transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-semibold text-white/50 hover:text-white tracking-wide uppercase transition-colors"
             >
               <span>Intelligence</span>
               <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", openSections.intelligence && "rotate-180")} />
             </button>
           ) : (
-            <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 tracking-wide uppercase text-center cursor-pointer" onClick={() => setIsCollapsed(false)}>INT</div>
+            <div className="px-3 py-2 text-[10px] font-semibold text-white/50 tracking-wide uppercase text-center cursor-pointer" onClick={() => setIsCollapsed(false)}>INT</div>
           )}
           {(openSections.intelligence || isCollapsed) && (
             <div className="mt-1 space-y-0.5">
@@ -218,18 +218,18 @@ export default function ClipadSidebar({ forceMobile }) {
 
         {adminItems.length > 0 && (
           <>
-            <div className="h-px bg-slate-200/70 dark:bg-white/5 my-2 mx-2" />
+            <div className="h-px bg-white/10 my-2 mx-2" />
             <div className="py-1">
               {!isCollapsed ? (
                 <button 
                   onClick={() => toggleSection('admin')}
-                  className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 tracking-wide uppercase transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2 text-[12px] font-semibold text-white/50 hover:text-white tracking-wide uppercase transition-colors"
                 >
                   <span>Admin</span>
                   <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", openSections.admin && "rotate-180")} />
                 </button>
               ) : (
-                <div className="px-3 py-2 text-[10px] font-semibold text-slate-400 tracking-wide uppercase text-center cursor-pointer" onClick={() => setIsCollapsed(false)}>ADM</div>
+                <div className="px-3 py-2 text-[10px] font-semibold text-white/50 tracking-wide uppercase text-center cursor-pointer" onClick={() => setIsCollapsed(false)}>ADM</div>
               )}
               {(openSections.admin || isCollapsed) && (
                 <div className="mt-1 space-y-0.5">
@@ -240,13 +240,13 @@ export default function ClipadSidebar({ forceMobile }) {
           </>
         )}
 
-        <div className="h-px bg-slate-200/70 dark:bg-white/5 my-4 mx-2" />
+        <div className="h-px bg-white/10 my-4 mx-2" />
 
         {/* Bottom Nav */}
         <div className="space-y-0.5 mb-2">
           <button 
             onClick={() => navigate('/settings')} 
-            className={cn("w-full flex items-center rounded-xl text-[14px] text-slate-600 hover:bg-slate-100 font-medium group", isCollapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5")}
+            className={cn("w-full flex items-center rounded-xl text-[14px] text-white/70 hover:bg-white/10 hover:text-white font-medium group", isCollapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5")}
             title={isCollapsed ? "Preferences" : undefined}
           >
             <Settings className="w-4 h-4 opacity-70 group-hover:opacity-100" />
@@ -255,7 +255,7 @@ export default function ClipadSidebar({ forceMobile }) {
           
           <button 
             onClick={() => navigate('/support')} 
-            className={cn("w-full flex items-center rounded-xl text-[14px] text-slate-600 hover:bg-slate-100 font-medium group", isCollapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5")}
+            className={cn("w-full flex items-center rounded-xl text-[14px] text-white/70 hover:bg-white/10 hover:text-white font-medium group", isCollapsed ? "justify-center p-2.5" : "gap-3 px-3 py-2.5")}
             title={isCollapsed ? "Help & Support" : undefined}
           >
             <HelpCircle className="w-4 h-4 opacity-70 group-hover:opacity-100" />
@@ -266,24 +266,24 @@ export default function ClipadSidebar({ forceMobile }) {
       </div>
 
       {/* User Profile Footer */}
-      <div className={cn("p-4 border-t border-slate-200/70 dark:border-white/5 bg-white/50 dark:bg-transparent", isCollapsed ? "flex justify-center" : "")}>
+      <div className={cn("p-4 border-t border-white/10 bg-transparent", isCollapsed ? "flex justify-center" : "")}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-9 h-9 shrink-0 rounded-full bg-slate-200 flex items-center justify-center overflow-hidden border border-slate-200">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-white flex items-center justify-center overflow-hidden border border-transparent">
                 {user?.avatar_url || user?.user_metadata?.avatar_url ? (
                   <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-sm font-bold text-slate-700">{firstName[0]?.toUpperCase()}</span>
+                  <span className="text-sm font-bold text-[#006065]">{firstName[0]?.toUpperCase()}</span>
                 )}
               </div>
               {!isCollapsed && (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-primary transition-colors">{firstName}</p>
-                    <p className="text-[11px] text-slate-500 truncate">{displayPlanName}</p>
+                    <p className="text-[13px] font-bold text-white truncate group-hover:text-white/90 transition-colors">{firstName}</p>
+                    <p className="text-[11px] text-white/60 truncate">{displayPlanName}</p>
                   </div>
-                  <ChevronUp className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                  <ChevronUp className="w-4 h-4 text-white/50 group-hover:text-white/80 transition-colors" />
                 </>
               )}
             </div>

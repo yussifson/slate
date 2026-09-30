@@ -45,7 +45,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
   };
 
   return (
-    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-14 md:h-16 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 dark:from-slate-900/80 dark:to-background/80 backdrop-blur-2xl border-b border-indigo-100/50 dark:border-white/5 gap-3">
+    <nav className="sticky top-0 z-40 shrink-0 flex items-center justify-between px-4 md:px-6 h-14 md:h-16 bg-[#006065] text-white border-b border-black/10 gap-3">
       <div className="flex items-center gap-3 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -96,7 +96,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
         {/* Spotlight - Mobile Only */}
         <button 
           onClick={() => window.dispatchEvent(new CustomEvent('open-global-search'))}
-          className={cn("flex items-center justify-center w-[38px] h-[38px] rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-white/10 transition-all relative", forceMobile ? "flex" : "md:hidden")}
+          className={cn("flex items-center justify-center w-[38px] h-[38px] rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all relative", forceMobile ? "flex" : "md:hidden")}
           title="Search"
         >
           <Search className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
         {/* Chat - All Devices */}
         <button 
           onClick={() => navigate('/chat')}
-          className="flex items-center justify-center w-[38px] h-[38px] rounded-full text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-white/10 transition-all ml-1 relative"
+          className="flex items-center justify-center w-[38px] h-[38px] rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-all ml-1 relative"
           title="Chat"
         >
           <MessageSquare className="w-5 h-5" />
