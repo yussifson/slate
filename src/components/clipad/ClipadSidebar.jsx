@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse, Sparkles } from 'lucide-react';
+import { Layout, Folder, Video, Calendar, MessageSquare, Shield, BarChart2, Network, Clock, Scale, CheckSquare, Map, Plug, Search, Settings, HelpCircle, PanelLeftClose, PanelLeft, ChevronUp, Activity, LogOut, Target, TrendingUp, Zap, GitMerge, HeartPulse, Sparkles, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { useAuth } from '@/lib/AuthContext';
@@ -67,12 +67,9 @@ export default function ClipadSidebar({ forceMobile }) {
   };
 
   const mainItems = [
+    { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Search', path: '/search', icon: Search },
-    { label: 'Dashboard', path: '/dashboard', icon: Layout },
     { label: 'Spaces', path: '/spaces', icon: Folder },
-    { label: 'Recordings', path: '/videos', icon: Video },
-    { label: 'Meetings', path: '/meetings', icon: Calendar },
-    { label: 'Chat', path: '/chat', icon: MessageSquare }
   ];
 
   const isSuperAdmin = user?.role === 'super_admin';
@@ -161,9 +158,10 @@ export default function ClipadSidebar({ forceMobile }) {
   return (
     <aside 
       className={cn(
-        "hidden md:flex flex-col h-full bg-[#f8f9fc] dark:bg-background border-r-2 border-primary/40 dark:border-primary/40 transition-all duration-300 z-50 shrink-0 relative",
+        "hidden md:flex flex-col my-4 ml-4 rounded-[24px] bg-[#f8f9fc] dark:bg-background border border-slate-200/60 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 z-50 shrink-0 relative",
         forceMobile && "hidden",
-        isCollapsed ? "w-[72px]" : "w-[260px]"
+        isCollapsed ? "w-[72px]" : "w-[260px]",
+        "h-[calc(100vh-32px)] overflow-hidden"
       )}
     >
       {/* Header */}

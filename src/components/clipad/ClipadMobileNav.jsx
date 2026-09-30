@@ -21,10 +21,9 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
   ];
 
   const appNavItems = [
-    { label: 'Search', path: '/search', icon: Search },
     { label: 'Home', path: '/dashboard', icon: Home },
+    { label: 'Search', path: '/search', icon: Search },
     { label: 'Spaces', path: '/spaces', icon: Layers },
-    { label: 'Record', path: '/videos', icon: Camera },
     { label: 'Menu', action: () => setIsMenuOpen(true), icon: Menu },
   ];
 
@@ -32,8 +31,8 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
 
   return (
     <>
-      <nav className={cn("fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-background/95 backdrop-blur-3xl border-t border-slate-200/60 dark:border-border/60 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]", forceMobile ? "flex" : "md:hidden")}>
-        <div className="flex items-center justify-around px-2 md:px-8 h-[60px] md:h-[68px] w-full">
+      <nav className={cn("fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-background/95 backdrop-blur-3xl rounded-full border border-slate-200/60 dark:border-border/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] w-[92%] max-w-[400px]", forceMobile ? "flex" : "md:hidden")}>
+        <div className="flex items-center justify-around px-2 h-[64px] w-full">
           {navItems.map((item) => {
             const isActive = item.path ? location.pathname.startsWith(item.path) : isMenuOpen;
             const Icon = item.icon;
