@@ -572,24 +572,23 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
     return results.filter(r => matchesFilter(r.type, filterId)).length;
   };
 
-  // ─── Closed state (search bar in topbar) ──────────────────────────────────
   if (!isOpen) {
     return (
       <>
         <div className="hidden md:block w-full max-w-sm rounded-full p-[1.5px] bg-gradient-to-r from-blue-500 to-pink-500 hover:shadow-md transition-shadow cursor-text group">
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center h-10 w-full bg-white dark:bg-slate-900 rounded-full px-4 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+            className="flex items-center h-10 w-full bg-[#006065] rounded-full px-4 text-white/60 hover:text-white transition-colors"
           >
-            <Search className="w-[18px] h-[18px] shrink-0" />
-            <div className="w-[1px] h-5 bg-slate-200 dark:bg-slate-700 mx-3 shrink-0" />
-            <span className="text-[14px] font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-slate-400 dark:text-slate-500 group-hover:text-slate-500 dark:group-hover:text-slate-400">
+            <Search className="w-[18px] h-[18px] shrink-0 text-white/60" />
+            <div className="w-[1px] h-5 bg-white/20 mx-3 shrink-0" />
+            <span className="text-[14px] font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis tracking-tight text-white/50 group-hover:text-white/70">
               Search people, docs, tasks…
             </span>
-            <kbd className="text-[10px] font-mono bg-slate-50 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 shrink-0 hidden lg:block tracking-wider font-bold shadow-sm">⌘K</kbd>
+            <kbd className="text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded text-white/50 border border-white/15 shrink-0 hidden lg:block tracking-wider font-bold shadow-sm">⌘K</kbd>
           </button>
         </div>
-        <button onClick={() => setIsOpen(true)} className="md:hidden p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" title="Search">
+        <button onClick={() => setIsOpen(true)} className="md:hidden p-2 text-white/60 hover:text-white transition-colors active:scale-95 rounded-lg hover:bg-white/10" title="Search">
           <Search className="w-5 h-5" />
         </button>
       </>
@@ -599,7 +598,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6 bg-[#006065]/80 backdrop-blur-sm"
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <style>{`
@@ -613,10 +612,10 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
 
         {/* Gradient Search Input Box */}
         <div className="bg-gradient-to-r from-purple-500 via-pink-400 to-amber-500 p-[1.5px] rounded-xl shadow-lg relative z-20">
-          <div className="bg-white dark:bg-slate-900 rounded-[10px] flex items-center px-4 py-3 h-[52px] gap-3">
+          <div className="bg-[#005055] rounded-[10px] flex items-center px-4 py-3 h-[52px] gap-3">
             {isSearching
-              ? <Loader2 className="w-5 h-5 text-slate-400 shrink-0 animate-spin" />
-              : <Search className="w-5 h-5 text-slate-400 shrink-0" />
+              ? <Loader2 className="w-5 h-5 text-white/60 shrink-0 animate-spin" />
+              : <Search className="w-5 h-5 text-white/60 shrink-0" />
             }
             <input
               ref={inputRef}
@@ -624,7 +623,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search people, docs, tasks, meetings… (Enter for AI)"
-              className="flex-1 bg-transparent text-slate-800 dark:text-slate-100 text-[16px] font-medium placeholder:text-slate-400 min-w-0 border-0 outline-none ring-0 shadow-none focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none"
+              className="flex-1 bg-transparent text-white text-[16px] font-medium placeholder:text-white/40 min-w-0 border-0 outline-none ring-0 shadow-none focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none"
               style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
             />
             {/* AI-only trigger hint */}
@@ -632,7 +631,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               <button
                 onClick={() => handleSearch(undefined, false)}
                 title="Press Enter to ask AI"
-                className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/50 px-2 py-1 rounded-lg border border-violet-200 dark:border-violet-700 hover:bg-violet-100 transition-colors"
+                className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#fad503] bg-[#fad503]/10 px-2 py-1 rounded-lg border border-[#fad503]/30 hover:bg-[#fad503]/20 transition-colors"
               >
                 <Sparkles className="w-3 h-3" /> Ask AI
               </button>
@@ -640,21 +639,21 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
             <button
               onClick={() => { setIsOpen(false); navigate(`/search?q=${encodeURIComponent(query)}`); }}
               title="Expand to Full-Page Search Hub"
-              className="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="shrink-0 p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors"
             >
               <ExternalLink className="w-4 h-4" />
             </button>
             {isSynthesizing && (
-              <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/50 px-2 py-1 rounded-lg border border-violet-200 dark:border-violet-700 animate-pulse">
+              <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#fad503] bg-[#fad503]/10 px-2 py-1 rounded-lg border border-[#fad503]/30 animate-pulse">
                 <Sparkles className="w-3 h-3 animate-spin" /> AI thinking…
               </span>
             )}
             {query || isSearching ? (
-              <button onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); setLastQuery(''); setLastAiQuery(''); inputRef.current?.focus(); }} className="text-slate-400 hover:text-slate-600 shrink-0">
+              <button onClick={() => { setQuery(''); setResults([]); setAiAnswer(''); setHasSearched(false); setLastQuery(''); setLastAiQuery(''); inputRef.current?.focus(); }} className="text-white/50 hover:text-white shrink-0">
                 <X className="w-4 h-4" />
               </button>
             ) : (
-              <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600 shrink-0">
+              <button onClick={() => setIsOpen(false)} className="text-white/50 hover:text-white shrink-0">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -662,10 +661,10 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         </div>
 
         {/* Results Panel */}
-        <div className="bg-white dark:bg-background rounded-b-xl shadow-xl border-x border-b border-slate-200 dark:border-slate-800 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
+        <div className="bg-[#006065] rounded-b-xl shadow-xl border-x border-b border-white/10 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
 
           {/* Filters Row + Scope Badge */}
-          <div className="px-6 py-3 border-b border-slate-100 dark:border-slate-800/60 flex items-center gap-3 flex-wrap">
+          <div className="px-6 py-3 border-b border-white/10 flex items-center gap-3 flex-wrap">
             <div className="flex flex-wrap items-center gap-1.5 flex-1">
               {FILTER_TABS.map(tab => (
                 <button
@@ -673,8 +672,8 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                   onClick={() => setSelectedFilter(tab.id)}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                     selectedFilter === tab.id
-                      ? 'bg-primary text-white'
-                      : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
+                      ? 'bg-[#fad503] text-[#006065] font-bold'
+                      : 'bg-white/10 border border-white/15 text-white/70 hover:bg-white/20 hover:text-white'
                   }`}
                 >
                   <tab.icon className="w-3 h-3" />

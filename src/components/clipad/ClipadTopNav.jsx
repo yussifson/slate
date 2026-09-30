@@ -50,19 +50,19 @@ export default function ClipadTopNav({ forceMobile = false }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:shadow-md transition-shadow active:scale-95">
-              <div className="flex items-center h-9 bg-white dark:bg-slate-900 rounded-full px-3 gap-1.5">
-                <Video className="w-4 h-4 text-indigo-500 dark:text-indigo-400 group-hover:scale-110 transition-transform" />
-                <span className="text-[13px] font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">Studio</span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-500 ml-0.5" />
+              <div className="flex items-center h-9 bg-[#006065] rounded-full px-3 gap-1.5">
+                <Video className="w-4 h-4 text-indigo-300 group-hover:scale-110 transition-transform" />
+                <span className="text-[13px] font-bold text-white uppercase tracking-wide">Studio</span>
+                <ChevronDown className="w-3.5 h-3.5 text-white/60 ml-0.5" />
               </div>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48">
-            <DropdownMenuItem onClick={() => navigate('/videos')} className="cursor-pointer font-medium py-2">
-              <Video className="w-4 h-4 mr-2 text-primary" /> Recordings
+          <DropdownMenuContent align="start" className="w-48 bg-[#006065] border-white/10 text-white">
+            <DropdownMenuItem onClick={() => navigate('/videos')} className="cursor-pointer font-medium py-2 text-white hover:bg-white/10 focus:bg-white/10">
+              <Video className="w-4 h-4 mr-2 text-[#fad503]" /> Recordings
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate('/meetings')} className="cursor-pointer font-medium py-2">
-              <Calendar className="w-4 h-4 mr-2 text-blue-500" /> Meetings
+            <DropdownMenuItem onClick={() => navigate('/meetings')} className="cursor-pointer font-medium py-2 text-white hover:bg-white/10 focus:bg-white/10">
+              <Calendar className="w-4 h-4 mr-2 text-[#fad503]" /> Meetings
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -77,9 +77,9 @@ export default function ClipadTopNav({ forceMobile = false }) {
           onClick={() => window.dispatchEvent(new CustomEvent("toggle-clipad-orbit"))}
           className="flex-shrink-0 group relative p-[1.5px] rounded-full bg-gradient-to-r from-blue-500 to-pink-500 hover:shadow-md transition-shadow active:scale-95"
         >
-          <div className="flex items-center h-10 bg-slate-100 dark:bg-slate-900 rounded-full px-4 gap-2">
-            <Sparkles className="w-[18px] h-[18px] text-blue-500 dark:text-blue-400 group-hover:rotate-12 transition-transform" />
-            <span className="text-[14px] font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wide">AI</span>
+          <div className="flex items-center h-10 bg-[#006065] rounded-full px-4 gap-2">
+            <Sparkles className="w-[18px] h-[18px] text-blue-300 group-hover:rotate-12 transition-transform" />
+            <span className="text-[14px] font-bold text-white uppercase tracking-wide">AI</span>
           </div>
         </button>
       </div>
