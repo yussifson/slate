@@ -499,24 +499,24 @@ export default function SpaceDashboard() {
       </Dialog>
 
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-white/80 dark:bg-card/80 backdrop-blur-3xl border-b border-black/5 dark:border-white/5">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-[#006065] text-white border-b border-white/10">
         <div className="flex items-center gap-2 md:gap-3">
-          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/95 dark:bg-[#202c33]/95 backdrop-blur-md border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md text-slate-700 dark:text-foreground transition-all hover:-translate-y-0.5 active:scale-95"><ArrowLeft className="w-5 h-5 md:w-5 md:h-5 text-slate-500" /></button>
+          <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all hover:-translate-y-0.5 active:scale-95"><ArrowLeft className="w-5 h-5 md:w-5 md:h-5 text-white" /></button>
           <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
             {React.createElement(getSpaceIcon(space.name), { className: "w-4 h-4 md:w-4 md:h-4" })}
           </div>
-          <span className="hidden md:block font-semibold text-base md:text-lg text-foreground line-clamp-1">{space.name}</span>
+          <span className="hidden md:block font-semibold text-base md:text-lg text-white line-clamp-1">{space.name}</span>
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2 active:scale-95">
+          <button onClick={() => navigate('/chat')} className="px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 active:scale-95">
             <MessageSquare className="w-4 h-4" /> Chat
           </button>
-          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all flex items-center gap-2 active:scale-95">
+          <button onClick={() => navigate('/record')} className="px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all flex items-center gap-2 active:scale-95">
             <Camera className="w-4 h-4" /> Record
           </button>
           <button
             onClick={handleJoinMeeting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-[#fad503] text-[#006065] shadow-lg shadow-[#fad503]/25 hover:bg-[#fad503]/90'}`}
           >
             {isLive ? <Activity className="w-4 h-4" /> : <Video className="w-4 h-4" />}
             {isLive ? 'Join Live' : 'Start Meeting'}
@@ -525,7 +525,7 @@ export default function SpaceDashboard() {
       </nav>
 
       {/* Space header */}
-      <div className="relative overflow-hidden bg-white dark:bg-card border-b border-black/5 dark:border-white/5 md:border-none md:bg-transparent">
+      <div className="relative overflow-hidden bg-[#006065] text-white border-b border-white/10">
         <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] dark:opacity-[0.08]`} />
         
         {/* Nature Design */}
@@ -543,29 +543,29 @@ export default function SpaceDashboard() {
               {React.createElement(getSpaceIcon(space.name), { className: "w-6 h-6 md:w-7 md:h-7" })}
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl md:text-2xl font-black text-foreground flex items-center gap-2 md:gap-3 leading-tight">
+              <h1 className="text-xl md:text-2xl font-black text-white flex items-center gap-2 md:gap-3 leading-tight">
                 <span className="truncate">{space.name}</span>
-                {space.is_private && <Lock className="w-4 h-4 md:w-5 md:h-5 text-slate-400 shrink-0" />}
+                {space.is_private && <Lock className="w-4 h-4 md:w-5 md:h-5 text-white/50 shrink-0" />}
                 {canEdit && (
                   <div className="flex items-center gap-1 md:gap-2 ml-auto md:ml-2 opacity-80 md:opacity-50 hover:opacity-100 transition-opacity">
-                    <button onClick={() => setShowEdit(true)} className="p-1.5 md:p-2 bg-slate-100 dark:bg-secondary md:bg-transparent hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg md:rounded-xl text-slate-600 dark:text-slate-300 md:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors active:scale-95" title="Edit Space">
+                    <button onClick={() => setShowEdit(true)} className="p-1.5 md:p-2 bg-white/10 hover:bg-white/20 rounded-lg md:rounded-xl text-white transition-colors active:scale-95" title="Edit Space">
                       <Edit3 className="w-4 h-4" />
                     </button>
-                    <button onClick={handleDeleteSpace} className="p-1.5 md:p-2 bg-rose-50 dark:bg-rose-500/10 md:bg-transparent hover:bg-rose-100 dark:hover:bg-rose-500/20 rounded-lg md:rounded-xl text-rose-500 md:text-slate-500 md:hover:text-rose-500 transition-colors active:scale-95" title="Delete Space">
+                    <button onClick={handleDeleteSpace} className="p-1.5 md:p-2 bg-rose-500/20 hover:bg-rose-500/30 rounded-lg md:rounded-xl text-rose-300 transition-colors active:scale-95" title="Delete Space">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 )}
               </h1>
-              <p className="text-sm md:text-base text-muted-foreground mt-1 md:mt-1.5 leading-snug line-clamp-2 md:line-clamp-none">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
+              <p className="text-sm md:text-base text-white/70 mt-1 md:mt-1.5 leading-snug line-clamp-2 md:line-clamp-none">{space.description || 'A shared space for meetings, videos, and collaboration.'}</p>
               
               {/* Native Pill Stats */}
               <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-4 text-xs font-medium">
-                <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><Calendar className="w-3.5 h-3.5 text-indigo-500" /> {meetings.length} meetings</span>
-                <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><Camera className="w-3.5 h-3.5 text-emerald-500" /> {videos.length} videos</span>
-                <span className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-slate-600 dark:text-slate-300"><CheckCircle className="w-3.5 h-3.5 text-amber-500" /> {openTasks.length} tasks</span>
+                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Calendar className="w-3.5 h-3.5 text-[#fad503]" /> {meetings.length} meetings</span>
+                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Camera className="w-3.5 h-3.5 text-emerald-300" /> {videos.length} videos</span>
+                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><CheckCircle className="w-3.5 h-3.5 text-amber-300" /> {openTasks.length} tasks</span>
                 {(isAdmin(user) || isSpacemanHere) && (
-                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-primary hover:bg-primary/20 transition-colors active:scale-95">
+                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-[#fad503]/20 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-[#fad503] font-bold hover:bg-[#fad503]/30 transition-colors active:scale-95">
                     <Users className="w-3.5 h-3.5" /> Manage Members
                   </button>
                 )}
@@ -575,15 +575,15 @@ export default function SpaceDashboard() {
           
           {/* Mobile Quick Actions Row */}
           <div className="hidden items-center gap-2 mt-5">
-            <button onClick={() => navigate('/chat')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-secondary rounded-2xl hover:bg-secondary/80 transition-colors active:scale-95">
-              <MessageSquare className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">Chat</span>
+            <button onClick={() => navigate('/chat')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-white/10 rounded-2xl hover:bg-white/20 transition-colors active:scale-95">
+              <MessageSquare className="w-5 h-5 text-white" />
+              <span className="text-[11px] font-semibold text-white">Chat</span>
             </button>
-            <button onClick={() => navigate('/record')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-secondary rounded-2xl hover:bg-secondary/80 transition-colors active:scale-95">
-              <Camera className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">Record</span>
+            <button onClick={() => navigate('/record')} className="flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 bg-white/10 rounded-2xl hover:bg-white/20 transition-colors active:scale-95">
+              <Camera className="w-5 h-5 text-white" />
+              <span className="text-[11px] font-semibold text-white">Record</span>
             </button>
-            <button onClick={handleJoinMeeting} className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-2xl transition-colors active:scale-95 ${isLive ? 'bg-rose-500 text-white animate-pulse' : 'bg-primary text-primary-foreground'}`}>
+            <button onClick={handleJoinMeeting} className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-2xl transition-colors active:scale-95 ${isLive ? 'bg-rose-500 text-white animate-pulse' : 'bg-[#fad503] text-[#006065]'}`}>
               {isLive ? <Activity className="w-5 h-5" /> : <Video className="w-5 h-5" />}
               <span className="text-[11px] font-bold">{isLive ? 'Live' : 'Meeting'}</span>
             </button>
@@ -592,7 +592,7 @@ export default function SpaceDashboard() {
       </div>
 
       {/* Tab bar (Native Segmented Style) */}
-      <div className="border-b border-black/5 dark:border-white/5 bg-white/50 dark:bg-card/50 backdrop-blur-md sticky top-[56px] md:top-16 z-30">
+      <div className="border-b border-white/10 bg-[#006065]/90 backdrop-blur-md sticky top-[56px] md:top-16 z-30">
         <div className="overflow-x-auto no-scrollbar scrollbar-hide py-2 px-4 md:px-10">
           <div className="flex gap-1.5 min-w-max">
             {TABS.filter(t => {
@@ -605,7 +605,7 @@ export default function SpaceDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-primary text-primary-foreground shadow-md' : 'bg-slate-100 dark:bg-secondary/70 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-secondary'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#fad503] text-[#006065] font-bold shadow-md' : 'bg-white/10 text-white/80 hover:bg-white/20 hover:text-white'}`}
                 >
                   <Icon className="w-3.5 h-3.5" />{tab.label}
                 </button>

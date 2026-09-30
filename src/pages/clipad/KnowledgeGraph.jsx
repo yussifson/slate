@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
@@ -70,37 +70,34 @@ function KnowledgeNode({ data, selected }) {
 
   return (
     <div
-      className={`relative rounded-2xl border-2 transition-all cursor-pointer`}
+      className="relative rounded-2xl border-2 transition-all cursor-pointer bg-[#006065] text-white shadow-md p-3"
       style={{
-        background: `${color}18`,
-        borderColor: selected ? color : `${color}60`,
-        boxShadow: selected ? `0 0 0 3px ${color}40, 0 4px 24px ${color}30` : `0 2px 8px ${color}20`,
+        borderColor: selected ? '#fad503' : color,
+        boxShadow: selected ? '0 0 0 3px #fad503, 0 4px 24px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.15)',
         minWidth: 160,
         maxWidth: 200,
       }}
     >
       <Handle type="target" position={Position.Top} style={{ background: color, border: 'none', width: 8, height: 8 }} />
-      <div className="p-3">
+      <div>
         <div className="flex items-center gap-2 mb-2">
           <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0"
-            style={{ background: `${color}25` }}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-sm shrink-0 bg-white/10 text-white"
           >
-            {intg?.icon || 'ðŸ“„'}
+            {intg?.icon || '📄'}
           </div>
           <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color }}>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#fad503]">
               {data.provider?.replace('_', ' ')}
             </div>
           </div>
         </div>
-        <p className="text-xs font-semibold text-gray-800 dark:text-gray-200 line-clamp-2 leading-tight">
+        <p className="text-xs font-bold text-white line-clamp-2 leading-tight">
           {data.title || 'Untitled'}
         </p>
         {data.content_type && (
           <span
-            className="inline-block mt-1.5 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md"
-            style={{ background: `${color}20`, color }}
+            className="inline-block mt-1.5 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-white/15 text-white/90"
           >
             {data.content_type}
           </span>
@@ -278,45 +275,45 @@ export default function KnowledgeGraph() {
   });
 
   return (
-    <div className="flex flex-col h-full min-h-screen bg-background text-foreground font-sans page-enter">
+    <div className="flex flex-col h-full min-h-screen bg-[#00beac] text-white font-sans page-enter">
       {/* Header */}
-      <div className="relative border-b border-border bg-gradient-to-r from-violet-500/5 via-background to-indigo-500/5 px-6 py-6 shrink-0">
+      <div className="relative border-b border-white/10 bg-[#006065] px-6 py-6 shrink-0">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors shrink-0">
-              <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+            <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
+              <ArrowLeft className="w-4 h-4 text-white" />
             </button>
-            <div className="w-10 h-10 rounded-2xl bg-violet-500/10 flex items-center justify-center">
-              <Network className="w-5 h-5 text-violet-500" />
+            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
+              <Network className="w-5 h-5 text-[#fad503]" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Knowledge Graph</h1>
-              <p className="text-xs text-muted-foreground">AI-detected relationships across all your connected systems</p>
+              <h1 className="text-xl font-bold text-white">Knowledge Graph</h1>
+              <p className="text-xs text-white/70">AI-detected relationships across all your connected systems</p>
             </div>
           </div>
 
           {/* Stats */}
           <div className="flex items-center gap-6">
             {[
-              { label: 'Nodes', value: stats.nodes, color: 'text-violet-500' },
-              { label: 'Relationships', value: stats.edges, color: 'text-indigo-500' },
-              { label: 'Sources', value: stats.providers, color: 'text-blue-500' },
+              { label: 'Nodes', value: stats.nodes },
+              { label: 'Relationships', value: stats.edges },
+              { label: 'Sources', value: stats.providers },
             ].map(s => (
               <div key={s.label} className="text-center">
-                <div className={`text-xl font-black ${s.color}`}>{s.value}</div>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
+                <div className="text-xl font-black text-[#fad503]">{s.value}</div>
+                <div className="text-xs text-white/70">{s.label}</div>
               </div>
             ))}
             <button
               onClick={loadGraph}
-              className="flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-xl text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-sm font-medium transition-colors border border-white/15"
             >
               <RefreshCw className="w-4 h-4" />
               Refresh
             </button>
             <button
               onClick={generateAIInsights}
-              className="flex items-center gap-2 px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 text-violet-600 dark:text-violet-400 rounded-xl text-sm font-medium transition-colors border border-violet-500/20"
+              className="flex items-center gap-2 px-4 py-2 bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] rounded-xl text-sm font-bold transition-all shadow-md"
             >
               <Sparkles className="w-4 h-4" />
               AI Insights

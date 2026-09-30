@@ -542,7 +542,7 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className={`bg-white dark:bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`bg-[#00beac] text-white font-sans selection:bg-[#fad503]/20 selection:text-[#fad503] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (
@@ -776,23 +776,23 @@ export default function SearchHub() {
                                     <CliPadLogo size={18} className="text-primary" />
                                   </div>
                                   <div className="flex-1 space-y-2">
-                                    <div className="text-[14px] leading-relaxed text-slate-800 dark:text-slate-200">
-                                      <div className="prose prose-sm dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-slate-900 prose-pre:text-slate-100 text-[14px]">
+                                    <div className="text-[15px] leading-relaxed text-white">
+                                      <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-p:text-white prose-headings:text-white prose-strong:text-white text-[15px] text-white">
                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                                       </div>
                                     </div>
                                     {/* Action Row for AI Message (Like/Dislike, Speak, Copy) */}
-                                    <div className="flex items-center gap-2.5 text-slate-400 select-none pt-1">
+                                    <div className="flex items-center gap-2.5 text-white/60 select-none pt-1">
                                       <button 
                                         onClick={() => handleCopy(msg.content, i)} 
-                                        className="p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all"
+                                        className="p-1 hover:text-white hover:bg-white/10 rounded transition-all"
                                         title="Copy response"
                                       >
-                                        {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                        {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-[#fad503]" /> : <Copy className="w-3.5 h-3.5" />}
                                       </button>
                                       <button 
                                         onClick={() => handleSpeak(msg.content, i)} 
-                                        className={`p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all ${isSpeakingMsgIndex === i ? 'text-emerald-500' : ''}`}
+                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${isSpeakingMsgIndex === i ? 'text-[#fad503]' : ''}`}
                                         title={isSpeakingMsgIndex === i ? "Stop speaking" : "Speak response"}
                                       >
                                         {isSpeakingMsgIndex === i ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -802,7 +802,7 @@ export default function SearchHub() {
                                           setVotedMsgState(prev => ({ ...prev, [i]: prev[i] === 'up' ? null : 'up' }));
                                           toast({ title: 'Feedback received', description: 'Thank you for helping train Orbit AI!' });
                                         }} 
-                                        className={`p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all ${votedMsgState[i] === 'up' ? 'text-emerald-500' : ''}`}
+                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${votedMsgState[i] === 'up' ? 'text-[#fad503]' : ''}`}
                                         title="Good response"
                                       >
                                         <ThumbsUp className="w-3.5 h-3.5" />
@@ -812,7 +812,7 @@ export default function SearchHub() {
                                           setVotedMsgState(prev => ({ ...prev, [i]: prev[i] === 'down' ? null : 'down' }));
                                           toast({ title: 'Feedback received', description: 'Thank you for helping train Orbit AI!' });
                                         }} 
-                                        className={`p-1 hover:text-slate-650 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded transition-all ${votedMsgState[i] === 'down' ? 'text-rose-500' : ''}`}
+                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${votedMsgState[i] === 'down' ? 'text-rose-300' : ''}`}
                                         title="Bad response"
                                       >
                                         <ThumbsDown className="w-3.5 h-3.5" />
@@ -826,13 +826,13 @@ export default function SearchHub() {
                           {/* Bouncing dots thinking indicator */}
                           {isSynthesizing && chatHistory[chatHistory.length - 1]?.role === 'user' && (
                             <div className="flex items-start gap-4 justify-start w-full mb-6 animate-in fade-in duration-200">
-                              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 mt-0.5">
-                                <CliPadLogo size={18} className="text-primary animate-pulse" />
+                              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 border border-white/20 mt-0.5">
+                                <CliPadLogo size={18} className="text-white animate-pulse" />
                               </div>
                               <div className="flex items-center gap-1.5 py-3">
-                                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                                <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                                <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+                                <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                                <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '300ms' }} />
                               </div>
                             </div>
                           )}
@@ -844,8 +844,8 @@ export default function SearchHub() {
 
                   {/* Floating ChatGPT-like Input Form at bottom */}
                   <div className="p-4 bg-transparent shrink-0">
-                    <div className="max-w-[680px] mx-auto w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-[1.5px] rounded-2xl shadow-sm">
-                      <form onSubmit={handleFollowUp} className="relative flex items-center bg-slate-50 dark:bg-[#111622] rounded-[15px] px-3.5 py-2 transition-all">
+                    <div className="max-w-[680px] mx-auto w-full border border-white/20 rounded-2xl shadow-lg bg-[#006065]">
+                      <form onSubmit={handleFollowUp} className="relative flex items-center bg-[#006065] rounded-[15px] px-3.5 py-2 transition-all">
                         
                         <input
                           value={followUpInput}
