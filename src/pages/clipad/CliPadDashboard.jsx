@@ -375,6 +375,19 @@ export default function CliPadDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8">
 
+        {/* Personalized Greeting */}
+        <div className="mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">
+            {greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">{getGreetingEmoji()}</span>
+          </h1>
+          <p className="text-base text-white/80 font-medium">Here's what's happening across your spaces.</p>
+        </div>
+
+        {/* Enterprise Knowledge Graph Card */}
+        <div className="mb-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
+          <InstitutionalMemoryVault workspaceId={user?.company_id || user?.user_metadata?.company_id} />
+        </div>
+
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
           <StatCard icon={Calendar} accentColor="bg-indigo-500" bgColor="bg-indigo-50 dark:bg-indigo-500/10" iconColor="text-indigo-500" value={stats.meetings} label="Meetings" trend={12} />

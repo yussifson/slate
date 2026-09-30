@@ -183,21 +183,21 @@ ${knowledgeContext}`
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-primary/30 shadow-sm bg-gradient-to-br from-slate-50 to-primary/5 dark:from-slate-900 dark:to-primary/10 p-6 md:p-8">
-      <div className="absolute top-0 right-0 p-4 md:p-8 opacity-5 dark:opacity-10 pointer-events-none">
-        <Database className="w-40 h-40 text-primary dark:text-primary" />
+    <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-md bg-[#006065] text-white p-6 md:p-8">
+      <div className="absolute top-0 right-0 p-4 md:p-8 opacity-10 pointer-events-none">
+        <Database className="w-40 h-40 text-white" />
       </div>
       
       <div className="relative z-10 max-w-2xl">
         <div className="flex items-center gap-2 mb-3">
-          <Lock className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">Admin Workspace</span>
+          <Lock className="w-4 h-4 text-[#fad503]" />
+          <span className="text-xs font-bold text-[#fad503] uppercase tracking-widest">Admin Workspace</span>
         </div>
         
-        <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-2 mb-3 tracking-tight">
+        <h2 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2 mb-3 tracking-tight">
           Enterprise Knowledge Graph
         </h2>
-        <p className="text-sm md:text-base text-slate-600 dark:text-foreground mb-8 leading-relaxed">
+        <p className="text-sm md:text-base text-white/80 mb-8 leading-relaxed">
           Unlock your organization's collective intelligence. Query the entire historical context of decisions, past blockers, and team signals to instantly find answers.
         </p>
 
@@ -207,19 +207,19 @@ ${knowledgeContext}`
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g., 'Why did we decide to use this approach?' or 'What blockers did we resolve last month?'"
-            className="w-full bg-white dark:bg-card/80 border border-slate-200 dark:border-border text-slate-900 dark:text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm md:text-base transition-all"
+            className="w-full bg-white/10 border border-white/20 text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-[#fad503] focus:ring-2 focus:ring-[#fad503]/20 placeholder:text-white/50 text-sm md:text-base transition-all"
           />
           <button 
             type="submit"
             disabled={loading || !query.trim()}
-            className="absolute right-2 top-2 bottom-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-4 flex items-center justify-center transition-colors disabled:opacity-50"
+            className="absolute right-2 top-2 bottom-2 bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold rounded-lg px-4 flex items-center justify-center transition-colors disabled:opacity-50 shadow-md"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-5 h-5" />}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin text-[#006065]" /> : <ArrowRight className="w-5 h-5 text-[#006065]" />}
           </button>
         </form>
 
         {error && (
-          <div className="mt-4 flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3">
+          <div className="mt-4 flex items-center gap-2 text-rose-300 text-sm bg-rose-500/20 border border-rose-500/30 rounded-lg px-4 py-3">
             <AlertCircle className="w-4 h-4 shrink-0" />
             {error}
           </div>
@@ -227,8 +227,8 @@ ${knowledgeContext}`
 
         {!response && !loading && (
           <div className="mt-8 animate-in fade-in slide-in-from-bottom-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" /> Trending Knowledge Nodes
+            <h3 className="text-xs font-bold uppercase tracking-wider text-white/70 mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#fad503]" /> Trending Knowledge Nodes
             </h3>
             <div className="flex flex-wrap gap-2">
               {['Project Roadmap', 'Q3 Planning', 'Design System Updates', 'Recent Blockers'].map((topic) => (
@@ -237,7 +237,7 @@ ${knowledgeContext}`
                   onClick={() => {
                     setQuery(`What is the latest context on ${topic}?`);
                   }}
-                  className="px-3 py-1.5 text-xs font-medium bg-white dark:bg-card border border-slate-200 dark:border-border rounded-full hover:border-primary hover:text-primary transition-colors text-slate-600 dark:text-slate-300 shadow-sm"
+                  className="px-3.5 py-1.5 text-xs font-semibold bg-white/10 border border-white/15 rounded-full hover:bg-white/20 hover:text-white transition-colors text-white shadow-sm"
                 >
                   {topic}
                 </button>
@@ -247,7 +247,7 @@ ${knowledgeContext}`
         )}
 
         {response && (
-          <div className="mt-6 bg-white dark:bg-card border border-slate-200 dark:border-border rounded-xl p-5 md:p-6 flex gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
+          <div className="mt-6 bg-white/10 border border-white/15 rounded-xl p-5 md:p-6 flex gap-4 animate-in fade-in slide-in-from-bottom-2 shadow-sm text-white">
             <div className="mt-0.5 shrink-0">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                 <Bot className="w-4 h-4" />
