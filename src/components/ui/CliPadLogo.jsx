@@ -1,6 +1,6 @@
 import React, { useId } from 'react';
 
-export function CliPadLogo({ className = "", size = 24, color = "#00a851", dotColor = "#ef4444" }) {
+export function CliPadLogo({ className = "", size = 24, color = "#00beac", dotColor = "#fad503" }) {
   const gradientId = useId().replace(/:/g, '');
   const gradRef = `url(#clipad-grad-${gradientId})`;
 

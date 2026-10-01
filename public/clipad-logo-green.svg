@@ -1,8 +1,8 @@
 <svg width="256" height="256" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="clipad-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00a851" stop-opacity="1" />
-      <stop offset="100%" stop-color="#00a851" stop-opacity="0.7" />
+      <stop offset="0%" stop-color="#00beac" stop-opacity="1" />
+      <stop offset="100%" stop-color="#00beac" stop-opacity="0.7" />
     </linearGradient>
   </defs>
   
@@ -17,5 +17,5 @@
     d="M12 10 L22 16 L12 22 Z" 
     fill="url(#clipad-grad)" 
   />
-  <circle cx="26" cy="6" r="3" fill="#ef4444" />
+  <circle cx="26" cy="6" r="3" fill="#fad503" />
 </svg>

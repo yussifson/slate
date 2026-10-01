@@ -54,6 +54,7 @@ function SectionCard({ icon: Icon, iconColor, title, badge, defaultOpen = true, 
 
 import RichVideoPlayer from '@/components/video/RichVideoPlayer';
 import VideoDownloadModal from '@/components/clipad/VideoDownloadModal';
+import SmartMomentTimeline from '@/components/clipad/features/SmartMomentTimeline';
 
 function ActionItemRow({ item, onUpdate }) {
   const [done, setDone] = useState(item.is_complete);
@@ -612,6 +613,21 @@ export default function MeetingRecord() {
             </div>
           </SectionCard>
         ) : null}
+        </div>
+
+        {/* Phase 3 Smart Moments Timeline */}
+        <div className="px-4 sm:px-0 mt-6">
+          <SectionCard icon={Zap} iconColor="from-cyan-500 to-teal-500" title="Smart Moments Intelligence" defaultOpen>
+            <SmartMomentTimeline
+              companyId={meeting.company_id}
+              meetingId={meeting.id}
+              transcript={transcript}
+              title={meeting.title}
+              onJumpToTimestamp={(ts) => {
+                toast({ title: `Jumping to timestamp ${ts}` });
+              }}
+            />
+          </SectionCard>
         </div>
 
         

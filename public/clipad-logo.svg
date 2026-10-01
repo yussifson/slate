@@ -7,8 +7,8 @@
 >
   <defs>
     <linearGradient id="clipad-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4f46e5" stop-opacity="1" />
-      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.7" />
+      <stop offset="0%" stop-color="#00beac" stop-opacity="1" />
+      <stop offset="100%" stop-color="#00beac" stop-opacity="0.7" />
     </linearGradient>
   </defs>
   
@@ -25,5 +25,5 @@
     fill="url(#clipad-grad)" 
   />
   
-  <circle cx="26" cy="6" r="3" fill="#ef4444" />
+  <circle cx="26" cy="6" r="3" fill="#fad503" />
 </svg>
