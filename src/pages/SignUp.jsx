@@ -5,10 +5,13 @@ import { powerSync } from "@/api/PowerSyncConnector";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
+import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { useAuth} from '@/lib/AuthContext';
+import IndustryFeatureShowcase from '@/components/shared/IndustryFeatureShowcase';
 import { fetchCompanyBrandingFromDomain } from '@/lib/companyDomainResolver';
 
 export default function SignUp() {
@@ -307,277 +310,244 @@ export default function SignUp() {
 };
 
   return (
-    <div className="h-[100dvh] w-full bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans text-slate-900 shadow-none">
-      
-      {/* Left 50% Panel: Form */}
-      <div className="w-full md:w-1/2 bg-white flex flex-col justify-between p-6 md:p-12 overflow-y-auto shadow-none border-r border-slate-100">
-        <div className="max-w-md w-full mx-auto my-auto py-4">
-          {/* Logo & Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Logo className="w-8 h-8 text-[#00beac]" />
-              <span className="font-extrabold text-xl tracking-tight text-[#00beac]">
-                Clipad
-              </span>
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#00beac] bg-[#006065]/10 px-3 py-1 rounded-full">
-              Get Started
-            </span>
-          </div>
+  <div className="h-[100dvh] w-full overflow-y-auto bg-white">
+  <div className="min-h-full flex flex-col lg:flex-row bg-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ {/* Left Side: Form */}
+ <div className="flex-1 flex flex-col pt-12 lg:pt-20 px-8 lg:px-16 pb-12">
+ <div className="max-w-lg w-full mx-auto">
+ <div className="flex flex-col mb-8">
+ <Logo className="w-10 h-10" />
+ <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
+ </div>
+ 
+  <div className="mb-8">
+  <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">
+    {isAuthenticated ? t("complete_workslate_setup", "Complete your Workslate setup") : t("create_an_account", "Create your account")}
+  </h1>
+  <p className="text-xs text-slate-500 font-medium mt-1 tracking-[0.04em]">
+    {isAuthenticated 
+      ? t("just_a_few_more_details", "Just a few more details to get your workspace ready.")
+      : t("create_an_account_to_start_man", "Create an account to start managing your business")
+    }
+  </p>
+  </div>
+ 
+  {!isAuthenticated && (
+  <div className="flex flex-col gap-3 mb-6">
+    <button
+      onClick={handleOptavelSSO}
+      type="button"
+      className="flex items-center justify-center gap-2 h-12 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-base font-semibold transition-colors shadow-sm"
+    >
+      <Logo hideText={true} className="w-5 h-5 text-primary" />
+      Continue with Optavel
+    </button>
+    <div className="h-12 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors shadow-sm">
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => setError("Google login failed")}
+          shape="rectangular"
+          size="large"
+          theme="outline"
+          text="signup_with"
+          width="360"
+        />
+      </GoogleOAuthProvider>
+    </div>
+    {/*
+    <button 
+      onClick={handleAppleSignIn}
+      type="button"
+      className="flex items-center justify-center gap-2 h-12 w-full bg-black hover:bg-gray-900 text-white rounded-xl text-base font-medium transition-colors shadow-sm"
+    >
+      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16.365 21.43c-1.39.95-2.81 1.05-4.14.04-1.36-.97-2.73-1.01-4.22.04-1.63 1.1-3.23.95-4.62-.54-1.22-1.29-2.3-3.26-3.08-5.72-.81-2.58-.87-5.01-.22-7.14.65-2.12 1.83-3.79 3.5-4.8 1.48-.89 3.09-1.04 4.54-.53 1.43.49 2.53 1.05 3.73 1.05 1.14 0 2.45-.63 4.12-1.18 1.87-.61 3.66-.45 5.15.54 1.17.76 2.05 1.83 2.55 3.04-1.6.93-2.45 2.37-2.37 4.18.09 1.94 1.17 3.44 2.89 4.25-1.1 2.3-2.5 4.39-4.22 6.01l-.23.23c-1.21 1.15-2.31 1.6-3.38.53z" />
+      </svg>
+      Continue with Apple
+    </button>
+    */}
+  </div>
+  )}
 
-          {/* Welcome Heading */}
-          <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight mb-2">
-              {isAuthenticated ? t("complete_workslate_setup", "Complete your Workslate setup") : t("create_an_account", "Create your account")}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium">
-              {isAuthenticated 
-                ? t("just_a_few_more_details", "Just a few more details to get your workspace ready.")
-                : t("create_an_account_to_start_man", "Create an account to start managing your business")
-              }
-            </p>
-          </div>
+  {!isAuthenticated && (
+    <div className="relative mb-6">
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full border-t border-slate-200 dark:border-border"></div>
+      </div>
+      <div className="relative flex justify-center text-xs uppercase">
+        <span className="bg-white dark:bg-card px-2 text-slate-500 font-semibold tracking-wider">Or register with email</span>
+      </div>
+    </div>
+  )}
 
-          {!isAuthenticated && (
-            <>
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <button
-                  onClick={handleOptavelSSO}
-                  type="button"
-                  className="flex items-center justify-center gap-2 h-11 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
-                >
-                  <Logo hideText={true} className="w-4 h-4 text-[#00beac]" />
-                  Optavel SSO
-                </button>
-                <div className="h-11 flex justify-center items-center w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors">
-                  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}>
-                    <GoogleLogin
-                      onSuccess={handleGoogleSuccess}
-                      onError={() => setError("Google login failed")}
-                      shape="rectangular"
-                      size="medium"
-                      theme="outline"
-                      text="signup_with"
-                      width="200"
-                    />
-                  </GoogleOAuthProvider>
-                </div>
-              </div>
+  <form className="space-y-4" onSubmit={handleSignUp}>
+  {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border-[0.5px] border-black/9 dark:border-white/8 border-red-100 font-medium tracking-[0.04em]">{error}</div>}
+  {success && <div className="rounded-xl bg-emerald-50 p-3 text-xs text-emerald-600 border-[0.5px] border-emerald-100 font-medium tracking-[0.04em]">{success}</div>}
+ 
+  {!isAuthenticated && (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+          {t("full_name", "Full Name")}
+        </label>
+        <Input
+          type="text"
+          required
+          placeholder="Jane Doe"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
+      </div>
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+          {t("email", "Email")}
+        </label>
+        <Input
+          type="email"
+          required
+          placeholder="name@company.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+            {t("password", "Password")}
+          </label>
+          <Input
+            type="password"
+            required
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+        </div>
+        <div>
+          <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">
+            {t("confirm_password", "Confirm Password")}
+          </label>
+          <Input
+            type="password"
+            required
+            placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+        </div>
+      </div>
+    </div>
+  )}
 
-              <div className="relative mb-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200"></div>
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider text-[10px]">Or register with email</span>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Form */}
-          <form className="space-y-3.5" onSubmit={handleSignUp}>
-            {error && <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-200 font-medium">{error}</div>}
-            {success && <div className="rounded-xl bg-emerald-50 p-3 text-xs text-emerald-700 border border-emerald-200 font-medium">{success}</div>}
-
-            {!isAuthenticated && (
-              <>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      {t("full_name", "Full Name")}
-                    </label>
-                    <Input
-                      type="text"
-                      required
-                      placeholder="Jane Doe"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="w-full h-10 text-xs bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      {t("email", "Email")}
-                    </label>
-                    <Input
-                      type="email"
-                      required
-                      placeholder="name@company.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full h-10 text-xs bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      {t("password", "Password")}
-                    </label>
-                    <Input
-                      type="password"
-                      required
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full h-10 text-xs bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      {t("confirm_password", "Confirm Password")}
-                    </label>
-                    <Input
-                      type="password"
-                      required
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full h-10 text-xs bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div className="pt-2 border-t border-slate-100">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">{t("company_name", "Company Name")}</label>
-                  <Input
-                    type="text"
-                    required
-                    placeholder="Acme Corp"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    className="w-full h-10 text-xs bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">{t("subdomain", "Workspace Web Address")}</label>
-                  <div className="relative flex items-center">
-                    <Input
-                      type="text"
-                      required
-                      placeholder="acme"
-                      value={subdomain}
-                      onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      className="w-full h-10 text-xs bg-slate-50 border-slate-200 text-slate-900 pr-24 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
-                    />
-                    <div className="absolute right-2 text-xs font-semibold text-slate-400 pointer-events-none">
-                      .optavel.com
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full h-11 mt-2 bg-[#00beac] hover:bg-[#00a898] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              {loading ? (
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                t("create_workspace", "Create Workslate")
-              )}
-            </button>
-          </form>
-
-          <div className="text-center pt-6 mt-6 border-t border-slate-100">
-            <span className="text-xs text-slate-500 font-medium">{t("already_have_an_account", "Already have an account?")} </span>
-            {isElectron ? (
-              <Button variant="link" onClick={() => navigate('/login')} className="text-xs font-bold text-[#00beac] p-0 h-auto hover:underline">
-                {t("sign_in", "Sign In")}
-              </Button>
-            ) : (
-              <a href="/login" className="text-xs font-bold text-[#00beac] hover:underline">
-                {t("sign_in", "Sign In")}
-              </a>
-            )}
+  <div className="pt-2 border-t border-slate-100">
+    <div className="mb-4">
+      <h3 className="text-sm font-semibold text-slate-800">{t("workslate_details", "Workslate Details")}</h3>
+      <p className="text-xs text-slate-500">{t("workslate_details_desc", "This will be the dedicated workspace for your team.")}</p>
+    </div>
+    
+    <div className="space-y-4">
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("company_name", "Company Name")}</label>
+        <Input
+          type="text"
+          required
+          placeholder="Acme Corp"
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+          className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
+      </div>
+      <div>
+        <label className="block text-[11px] font-semibold text-slate-500 uppercase tracking-widest mb-1.5 tracking-[0.04em]">{t("subdomain", "Workspace Web Address")}</label>
+        <div className="relative flex items-center">
+          <Input
+            type="text"
+            required
+            placeholder="acme"
+            value={subdomain}
+            onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+            className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 pr-32 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+          />
+          <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
+            .optavel.com
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      {/* Right 50% Panel: Geometric Artwork */}
-      <div className="hidden md:flex md:w-1/2 bg-[#0b0f19] relative overflow-hidden flex-col justify-between p-10 select-none">
-        {/* Ambient Glows */}
-        <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] bg-[#00beac]/15 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-[#6366f1]/20 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute top-[40%] right-[10%] w-[320px] h-[320px] bg-[#a855f7]/15 rounded-full blur-[100px] pointer-events-none" />
+  <Button type="submit" className="w-full h-12 text-base font-medium transition-all active:scale-[0.98]" disabled={loading}>
+    {loading ? t("creating_account", "Creating account...") : t("create_workspace", "Create Workslate")}
+  </Button>
+  </form>
 
-        {/* Header */}
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-sm">
-            <div className="w-2 h-2 rounded-full bg-[#00beac] animate-pulse" />
-            <span className="text-xs font-bold text-white tracking-wide uppercase">Instant Provisioning</span>
+  <div className="text-center mt-10">
+    <span className="text-sm text-slate-500 font-medium tracking-[0.04em]">{t("already_have_an_account", "Already have an account?")} </span>
+    {isElectron ? (
+      <Button variant="link" onClick={() => navigate('/login')} className="text-sm font-semibold text-primary p-0 h-auto hover:underline tracking-[0.04em]">
+        {t("sign_in", "Sign In")}
+      </Button>
+    ) : (
+      <a href="/login" className="text-sm font-semibold text-primary hover:underline tracking-[0.04em]">
+        {t("sign_in", "Sign In")}
+      </a>
+    )}
+  </div>
+ </div>
+ </div>
+ 
+  {/* Right Side: Marketing Visual */}
+  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#0B132B] border-l border-[#1E293B] overflow-hidden p-8 lg:p-14">
+    {/* Ambient micro geometry */}
+    <div className="absolute inset-0 bg-[radial-gradient(#1E293B_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
+
+    {(currentSubdomain || companyBranding?.name) ? (
+      <IndustryFeatureShowcase companyName={companyBranding?.name} industryType={companyBranding?.industry_type} />
+    ) : (
+      <div className="relative z-10 w-full max-w-xl bg-[#1E293B]/90 backdrop-blur-2xl rounded-3xl border border-[#334155] p-8 lg:p-10 flex flex-col justify-between text-slate-100 overflow-hidden">
+        <div>
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-[#0F172A] border border-emerald-500/30 text-xs font-semibold text-emerald-400 mb-6">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="tracking-wide text-[11px] font-bold text-emerald-300">Instant Workspace Provisioning</span>
           </div>
-        </div>
 
-        {/* Center Geometric SVG Artwork */}
-        <div className="relative z-10 my-auto flex flex-col items-center justify-center py-4">
-          <svg width="280" height="280" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
-            <rect x="60" y="60" width="200" height="200" rx="36" transform="rotate(15 160 160)" fill="url(#geo-grad1)" opacity="0.8" />
-            <rect x="60" y="60" width="200" height="200" rx="36" transform="rotate(-30 160 160)" fill="url(#geo-grad2)" opacity="0.65" />
-            <circle cx="160" cy="160" r="70" fill="url(#geo-grad3)" opacity="0.9" />
-            
-            <polygon points="160,50 200,80 160,110 120,80" fill="#00beac" opacity="0.95" />
-            <polygon points="160,110 200,80 200,130 160,160" fill="#006065" opacity="0.9" />
-            <polygon points="160,110 120,80 120,130 160,160" fill="#004d52" opacity="0.9" />
-
-            <polygon points="260,170 290,190 260,210 230,190" fill="#fad503" opacity="0.85" />
-            <polygon points="60,220 85,235 60,250 35,235" fill="#a855f7" opacity="0.85" />
-
-            <line x1="160" y1="80" x2="260" y2="190" stroke="#00beac" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" />
-            <line x1="160" y1="160" x2="60" y2="235" stroke="#a855f7" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" />
-            <circle cx="260" cy="190" r="4" fill="#fad503" />
-            <circle cx="60" cy="235" r="4" fill="#a855f7" />
-
-            <defs>
-              <linearGradient id="geo-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#006065" />
-                <stop offset="100%" stopColor="#6366f1" />
-              </linearGradient>
-              <linearGradient id="geo-grad2" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#00beac" />
-                <stop offset="100%" stopColor="#a855f7" />
-              </linearGradient>
-              <linearGradient id="geo-grad3" x1="0%" y1="50%" x2="100%" y2="50%">
-                <stop offset="0%" stopColor="#00beac" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#fad503" stopOpacity="0.9" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          <h2 className="text-2xl font-black text-white text-center mt-6 tracking-tight">
-            Join Clipad Today
-          </h2>
-          <p className="text-xs text-slate-400 text-center max-w-sm mt-2 leading-relaxed font-medium">
+          <h3 className="text-3xl lg:text-4xl font-extrabold text-slate-100 mb-3 tracking-tight leading-[1.15]">
+            The Foundation for Modern Enterprise Operations
+          </h3>
+          <p className="text-sm text-slate-300 font-normal leading-relaxed mb-6">
             Deploy your dedicated multi-tenant operating system with end-to-end security, real-time database sync, and cross-department automation.
           </p>
-        </div>
 
-        {/* Bottom Card */}
-        <div className="relative z-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-2xl">
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-2">
-              <div className="w-8 h-8 rounded-full bg-emerald-600 border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">✓</div>
-              <div className="w-8 h-8 rounded-full bg-indigo-600 border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">🔐</div>
-              <div className="w-8 h-8 rounded-full bg-[#00beac] border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">AI</div>
+          <div className="grid grid-cols-2 gap-3.5 border-t border-[#334155] pt-6">
+            <div className="p-4 rounded-2xl bg-[#0F172A]/70 hover:bg-[#0F172A] border border-[#334155] hover:border-emerald-500/40 transition-all duration-200 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </div>
+              <h4 className="text-xs font-bold text-slate-100 tracking-tight">Instant Provisioning</h4>
+              <p className="text-[11px] text-slate-400 leading-relaxed">Dedicated workspace, tenant scoping, and databases provisioned in seconds.</p>
             </div>
-            <div>
-              <p className="text-xs font-semibold text-white">Ready in 60s</p>
-              <p className="text-[10px] text-slate-400">Join thousands of teams scaling today</p>
+
+            <div className="p-4 rounded-2xl bg-[#0F172A]/70 hover:bg-[#0F172A] border border-[#334155] hover:border-emerald-500/40 transition-all duration-200 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+              </div>
+              <h4 className="text-xs font-bold text-slate-100 tracking-tight">Enterprise Security</h4>
+              <p className="text-[11px] text-slate-400 leading-relaxed">Granular role-based access control ensuring complete workspace data privacy.</p>
             </div>
           </div>
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#fad503] bg-white/10 px-2.5 py-1 rounded-full border border-white/15">
-            Instant Access
-          </span>
         </div>
       </div>
-
-    </div>
-  );
+    )}
+  </div>
+ </div>
+  </div>
+ );
 }
