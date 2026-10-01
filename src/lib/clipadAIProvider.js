@@ -2,7 +2,7 @@
 // Clipad V3 Modular AI Provider Abstraction Interface
 // Unifies LLM generation, streaming, embeddings, entity extraction, and classification.
 
-import { generateText, runAIStream } from '@/lib/cloudflareAI';
+import { generateText } from '@/lib/cloudflareAI';
 
 export class AIProvider {
   constructor(config = {}) {
@@ -33,12 +33,7 @@ export class AIProvider {
    */
   async stream(messages, onChunk, options = {}) {
     try {
-      return await runAIStream({
-        messages,
-        onStream: onChunk,
-        model: options.model || this.defaultModel,
-        ...options,
-      });
+      return await generateText(messages, onChunk, options);
     } catch (err) {
       console.error('[AIProvider.stream] Streaming failure:', err);
       throw err;
