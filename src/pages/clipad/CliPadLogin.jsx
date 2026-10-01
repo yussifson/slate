@@ -401,8 +401,6 @@ export default function CliPadLogin() {
         </div>
 
       </div>
-
-      </div>
     </>
   );
 }
