@@ -539,27 +539,7 @@ export default function SearchHub() {
   return (
     <div className={`min-h-full bg-background text-foreground font-sans ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'flex flex-col'}`}>
 
-      {/* ── TOP SEARCH HEADER ── */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shadow-sm">
-            <CliPadLogo size={20} className="text-primary" />
-          </div>
-          <span className="font-bold text-sm text-foreground tracking-tight">Intelligence Search</span>
-        </div>
 
-        <div className="flex items-center gap-3">
-          {hasPerformedSearch && (
-            <button
-              onClick={handleNewSearch}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-foreground hover:bg-secondary border border-border transition-all shadow-sm active:scale-95"
-            >
-              <Plus className="w-3.5 h-3.5 text-primary" />
-              New Search
-            </button>
-          )}
-        </div>
-      </div>
 
       {/* ── ZERO STATE: Centered search header ── */}
       {!hasPerformedSearch && (
