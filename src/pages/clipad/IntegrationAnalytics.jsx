@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { isAdmin } from '@/lib/constants';
 
-const COLORS = ['#fad503', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316'];
+const COLORS = ['#0066ff', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316'];
 
 export default function IntegrationAnalytics() {
   const { user } = useAuth();
@@ -170,10 +170,10 @@ export default function IntegrationAnalytics() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-32"></div>
+            <div key={i} className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] p-6 rounded-2xl h-32"></div>
           ))}
         </div>
-        <div className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-64 mb-8"></div>
+        <div className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] p-6 rounded-2xl h-64 mb-8"></div>
       </div>
     );
   }
@@ -198,7 +198,7 @@ export default function IntegrationAnalytics() {
             </div>
             <button 
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 rounded-xl shadow-sm text-sm font-bold hover:bg-transparent dark:hover:bg-slate-800/50 flex items-center gap-2 transition-colors"
+              className="px-4 py-2 bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 rounded-xl shadow-sm text-sm font-bold hover:bg-transparent dark:hover:bg-slate-800/50 flex items-center gap-2 transition-colors"
             >
               <RefreshCw className="w-4 h-4 text-white/60" /> Refresh Data
             </button>
@@ -235,7 +235,7 @@ export default function IntegrationAnalytics() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Chart: Data Ingestion Over Time */}
-            <div className="lg:col-span-2 p-5 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
+            <div className="lg:col-span-2 p-5 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
               <h3 className="text-base font-bold mb-1">Knowledge Ingestion (14 Days)</h3>
               <p className="text-xs text-white/70 mb-6">Volume of items synced into the organizational memory</p>
               <div className="flex-1 min-h-[300px]">
@@ -244,8 +244,8 @@ export default function IntegrationAnalytics() {
                     <AreaChart data={timelineData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#fad503" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#fad503" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#0066ff" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#0066ff" stopOpacity={0}/>
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -254,7 +254,7 @@ export default function IntegrationAnalytics() {
                       <Tooltip 
                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                       />
-                      <Area type="monotone" dataKey="totalItems" name="Total Corpus" stroke="#fad503" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
+                      <Area type="monotone" dataKey="totalItems" name="Total Corpus" stroke="#0066ff" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
                       <Area type="monotone" dataKey="newItems" name="New Daily" stroke="#10b981" strokeWidth={2} fillOpacity={0} />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -265,7 +265,7 @@ export default function IntegrationAnalytics() {
             </div>
 
             {/* Chart: Source Distribution */}
-            <div className="p-5 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
+            <div className="p-5 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
               <h3 className="text-base font-bold mb-1">Knowledge Sources</h3>
               <p className="text-xs text-white/70 mb-6">Distribution by integration</p>
               <div className="flex-1 min-h-[300px] flex items-center justify-center">
@@ -296,7 +296,7 @@ export default function IntegrationAnalytics() {
           </div>
 
           {/* Sync Status Table */}
-          <div className="p-5 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm hover:border-indigo-500/30 transition-all hover:shadow-md">
+          <div className="p-5 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm hover:border-indigo-500/30 transition-all hover:shadow-md">
             <h3 className="text-base font-bold mb-5 flex items-center gap-2">
               <RefreshCw className="w-4 h-4 text-indigo-500" />
               Integration Sync Status
@@ -366,7 +366,7 @@ export default function IntegrationAnalytics() {
 
 function MetricCard({ title, value, icon: Icon, color, bg, subtitle, subtitleClass = "text-white/60" }) {
   return (
-    <div className="p-5 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
+    <div className="p-5 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-indigo-500/30 transition-all hover:shadow-md">
       <div className="flex items-center gap-3 mb-3">
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${bg} ${color}`}>
           <Icon className="w-5 h-5" />

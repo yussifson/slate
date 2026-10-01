@@ -269,7 +269,7 @@ export default function ActionItems() {
         {loading ? (
           <div className="space-y-4 animate-pulse">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] border border-white/10 dark:border-white/5 rounded-2xl h-20"></div>
+              <div key={i} className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/10 dark:border-white/5 rounded-2xl h-20"></div>
             ))}
           </div>
         ) : filtered.length === 0 ? (

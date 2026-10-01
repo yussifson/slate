@@ -542,7 +542,7 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className={`bg-[#00beac] text-white font-sans selection:bg-[#fad503]/20 selection:text-[#fad503] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`bg-[#f8fafc] text-white font-sans selection:bg-[#0066ff]/20 selection:text-[#0ea5e9] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (
@@ -550,7 +550,7 @@ export default function SearchHub() {
 
           {/* Orbit icon mark */}
           <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-6 shadow-md border border-white/15">
-            <CliPadLogo size={36} className="text-[#fad503]" />
+            <CliPadLogo size={36} className="text-[#0ea5e9]" />
           </div>
 
           {/* Greeting heading */}
@@ -564,7 +564,7 @@ export default function SearchHub() {
           {/* Central Search Bar */}
           <div className="w-full max-w-2xl">
             <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-              <div className="relative flex items-center bg-[#006065] border border-white/20 rounded-2xl px-4 py-1.5 shadow-xl hover:border-white/30 focus-within:border-[#fad503] focus-within:ring-2 focus-within:ring-[#fad503]/20 transition-all">
+              <div className="relative flex items-center bg-[#0b0f19] border border-white/20 rounded-2xl px-4 py-1.5 shadow-xl hover:border-white/30 focus-within:border-[#0066ff] focus-within:ring-2 focus-within:ring-[#0066ff]/20 transition-all">
                 <Search className="w-5 h-5 text-white/60 shrink-0 mr-3" />
                 <input
                   autoFocus
@@ -581,9 +581,9 @@ export default function SearchHub() {
                 <button
                   type="submit"
                   disabled={!query.trim()}
-                  className="px-4 py-2.5 bg-[#fad503] hover:bg-[#fad503]/90 disabled:opacity-30 text-[#006065] font-bold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md"
+                  className="px-4 py-2.5 bg-[#0066ff] hover:bg-[#0066ff]/90 disabled:opacity-30 text-[#0066ff] font-bold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md"
                 >
-                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-[#006065]" /> : <ArrowRight className="w-4 h-4 text-[#006065]" />}
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-[#0066ff]" /> : <ArrowRight className="w-4 h-4 text-[#0066ff]" />}
                 </button>
               </div>
             </form>
@@ -596,9 +596,9 @@ export default function SearchHub() {
                   <button
                     key={idx}
                     onClick={() => { setQuery(item.desc); setSearchParams({ q: item.desc }); runSearch(item.desc); }}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#006065] border border-white/15 hover:bg-white/10 text-white text-xs font-semibold transition-all group shadow-sm active:scale-95"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0b0f19] border border-white/15 hover:bg-white/10 text-white text-xs font-semibold transition-all group shadow-sm active:scale-95"
                   >
-                    <Icon className="w-3.5 h-3.5 text-[#fad503] shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-[#0ea5e9] shrink-0" />
                     {item.title}
                   </button>
                 );
@@ -638,7 +638,7 @@ export default function SearchHub() {
                             className={`p-4 rounded-xl border cursor-pointer transition-all ${
                               isSelected
                                 ? 'bg-primary/5 border-primary/30 dark:border-primary/40'
-                                : 'bg-[#006065] text-white dark:bg-white/[0.03] border-white/15/80 dark:border-white/8 hover:border-white/20 dark:hover:border-white/15 hover:bg-transparent dark:hover:bg-white/5'
+                                : 'bg-[#0b0f19] text-white dark:bg-white/[0.03] border-white/15/80 dark:border-white/8 hover:border-white/20 dark:hover:border-white/15 hover:bg-transparent dark:hover:bg-white/5'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -675,7 +675,7 @@ export default function SearchHub() {
 
                   {/* Selected record detail (Pinned inside the left results column at the bottom) */}
                   {selectedResult && (
-                    <div className="shrink-0 bg-[#006065] text-white dark:bg-white/[0.03] border border-white/15/80 dark:border-white/8 rounded-xl p-5 space-y-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="shrink-0 bg-[#0b0f19] text-white dark:bg-white/[0.03] border border-white/15/80 dark:border-white/8 rounded-xl p-5 space-y-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">Record detail</span>
                         {TYPE_META[selectedResult.type]?.route && (
@@ -788,11 +788,11 @@ export default function SearchHub() {
                                         className="p-1 hover:text-white hover:bg-white/10 rounded transition-all"
                                         title="Copy response"
                                       >
-                                        {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-[#fad503]" /> : <Copy className="w-3.5 h-3.5" />}
+                                        {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-[#0ea5e9]" /> : <Copy className="w-3.5 h-3.5" />}
                                       </button>
                                       <button 
                                         onClick={() => handleSpeak(msg.content, i)} 
-                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${isSpeakingMsgIndex === i ? 'text-[#fad503]' : ''}`}
+                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${isSpeakingMsgIndex === i ? 'text-[#0ea5e9]' : ''}`}
                                         title={isSpeakingMsgIndex === i ? "Stop speaking" : "Speak response"}
                                       >
                                         {isSpeakingMsgIndex === i ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -802,7 +802,7 @@ export default function SearchHub() {
                                           setVotedMsgState(prev => ({ ...prev, [i]: prev[i] === 'up' ? null : 'up' }));
                                           toast({ title: 'Feedback received', description: 'Thank you for helping train Orbit AI!' });
                                         }} 
-                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${votedMsgState[i] === 'up' ? 'text-[#fad503]' : ''}`}
+                                        className={`p-1 hover:text-white hover:bg-white/10 rounded transition-all ${votedMsgState[i] === 'up' ? 'text-[#0ea5e9]' : ''}`}
                                         title="Good response"
                                       >
                                         <ThumbsUp className="w-3.5 h-3.5" />
@@ -844,8 +844,8 @@ export default function SearchHub() {
 
                   {/* Floating ChatGPT-like Input Form at bottom */}
                   <div className="p-4 bg-transparent shrink-0">
-                    <div className="max-w-[680px] mx-auto w-full border border-white/20 rounded-2xl shadow-lg bg-[#006065]">
-                      <form onSubmit={handleFollowUp} className="relative flex items-center bg-[#006065] rounded-[15px] px-3.5 py-2 transition-all">
+                    <div className="max-w-[680px] mx-auto w-full border border-white/20 rounded-2xl shadow-lg bg-[#0b0f19]">
+                      <form onSubmit={handleFollowUp} className="relative flex items-center bg-[#0b0f19] rounded-[15px] px-3.5 py-2 transition-all">
                         
                         <input
                           value={followUpInput}

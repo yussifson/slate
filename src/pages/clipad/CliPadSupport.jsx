@@ -70,7 +70,7 @@ export default function CliPadSupport() {
           <p className="text-white/70 dark:text-muted-foreground">Send us a message and our team will assist you as soon as possible.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-[#006065] text-white dark:bg-[#006065] rounded-3xl p-8 border border-white/15 dark:border-white/15 shadow-sm">
+        <form onSubmit={handleSubmit} className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] rounded-3xl p-8 border border-white/15 dark:border-white/15 shadow-sm">
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-white/90 dark:text-foreground mb-2">Subject</label>

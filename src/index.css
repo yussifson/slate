@@ -7,17 +7,15 @@
 /* Base Styles */
 html, body {
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: none; /* Prevents pull-to-refresh bounce on body */
+  overscroll-behavior-y: none;
   background-color: var(--background);
 }
 
-/* Ensure text selection is enabled */
 *, html, body, input, textarea, [contenteditable="true"] {
   -webkit-user-select: auto;
   user-select: auto;
 }
 
-/* Safe area variables with fallbacks */
 :root {
   --sat: env(safe-area-inset-top, 0px);
   --sar: env(safe-area-inset-right, 0px);
@@ -28,130 +26,98 @@ html, body {
 @layer base {
   :root, .light {
     --font-inter: 'Inter', sans-serif;
-    --background: 174 100% 37%; /* #00BEAC Omni Teal Canvas */
-    --foreground: 0 0% 100%; /* Pure white text */
-    --card: 183 100% 20%; /* #006065 Deep Green */
-    --card-foreground: 0 0% 100%;
-    --popover: 183 100% 20%; /* #006065 */
-    --popover-foreground: 0 0% 100%;
-    --primary: 51 98% 50%; /* #FAD503 Omni Yellow */
-    --primary-foreground: 183 100% 20%; /* #006065 Deep Green text */
-    --secondary: 183 100% 16%; /* #004d52 Dark Deep Green */
+    --background: 210 40% 98%; /* #F8FAFC Soft Slate Canvas */
+    --foreground: 222 47% 11%; /* #0F172A Dark Charcoal Slate */
+    --card: 0 0% 100%; /* #FFFFFF Pure White Cards */
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 100% 50%; /* #0066FF Electric Royal Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 199 89% 48%; /* #0EA5E9 Vivid Sky Blue */
     --secondary-foreground: 0 0% 100%;
-    --muted: 183 60% 25%;
-    --muted-foreground: 174 30% 85%;
-    --accent: 51 98% 50%; /* #FAD503 */
-    --accent-foreground: 183 100% 20%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 183 50% 28%;
-    --input: 183 50% 28%;
-    --ring: 51 98% 50%;
-    --chart-1: 51 98% 50%;
-    --chart-2: 174 100% 37%;
-    --chart-3: 183 100% 20%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 199 89% 48%; /* #0EA5E9 Sky Blue */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 100% 50%;
+    --chart-1: 217 100% 50%;
+    --chart-2: 199 89% 48%;
+    --chart-3: 45 100% 70%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 1rem;
-    --sidebar-background: 183 100% 20%; /* #006065 Deep Green Sidebar */
+    --sidebar-background: 222 47% 7%; /* #0B0F19 Dark Obsidian Slate */
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 51 98% 50%; /* #FAD503 Yellow Accent */
-    --sidebar-primary-foreground: 183 100% 20%;
-    --sidebar-accent: 183 100% 16%;
+    --sidebar-primary: 217 100% 50%; /* #0066FF Electric Blue */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 40% 15%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 183 50% 25%;
-    --sidebar-ring: 51 98% 50%;
-    --bg-base-rgb: 0, 190, 172;
-
-    /* ────────────────────────────────── */
-    /* HOTEL VERTICAL — Premium Hospitality Palette */
-    /* ────────────────────────────────── */
-    --hotel-primary: 12 100% 50%;      /* Luxe Deep Burgundy */
-    --hotel-secondary: 342 92% 54%;    /* Rose Accent */
-    --hotel-accent: 34 100% 50%;       /* Gold Highlight */
-    --hotel-success: 152 76% 41%;      /* Emerald (standard) */
-    --hotel-alert: 38 92% 50%;         /* Warm Amber */
-    --hotel-critical: 0 84% 60%;       /* Red (standard) */
-
-    /* ────────────────────────────────── */
-    /* LOGISTICS VERTICAL — Professional Transport Palette */
-    /* ────────────────────────────────── */
-    --logistics-primary: 210 100% 45%;    /* Ocean Blue */
-    --logistics-secondary: 200 60% 45%;   /* Sky Teal */
-    --logistics-accent: 160 84% 39%;      /* Mint Green */
-    --logistics-success: 152 76% 41%;     /* Emerald (standard) */
-    --logistics-alert: 38 92% 50%;        /* Warm Amber */
-    --logistics-critical: 0 84% 60%;      /* Red (standard) */
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 217 100% 50%;
+    --bg-base-rgb: 248, 250, 252;
   }
 
   .dark {
-    --bg-base-rgb-dark: 0, 96, 101;
+    --bg-base-rgb-dark: 248, 250, 252;
 
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 
-    --background: 174 100% 37%;
-    --foreground: 0 0% 100%;
-    --card: 183 100% 20%;
-    --card-foreground: 0 0% 100%;
-    --popover: 183 100% 20%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 51 98% 50%;
-    --primary-foreground: 183 100% 20%;
-    --secondary: 183 100% 16%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 199 89% 48%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 183 60% 25%;
-    --muted-foreground: 174 30% 85%;
-    --accent: 51 98% 50%;
-    --accent-foreground: 183 100% 20%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 183 50% 28%;
-    --input: 183 50% 28%;
-    --ring: 51 98% 50%;
-    --chart-1: 51 98% 50%;
-    --chart-2: 174 100% 37%;
-    --chart-3: 183 100% 20%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 100% 50%;
 
-    --sidebar-background: 183 100% 20%;
+    --sidebar-background: 222 47% 7%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 51 98% 50%;
-    --sidebar-primary-foreground: 183 100% 20%;
-    --sidebar-accent: 183 100% 16%;
+    --sidebar-primary: 217 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 40% 15%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 183 50% 25%;
-    --sidebar-ring: 51 98% 50%;
-
-    /* HOTEL VERTICAL DARK OVERRIDES */
-    --hotel-primary: 12 100% 55%;
-    --hotel-secondary: 342 92% 60%;
-    --hotel-accent: 34 100% 55%;
-
-    /* LOGISTICS VERTICAL DARK OVERRIDES */
-    --logistics-primary: 210 100% 55%;
-    --logistics-secondary: 200 70% 55%;
-    --logistics-accent: 160 84% 45%;
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 217 100% 50%;
   }
 }
 
-/* Custom Utilities for OmniImpressive Theme */
-.omni-canvas {
-  background-color: #00beac;
+/* Custom Utilities for Coolors Palette */
+.coolors-canvas {
+  background-color: #f8fafc;
 }
 
-.omni-surface {
-  background-color: #006065;
+.coolors-sidebar {
+  background-color: #0b0f19;
   color: #ffffff;
 }
 
-.omni-yellow-btn {
-  background-color: #fad503;
-  color: #006065;
+.coolors-primary-btn {
+  background-color: #0066ff;
+  color: #ffffff;
   font-weight: 700;
 }
 
-.omni-yellow-btn:hover {
-  background-color: #e6c402;
+.coolors-primary-btn:hover {
+  background-color: #0052cc;
+}
+
+.coolors-accent-badge {
+  background-color: #0ea5e9;
+  color: #ffffff;
 }

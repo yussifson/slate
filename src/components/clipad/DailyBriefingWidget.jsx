@@ -144,7 +144,7 @@ export default function DailyBriefingWidget() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold text-[#fad503] uppercase tracking-widest bg-[#fad503]/10 px-2 py-0.5 rounded-full border border-[#fad503]/20">
+              <span className="text-[11px] font-bold text-[#0ea5e9] uppercase tracking-widest bg-[#0066ff]/10 px-2 py-0.5 rounded-full border border-[#0066ff]/20">
                 Daily Briefing
               </span>
             </div>

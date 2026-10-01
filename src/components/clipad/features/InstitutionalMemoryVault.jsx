@@ -183,15 +183,15 @@ ${knowledgeContext}`
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-md bg-[#006065] text-white p-6 md:p-8">
+    <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-md bg-[#0b0f19] text-white p-6 md:p-8">
       <div className="absolute top-0 right-0 p-4 md:p-8 opacity-10 pointer-events-none">
         <Database className="w-40 h-40 text-white" />
       </div>
       
       <div className="relative z-10 max-w-2xl">
         <div className="flex items-center gap-2 mb-3">
-          <Lock className="w-4 h-4 text-[#fad503]" />
-          <span className="text-xs font-bold text-[#fad503] uppercase tracking-widest">Admin Workspace</span>
+          <Lock className="w-4 h-4 text-[#0ea5e9]" />
+          <span className="text-xs font-bold text-[#0ea5e9] uppercase tracking-widest">Admin Workspace</span>
         </div>
         
         <h2 className="text-2xl md:text-3xl font-black text-white flex items-center gap-2 mb-3 tracking-tight">
@@ -207,14 +207,14 @@ ${knowledgeContext}`
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g., 'Why did we decide to use this approach?' or 'What blockers did we resolve last month?'"
-            className="w-full bg-white/10 border border-white/20 text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-[#fad503] focus:ring-2 focus:ring-[#fad503]/20 placeholder:text-white/50 text-sm md:text-base transition-all"
+            className="w-full bg-white/10 border border-white/20 text-white rounded-xl pl-5 pr-14 py-4 focus:outline-none focus:border-[#0066ff] focus:ring-2 focus:ring-[#0066ff]/20 placeholder:text-white/50 text-sm md:text-base transition-all"
           />
           <button 
             type="submit"
             disabled={loading || !query.trim()}
-            className="absolute right-2 top-2 bottom-2 bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold rounded-lg px-4 flex items-center justify-center transition-colors disabled:opacity-50 shadow-md"
+            className="absolute right-2 top-2 bottom-2 bg-[#0066ff] hover:bg-[#0066ff]/90 text-[#0066ff] font-bold rounded-lg px-4 flex items-center justify-center transition-colors disabled:opacity-50 shadow-md"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin text-[#006065]" /> : <ArrowRight className="w-5 h-5 text-[#006065]" />}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin text-[#0066ff]" /> : <ArrowRight className="w-5 h-5 text-[#0066ff]" />}
           </button>
         </form>
 
@@ -228,7 +228,7 @@ ${knowledgeContext}`
         {!response && !loading && (
           <div className="mt-8 animate-in fade-in slide-in-from-bottom-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-white/70 mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#fad503]" /> Trending Knowledge Nodes
+              <Sparkles className="w-4 h-4 text-[#0ea5e9]" /> Trending Knowledge Nodes
             </h3>
             <div className="flex flex-wrap gap-2">
               {['Project Roadmap', 'Q3 Planning', 'Design System Updates', 'Recent Blockers'].map((topic) => (

@@ -37,7 +37,7 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
     <>
       {/* Native Fixed Bottom Nav Bar */}
       <nav className={cn(
-        "fixed bottom-0 left-0 right-0 z-40 bg-[#006065] border-t border-white/10",
+        "fixed bottom-0 left-0 right-0 z-40 bg-[#0b0f19] border-t border-slate-800",
         "pb-[env(safe-area-inset-bottom,0px)]",
         forceMobile ? "flex" : "md:hidden"
       )}>
@@ -49,11 +49,11 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
             const content = (
               <div className={cn(
                 "flex flex-col items-center justify-center gap-1 flex-1 h-full px-2 transition-all duration-200 relative",
-                isActive ? "text-[#fad503]" : "text-white/55 hover:text-white"
+                isActive ? "text-[#0066ff]" : "text-white/55 hover:text-white"
               )}>
-                {/* Yellow active top indicator bar */}
+                {/* Blue active top indicator bar */}
                 {isActive && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#fad503] rounded-b-full" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-[3px] bg-[#0066ff] rounded-b-full" />
                 )}
                 <Icon className={cn(
                   "transition-all duration-200",
@@ -61,7 +61,7 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
                 )} strokeWidth={isActive ? 2.5 : 2} />
                 <span className={cn(
                   "text-[10px] font-semibold leading-none tracking-tight",
-                  isActive ? "text-[#fad503]" : "text-white/55"
+                  isActive ? "text-[#0066ff]" : "text-white/55"
                 )}>
                   {item.label}
                 </span>
@@ -113,13 +113,13 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 10 }}
               transition={{ type: "spring", damping: 25, stiffness: 400 }}
-              className="lg:hidden fixed bottom-[72px] right-4 z-[60] w-[260px] overflow-hidden rounded-[20px] bg-[#006065] shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-white/10"
+              className="lg:hidden fixed bottom-[72px] right-4 z-[60] w-[260px] overflow-hidden rounded-[20px] bg-[#0b0f19] shadow-[0_16px_40px_-8px_rgba(0,0,0,0.4)] border border-slate-800 text-white"
               onClick={(e) => e.stopPropagation()}
             >
               {/* User Info */}
               {user && (
-                <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10 bg-white/5">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-md text-[#006065]">
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-slate-800 bg-white/5">
+                  <div className="w-10 h-10 rounded-full bg-[#0066ff] flex items-center justify-center font-bold text-sm shrink-0 overflow-hidden shadow-md text-white">
                     {user.avatar_url || user?.user_metadata?.avatar_url ? (
                       <img src={user.avatar_url || user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover" />
                     ) : (
@@ -146,7 +146,7 @@ export default function ClipadMobileNav({ isMarketing = false, forceMobile = fal
                     </div>
                     <span className="text-[13px] font-medium text-white">Theme</span>
                   </div>
-                  <span className="text-xs font-bold text-[#fad503] uppercase tracking-wider">
+                  <span className="text-xs font-bold text-[#0ea5e9] uppercase tracking-wider">
                     {theme === 'dark' ? 'Dark' : 'Light'}
                   </span>
                 </button>

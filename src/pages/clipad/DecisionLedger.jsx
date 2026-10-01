@@ -147,7 +147,7 @@ export default function DecisionLedger() {
   });
 
   return (
-    <div className="min-h-full bg-[#00beac] text-white font-sans page-enter pb-12">
+    <div className="min-h-full bg-[#f8fafc] text-white font-sans page-enter pb-12">
       {/* Header */}
       <div className="relative overflow-hidden border-b border-border bg-gradient-to-br from-amber-500/5 via-background to-background px-6 py-10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(245,158,11,0.08),transparent_60%)] pointer-events-none" />
@@ -228,7 +228,7 @@ export default function DecisionLedger() {
         {loading && decisions.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] border border-white/10 dark:border-white/5 rounded-2xl h-48"></div>
+              <div key={i} className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/10 dark:border-white/5 rounded-2xl h-48"></div>
             ))}
           </div>
         ) : filteredDecisions.length === 0 ? (

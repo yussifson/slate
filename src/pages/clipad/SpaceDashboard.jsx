@@ -97,7 +97,7 @@ const getVideoColor = (id) => {
 
 function VideoCard({ video, onClick }) {
   return (
-    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 hover:border-indigo-400/50 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
+    <div onClick={onClick} className="group cursor-pointer rounded-2xl overflow-hidden bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 hover:border-indigo-400/50 transition-all hover:-translate-y-0.5 shadow-sm hover:shadow-md">
       <div className="aspect-video bg-white/10 dark:bg-secondary relative flex items-center justify-center overflow-hidden">
         {video.thumbnail_url ? (
           <img src={video.thumbnail_url} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={video.title} />
@@ -121,7 +121,7 @@ function VideoCard({ video, onClick }) {
           </div>
         )}
       </div>
-      <div className="p-4 bg-[#006065] text-white dark:bg-[#006065]">
+      <div className="p-4 bg-[#0b0f19] text-white dark:bg-[#0b0f19]">
         <p className="text-sm font-semibold text-white dark:text-white line-clamp-1">{video.title || 'Untitled'}</p>
         <p className="text-xs text-white/70 dark:text-muted-foreground mt-1">{new Date(video.created_at).toLocaleDateString()}</p>
       </div>
@@ -459,7 +459,7 @@ export default function SpaceDashboard() {
 
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#00beac] page-enter text-white overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f8fafc] page-enter text-white overflow-x-hidden pb-24 md:pb-8">
       {/* Privacy Modal */}
       <Dialog open={showPrivacyModal} onOpenChange={setShowPrivacyModal}>
         <DialogContent className="sm:max-w-[440px]">
@@ -477,13 +477,13 @@ export default function SpaceDashboard() {
             <div className="flex bg-white/15 dark:bg-slate-700 p-1 rounded-lg">
               <button
                 onClick={() => setPrivacyType('private')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'private' ? 'bg-[#006065] text-white dark:bg-slate-600 text-white dark:text-white shadow-sm' : 'text-white/70 hover:text-white/90 dark:text-white/60 dark:hover:text-white'}`}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'private' ? 'bg-[#0b0f19] text-white dark:bg-slate-600 text-white dark:text-white shadow-sm' : 'text-white/70 hover:text-white/90 dark:text-white/60 dark:hover:text-white'}`}
               >
                 Private
               </button>
               <button
                 onClick={() => setPrivacyType('public')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'public' ? 'bg-[#006065] text-white dark:bg-slate-600 text-white dark:text-white shadow-sm' : 'text-white/70 hover:text-white/90 dark:text-white/60 dark:hover:text-white'}`}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${privacyType === 'public' ? 'bg-[#0b0f19] text-white dark:bg-slate-600 text-white dark:text-white shadow-sm' : 'text-white/70 hover:text-white/90 dark:text-white/60 dark:hover:text-white'}`}
               >
                 Public
               </button>
@@ -497,7 +497,7 @@ export default function SpaceDashboard() {
       </Dialog>
 
       {/* Nav */}
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-[#006065] text-white border-b border-white/15/80">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-10 h-14 md:h-16 bg-[#0b0f19] text-white border-b border-white/15/80">
         <div className="flex items-center gap-2 md:gap-3">
           <button onClick={() => navigate('/spaces')} className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 text-white/90 hover:bg-white/15 transition-all hover:-translate-y-0.5 active:scale-95"><ArrowLeft className="w-5 h-5 md:w-5 md:h-5 text-white" /></button>
           <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center text-white shadow-sm`}>
@@ -514,7 +514,7 @@ export default function SpaceDashboard() {
           </button>
           <button
             onClick={handleJoinMeeting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-[#fad503] text-[#006065] font-bold shadow-lg shadow-[#fad503]/25 hover:bg-[#e6c402]'}`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isLive ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-lg shadow-rose-500/25 animate-pulse' : 'bg-[#0066ff] text-[#0066ff] font-bold shadow-lg shadow-[#0066ff]/25 hover:bg-[#e6c402]'}`}
           >
             {isLive ? <Activity className="w-4 h-4" /> : <Video className="w-4 h-4" />}
             {isLive ? 'Join Live' : 'Start Meeting'}
@@ -523,7 +523,7 @@ export default function SpaceDashboard() {
       </nav>
 
       {/* Space header */}
-      <div className="relative overflow-hidden bg-[#006065] text-white border-b border-white/15/80">
+      <div className="relative overflow-hidden bg-[#0b0f19] text-white border-b border-white/15/80">
         <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${color} opacity-[0.03] dark:opacity-[0.08]`} />
         
         {/* Nature Design */}
@@ -559,11 +559,11 @@ export default function SpaceDashboard() {
               
               {/* Native Pill Stats */}
               <div className="flex flex-wrap items-center gap-2 mt-3 md:mt-4 text-xs font-medium">
-                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Calendar className="w-3.5 h-3.5 text-[#fad503]" /> {meetings.length} meetings</span>
+                <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Calendar className="w-3.5 h-3.5 text-[#0ea5e9]" /> {meetings.length} meetings</span>
                 <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><Camera className="w-3.5 h-3.5 text-emerald-300" /> {videos.length} videos</span>
                 <span className="flex items-center gap-1.5 bg-white/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-white"><CheckCircle className="w-3.5 h-3.5 text-amber-300" /> {openTasks.length} tasks</span>
                 {(isAdmin(user) || isSpacemanHere) && (
-                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-[#fad503]/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-[#fad503] font-bold hover:bg-[#fad503]/20 transition-colors active:scale-95">
+                  <button onClick={() => setShowMembers(true)} className="flex items-center gap-1.5 bg-[#0066ff]/10 px-2.5 py-1 md:py-1.5 rounded-lg md:rounded-full text-[#0ea5e9] font-bold hover:bg-[#0066ff]/20 transition-colors active:scale-95">
                     <Users className="w-3.5 h-3.5" /> Manage Members
                   </button>
                 )}
@@ -581,7 +581,7 @@ export default function SpaceDashboard() {
               <Camera className="w-5 h-5 text-white" />
               <span className="text-[11px] font-semibold text-white">Record</span>
             </button>
-            <button onClick={handleJoinMeeting} className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-2xl transition-colors active:scale-95 ${isLive ? 'bg-rose-500 text-white animate-pulse' : 'bg-[#fad503] text-[#006065]'}`}>
+            <button onClick={handleJoinMeeting} className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-2.5 rounded-2xl transition-colors active:scale-95 ${isLive ? 'bg-rose-500 text-white animate-pulse' : 'bg-[#0066ff] text-[#0066ff]'}`}>
               {isLive ? <Activity className="w-5 h-5" /> : <Video className="w-5 h-5" />}
               <span className="text-[11px] font-bold">{isLive ? 'Live' : 'Meeting'}</span>
             </button>
@@ -603,7 +603,7 @@ export default function SpaceDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#fad503] text-[#006065] font-bold shadow-md' : 'bg-white/10 text-white/80 hover:bg-white/15 hover:text-white'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#0066ff] text-[#0066ff] font-bold shadow-md' : 'bg-white/10 text-white/80 hover:bg-white/15 hover:text-white'}`}
                 >
                   <Icon className="w-3.5 h-3.5" />{tab.label}
                 </button>
@@ -702,7 +702,7 @@ export default function SpaceDashboard() {
                   <button onClick={() => setActiveTab('videos')} className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">View all <ArrowRight className="w-4 h-4" /></button>
                 </div>
                 {videos.length === 0
-                  ? <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center bg-white/5/50 dark:bg-[#006065]/50 backdrop-blur-sm min-h-[220px]">
+                  ? <div className="flex-1 flex flex-col items-center justify-center p-8 rounded-2xl border border-dashed border-black/10 dark:border-white/10 text-center bg-white/5/50 dark:bg-[#0b0f19]/50 backdrop-blur-sm min-h-[220px]">
                       <Camera className="w-8 h-8 text-white/50 dark:text-white/80 mb-3" />
                       <p className="text-white/70 dark:text-muted-foreground text-sm font-medium">No videos yet.</p>
                       <button className="mt-4 text-primary font-bold hover:text-primary/80 transition-colors text-sm" onClick={() => navigate('/record')}>Record one →</button>
@@ -722,14 +722,14 @@ export default function SpaceDashboard() {
                   </div>
                   <button onClick={() => setActiveTab('meetings')} className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">View all <ArrowRight className="w-4 h-4" /></button>
                 </div>
-                <div className="flex-1 bg-white/5 dark:bg-[#006065]/50 border border-black/5 dark:border-white/5 rounded-2xl divide-y divide-black/5 dark:divide-white/5 overflow-hidden">
+                <div className="flex-1 bg-white/5 dark:bg-[#0b0f19]/50 border border-black/5 dark:border-white/5 rounded-2xl divide-y divide-black/5 dark:divide-white/5 overflow-hidden">
                   {meetings.length === 0
                     ? <div className="flex-1 flex flex-col items-center justify-center h-full min-h-[220px] text-center p-8">
                         <Calendar className="w-8 h-8 text-white/50 dark:text-white/80 mb-3" />
                         <p className="text-white/70 dark:text-muted-foreground text-sm font-medium">No meetings yet.</p>
                       </div>
                     : meetings.slice(0,5).map(m => (
-                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-[#006065] text-white dark:hover:bg-[#202c33] cursor-pointer transition-colors group">
+                        <div key={m.id} onClick={() => navigate(`/meetings/${m.id}`)} className="px-5 py-4 hover:bg-[#0b0f19] text-white dark:hover:bg-[#202c33] cursor-pointer transition-colors group">
                           <div className="flex items-center justify-between">
                             <p className="text-sm font-bold text-white dark:text-white group-hover:text-primary transition-colors">{m.title || 'Team Meeting'}</p>
                             {m.ai_summary && <Sparkles className="w-4 h-4 text-primary shrink-0 opacity-70 group-hover:opacity-100" />}
@@ -882,7 +882,7 @@ export default function SpaceDashboard() {
               <input 
                 type="text" 
                 placeholder="Enter a topic (e.g. 'pricing strategy')..." 
-                className="flex-1 bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 rounded-xl px-4 py-2 text-sm" 
+                className="flex-1 bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 rounded-xl px-4 py-2 text-sm" 
                 value={memoryInput}
                 onChange={(e) => setMemoryInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -901,7 +901,7 @@ export default function SpaceDashboard() {
                 <MemoryTimeline workspaceId={space.company_id} topic={memoryTopic} />
               </div>
             ) : (
-              <div className="p-8 flex flex-col items-center justify-center text-center bg-white/5 dark:bg-[#006065] rounded-3xl border border-white/15 dark:border-white/15">
+              <div className="p-8 flex flex-col items-center justify-center text-center bg-white/5 dark:bg-[#0b0f19] rounded-3xl border border-white/15 dark:border-white/15">
                 <Brain className="w-8 h-8 text-white/50 dark:text-white/80 mb-4" />
                 <p className="text-sm font-medium text-white/70">Enter a topic above to trace its history.</p>
               </div>
@@ -912,7 +912,7 @@ export default function SpaceDashboard() {
       </div>
       {showEdit && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 rounded-3xl p-5 md:p-8 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 rounded-3xl p-5 md:p-8 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-white dark:text-white mb-6">Edit Space</h2>
             <form onSubmit={handleEditSpace} className="space-y-4">
               <div>
@@ -933,9 +933,9 @@ export default function SpaceDashboard() {
                   className="w-full px-4 py-3 rounded-xl bg-white/5  border border-white/15 dark:border-white/15 text-white dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-all resize-none"
                 />
               </div>
-              <div onClick={() => setEditIsPrivate(!editIsPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-white/15 dark:border-white/15 bg-white/5/50 dark:bg-[#006065]/50 hover:bg-white/5 dark:hover:bg-slate-800 transition-colors">
+              <div onClick={() => setEditIsPrivate(!editIsPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-white/15 dark:border-white/15 bg-white/5/50 dark:bg-[#0b0f19]/50 hover:bg-white/5 dark:hover:bg-slate-800 transition-colors">
                 <div className={`w-10 h-6 rounded-full transition-colors relative ${editIsPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-[#006065] text-white border border-white/15 shadow transition-all ${editIsPrivate ? 'left-5' : 'left-1'}`} />
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-[#0b0f19] text-white border border-white/15 shadow transition-all ${editIsPrivate ? 'left-5' : 'left-1'}`} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-white dark:text-white flex items-center gap-1.5">
@@ -945,7 +945,7 @@ export default function SpaceDashboard() {
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-[#006065] text-white dark:bg-secondary hover:bg-white/5 dark:hover:bg-slate-700 text-white/90 dark:text-foreground font-semibold text-sm transition-all border border-white/15 dark:border-white/15 shadow-sm">Cancel</button>
+                <button type="button" onClick={() => setShowEdit(false)} className="flex-1 py-3 rounded-xl bg-[#0b0f19] text-white dark:bg-secondary hover:bg-white/5 dark:hover:bg-slate-700 text-white/90 dark:text-foreground font-semibold text-sm transition-all border border-white/15 dark:border-white/15 shadow-sm">Cancel</button>
                 <button type="submit" disabled={savingEdit} className="flex-1 py-3 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {savingEdit ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -958,7 +958,7 @@ export default function SpaceDashboard() {
       {/* Manage Members Modal */}
       {showMembers && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col max-h-[80vh]">
+          <div className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col max-h-[80vh]">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-white dark:text-white flex items-center gap-2"><Users className="w-5 h-5 text-primary" /> Manage Members</h2>
               <button onClick={() => setShowMembers(false)} className="p-2 rounded-full hover:bg-white/10 dark:hover:bg-slate-800 text-white/70 transition-colors"><X className="w-5 h-5" /></button>

@@ -227,7 +227,7 @@ export default function KnowledgeJourney() {
         {loading ? (
           <div className="space-y-6 animate-pulse">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] border border-white/10 dark:border-white/5 rounded-3xl p-6 h-64"></div>
+              <div key={i} className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/10 dark:border-white/5 rounded-3xl p-6 h-64"></div>
             ))}
           </div>
         ) : filtered.length === 0 ? (

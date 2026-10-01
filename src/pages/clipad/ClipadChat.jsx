@@ -333,7 +333,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
  return (
-   <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#00beac] dark:bg-[#006065] overflow-hidden page-enter">
+   <div style={{ fontFamily: "'Inter', sans-serif" }} className="flex flex-col h-[100dvh] bg-[#f8fafc] dark:bg-[#0b0f19] overflow-hidden page-enter">
 
 
      {/* Main layout below nav */}
@@ -373,7 +373,7 @@ export default function ClipadChat({ isDockedMode = false }) {
        {/* Sidebar - Chat List */}
       {!isDockedMode ? (
       <div className={cn(
-        "flex flex-col bg-[#006065] text-white border-r border-white/10 transition-all duration-300 z-20 shrink-0",
+        "flex flex-col bg-[#0b0f19] text-white border-r border-white/10 transition-all duration-300 z-20 shrink-0",
         isSidebarCollapsed ? "w-20" : "w-full md:w-80",
         activeRoomId ? "hidden md:flex" : "flex"
       )}>
@@ -384,8 +384,8 @@ export default function ClipadChat({ isDockedMode = false }) {
  {!isSidebarCollapsed ? (
    <div className="flex items-center justify-between w-full">
      <div className="flex items-center gap-3">
-       <div className="w-10 h-10 rounded-full bg-[#fad503]/20 flex items-center justify-center overflow-hidden shrink-0 border border-[#fad503]/30">
-         {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-[#fad503]" />}
+       <div className="w-10 h-10 rounded-full bg-[#0066ff]/20 flex items-center justify-center overflow-hidden shrink-0 border border-[#0066ff]/30">
+         {user?.avatar_url ? <img src={user.avatar_url} className="w-full h-full object-cover"/> : <MessageSquare className="w-5 h-5 text-[#0ea5e9]" />}
        </div>
        <h2 className="font-bold text-lg text-white">Chats</h2>
      </div>
@@ -449,7 +449,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder={t("search_chats", "Search or start new chat")} 
- className="w-full bg-[#005055] text-white border border-white/15 rounded-xl px-4 py-2 pl-9 text-sm focus:ring-1 focus:ring-[#fad503] focus:outline-none placeholder:text-white/50 transition-all"
+ className="w-full bg-[#005055] text-white border border-white/15 rounded-xl px-4 py-2 pl-9 text-sm focus:ring-1 focus:ring-[#0066ff] focus:outline-none placeholder:text-white/50 transition-all"
  />
  </div>
  </div>
@@ -480,14 +480,14 @@ export default function ClipadChat({ isDockedMode = false }) {
   key={room.id}
   className={cn(
   "flex items-center gap-3 px-3 py-3 transition-all duration-200 group relative",
-  isActive ? "bg-[#fad503] text-[#006065] rounded-xl font-bold shadow-md mx-2 my-1" : "hover:bg-white/10 text-white rounded-xl mx-2 my-1",
+  isActive ? "bg-[#0066ff] text-[#0066ff] rounded-xl font-bold shadow-md mx-2 my-1" : "hover:bg-white/10 text-white rounded-xl mx-2 my-1",
   isSidebarCollapsed && "justify-center px-1 mx-0"
   )}
  >
  <div className="flex-1 flex items-center gap-3 min-w-0 cursor-pointer" onClick={() => setActiveRoomId(room.id)}>
  <div className="relative flex-shrink-0" title={isSidebarCollapsed ? roomName : undefined}>
  {room.room_type === "group" ? (
- <div className={cn("w-12 h-12 rounded-full flex items-center justify-center overflow-hidden", isActive ? "bg-[#006065] text-[#fad503]" : "bg-white/10 text-[#fad503]")}>
+ <div className={cn("w-12 h-12 rounded-full flex items-center justify-center overflow-hidden", isActive ? "bg-[#0b0f19] text-[#0ea5e9]" : "bg-white/10 text-[#0ea5e9]")}>
  <Users className="w-6 h-6" />
  </div>
  ) : (
@@ -499,10 +499,10 @@ export default function ClipadChat({ isDockedMode = false }) {
  {!isSidebarCollapsed && (
  <div className="flex-1 min-w-0 pb-1">
   <div className="flex justify-between items-baseline mb-0.5">
-  <p className={cn("text-[15px] font-semibold truncate", isActive ? "text-[#006065]" : "text-white")}>{roomName}</p>
- <p className={cn("text-xs tracking-[0.04em]", isActive ? "text-[#006065]/80" : "text-white/60")}>{format(new Date(room.updated_at), 'h:mm a')}</p>
+  <p className={cn("text-[15px] font-semibold truncate", isActive ? "text-[#0066ff]" : "text-white")}>{roomName}</p>
+ <p className={cn("text-xs tracking-[0.04em]", isActive ? "text-[#0066ff]/80" : "text-white/60")}>{format(new Date(room.updated_at), 'h:mm a')}</p>
  </div>
- <p className={cn("text-xs truncate", isActive ? "text-[#006065]/80" : "text-white/60")}>Click to view messages...</p>
+ <p className={cn("text-xs truncate", isActive ? "text-[#0066ff]/80" : "text-white/60")}>Click to view messages...</p>
  </div>
  )}
  </div>
@@ -528,7 +528,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  <div className="flex flex-col items-center justify-center p-8 h-full text-center text-white/60">
  <p>No chats found.</p>
  { !isPortalUser && (
- <Button variant="link" className="text-[#fad503]" onClick={() => setIsAddChatOpen(true)}>Start a new chat</Button>
+ <Button variant="link" className="text-[#0ea5e9]" onClick={() => setIsAddChatOpen(true)}>Start a new chat</Button>
  )}
  </div>
  )}
@@ -537,7 +537,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  ) : (
     /* When docked, show compact sidebar */
     <div className={cn(
-      "flex flex-col bg-[#006065] text-white border-r border-white/10 transition-all duration-300 z-20 shrink-0",
+      "flex flex-col bg-[#0b0f19] text-white border-r border-white/10 transition-all duration-300 z-20 shrink-0",
       activeRoomId ? "hidden" : "w-full"
     )}>
       <div className="p-4 border-b border-white/10 flex items-center justify-between shrink-0">
@@ -545,13 +545,13 @@ export default function ClipadChat({ isDockedMode = false }) {
         <button onClick={() => {
           toggleChatDock();
           if (!isChatDocked && location.pathname === '/chat') navigate('/dashboard');
-        }} className="hidden md:block hover:text-[#fad503] transition-colors text-white/70 p-1" title="Undock Chat">
+        }} className="hidden md:block hover:text-[#0ea5e9] transition-colors text-white/70 p-1" title="Undock Chat">
           <ChevronsLeft className="w-5 h-5" />
         </button>
       </div>
       
       <div className="p-3 border-b border-white/10 shrink-0">
-        <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-[#005055] text-white border border-white/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#fad503] placeholder:text-white/50" />
+        <input type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full bg-[#005055] text-white border border-white/15 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#0066ff] placeholder:text-white/50" />
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
@@ -564,7 +564,7 @@ export default function ClipadChat({ isDockedMode = false }) {
             const isActive = activeRoomId === room.id;
 
             return (
-              <div key={room.id} className={cn("flex items-center gap-2 p-2 rounded-xl transition-colors group relative", isActive ? "bg-[#fad503] text-[#006065] font-bold" : "hover:bg-white/10 text-white")}>
+              <div key={room.id} className={cn("flex items-center gap-2 p-2 rounded-xl transition-colors group relative", isActive ? "bg-[#0066ff] text-[#0066ff] font-bold" : "hover:bg-white/10 text-white")}>
                 <div className="flex-1 flex items-center gap-2 min-w-0 cursor-pointer" onClick={() => setActiveRoomId(room.id)}>
                 <div className="relative flex-shrink-0">
                   {room.room_type === "group" ? (
@@ -572,7 +572,7 @@ export default function ClipadChat({ isDockedMode = false }) {
                       {room.avatar_url ? (
                         <img src={room.avatar_url} alt={roomName} className="w-full h-full object-cover" />
                       ) : (
-                        <Users className="w-5 h-5 text-[#fad503]" />
+                        <Users className="w-5 h-5 text-[#0ea5e9]" />
                       )}
                     </div>
                   ) : (
@@ -595,14 +595,14 @@ export default function ClipadChat({ isDockedMode = false }) {
 
  {/* Main Chat Area */}
  <div className={cn(
-   "flex-1 flex flex-col bg-[#00beac] relative w-full h-full",
+   "flex-1 flex flex-col bg-[#f8fafc] relative w-full h-full",
    !activeRoomId ? "hidden md:flex" : "flex"
  )}>
 
  {activeRoom ? (
  <>
   {/* Chat Header */}
-  <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#006065] text-white sticky top-0 z-10 shadow-md">
+  <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#0b0f19] text-white sticky top-0 z-10 shadow-md">
     <div className="flex items-center gap-3">
       <button onClick={() => setActiveRoomId(null)} className="md:hidden mr-1 p-2 rounded-full hover:bg-secondary text-white/80 hover:text-white">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 4l1.4 1.4L7.8 11H20v2H7.8l5.6 5.6L12 20l-8-8 8-8z"></path></svg>
@@ -718,7 +718,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  {/* Chat Messages */}
  <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-2 z-10">
  <div className="text-center my-2 flex justify-center">
- <span className="text-xs text-white/70 bg-[#006065] text-white border border-white/15 px-3 py-1.5 rounded-xl  tracking-[0.04em]">
+ <span className="text-xs text-white/70 bg-[#0b0f19] text-white border border-white/15 px-3 py-1.5 rounded-xl  tracking-[0.04em]">
  Messages and calls are end-to-end encrypted. No one outside of this chat, not even Slate, can read or listen to them.
  </span>
  </div>
@@ -750,25 +750,25 @@ export default function ClipadChat({ isDockedMode = false }) {
  <div className={cn(
  "relative px-3.5 py-2 text-[14.5px] leading-snug rounded-[14px] shadow-sm",
  isMe 
- ? "bg-[#fad503] text-[#006065] font-medium rounded-tr-none" 
- : "bg-[#006065] text-white border border-white/15 rounded-tl-none border border-black/5 dark:border-white/5"
+ ? "bg-[#0066ff] text-[#0066ff] font-medium rounded-tr-none" 
+ : "bg-[#0b0f19] text-white border border-white/15 rounded-tl-none border border-black/5 dark:border-white/5"
  )}>
  {msg.reply_to_id && (
- <div className="bg-black/20 border-l-4 border-[#fad503] rounded-md p-2 mb-1.5 text-xs opacity-90 cursor-pointer tracking-[0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
+ <div className="bg-black/20 border-l-4 border-[#0066ff] rounded-md p-2 mb-1.5 text-xs opacity-90 cursor-pointer tracking-[0.02em] hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" onClick={() => {
  const el = document.getElementById(`msg-${msg.reply_to_id}`);
  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center'});
 }}>
- <span className="font-bold text-[#fad503] block">{participantProfiles[messages.find(m => m.id === msg.reply_to_id)?.sender_id]?.full_name || 'User'}</span>
+ <span className="font-bold text-[#0ea5e9] block">{participantProfiles[messages.find(m => m.id === msg.reply_to_id)?.sender_id]?.full_name || 'User'}</span>
  <span className="truncate block max-w-[200px]">{messages.find(m => m.id === msg.reply_to_id)?.content || 'Message'}</span>
  </div>
  )}
  
  {!isMe && showTail && activeRoom?.name !== null && (
- <div className="text-[11px] font-bold text-[#fad503] mb-0.5">{senderName}</div>
+ <div className="text-[11px] font-bold text-[#0ea5e9] mb-0.5">{senderName}</div>
  )}
 
  {showTail && (
- <svg viewBox="0 0 8 13" width="8" height="13" className={cn("absolute top-0", isMe ? "-right-2 text-[#d9fdd3] dark:text-primary/80" : "-left-2 text-[#006065]")}>
+ <svg viewBox="0 0 8 13" width="8" height="13" className={cn("absolute top-0", isMe ? "-right-2 text-[#d9fdd3] dark:text-primary/80" : "-left-2 text-[#0066ff]")}>
  <path opacity="0.13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z" />
  <path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z" />
  </svg>
@@ -823,7 +823,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="p-0.5 bg-white/70 hover:bg-[#006065] text-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-white/70 dark:text-foreground backdrop-blur-sm shadow-sm transition-all" title="Message Options">
+        <button className="p-0.5 bg-white/70 hover:bg-[#0b0f19] text-white dark:bg-black/40 dark:hover:bg-black/80 rounded-full text-white/70 dark:text-foreground backdrop-blur-sm shadow-sm transition-all" title="Message Options">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
         </button>
       </DropdownMenuTrigger>
@@ -859,7 +859,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  </div>
 
  {(replyTo || editingMsg) && (
- <div className="px-4 py-2 bg-[#006065] text-white border-t border-white/10 backdrop-blur-md border-t border-black/5 dark:border-white/5 flex items-center justify-between z-10 text-sm">
+ <div className="px-4 py-2 bg-[#0b0f19] text-white border-t border-white/10 backdrop-blur-md border-t border-black/5 dark:border-white/5 flex items-center justify-between z-10 text-sm">
  <div className="flex-1 min-w-0 border-l-4 border-primary pl-3">
  <p className="font-semibold text-primary">{editingMsg ? "Editing Message" : `Replying to ${participantProfiles[replyTo?.sender_id]?.full_name || 'User'}`}</p>
  <p className="text-[#71717a] dark:text-gray-400 truncate">{editingMsg ? editingMsg.content : replyTo?.content}</p>
@@ -871,7 +871,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  )}
 
  {/* Input Area */}
- <div className="px-4 pt-3 pb-[80px] md:pb-4 bg-[#006065] text-white border-t border-white/10 shadow-xl backdrop-blur-xl z-10 flex items-center gap-2 border-t border-black/5 dark:border-white/5 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.2)]">
+ <div className="px-4 pt-3 pb-[80px] md:pb-4 bg-[#0b0f19] text-white border-t border-white/10 shadow-xl backdrop-blur-xl z-10 flex items-center gap-2 border-t border-black/5 dark:border-white/5 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.2)]">
  <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => handleFileUpload(e, 'file')} />
  <input type="file" accept="image/*" id="chat-image-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'image')} />
  <input type="file" accept=".pdf,.doc,.docx,.txt" id="chat-doc-upload" className="hidden" onChange={(e) => handleFileUpload(e, 'doc')} />
@@ -927,7 +927,7 @@ export default function ClipadChat({ isDockedMode = false }) {
  onClick={handleSend}
  disabled={!inputValue.trim()}
  size="icon" 
- className="w-11 h-11 rounded-full bg-[#fad503] text-[#006065] hover:bg-[#fad503]/90 shrink-0 shadow-lg transition-all hover:scale-105 active:scale-95"
+ className="w-11 h-11 rounded-full bg-[#0066ff] text-[#0066ff] hover:bg-[#0066ff]/90 shrink-0 shadow-lg transition-all hover:scale-105 active:scale-95"
  >
  <Send className="w-4 h-4 ml-0.5" />
  </Button>

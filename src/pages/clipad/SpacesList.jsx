@@ -211,7 +211,7 @@ export default function SpacesList() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#00beac] text-white page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f8fafc] text-white page-enter overflow-x-hidden pb-24 md:pb-8">
 
 
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
@@ -227,7 +227,7 @@ export default function SpacesList() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search spaces..."
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#006065] text-white border border-white/15/80 placeholder:text-white/60 shadow-sm focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#0b0f19] text-white border border-white/15/80 placeholder:text-white/60 shadow-sm focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
               />
             </div>
             {isAdminUser && (
@@ -239,7 +239,7 @@ export default function SpacesList() {
               </button>
             )}
             {canCreateSpaces(user) && (
-              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#fad503] hover:bg-[#e6c402] text-white font-bold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
+              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0066ff] hover:bg-[#e6c402] text-white font-bold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
                 <Plus className="w-4 h-4" /> New Space
               </button>
             )}
@@ -256,7 +256,7 @@ export default function SpacesList() {
             <h3 className="text-xl font-bold text-white/70 mb-2">No spaces yet</h3>
             <p className="text-white/60 mb-6 text-sm">Create a space for your first team or project.</p>
             {canCreateSpaces(user) && (
-              <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold text-sm shadow-md transition-all">
+              <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-[#0066ff] hover:bg-[#0066ff]/90 text-[#0066ff] font-bold text-sm shadow-md transition-all">
                 Create your first space
               </button>
             )}
@@ -274,7 +274,7 @@ export default function SpacesList() {
                   <div
                     key={space.id}
                     onClick={() => navigate(`/spaces/${space.id}`)}
-                    className={`group p-5 rounded-2xl bg-[#006065] text-white border border-white/15 rounded-3xl shadow-[0_2px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md relative overflow-hidden ${
+                    className={`group p-5 rounded-2xl bg-[#0b0f19] text-white border border-white/15 rounded-3xl shadow-[0_2px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:border-primary/50 dark:hover:border-primary/50 cursor-pointer transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md relative overflow-hidden ${
                       isRestricted
                         ? 'border-white/15 dark:border-white/15 opacity-80 hover:opacity-95'
                         : 'border-white/15 dark:border-white/15'
@@ -283,7 +283,7 @@ export default function SpacesList() {
                     {/* Locked overlay for restricted private spaces */}
                     {isRestricted && (
                       <div className="absolute inset-0 z-10 bg-gradient-to-br from-slate-50/80 to-slate-100/60 dark:from-slate-950/80 dark:to-slate-900/60 backdrop-blur-[1px] flex flex-col items-center justify-center gap-2 rounded-2xl">
-                        <div className="w-10 h-10 rounded-full bg-[#006065] text-white dark:bg-secondary border border-white/15 dark:border-white/15 flex items-center justify-center shadow-sm">
+                        <div className="w-10 h-10 rounded-full bg-[#0b0f19] text-white dark:bg-secondary border border-white/15 dark:border-white/15 flex items-center justify-center shadow-sm">
                           <Lock className="w-5 h-5 text-white/60" />
                         </div>
                         <span className="text-xs font-semibold text-white/70">Private — Request Access</span>
@@ -327,7 +327,7 @@ export default function SpacesList() {
       {/* Create Space Modal */}
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-[#006065] text-white border border-white/15 border-white/15 dark:border-white/15 rounded-3xl p-8 max-w-md w-full shadow-2xl">
+          <div className="bg-[#0b0f19] text-white border border-white/15 border-white/15 dark:border-white/15 rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <h2 className="text-xl font-bold text-white mb-1">Create a Space</h2>
             <p className="text-sm text-white/70 mb-6">A persistent room for your team, project, or recurring meetings.</p>
             <form onSubmit={createSpace} className="space-y-4">
@@ -354,7 +354,7 @@ export default function SpacesList() {
               
               <div onClick={() => setIsPrivate(!isPrivate)} className="flex items-center gap-3 cursor-pointer p-3 rounded-xl border border-white/15 bg-white/5/50 hover:bg-white/5 dark:hover:bg-slate-800 transition-colors">
                 <div className={`w-10 h-6 rounded-full transition-colors relative ${isPrivate ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-[#006065] text-white border border-white/15 shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-[#0b0f19] text-white border border-white/15 shadow transition-all ${isPrivate ? 'left-5' : 'left-1'}`} />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold text-white flex items-center gap-1.5">
@@ -365,8 +365,8 @@ export default function SpacesList() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-[#006065] text-white dark:bg-secondary hover:bg-white/5 dark:hover:bg-slate-700 text-white/90 dark:text-foreground font-semibold text-sm transition-all border border-white/15 dark:border-white/15 shadow-sm">Cancel</button>
-                <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-[#fad503] hover:bg-[#fad503]/90 text-[#006065] font-bold text-sm transition-all shadow-md disabled:opacity-60">
+                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-3 rounded-xl bg-[#0b0f19] text-white dark:bg-secondary hover:bg-white/5 dark:hover:bg-slate-700 text-white/90 dark:text-foreground font-semibold text-sm transition-all border border-white/15 dark:border-white/15 shadow-sm">Cancel</button>
+                <button type="submit" disabled={creating} className="flex-1 py-3 rounded-xl bg-[#0066ff] hover:bg-[#0066ff]/90 text-[#0066ff] font-bold text-sm transition-all shadow-md disabled:opacity-60">
                   {creating ? 'Creating...' : 'Create Space'}
                 </button>
               </div>

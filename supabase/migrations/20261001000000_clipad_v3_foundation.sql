@@ -1,5 +1,5 @@
 -- ──────────────────────────────────────────────────────────────────
--- CLIPAD V3 — PHASE 1 FOUNDATION MIGRATION
+-- CLIPAD V3 — PHASE 1 FOUNDATION MIGRATION (STRICT MULTI-TENANT SECURITY)
 -- Non-Destructive Extension of Existing Schema for Clipad V3
 -- ──────────────────────────────────────────────────────────────────
 
@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS public.clipad_v3_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id UUID REFERENCES public.companies(id) ON DELETE CASCADE,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
-  event_type TEXT NOT NULL, -- e.g. 'capture.created', 'knowledge.created', 'decision.detected'
-  source_domain TEXT NOT NULL, -- e.g. 'Capture', 'Memory', 'Intelligence'
+  event_type TEXT NOT NULL,
+  source_domain TEXT NOT NULL,
   payload JSONB DEFAULT '{}'::jsonb,
   trace_id UUID DEFAULT gen_random_uuid(),
   processed_at TIMESTAMPTZ,
@@ -59,22 +59,85 @@ CREATE TABLE IF NOT EXISTS public.clipad_v3_events (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 5. Indexes for V3 Queries
+-- Indexes for performance & tenant filtering
 CREATE INDEX IF NOT EXISTS idx_clipad_v3_flags_comp ON public.clipad_v3_feature_flags(company_id, flag_key);
 CREATE INDEX IF NOT EXISTS idx_clipad_v3_memories_tier ON public.clipad_v3_memories(company_id, memory_tier, is_active);
+CREATE INDEX IF NOT EXISTS idx_clipad_v3_memories_user ON public.clipad_v3_memories(user_id, memory_tier);
 CREATE INDEX IF NOT EXISTS idx_clipad_v3_events_type ON public.clipad_v3_events(company_id, event_type, created_at DESC);
 
--- Enable RLS
+-- Enable Row Level Security
 ALTER TABLE public.clipad_v3_feature_flags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.clipad_v3_memories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.clipad_v3_events ENABLE ROW LEVEL SECURITY;
 
--- Permissive RLS policies for authenticated tenant users
+-- ──────────────────────────────────────────────────────────────────
+-- STRICT MULTI-TENANT ROW LEVEL SECURITY POLICIES
+-- ──────────────────────────────────────────────────────────────────
+
+-- Drop legacy broad policies if present
+DROP POLICY IF EXISTS clipad_v3_flags_select ON public.clipad_v3_feature_flags;
+DROP POLICY IF EXISTS clipad_v3_memories_select ON public.clipad_v3_memories;
+DROP POLICY IF EXISTS clipad_v3_events_select ON public.clipad_v3_events;
+
+-- 1. Feature Flags Policies
 CREATE POLICY clipad_v3_flags_select ON public.clipad_v3_feature_flags
-  FOR SELECT USING (auth.uid() IS NOT NULL);
+  FOR SELECT USING (
+    company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid())
+    OR user_id = auth.uid()
+  );
 
+CREATE POLICY clipad_v3_flags_insert ON public.clipad_v3_feature_flags
+  FOR INSERT WITH CHECK (
+    user_id = auth.uid()
+    OR company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid() AND role IN ('super_admin', 'admin'))
+  );
+
+CREATE POLICY clipad_v3_flags_update ON public.clipad_v3_feature_flags
+  FOR UPDATE USING (
+    user_id = auth.uid()
+    OR company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid() AND role IN ('super_admin', 'admin'))
+  );
+
+-- 2. Memory Isolation Policies (Personal vs Team vs Org Isolation)
 CREATE POLICY clipad_v3_memories_select ON public.clipad_v3_memories
-  FOR SELECT USING (auth.uid() IS NOT NULL);
+  FOR SELECT USING (
+    (memory_tier = 'personal' AND user_id = auth.uid())
+    OR
+    (memory_tier IN ('team', 'organizational') AND company_id IN (
+      SELECT company_id FROM public.profiles WHERE id = auth.uid()
+    ))
+  );
 
+CREATE POLICY clipad_v3_memories_insert ON public.clipad_v3_memories
+  FOR INSERT WITH CHECK (
+    user_id = auth.uid()
+    AND company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid())
+  );
+
+CREATE POLICY clipad_v3_memories_update ON public.clipad_v3_memories
+  FOR UPDATE USING (
+    (memory_tier = 'personal' AND user_id = auth.uid())
+    OR company_id IN (
+      SELECT company_id FROM public.profiles WHERE id = auth.uid() AND role IN ('super_admin', 'admin')
+    )
+  );
+
+CREATE POLICY clipad_v3_memories_delete ON public.clipad_v3_memories
+  FOR DELETE USING (
+    (memory_tier = 'personal' AND user_id = auth.uid())
+    OR company_id IN (
+      SELECT company_id FROM public.profiles WHERE id = auth.uid() AND role IN ('super_admin', 'admin')
+    )
+  );
+
+-- 3. Event Bus Audit Policies
 CREATE POLICY clipad_v3_events_select ON public.clipad_v3_events
-  FOR SELECT USING (auth.uid() IS NOT NULL);
+  FOR SELECT USING (
+    company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid())
+  );
+
+CREATE POLICY clipad_v3_events_insert ON public.clipad_v3_events
+  FOR INSERT WITH CHECK (
+    company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid())
+    OR user_id = auth.uid()
+  );

@@ -84,12 +84,12 @@ export default function CompanyManagement() {
       <div className="flex flex-col h-full bg-transparent  p-4 sm:p-6 md:p-8 animate-pulse">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <div className="h-8 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
-            <div className="h-4 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
+            <div className="h-8 bg-[#0b0f19] text-white border border-white/15/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-[#0b0f19] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
           </div>
-          <div className="h-10 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
+          <div className="h-10 bg-[#0b0f19] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
         </div>
-        <div className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-64 mb-8"></div>
+        <div className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] p-6 rounded-2xl h-64 mb-8"></div>
       </div>
     );
   }
@@ -124,7 +124,7 @@ export default function CompanyManagement() {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="capitalize px-2 py-1 bg-[#006065] text-white border border-white/15/10 dark:bg-secondary text-white/80 dark:text-foreground rounded-md text-xs font-medium">
+                  <span className="capitalize px-2 py-1 bg-[#0b0f19] text-white border border-white/15/10 dark:bg-secondary text-white/80 dark:text-foreground rounded-md text-xs font-medium">
                     {company.subscription_plan || 'N/A'}
                   </span>
                 </TableCell>

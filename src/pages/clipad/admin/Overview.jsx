@@ -75,17 +75,17 @@ export default function Overview() {
       <div className="flex flex-col h-full bg-transparent  p-4 sm:p-6 md:p-8 animate-pulse">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <div className="h-8 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
-            <div className="h-4 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
+            <div className="h-8 bg-[#0b0f19] text-white border border-white/15/15 dark:bg-slate-800 rounded w-48 mb-2"></div>
+            <div className="h-4 bg-[#0b0f19] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
           </div>
-          <div className="h-10 bg-[#006065] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
+          <div className="h-10 bg-[#0b0f19] text-white border border-white/15/15 dark:bg-slate-800 rounded w-32"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-32"></div>
+            <div key={i} className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] p-6 rounded-2xl h-32"></div>
           ))}
         </div>
-        <div className="bg-[#006065] text-white dark:bg-[#006065] p-6 rounded-2xl h-64 mb-8"></div>
+        <div className="bg-[#0b0f19] text-white dark:bg-[#0b0f19] p-6 rounded-2xl h-64 mb-8"></div>
       </div>
     );
   }
@@ -148,7 +148,7 @@ export default function Overview() {
           <CardContent className="flex-1 overflow-y-auto max-h-[380px] space-y-1">
             {recentActivities.length > 0 ? (
               recentActivities.map((log) => {
-                const meta = ACTION_ICONS[log.action] || { icon: Activity, color: 'text-white/70', bg: 'bg-[#006065] text-white border border-white/15/10 dark:bg-secondary' };
+                const meta = ACTION_ICONS[log.action] || { icon: Activity, color: 'text-white/70', bg: 'bg-[#0b0f19] text-white border border-white/15/10 dark:bg-secondary' };
                 const Icon = meta.icon;
                 return (
                   <div key={log.id} className="flex items-start gap-3 py-2.5 border-b border-border last:border-0">
@@ -208,7 +208,7 @@ export default function Overview() {
                       'px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0 ml-3',
                       clipadPlan.toLowerCase().includes('enterprise') ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400' :
                       clipadPlan.toLowerCase().includes('pro') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                      'bg-[#006065] text-white border border-white/15/10 text-white/80 dark:bg-secondary dark:text-muted-foreground'
+                      'bg-[#0b0f19] text-white border border-white/15/10 text-white/80 dark:bg-secondary dark:text-muted-foreground'
                     )}>
                       {clipadPlan}
                     </span>
