@@ -56,7 +56,7 @@ export default function ClipadLayout() {
   const isImmersive = false;
 
   return (
-    <div data-theme="coolors" className="flex flex-row h-[100dvh] w-full overflow-hidden bg-[#f8fafc] text-[#0f172a] pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
+    <div data-theme="brand" className="flex flex-row h-[100dvh] w-full overflow-hidden bg-[#f8fafc] text-[#0f172a] pt-[var(--sat)] pb-[var(--sab)] pl-[var(--sal)] pr-[var(--sar)]">
       
       {/* Premium Sidebar Component */}
       <ClipadSidebar forceMobile={forceMobile} />
@@ -90,7 +90,7 @@ export default function ClipadLayout() {
       {isChatDocked && location.pathname !== '/chat' && (
         <div 
           style={{ width: `${dockWidth}px` }} 
-          className="hidden md:flex flex-col h-full bg-[#0b0f19] border-l border-white/15 shrink-0 relative z-30 shadow-2xl transition-all"
+          className="hidden md:flex flex-col h-full bg-[#006065] border-l border-white/15 shrink-0 relative z-30 shadow-2xl transition-all"
         >
           <DockResizer />
           <React.Suspense fallback={<div className="p-4 text-white">Loading chat...</div>}>

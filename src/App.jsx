@@ -206,12 +206,12 @@ class ErrorBoundary extends React.Component {
       if (isChunkError) {
         return (
           <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col items-center justify-center p-6 font-sans">
-            <div className="hidden md:flex bg-[#0b0f19] p-8 md:p-12 rounded-[24px] border border-white/10 shadow-xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#0066ff]"></div>
+            <div className="hidden md:flex bg-[#006065] p-8 md:p-12 rounded-[24px] border border-white/10 shadow-xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#00beac]"></div>
               
               <div className="w-20 h-20 relative flex items-center justify-center mb-6">
                  <div className="absolute inset-0 rounded-full border-4 border-white/10" />
-                 <div className="absolute inset-0 rounded-full border-4 border-[#0066ff] border-t-transparent animate-spin" />
+                 <div className="absolute inset-0 rounded-full border-4 border-[#00beac] border-t-transparent animate-spin" />
                  {(() => {
                    let logoSrc = '/optavel-favicon.svg';
                    try {
@@ -232,12 +232,12 @@ class ErrorBoundary extends React.Component {
               
               {this.state.isUpdating ? (
                 <div className="w-full bg-white/10 rounded-full h-2.5 mb-2 overflow-hidden">
-                  <div className="bg-[#0066ff] h-2.5 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                  <div className="bg-[#00beac] h-2.5 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
                 </div>
               ) : (
                 <button 
                   onClick={this.handleUpdate} 
-                  className="w-full py-4 px-6 bg-[#0066ff] hover:bg-[#0066ff]/90 text-[#0066ff] font-bold rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full py-4 px-6 bg-[#00beac] hover:bg-[#00beac]/90 text-[#00beac] font-bold rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Refresh Page
                 </button>
@@ -246,8 +246,8 @@ class ErrorBoundary extends React.Component {
 
             {/* Native Mobile Version */}
             <div className="md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto">
-               <div className="w-16 h-16 bg-[#0b0f19] rounded-3xl shadow-xl border border-white/10 flex items-center justify-center mb-6 animate-bounce">
-                  <svg className="w-8 h-8 text-[#0ea5e9] animate-spin" fill="none" viewBox="0 0 24 24">
+               <div className="w-16 h-16 bg-[#006065] rounded-3xl shadow-xl border border-white/10 flex items-center justify-center mb-6 animate-bounce">
+                  <svg className="w-8 h-8 text-[#fad503] animate-spin" fill="none" viewBox="0 0 24 24">
                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -262,14 +262,14 @@ class ErrorBoundary extends React.Component {
                {this.state.isUpdating ? (
                  <div className="w-full mb-4">
                    <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden shadow-inner">
-                     <div className="bg-[#0066ff] h-3 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                     <div className="bg-[#00beac] h-3 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
                    </div>
                    <div className="text-center text-xs text-white/70 font-bold mt-3">{this.state.updateProgress}%</div>
                  </div>
                ) : (
                  <button 
                    onClick={this.handleUpdate} 
-                   className="w-full py-4 bg-[#0066ff] text-[#0066ff] font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
+                   className="w-full py-4 bg-[#00beac] text-[#00beac] font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
                  >
                    Tap to Update Now
                  </button>

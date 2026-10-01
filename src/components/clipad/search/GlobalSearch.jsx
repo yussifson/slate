@@ -578,7 +578,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         <div className="hidden md:block w-full max-w-sm rounded-full p-[1.5px] bg-gradient-to-r from-blue-500 to-pink-500 hover:shadow-md transition-shadow cursor-text group">
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center h-10 w-full bg-[#0b0f19] rounded-full px-4 text-white/60 hover:text-white transition-colors"
+            className="flex items-center h-10 w-full bg-[#006065] rounded-full px-4 text-white/60 hover:text-white transition-colors"
           >
             <Search className="w-[18px] h-[18px] shrink-0 text-white/60" />
             <div className="w-[1px] h-5 bg-white/20 mx-3 shrink-0" />
@@ -598,7 +598,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6 bg-[#0b0f19]/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6 bg-[#006065]/80 backdrop-blur-sm"
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <style>{`
@@ -631,7 +631,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               <button
                 onClick={() => handleSearch(undefined, false)}
                 title="Press Enter to ask AI"
-                className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#0ea5e9] bg-[#0066ff]/10 px-2 py-1 rounded-lg border border-[#0066ff]/30 hover:bg-[#0066ff]/20 transition-colors"
+                className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#fad503] bg-[#00beac]/10 px-2 py-1 rounded-lg border border-[#00beac]/30 hover:bg-[#00beac]/20 transition-colors"
               >
                 <Sparkles className="w-3 h-3" /> Ask AI
               </button>
@@ -644,7 +644,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               <ExternalLink className="w-4 h-4" />
             </button>
             {isSynthesizing && (
-              <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#0ea5e9] bg-[#0066ff]/10 px-2 py-1 rounded-lg border border-[#0066ff]/30 animate-pulse">
+              <span className="shrink-0 flex items-center gap-1 text-[11px] font-bold text-[#fad503] bg-[#00beac]/10 px-2 py-1 rounded-lg border border-[#00beac]/30 animate-pulse">
                 <Sparkles className="w-3 h-3 animate-spin" /> AI thinking…
               </span>
             )}
@@ -661,7 +661,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         </div>
 
         {/* Results Panel */}
-        <div className="bg-[#0b0f19] rounded-b-xl shadow-xl border-x border-b border-white/10 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
+        <div className="bg-[#006065] rounded-b-xl shadow-xl border-x border-b border-white/10 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
 
           {/* Filters Row + Scope Badge */}
           <div className="px-6 py-3 border-b border-white/10 flex items-center gap-3 flex-wrap">
@@ -672,7 +672,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                   onClick={() => setSelectedFilter(tab.id)}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                     selectedFilter === tab.id
-                      ? 'bg-[#0066ff] text-[#0066ff] font-bold'
+                      ? 'bg-[#00beac] text-[#00beac] font-bold'
                       : 'bg-white/10 border border-white/15 text-white/70 hover:bg-white/20 hover:text-white'
                   }`}
                 >

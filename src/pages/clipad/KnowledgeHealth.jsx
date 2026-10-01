@@ -178,7 +178,7 @@ export default function KnowledgeHealth() {
           { title: 'Tasks Completed', value: rawCounts?.completed || 0, desc: 'Resolved action items', icon: Target, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-500/10' },
           { title: 'Imported Data', value: rawCounts?.imported || 0, desc: 'From external integrations', icon: Sparkles, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
         ].map((stat, i) => (
-          <div key={i} className="p-6 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-primary/30 transition-colors">
+          <div key={i} className="p-6 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm flex flex-col hover:border-primary/30 transition-colors">
             <div className="flex justify-between items-start mb-4">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${stat.bg} ${stat.color}`}>
                 <stat.icon className="w-6 h-6" />
@@ -194,7 +194,7 @@ export default function KnowledgeHealth() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         
         {/* Radar Chart */}
-        <div className="lg:col-span-2 p-4 md:p-8 rounded-3xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm flex flex-col relative overflow-hidden">
+        <div className="lg:col-span-2 p-4 md:p-8 rounded-3xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm flex flex-col relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
           <h3 className="text-xl font-bold mb-1 relative z-10">Operational Vectors</h3>
           <p className="text-sm text-white/70 mb-6 relative z-10">Calculated from your raw organizational data</p>
@@ -312,7 +312,7 @@ export default function KnowledgeHealth() {
                const IconCmp = isWarning ? ShieldAlert : isSuggestion ? BrainCircuit : TrendingUp;
 
                return (
-                 <div key={idx} className="p-5 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm flex flex-col gap-3 hover:border-primary/30 transition-colors relative overflow-hidden">
+                 <div key={idx} className="p-5 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm flex flex-col gap-3 hover:border-primary/30 transition-colors relative overflow-hidden">
                    {isWarning && <div className="absolute top-0 left-0 right-0 h-1 bg-red-500" />}
                    {isSuggestion && <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500" />}
                    {!isWarning && !isSuggestion && <div className="absolute top-0 left-0 right-0 h-1 bg-amber-500" />}
@@ -342,7 +342,7 @@ export default function KnowledgeHealth() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {risks.map((risk, idx) => (
-              <div key={idx} className="p-5 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-rose-200 dark:border-rose-900/50 shadow-sm flex flex-col gap-3 hover:border-rose-300 transition-colors relative overflow-hidden">
+              <div key={idx} className="p-5 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] border border-rose-200 dark:border-rose-900/50 shadow-sm flex flex-col gap-3 hover:border-rose-300 transition-colors relative overflow-hidden">
                 <div className={`absolute top-0 left-0 right-0 h-1 ${risk.severity === 'critical' ? 'bg-rose-600' : risk.severity === 'high' ? 'bg-rose-500' : 'bg-orange-400'}`} />
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${risk.severity === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-orange-50 text-orange-600'}`}>
@@ -363,7 +363,7 @@ export default function KnowledgeHealth() {
       )}
 
       {/* Metrics Glossary */}
-      <div className="mt-4 p-6 rounded-3xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] border border-white/15 dark:border-white/15 shadow-sm">
+      <div className="mt-4 p-6 rounded-3xl bg-[#006065] text-white dark:bg-[#006065] border border-white/15 dark:border-white/15 shadow-sm">
         <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
           <Info className="w-5 h-5 text-indigo-500" />
           Metrics Glossary

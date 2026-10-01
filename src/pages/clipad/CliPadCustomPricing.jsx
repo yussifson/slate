@@ -247,7 +247,7 @@ export default function CliPadCustomPricing() {
             </button>
             <Link
               to={user ? '/dashboard' : '/login'}
-              className="text-xs font-bold px-4 py-2 rounded-xl bg-[#0b0f19] hover:bg-slate-800 text-white dark:bg-[#0b0f19] text-white dark:hover:bg-white/15 dark:text-white transition-all shadow-sm"
+              className="text-xs font-bold px-4 py-2 rounded-xl bg-[#006065] hover:bg-slate-800 text-white dark:bg-[#006065] text-white dark:hover:bg-white/15 dark:text-white transition-all shadow-sm"
             >
               {user ? 'Go to Dashboard' : 'Sign In'}
             </Link>
@@ -259,7 +259,7 @@ export default function CliPadCustomPricing() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 md:px-8 py-10 md:py-16">
         {submittedRequest ? (
           /* SUCCESS CONFIRMATION */
-          <div className="max-w-xl mx-auto bg-[#0b0f19] text-white dark:bg-[#111625] border border-white/15 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-300">
+          <div className="max-w-xl mx-auto bg-[#006065] text-white dark:bg-[#111625] border border-white/15 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-xl text-center animate-in fade-in zoom-in-95 duration-300">
             <div className="w-16 h-16 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-2xl mx-auto flex items-center justify-center mb-6">
               <CheckCircle2 className="w-8 h-8" />
             </div>
@@ -386,7 +386,7 @@ export default function CliPadCustomPricing() {
             </div>
 
             {/* Right Column: Clean, High-Converting Form Card */}
-            <div className="lg:col-span-7 bg-[#0b0f19] text-white dark:bg-[#111625] border border-white/15 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-sm">
+            <div className="lg:col-span-7 bg-[#006065] text-white dark:bg-[#111625] border border-white/15 dark:border-white/10 rounded-3xl p-6 md:p-8 shadow-sm">
               <div className="mb-6">
                 <h2 className="text-xl font-bold tracking-tight text-foreground">Contact Enterprise Sales</h2>
                 <p className="text-xs text-muted-foreground mt-1">

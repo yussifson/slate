@@ -23,7 +23,7 @@ const CHART_COLORS = [
  '#6366f1', '#8b5cf6', '#a78bfa', '#c084fc',
  '#818cf8', '#7c3aed', '#6d28d9', '#5b21b6',
  '#4f46e5', '#4338ca', '#3730a3', '#312e81',
- '#0ea5e9', '#06b6d4', '#14b8a6', '#10b981',
+ '#fad503', '#06b6d4', '#14b8a6', '#10b981',
  '#22c55e', '#84cc16', '#eab308', '#f97316',
  '#ef4444', '#ec4899', '#f43f5e', '#e11d48',
 ];
@@ -346,7 +346,7 @@ export default function DynamicReportView({ data = [], fieldDefinitions = [], on
  label="Data Fields"
  value={fieldDefinitions.length}
  subtitle={`${selectFields.length} categorical`}
- gradient="linear-gradient(135deg, #0ea5e9, #06b6d4)"
+ gradient="linear-gradient(135deg, #fad503, #06b6d4)"
  delay={50}
  />
  <StatCard

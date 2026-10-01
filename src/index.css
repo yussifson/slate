@@ -26,39 +26,39 @@ html, body {
 @layer base {
   :root, .light {
     --font-inter: 'Inter', sans-serif;
-    --background: 210 40% 98%; /* #F8FAFC Soft Slate Canvas */
+    --background: 210 40% 98%; /* #F8FAFC Off-White Soft Slate Canvas */
     --foreground: 222 47% 11%; /* #0F172A Dark Charcoal Slate */
     --card: 0 0% 100%; /* #FFFFFF Pure White Cards */
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 217 100% 50%; /* #0066FF Electric Royal Blue */
+    --primary: 174 100% 37%; /* #00BEAC Teal Action */
     --primary-foreground: 0 0% 100%;
-    --secondary: 199 89% 48%; /* #0EA5E9 Vivid Sky Blue */
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 48 98% 50%; /* #FAD503 Gold Accent */
+    --secondary-foreground: 182 100% 20%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 199 89% 48%; /* #0EA5E9 Sky Blue */
-    --accent-foreground: 0 0% 100%;
+    --accent: 48 98% 50%; /* #FAD503 Gold Accent */
+    --accent-foreground: 182 100% 20%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 217 100% 50%;
-    --chart-1: 217 100% 50%;
-    --chart-2: 199 89% 48%;
-    --chart-3: 45 100% 70%;
+    --ring: 174 100% 37%;
+    --chart-1: 174 100% 37%;
+    --chart-2: 48 98% 50%;
+    --chart-3: 182 100% 20%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 1rem;
-    --sidebar-background: 222 47% 7%; /* #0B0F19 Dark Obsidian Slate */
+    --sidebar-background: 182 100% 20%; /* #006065 Deep Teal Navigation */
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 217 100% 50%; /* #0066FF Electric Blue */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 40% 15%;
+    --sidebar-primary: 48 98% 50%; /* #FAD503 Gold Accent */
+    --sidebar-primary-foreground: 182 100% 20%;
+    --sidebar-accent: 182 80% 15%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 30% 18%;
-    --sidebar-ring: 217 100% 50%;
+    --sidebar-border: 182 70% 18%;
+    --sidebar-ring: 48 98% 50%;
     --bg-base-rgb: 248, 250, 252;
   }
 
@@ -74,50 +74,50 @@ html, body {
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 217 100% 50%;
+    --primary: 174 100% 37%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 199 89% 48%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 48 98% 50%;
+    --secondary-foreground: 182 100% 20%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 199 89% 48%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 48 98% 50%;
+    --accent-foreground: 182 100% 20%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 217 100% 50%;
+    --ring: 174 100% 37%;
 
-    --sidebar-background: 222 47% 7%;
+    --sidebar-background: 182 100% 20%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 217 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 40% 15%;
+    --sidebar-primary: 48 98% 50%;
+    --sidebar-primary-foreground: 182 100% 20%;
+    --sidebar-accent: 182 80% 15%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 30% 18%;
-    --sidebar-ring: 217 100% 50%;
+    --sidebar-border: 182 70% 18%;
+    --sidebar-ring: 48 98% 50%;
   }
 }
 
-/* Custom Utilities for Coolors Palette */
-.coolors-canvas {
+/* Custom Utilities for Deep Teal Palette */
+.brand-canvas {
   background-color: #f8fafc;
 }
 
-.coolors-sidebar {
-  background-color: #0b0f19;
+.brand-nav {
+  background-color: #006065;
   color: #ffffff;
 }
 
-.coolors-primary-btn {
-  background-color: #0066ff;
+.brand-teal-btn {
+  background-color: #00beac;
   color: #ffffff;
   font-weight: 700;
 }
 
-.coolors-primary-btn:hover {
-  background-color: #0052cc;
+.brand-teal-btn:hover {
+  background-color: #00a898;
 }
 
-.coolors-accent-badge {
-  background-color: #0ea5e9;
-  color: #ffffff;
+.brand-gold-accent {
+  background-color: #fad503;
+  color: #006065;
 }

@@ -25,21 +25,26 @@ files.forEach(filePath => {
   let content = fs.readFileSync(filePath, 'utf8');
   let original = content;
 
-  // Replace green theme hexes with Coolors.co palette
-  content = content.replace(/bg-\[\#006065\]/g, 'bg-[#0b0f19]');
-  content = content.replace(/text-\[\#006065\]/g, 'text-[#0066ff]');
-  content = content.replace(/border-\[\#006065\]/g, 'border-slate-800');
-  content = content.replace(/\#006065/gi, '#0b0f19');
+  // Replace blue palette hexes back to Deep Teal / Teal / Gold brand theme
+  // #0b0f19 -> #006065 (Deep Teal)
+  // #0066ff -> #00beac (Teal Action Button) or #006065 (if surface)
+  // #0ea5e9 -> #fad503 (Gold Accent)
 
-  content = content.replace(/bg-\[\#00beac\]/g, 'bg-[#f8fafc]');
-  content = content.replace(/text-\[\#00beac\]/g, 'text-[#0066ff]');
-  content = content.replace(/border-\[\#00beac\]/g, 'border-slate-200');
-  content = content.replace(/\#00beac/gi, '#0066ff');
+  // Explicit replacements for Tailwind arbitrary classes
+  content = content.replace(/bg-\[\#0b0f19\]/g, 'bg-[#006065]');
+  content = content.replace(/text-\[\#0b0f19\]/g, 'text-[#006065]');
+  content = content.replace(/border-\[\#0b0f19\]/g, 'border-white/10');
+  content = content.replace(/\#0b0f19/gi, '#006065');
 
-  content = content.replace(/bg-\[\#fad503\]/g, 'bg-[#0066ff]');
-  content = content.replace(/text-\[\#fad503\]/g, 'text-[#0ea5e9]');
-  content = content.replace(/border-\[\#fad503\]/g, 'border-[#0066ff]');
-  content = content.replace(/\#fad503/gi, '#0066ff');
+  content = content.replace(/bg-\[\#0066ff\]/g, 'bg-[#00beac]');
+  content = content.replace(/text-\[\#0066ff\]/g, 'text-[#00beac]');
+  content = content.replace(/border-\[\#0066ff\]/g, 'border-[#00beac]');
+  content = content.replace(/\#0066ff/gi, '#00beac');
+
+  content = content.replace(/bg-\[\#0ea5e9\]/g, 'bg-[#fad503]');
+  content = content.replace(/text-\[\#0ea5e9\]/g, 'text-[#fad503]');
+  content = content.replace(/border-\[\#0ea5e9\]/g, 'border-[#fad503]');
+  content = content.replace(/\#0ea5e9/gi, '#fad503');
 
   if (content !== original) {
     fs.writeFileSync(filePath, content, 'utf8');
@@ -48,4 +53,4 @@ files.forEach(filePath => {
   }
 });
 
-console.log(`\nFinished updating ${changedCount} files.`);
+console.log(`\nFinished updating ${changedCount} files to Deep Teal / Teal / Gold.`);

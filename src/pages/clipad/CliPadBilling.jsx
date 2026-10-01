@@ -442,7 +442,7 @@ export default function CliPadBilling() {
         ) : (
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-transparent dark:bg-[#0b0f19] border-b border-border">
+              <thead className="bg-transparent dark:bg-[#006065] border-b border-border">
                 <tr>
                   <th className="px-6 py-4 font-semibold text-white/70">Date</th>
                   <th className="px-6 py-4 font-semibold text-white/70">Receipt #</th>
@@ -458,7 +458,7 @@ export default function CliPadBilling() {
                   try { rDetails = JSON.parse(tx.description); } catch(e){}
                   
                   return (
-                    <tr key={tx.id} className="hover:bg-transparent dark:hover:bg-[#0b0f19]/50 transition-colors">
+                    <tr key={tx.id} className="hover:bg-transparent dark:hover:bg-[#006065]/50 transition-colors">
                       <td className="px-6 py-4 text-white/80 dark:text-muted-foreground">
                         {new Date(tx.created_at).toLocaleDateString()}
                       </td>

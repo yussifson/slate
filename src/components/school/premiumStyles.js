@@ -56,7 +56,7 @@ export const STAT_COLORS = {
   blue:   { bg: 'rgba(99, 102, 241, 0.08)',  icon: '#6366f1', label: '#6366f1' },
   green:  { bg: 'rgba(16, 185, 129, 0.08)',  icon: '#10b981', label: '#10b981' },
   orange: { bg: 'rgba(245, 158, 11, 0.08)',  icon: '#f59e0b', label: '#f59e0b' },
-  sky:    { bg: 'rgba(14, 165, 233, 0.08)',  icon: '#0ea5e9', label: '#0ea5e9' },
+  sky:    { bg: 'rgba(14, 165, 233, 0.08)',  icon: '#fad503', label: '#fad503' },
   rose:   { bg: 'rgba(244, 63, 94, 0.08)',   icon: '#f43f5e', label: '#f43f5e' },
   violet: { bg: 'rgba(139, 92, 246, 0.08)',  icon: '#8b5cf6', label: '#8b5cf6' },
   teal:   { bg: 'rgba(20, 184, 166, 0.08)',  icon: '#14b8a6', label: '#14b8a6' },

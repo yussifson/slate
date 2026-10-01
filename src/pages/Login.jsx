@@ -548,15 +548,15 @@ export default function Login() {
                   <img src={branding.logo_url} alt="Logo" className="h-8 object-contain" />
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Logo className="w-7 h-7 text-[#0066ff]" />
-                    <span className="font-extrabold text-lg tracking-tight text-[#0066ff]">
+                    <Logo className="w-7 h-7 text-[#00beac]" />
+                    <span className="font-extrabold text-lg tracking-tight text-[#00beac]">
                       {branding.name || 'Clipad'}
                     </span>
                   </div>
                 )}
               </div>
               {!isRootAccount && (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0066ff] bg-[#0b0f19]/10 px-2.5 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#00beac] bg-[#006065]/10 px-2.5 py-0.5 rounded-full">
                   Workspace
                 </span>
               )}
@@ -564,7 +564,7 @@ export default function Login() {
 
             {/* Welcome Heading */}
             <div className="mb-4">
-              <h1 className="text-xl sm:text-2xl font-extrabold text-[#0066ff] tracking-tight mb-1">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-[#00beac] tracking-tight mb-1">
                 {isRootAccount ? 'Sign in to Optavel' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : 'Welcome back'}
               </h1>
               <p className="text-xs text-slate-600 font-medium">
@@ -577,15 +577,15 @@ export default function Login() {
               <button
                 onClick={handleOptavelSSO}
                 type="button"
-                className="flex items-center justify-center gap-2 h-10 px-3 bg-slate-50 hover:bg-slate-100 text-[#0066ff] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center justify-center gap-2 h-10 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
               >
-                <Logo hideText={true} className="w-4 h-4 text-[#0066ff]" />
+                <Logo hideText={true} className="w-4 h-4 text-[#00beac]" />
                 Optavel SSO
               </button>
               <button 
                 onClick={handleGoogleOAuth}
                 type="button"
-                className="flex items-center justify-center gap-2 h-10 px-3 bg-slate-50 hover:bg-slate-100 text-[#0066ff] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center justify-center gap-2 h-10 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -626,7 +626,7 @@ export default function Login() {
                       placeholder="acme"
                       value={workspace}
                       onChange={(e) => setWorkspace(e.target.value)}
-                      className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 pr-28 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#0b0f19]"
+                      className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 pr-28 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#006065]"
                     />
                     <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
                       .optavel.com
@@ -645,7 +645,7 @@ export default function Login() {
                   placeholder="name@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#0b0f19]"
+                  className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#006065]"
                 />
               </div>
 
@@ -654,7 +654,7 @@ export default function Login() {
                   <label className="block text-[11px] font-semibold text-slate-600">
                     {t("password", "Password")}
                   </label>
-                  <Link to="/forgot-password" className="text-xs font-bold text-[#0066ff] hover:underline">
+                  <Link to="/forgot-password" className="text-xs font-bold text-[#00beac] hover:underline">
                     {t("forgot_password", "Forgot?")}
                   </Link>
                 </div>
@@ -664,14 +664,14 @@ export default function Login() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#0b0f19]"
+                  className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#006065]"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-11 mt-1 bg-[#0b0f19] hover:bg-[#004d52] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full h-11 mt-1 bg-[#006065] hover:bg-[#004d52] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -686,11 +686,11 @@ export default function Login() {
             <div className="text-center pt-4 mt-3 border-t border-slate-100">
               <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
               {isElectron ? (
-                <Link to="/signup" className="text-xs font-bold text-[#0066ff] hover:underline">
+                <Link to="/signup" className="text-xs font-bold text-[#00beac] hover:underline">
                   {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
                 </Link>
               ) : (
-                <a href={`${getMainAppUrl()}/signup`} className="text-xs font-bold text-[#0066ff] hover:underline">
+                <a href={`${getMainAppUrl()}/signup`} className="text-xs font-bold text-[#00beac] hover:underline">
                   {isRootAccount ? 'Create an Account' : t("create_workspace", "Create Workslate")}
                 </a>
               )}
@@ -699,19 +699,19 @@ export default function Login() {
         </div>
 
         {/* Right Column: Hero Dark Green Card */}
-        <div className="lg:col-span-5 bg-[#0b0f19] rounded-[28px] p-6 lg:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-2xl h-full min-h-[380px]">
+        <div className="lg:col-span-5 bg-[#006065] rounded-[28px] p-6 lg:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-2xl h-full min-h-[380px]">
           {/* Background ambient light */}
           <div className="absolute top-0 right-0 w-72 h-72 bg-[#f8fafc]/25 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0066ff]/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#00beac]/15 rounded-full blur-3xl pointer-events-none" />
 
           {/* Top Arcana style logo mark */}
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/15">
-              <div className="w-2 h-2 rounded-full bg-[#0066ff] animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-[#00beac] animate-pulse" />
               <span className="text-[11px] font-bold tracking-wide uppercase text-white/90">Enterprise AI</span>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-[#0066ff] flex items-center justify-center text-[#0066ff] shadow-md">
-              <Logo className="w-5 h-5 text-[#0066ff]" />
+            <div className="w-9 h-9 rounded-xl bg-[#00beac] flex items-center justify-center text-[#00beac] shadow-md">
+              <Logo className="w-5 h-5 text-[#00beac]" />
             </div>
           </div>
 
@@ -732,9 +732,9 @@ export default function Login() {
                 <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-slate-700 text-[9px] font-bold text-white flex items-center justify-center">MK</div>
                 <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-indigo-600 text-[9px] font-bold text-white flex items-center justify-center">DC</div>
                 <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-teal-600 text-[9px] font-bold text-white flex items-center justify-center">SJ</div>
-                <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-[#0066ff] text-[9px] font-extrabold text-[#0066ff] flex items-center justify-center">+17k</div>
+                <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-[#00beac] text-[9px] font-extrabold text-[#00beac] flex items-center justify-center">+17k</div>
               </div>
-              <div className="flex items-center gap-1 text-[#0ea5e9] text-xs font-bold">
+              <div className="flex items-center gap-1 text-[#fad503] text-xs font-bold">
                 ★★★★★ <span className="text-white/80 text-[10px] ml-1">5.0</span>
               </div>
             </div>

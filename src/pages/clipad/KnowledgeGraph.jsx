@@ -68,10 +68,10 @@ function KnowledgeNode({ data, selected }) {
 
   return (
     <div
-      className="relative rounded-2xl border-2 transition-all cursor-pointer bg-[#0b0f19] text-white shadow-md p-3"
+      className="relative rounded-2xl border-2 transition-all cursor-pointer bg-[#006065] text-white shadow-md p-3"
       style={{
-        borderColor: selected ? '#0066ff' : color,
-        boxShadow: selected ? '0 0 0 3px #0066ff, 0 4px 24px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.15)',
+        borderColor: selected ? '#00beac' : color,
+        boxShadow: selected ? '0 0 0 3px #00beac, 0 4px 24px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.15)',
         minWidth: 160,
         maxWidth: 200,
       }}
@@ -85,7 +85,7 @@ function KnowledgeNode({ data, selected }) {
             {intg?.icon || '📄'}
           </div>
           <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#0ea5e9]">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[#fad503]">
               {data.provider?.replace('_', ' ')}
             </div>
           </div>
@@ -275,14 +275,14 @@ export default function KnowledgeGraph() {
   return (
     <div className="flex flex-col h-full min-h-screen bg-[#f8fafc] text-white font-sans page-enter">
       {/* Header */}
-      <div className="relative border-b border-white/15/80 bg-[#0b0f19] px-6 py-6 shrink-0">
+      <div className="relative border-b border-white/15/80 bg-[#006065] px-6 py-6 shrink-0">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/integrations')} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors shrink-0">
               <ArrowLeft className="w-4 h-4 text-white" />
             </button>
             <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
-              <Network className="w-5 h-5 text-[#0ea5e9]" />
+              <Network className="w-5 h-5 text-[#fad503]" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-white">Knowledge Graph</h1>
@@ -298,7 +298,7 @@ export default function KnowledgeGraph() {
               { label: 'Sources', value: stats.providers },
             ].map(s => (
               <div key={s.label} className="text-center">
-                <div className="text-xl font-black text-[#0ea5e9]">{s.value}</div>
+                <div className="text-xl font-black text-[#fad503]">{s.value}</div>
                 <div className="text-xs text-white/70">{s.label}</div>
               </div>
             ))}
@@ -311,7 +311,7 @@ export default function KnowledgeGraph() {
             </button>
             <button
               onClick={generateAIInsights}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0066ff] hover:bg-[#0066ff]/90 text-[#0066ff] rounded-xl text-sm font-bold transition-all shadow-md"
+              className="flex items-center gap-2 px-4 py-2 bg-[#00beac] hover:bg-[#00beac]/90 text-[#00beac] rounded-xl text-sm font-bold transition-all shadow-md"
             >
               <Sparkles className="w-4 h-4" />
               AI Insights
@@ -327,14 +327,14 @@ export default function KnowledgeGraph() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search nodes..."
-              className="pl-8 pr-3 py-1.5 text-xs bg-white text-white border border-white/15/80 rounded-xl focus:outline-none focus:border-[#0066ff] w-48 placeholder:text-white/50"
+              className="pl-8 pr-3 py-1.5 text-xs bg-white text-white border border-white/15/80 rounded-xl focus:outline-none focus:border-[#00beac] w-48 placeholder:text-white/50"
             />
           </div>
 
           <select
             value={filterProvider}
             onChange={e => setFilterProvider(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-[#005055] text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#0066ff]"
+            className="px-3 py-1.5 text-xs bg-[#005055] text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#00beac]"
           >
             <option value="all">All Sources</option>
             {providers.map(p => <option key={p} value={p}>{p}</option>)}
@@ -343,7 +343,7 @@ export default function KnowledgeGraph() {
           <select
             value={filterRelation}
             onChange={e => setFilterRelation(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-[#005055] text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#0066ff]"
+            className="px-3 py-1.5 text-xs bg-[#005055] text-white border border-white/20 rounded-xl focus:outline-none focus:border-[#00beac]"
           >
             <option value="all">All Relationships</option>
             {Object.keys(RELATIONSHIP_COLORS).map(r => (
@@ -407,14 +407,14 @@ export default function KnowledgeGraph() {
 
         {/* AI Insights Panel */}
         {aiInsightsOpen && (
-          <div className="absolute top-4 left-4 w-80 bg-[#0b0f19] text-white border border-white/15 rounded-2xl shadow-2xl p-5 z-20 animate-in fade-in slide-in-from-left-4 max-h-[80vh] overflow-y-auto">
+          <div className="absolute top-4 left-4 w-80 bg-[#006065] text-white border border-white/15 rounded-2xl shadow-2xl p-5 z-20 animate-in fade-in slide-in-from-left-4 max-h-[80vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-2 mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#0066ff]/20 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-[#0ea5e9]" />
+                <div className="w-8 h-8 rounded-lg bg-[#00beac]/20 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-[#fad503]" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#0ea5e9]">AI Analysis</div>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#fad503]">AI Analysis</div>
                   <div className="text-xs font-semibold text-white">Knowledge Insights</div>
                 </div>
               </div>
@@ -437,7 +437,7 @@ export default function KnowledgeGraph() {
 
         {/* Node detail panel */}
         {selectedNode && (
-          <div className="absolute top-4 right-4 w-72 bg-[#0b0f19] text-white border border-white/15 rounded-2xl shadow-2xl p-5 z-10 animate-in fade-in slide-in-from-right-4">
+          <div className="absolute top-4 right-4 w-72 bg-[#006065] text-white border border-white/15 rounded-2xl shadow-2xl p-5 z-10 animate-in fade-in slide-in-from-right-4">
             <div className="flex items-start justify-between gap-2 mb-3">
               <div className="flex items-center gap-2">
                 <div
@@ -477,7 +477,7 @@ export default function KnowledgeGraph() {
                 href={selectedNode.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs font-semibold text-[#0ea5e9] hover:underline"
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#fad503] hover:underline"
               >
                 <ExternalLink className="w-3.5 h-3.5" /> View Original Source
               </a>

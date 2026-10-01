@@ -48,7 +48,7 @@ function CollisionCard({ type, items, spaceNames, onViewSpace }) {
       <div className="space-y-2">
         {items.map((item, i) => (
           <div key={i} className="flex items-center gap-2 p-2 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="w-2 h-2 rounded-full bg-current opacity-60 shrink-0" style={{ color: i === 0 ? '#0066ff' : '#64748b' }} />
+            <div className="w-2 h-2 rounded-full bg-current opacity-60 shrink-0" style={{ color: i === 0 ? '#00beac' : '#64748b' }} />
             <p className="text-xs text-foreground/80 flex-1 min-w-0 truncate">{item.text}</p>
             <button
               onClick={() => onViewSpace(item.spaceId)}
@@ -253,7 +253,7 @@ Respond in valid JSON only:
               <button
                 onClick={runAI}
                 disabled={loadingAI || loading}
-                className="flex items-center gap-2 px-4 py-2 bg-[#0066ff] hover:bg-[#0066ff]/90 text-[#0066ff] rounded-xl text-sm font-bold transition-all shadow-md disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-[#00beac] hover:bg-[#00beac]/90 text-[#00beac] rounded-xl text-sm font-bold transition-all shadow-md disabled:opacity-50"
               >
                 {loadingAI ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                 AI Silo Report
@@ -266,11 +266,11 @@ Respond in valid JSON only:
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Spaces Analyzed', value: spaces.length, color: 'text-white' },
-            { label: 'Signal Collisions', value: totalCollisions, color: totalCollisions > 5 ? 'text-rose-300' : totalCollisions > 2 ? 'text-[#0ea5e9]' : 'text-emerald-300' },
-            { label: 'Siloed Spaces', value: siloedSpaces.length, color: siloedSpaces.length > 3 ? 'text-rose-300' : 'text-[#0ea5e9]' },
-            { label: 'Duplicate Blockers', value: blockerCollisions.length, color: blockerCollisions.length > 2 ? 'text-rose-300' : 'text-[#0ea5e9]' },
+            { label: 'Signal Collisions', value: totalCollisions, color: totalCollisions > 5 ? 'text-rose-300' : totalCollisions > 2 ? 'text-[#fad503]' : 'text-emerald-300' },
+            { label: 'Siloed Spaces', value: siloedSpaces.length, color: siloedSpaces.length > 3 ? 'text-rose-300' : 'text-[#fad503]' },
+            { label: 'Duplicate Blockers', value: blockerCollisions.length, color: blockerCollisions.length > 2 ? 'text-rose-300' : 'text-[#fad503]' },
           ].map(s => (
-            <div key={s.label} className="rounded-2xl border border-white/15 bg-[#0b0f19] text-white p-4 text-center shadow-md">
+            <div key={s.label} className="rounded-2xl border border-white/15 bg-[#006065] text-white p-4 text-center shadow-md">
               <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-white/70 mt-1">{s.label}</p>
             </div>

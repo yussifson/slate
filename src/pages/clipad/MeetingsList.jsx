@@ -200,7 +200,7 @@ export default function MeetingsList() {
 
         {loading ? (
           <div className="space-y-4">
-            {[1,2,3,4].map(i => <div key={i} className="h-24 rounded-2xl bg-[#0b0f19] text-white dark:bg-[#0b0f19] animate-pulse border border-white/15 dark:border-white/15" />)}
+            {[1,2,3,4].map(i => <div key={i} className="h-24 rounded-2xl bg-[#006065] text-white dark:bg-[#006065] animate-pulse border border-white/15 dark:border-white/15" />)}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24 border border-dashed border-white/20 dark:border-white/15 rounded-3xl">
