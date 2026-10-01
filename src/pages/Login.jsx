@@ -535,155 +535,153 @@ export default function Login() {
 }
 
   return (
-    <div className="h-[100dvh] w-full bg-[#f8fafc] flex items-center justify-center p-3 md:p-6 overflow-hidden font-sans text-slate-900">
-      <div className="w-full max-w-6xl max-h-[94vh] h-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch my-auto">
-        
-        {/* Left Column: Form */}
-        <div className="lg:col-span-7 bg-white rounded-[28px] p-6 lg:p-8 border border-white/30 shadow-2xl flex flex-col justify-between overflow-y-auto">
-          <div>
-            {/* Logo & Header */}
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                {branding.logo_url ? (
-                  <img src={branding.logo_url} alt="Logo" className="h-8 object-contain" />
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Logo className="w-7 h-7 text-[#00beac]" />
-                    <span className="font-extrabold text-lg tracking-tight text-[#00beac]">
-                      {branding.name || 'Clipad'}
-                    </span>
-                  </div>
-                )}
-              </div>
-              {!isRootAccount && (
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#00beac] bg-[#006065]/10 px-2.5 py-0.5 rounded-full">
-                  Workspace
-                </span>
-              )}
-            </div>
-
-            {/* Welcome Heading */}
-            <div className="mb-4">
-              <h1 className="text-xl sm:text-2xl font-extrabold text-[#00beac] tracking-tight mb-1">
-                {isRootAccount ? 'Sign in to Optavel' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : 'Welcome back'}
-              </h1>
-              <p className="text-xs text-slate-600 font-medium">
-                Enter your account credentials to access your workspace.
-              </p>
-            </div>
-
-            {/* Social Logins */}
-            <div className="grid grid-cols-2 gap-2.5 mb-4">
-              <button
-                onClick={handleOptavelSSO}
-                type="button"
-                className="flex items-center justify-center gap-2 h-10 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
-              >
-                <Logo hideText={true} className="w-4 h-4 text-[#00beac]" />
-                Optavel SSO
-              </button>
-              <button 
-                onClick={handleGoogleOAuth}
-                type="button"
-                className="flex items-center justify-center gap-2 h-10 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                Google
-              </button>
-            </div>
-
-            <div className="relative mb-4">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200"></div>
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider text-[10px]">Or email</span>
-              </div>
-            </div>
-
-            {/* Form */}
-            <form onSubmit={handleLogin} className="space-y-3">
-              {error && (
-                <div className="rounded-xl bg-red-50 p-2.5 text-xs text-red-600 border border-red-200 font-medium">
-                  {error}
+    <div className="h-[100dvh] w-full bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans text-slate-900 shadow-none">
+      
+      {/* Left 50% Panel: Form */}
+      <div className="w-full md:w-1/2 bg-white flex flex-col justify-between p-6 md:p-12 overflow-y-auto shadow-none border-r border-slate-100">
+        <div className="max-w-md w-full mx-auto my-auto py-4">
+          {/* Logo & Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              {branding.logo_url ? (
+                <img src={branding.logo_url} alt="Logo" className="h-9 object-contain" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Logo className="w-8 h-8 text-[#00beac]" />
+                  <span className="font-extrabold text-xl tracking-tight text-[#00beac]">
+                    {branding.name || 'Clipad'}
+                  </span>
                 </div>
               )}
-
-              {isRootAccount && !currentSubdomain && (
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                    {t("workspace_url", "Workspace URL")}
-                  </label>
-                  <div className="relative flex items-center">
-                    <Input
-                      type="text"
-                      required
-                      placeholder="acme"
-                      value={workspace}
-                      onChange={(e) => setWorkspace(e.target.value)}
-                      className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 pr-28 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#006065]"
-                    />
-                    <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
-                      .optavel.com
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-0.5">
-                  {t("email", "Email")}
-                </label>
-                <Input
-                  type="email"
-                  required
-                  placeholder="name@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#006065]"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-0.5">
-                  <label className="block text-[11px] font-semibold text-slate-600">
-                    {t("password", "Password")}
-                  </label>
-                  <Link to="/forgot-password" className="text-xs font-bold text-[#00beac] hover:underline">
-                    {t("forgot_password", "Forgot?")}
-                  </Link>
-                </div>
-                <Input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-10 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-slate-800 focus:ring-1 focus:ring-[#006065]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 mt-1 bg-[#006065] hover:bg-[#004d52] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                {loading ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  t("sign_in", "Sign In")
-                )}
-              </button>
-            </form>
+            </div>
+            {!isRootAccount && (
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#00beac] bg-[#006065]/10 px-3 py-1 rounded-full">
+                Workspace
+              </span>
+            )}
           </div>
 
+          {/* Welcome Heading */}
+          <div className="mb-6">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight mb-2">
+              {isRootAccount ? 'Sign in to Optavel' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : 'Welcome back'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 font-medium">
+              Enter your account credentials to access your workspace.
+            </p>
+          </div>
+
+          {/* Social Logins */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <button
+              onClick={handleOptavelSSO}
+              type="button"
+              className="flex items-center justify-center gap-2 h-11 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+            >
+              <Logo hideText={true} className="w-4 h-4 text-[#00beac]" />
+              Optavel SSO
+            </button>
+            <button 
+              onClick={handleGoogleOAuth}
+              type="button"
+              className="flex items-center justify-center gap-2 h-11 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              Google
+            </button>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider text-[10px]">Or email</span>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-4">
+            {error && (
+              <div className="rounded-xl bg-red-50 p-3 text-xs text-red-600 border border-red-200 font-medium">
+                {error}
+              </div>
+            )}
+
+            {isRootAccount && !currentSubdomain && (
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {t("workspace_url", "Workspace URL")}
+                </label>
+                <div className="relative flex items-center">
+                  <Input
+                    type="text"
+                    required
+                    placeholder="acme"
+                    value={workspace}
+                    onChange={(e) => setWorkspace(e.target.value)}
+                    className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 pr-28 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
+                  />
+                  <div className="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">
+                    .optavel.com
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                {t("email", "Email")}
+              </label>
+              <Input
+                type="email"
+                required
+                placeholder="name@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-semibold text-slate-700">
+                  {t("password", "Password")}
+                </label>
+                <Link to="/forgot-password" className="text-xs font-bold text-[#00beac] hover:underline">
+                  {t("forgot_password", "Forgot?")}
+                </Link>
+              </div>
+              <Input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full h-11 text-sm bg-slate-50 border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-11 mt-2 bg-[#00beac] hover:bg-[#00a898] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {loading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                t("sign_in", "Sign In")
+              )}
+            </button>
+          </form>
+
           {(!currentSubdomain && !isCustomDomain) && (
-            <div className="text-center pt-4 mt-3 border-t border-slate-100">
+            <div className="text-center pt-6 mt-6 border-t border-slate-100">
               <span className="text-xs text-slate-500 font-medium">{t("don_t_have_an_account", "Don't have an account?")} </span>
               {isElectron ? (
                 <Link to="/signup" className="text-xs font-bold text-[#00beac] hover:underline">
@@ -697,54 +695,85 @@ export default function Login() {
             </div>
           )}
         </div>
+      </div>
 
-        {/* Right Column: Hero Dark Green Card */}
-        <div className="lg:col-span-5 bg-[#006065] rounded-[28px] p-6 lg:p-8 text-white flex flex-col justify-between relative overflow-hidden shadow-2xl h-full min-h-[380px]">
-          {/* Background ambient light */}
-          <div className="absolute top-0 right-0 w-72 h-72 bg-[#f8fafc]/25 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#00beac]/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Right 50% Panel: Geometric Artwork */}
+      <div className="hidden md:flex md:w-1/2 bg-[#0b0f19] relative overflow-hidden flex-col justify-between p-10 select-none">
+        {/* Ambient Glows */}
+        <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] bg-[#00beac]/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-[#6366f1]/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-[40%] right-[10%] w-[320px] h-[320px] bg-[#a855f7]/15 rounded-full blur-[100px] pointer-events-none" />
 
-          {/* Top Arcana style logo mark */}
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/15">
-              <div className="w-2 h-2 rounded-full bg-[#00beac] animate-pulse" />
-              <span className="text-[11px] font-bold tracking-wide uppercase text-white/90">Enterprise AI</span>
-            </div>
-            <div className="w-9 h-9 rounded-xl bg-[#00beac] flex items-center justify-center text-[#00beac] shadow-md">
-              <Logo className="w-5 h-5 text-[#00beac]" />
-            </div>
-          </div>
-
-          {/* Middle content */}
-          <div className="relative z-10 my-auto py-4">
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white mb-2 leading-tight">
-              Welcome to Clipad
-            </h2>
-            <p className="text-xs text-white/80 font-normal leading-relaxed">
-              Empower your organization with AI organizational memory, real-time workspace sync, and intelligent collaboration.
-            </p>
-          </div>
-
-          {/* Charcoal Glass Sub-Card */}
-          <div className="relative z-10 bg-[#004d52]/90 backdrop-blur-xl border border-white/15 rounded-2xl p-4 space-y-2.5 shadow-xl">
-            <div className="flex items-center justify-between">
-              <div className="flex -space-x-2 overflow-hidden">
-                <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-slate-700 text-[9px] font-bold text-white flex items-center justify-center">MK</div>
-                <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-indigo-600 text-[9px] font-bold text-white flex items-center justify-center">DC</div>
-                <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-teal-600 text-[9px] font-bold text-white flex items-center justify-center">SJ</div>
-                <div className="inline-block h-7 w-7 rounded-full border-2 border-[#004d52] bg-[#00beac] text-[9px] font-extrabold text-[#00beac] flex items-center justify-center">+17k</div>
-              </div>
-              <div className="flex items-center gap-1 text-[#fad503] text-xs font-bold">
-                ★★★★★ <span className="text-white/80 text-[10px] ml-1">5.0</span>
-              </div>
-            </div>
-            <p className="text-[11px] text-white/90 font-medium leading-snug">
-              More than 17,000+ teams use Clipad to centralize their business operations and knowledge.
-            </p>
+        {/* Header */}
+        <div className="relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-sm">
+            <div className="w-2 h-2 rounded-full bg-[#00beac] animate-pulse" />
+            <span className="text-xs font-bold text-white tracking-wide uppercase">Enterprise AI</span>
           </div>
         </div>
 
+        {/* Center Geometric SVG Artwork */}
+        <div className="relative z-10 my-auto flex flex-col items-center justify-center py-4">
+          <svg width="280" height="280" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
+            <rect x="60" y="60" width="200" height="200" rx="36" transform="rotate(15 160 160)" fill="url(#geo-grad1)" opacity="0.8" />
+            <rect x="60" y="60" width="200" height="200" rx="36" transform="rotate(-30 160 160)" fill="url(#geo-grad2)" opacity="0.65" />
+            <circle cx="160" cy="160" r="70" fill="url(#geo-grad3)" opacity="0.9" />
+            
+            <polygon points="160,50 200,80 160,110 120,80" fill="#00beac" opacity="0.95" />
+            <polygon points="160,110 200,80 200,130 160,160" fill="#006065" opacity="0.9" />
+            <polygon points="160,110 120,80 120,130 160,160" fill="#004d52" opacity="0.9" />
+
+            <polygon points="260,170 290,190 260,210 230,190" fill="#fad503" opacity="0.85" />
+            <polygon points="60,220 85,235 60,250 35,235" fill="#a855f7" opacity="0.85" />
+
+            <line x1="160" y1="80" x2="260" y2="190" stroke="#00beac" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" />
+            <line x1="160" y1="160" x2="60" y2="235" stroke="#a855f7" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" />
+            <circle cx="260" cy="190" r="4" fill="#fad503" />
+            <circle cx="60" cy="235" r="4" fill="#a855f7" />
+
+            <defs>
+              <linearGradient id="geo-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#006065" />
+                <stop offset="100%" stopColor="#6366f1" />
+              </linearGradient>
+              <linearGradient id="geo-grad2" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#00beac" />
+                <stop offset="100%" stopColor="#a855f7" />
+              </linearGradient>
+              <linearGradient id="geo-grad3" x1="0%" y1="50%" x2="100%" y2="50%">
+                <stop offset="0%" stopColor="#00beac" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#fad503" stopOpacity="0.9" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <h2 className="text-2xl font-black text-white text-center mt-6 tracking-tight">
+            Welcome to Clipad
+          </h2>
+          <p className="text-xs text-slate-400 text-center max-w-sm mt-2 leading-relaxed font-medium">
+            Empower your organization with AI organizational memory, real-time workspace sync, and intelligent collaboration.
+          </p>
+        </div>
+
+        {/* Bottom Card */}
+        <div className="relative z-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-2xl">
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full bg-slate-700 border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">MK</div>
+              <div className="w-8 h-8 rounded-full bg-indigo-600 border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">DC</div>
+              <div className="w-8 h-8 rounded-full bg-[#00beac] border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">+17k</div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white">Trusted by 17,000+ teams</p>
+              <p className="text-[10px] text-slate-400">Enterprise workspace intelligence</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 text-[#fad503] text-xs font-bold">
+            ★★★★★ <span className="text-white text-[11px] ml-1">5.0</span>
+          </div>
+        </div>
       </div>
+
     </div>
   );
 }

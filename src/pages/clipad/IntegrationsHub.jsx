@@ -443,8 +443,8 @@ export default function IntegrationsHub() {
               <Plug className="w-5 h-5 text-primary" />
             </div>
             <div className="mt-1">
-              <h1 className="text-2xl font-bold text-foreground">Integrations</h1>
-              <p className="text-sm text-muted-foreground">Connect your tools. Build organizational memory.</p>
+              <h1 className="text-2xl font-bold text-foreground">Capture</h1>
+              <p className="text-sm text-muted-foreground">Connect your tools. Capture organizational memory.</p>
             </div>
           </div>
           {/* Stats row */}
@@ -470,7 +470,7 @@ export default function IntegrationsHub() {
             onClick={() => setActiveView('hub')}
             className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'hub' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
-            <Plug className="w-4 h-4" /> Integrations
+            <Plug className="w-4 h-4" /> Capture
           </button>
           <button
             onClick={() => setActiveView('analytics')}

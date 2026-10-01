@@ -76,7 +76,7 @@ export default function ClipadSidebar({ forceMobile }) {
 
   const isSuperAdmin = user?.role === 'super_admin';
   const intelligenceItems = [
-    { label: 'Integrations & Intelligence', path: '/integrations', icon: Plug },
+    { label: 'Capture', path: '/integrations', icon: Plug },
     { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
     ...(isSuperAdmin ? [
       { label: 'Commitment Engine', path: '/commitments', icon: Target },

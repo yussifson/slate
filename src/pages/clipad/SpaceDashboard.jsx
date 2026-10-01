@@ -590,7 +590,7 @@ export default function SpaceDashboard() {
       </div>
 
       {/* Tab bar (Native Segmented Style) */}
-      <div className="border-b border-white/10 bg-white/90 backdrop-blur-md sticky top-[56px] md:top-16 z-30">
+      <div className="border-b border-white/15 bg-[#006065] text-white backdrop-blur-md sticky top-[56px] md:top-16 z-30 shadow-md">
         <div className="overflow-x-auto no-scrollbar scrollbar-hide py-2 px-4 md:px-10">
           <div className="flex gap-1.5 min-w-max">
             {TABS.filter(t => {
@@ -603,7 +603,7 @@ export default function SpaceDashboard() {
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#00beac] text-[#00beac] font-bold shadow-md' : 'bg-white/10 text-white/80 hover:bg-white/15 hover:text-white'}`}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 md:py-2 text-sm font-semibold transition-all rounded-full active:scale-95 ${activeTab === tab.id ? 'bg-[#00beac] text-white font-bold shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
                 >
                   <Icon className="w-3.5 h-3.5" />{tab.label}
                 </button>

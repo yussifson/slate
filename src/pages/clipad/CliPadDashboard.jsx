@@ -344,7 +344,7 @@ export default function CliPadDashboard() {
   };
 
   return (
-    <div className="min-h-full bg-[#f8fafc] text-white font-sans overflow-x-hidden pb-24 md:pb-8">
+    <div className="min-h-full bg-[#f8fafc] text-[#0f172a] font-sans overflow-x-hidden pb-24 md:pb-8">
       <SpaceSelectorModal 
         open={showSpaceSelector} 
         onOpenChange={setShowSpaceSelector} 
@@ -353,7 +353,7 @@ export default function CliPadDashboard() {
       {loading && stats.meetings === 0 ? (
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 w-full animate-pulse">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 mb-8">
-            {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white/10 rounded-2xl" />)}
+            {[1,2,3,4].map(i => <div key={i} className="h-32 bg-slate-200 dark:bg-white/10 rounded-2xl" />)}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {[1,2].map(i => <div key={i} className="h-64 bg-white/10 rounded-2xl" />)}

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 export function CliPadLogo({ className = "", size = 24 }) {
+  const gradientId = useId().replace(/:/g, '');
+  const gradRef = `url(#clipad-grad-${gradientId})`;
+
   return (
     <svg
       className={className}
@@ -11,7 +14,7 @@ export function CliPadLogo({ className = "", size = 24 }) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="clipad-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id={`clipad-grad-${gradientId}`} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
           <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
         </linearGradient>
@@ -20,7 +23,7 @@ export function CliPadLogo({ className = "", size = 24 }) {
       {/* Outer abstract 'C' curve representing CliPad and Communication */}
       <path 
         d="M26 12 C26 5, 20 2, 16 2 C8 2, 2 8, 2 16 C2 24, 8 30, 16 30 C22 30, 26 26, 26 26" 
-        stroke="url(#clipad-grad)" 
+        stroke={gradRef} 
         strokeWidth="4" 
         strokeLinecap="round" 
         strokeLinejoin="round" 
@@ -29,7 +32,7 @@ export function CliPadLogo({ className = "", size = 24 }) {
       {/* Inner video/play element */}
       <path 
         d="M12 10 L22 16 L12 22 Z" 
-        fill="url(#clipad-grad)" 
+        fill={gradRef} 
       />
       
       {/* Dot for recording/live aspect */}
@@ -39,4 +42,5 @@ export function CliPadLogo({ className = "", size = 24 }) {
 }
 
 export default CliPadLogo;
+
 

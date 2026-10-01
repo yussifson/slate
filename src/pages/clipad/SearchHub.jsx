@@ -542,48 +542,48 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className={`bg-[#f8fafc] text-white font-sans selection:bg-[#00beac]/20 selection:text-[#fad503] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`bg-[#f8fafc] text-[#0f172a] font-sans selection:bg-[#00beac]/20 selection:text-[#00beac] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
 
       {/* ── ZERO STATE: Centered hero ── */}
       {!hasPerformedSearch && (
         <div className="flex flex-col items-center justify-center min-h-screen px-4 pb-20 -mt-12">
 
           {/* Orbit icon mark */}
-          <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-6 shadow-md border border-white/15">
-            <CliPadLogo size={36} className="text-[#fad503]" />
+          <div className="w-14 h-14 rounded-2xl bg-[#006065] flex items-center justify-center mb-6 shadow-md border border-[#006065]">
+            <CliPadLogo size={36} className="text-[#00beac]" />
           </div>
 
           {/* Greeting heading */}
-          <h1 className="text-2xl md:text-3xl font-bold text-white text-center mb-1 tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#0f172a] text-center mb-1 tracking-tight">
             Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {firstName}.
           </h1>
-          <p className="text-white/75 text-sm text-center mb-10 font-medium">
+          <p className="text-slate-600 text-sm text-center mb-10 font-medium">
             Search everything across your organization, or ask Orbit AI anything.
           </p>
 
           {/* Central Search Bar */}
           <div className="w-full max-w-2xl">
             <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-              <div className="relative flex items-center bg-[#006065] border border-white/20 rounded-2xl px-4 py-1.5 shadow-xl hover:border-white/30 focus-within:border-[#00beac] focus-within:ring-2 focus-within:ring-[#00beac]/20 transition-all">
-                <Search className="w-5 h-5 text-white/60 shrink-0 mr-3" />
+              <div className="relative flex items-center bg-white border border-slate-200 rounded-2xl px-4 py-1.5 shadow-lg hover:border-slate-300 focus-within:border-[#00beac] focus-within:ring-2 focus-within:ring-[#00beac]/20 transition-all">
+                <Search className="w-5 h-5 text-slate-400 shrink-0 mr-3" />
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Ask Orbit AI or search across your workspace..."
-                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[16px] font-medium placeholder:text-white/45 py-3 text-white"
+                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[16px] font-medium placeholder:text-slate-400 py-3 text-[#0f172a]"
                 />
                 {query && (
-                  <button type="button" onClick={() => setQuery('')} className="p-1 text-white/60 hover:text-white mr-2">
+                  <button type="button" onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-slate-600 mr-2">
                     <X className="w-4 h-4" />
                   </button>
                 )}
                 <button
                   type="submit"
                   disabled={!query.trim()}
-                  className="px-4 py-2.5 bg-[#00beac] hover:bg-[#00beac]/90 disabled:opacity-30 text-[#00beac] font-bold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md"
+                  className="px-4 py-2.5 bg-[#00beac] hover:bg-[#00a898] disabled:opacity-30 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md"
                 >
-                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-[#00beac]" /> : <ArrowRight className="w-4 h-4 text-[#00beac]" />}
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <ArrowRight className="w-4 h-4 text-white" />}
                 </button>
               </div>
             </form>
@@ -596,9 +596,9 @@ export default function SearchHub() {
                   <button
                     key={idx}
                     onClick={() => { setQuery(item.desc); setSearchParams({ q: item.desc }); runSearch(item.desc); }}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#006065] border border-white/15 hover:bg-white/10 text-white text-xs font-semibold transition-all group shadow-sm active:scale-95"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-all group shadow-sm active:scale-95"
                   >
-                    <Icon className="w-3.5 h-3.5 text-[#fad503] shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-[#00beac] shrink-0" />
                     {item.title}
                   </button>
                 );
@@ -712,37 +712,37 @@ export default function SearchHub() {
                         <CliPadLogo size={20} className="text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-sm text-white dark:text-white leading-none">Orbit AI</h3>
-                        <span className="text-[10px] text-white/60 mt-1 block">Executive synthesis</span>
+                        <h3 className="font-semibold text-sm text-[#0f172a] leading-none">Orbit AI</h3>
+                        <span className="text-[10px] text-slate-500 mt-1 block">Executive synthesis</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       {isSynthesizing && (
-                        <div className="flex items-center gap-1.5 text-[11px] text-primary font-medium">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                        <div className="flex items-center gap-1.5 text-[11px] text-[#00beac] font-medium">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00beac] animate-pulse" />
                           Thinking
                         </div>
                       )}
                       <button
                         onClick={handleNewSearch}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-650 dark:text-white/50 hover:bg-white/10 dark:hover:bg-white/5 border border-white/15 dark:border-white/10 transition-all shadow-sm active:scale-95"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition-all shadow-sm active:scale-95"
                       >
-                        <Plus className="w-3.5 h-3.5 text-primary" />
+                        <Plus className="w-3.5 h-3.5 text-[#00beac]" />
                         New Search
                       </button>
                     </div>
                   </div>
 
                   {/* AI Content (Scrollable message area) */}
-                  <div className="flex-1 overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
+                  <div className="flex-1 overflow-y-auto p-5 scrollbar-thin scrollbar-thumb-slate-200">
                     <div className="max-w-[680px] mx-auto w-full space-y-6 py-4">
                       {isSynthesizing && chatHistory.length === 0 ? (
                         <div className="space-y-3 py-4 animate-pulse">
-                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-full" />
-                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-4/5" />
-                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-3/4" />
-                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-full mt-2" />
-                          <div className="h-3.5 bg-white/10 dark:bg-white/10 rounded-full w-2/3" />
+                          <div className="h-3.5 bg-slate-200 rounded-full w-full" />
+                          <div className="h-3.5 bg-slate-200 rounded-full w-4/5" />
+                          <div className="h-3.5 bg-slate-200 rounded-full w-3/4" />
+                          <div className="h-3.5 bg-slate-200 rounded-full w-full mt-2" />
+                          <div className="h-3.5 bg-slate-200 rounded-full w-2/3" />
                         </div>
                       ) : (
                         <>
@@ -750,20 +750,20 @@ export default function SearchHub() {
                             <div key={i} className="w-full">
                               {msg.role === 'user' ? (
                                 <div className="flex flex-col items-end w-full mb-5 animate-in fade-in duration-200">
-                                  <div className="bg-white/10 dark:bg-slate-800 text-white dark:text-slate-100 px-5 py-3 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
+                                  <div className="bg-[#006065] text-white px-5 py-3 rounded-xl shadow-sm text-[14px] leading-relaxed max-w-[70%] break-words">
                                     {msg.content}
                                   </div>
-                                  <div className="flex items-center gap-2 mt-1 mr-1 text-white/60 select-none">
+                                  <div className="flex items-center gap-2 mt-1 mr-1 text-slate-400 select-none">
                                     <button 
                                       onClick={() => handleCopy(msg.content, i)} 
-                                      className="p-1 hover:text-slate-650 dark:hover:text-white/50 hover:bg-transparent dark:hover:bg-slate-800/50 rounded transition-all"
+                                      className="p-1 hover:text-slate-600 hover:bg-slate-100 rounded transition-all"
                                       title="Copy message"
                                     >
                                       {copiedMsgIndex === i ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                                     </button>
                                     <button 
                                       onClick={() => setFollowUpInput(msg.content)} 
-                                      className="p-1 hover:text-slate-650 dark:hover:text-white/50 hover:bg-transparent dark:hover:bg-slate-800/50 rounded transition-all"
+                                      className="p-1 hover:text-slate-600 hover:bg-slate-100 rounded transition-all"
                                       title="Edit message"
                                     >
                                       <Edit className="w-3.5 h-3.5" />
@@ -772,17 +772,17 @@ export default function SearchHub() {
                                 </div>
                               ) : (
                                 <div className="flex items-start gap-4 justify-start w-full mb-6 animate-in fade-in duration-200">
-                                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 mt-0.5">
-                                    <CliPadLogo size={18} className="text-primary" />
+                                  <div className="w-8 h-8 rounded-lg bg-[#006065]/10 flex items-center justify-center shrink-0 border border-[#006065]/20 mt-0.5">
+                                    <CliPadLogo size={18} className="text-[#00beac]" />
                                   </div>
                                   <div className="flex-1 space-y-2">
-                                    <div className="text-[15px] leading-relaxed text-white">
-                                      <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-p:text-white prose-headings:text-white prose-strong:text-white text-[15px] text-white">
+                                    <div className="text-[15px] leading-relaxed text-slate-800">
+                                      <div className="prose prose-sm max-w-none prose-p:leading-relaxed prose-p:text-slate-800 prose-headings:text-[#0f172a] prose-strong:text-[#0f172a] text-[15px] text-slate-800">
                                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                                       </div>
                                     </div>
                                     {/* Action Row for AI Message (Like/Dislike, Speak, Copy) */}
-                                    <div className="flex items-center gap-2.5 text-white/60 select-none pt-1">
+                                    <div className="flex items-center gap-2.5 text-slate-400 select-none pt-1">
                                       <button 
                                         onClick={() => handleCopy(msg.content, i)} 
                                         className="p-1 hover:text-white hover:bg-white/10 rounded transition-all"

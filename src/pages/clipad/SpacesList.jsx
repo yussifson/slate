@@ -211,23 +211,23 @@ export default function SpacesList() {
   const firstName = user?.full_name?.split(' ')[0] || user?.user_metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'there';
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f8fafc] text-white page-enter overflow-x-hidden pb-24 md:pb-8">
+    <div style={{ fontFamily: "'Inter', sans-serif" }} className="min-h-full bg-[#f8fafc] text-[#0f172a] page-enter overflow-x-hidden pb-24 md:pb-8">
 
 
       <div className="max-w-6xl mx-auto px-4 md:px-10 py-6 md:py-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Team Spaces</h1>
-            <p className="text-white/70">Persistent rooms for projects, teams, or recurring syncs.</p>
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight text-[#0f172a] mb-2">Team Spaces</h1>
+            <p className="text-slate-600 font-medium text-sm">Persistent rooms for projects, teams, or recurring syncs.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative w-full md:w-64">
-              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-white/60" />
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search spaces..."
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#006065] text-white border border-white/15/80 placeholder:text-white/60 shadow-sm focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 text-sm shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-[#0f172a] border border-slate-200 placeholder:text-slate-400 shadow-sm focus:outline-none focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 text-sm transition-all"
               />
             </div>
             {isAdminUser && (
@@ -239,7 +239,7 @@ export default function SpacesList() {
               </button>
             )}
             {canCreateSpaces(user) && (
-              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00beac] hover:bg-[#e6c402] text-white font-bold text-sm shadow-md shadow-primary/20 transition-all shrink-0 active:scale-95">
+              <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#00beac] hover:bg-[#00a898] text-white font-bold text-sm shadow-md transition-all shrink-0 active:scale-95">
                 <Plus className="w-4 h-4" /> New Space
               </button>
             )}
@@ -248,15 +248,15 @@ export default function SpacesList() {
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1,2,3,4,5,6].map(i => <div key={i} className="h-40 rounded-2xl bg-white/[0.03] animate-pulse" />)}
+            {[1,2,3,4,5,6].map(i => <div key={i} className="h-40 rounded-2xl bg-slate-200/60 animate-pulse" />)}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
-            <Layers className="w-16 h-16 text-white/50 dark:text-white/90 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white/70 mb-2">No spaces yet</h3>
-            <p className="text-white/60 mb-6 text-sm">Create a space for your first team or project.</p>
+            <Layers className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-slate-800 mb-2">No spaces yet</h3>
+            <p className="text-slate-500 mb-6 text-sm">Create a space for your first team or project.</p>
             {canCreateSpaces(user) && (
-              <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-[#00beac] hover:bg-[#00beac]/90 text-[#00beac] font-bold text-sm shadow-md transition-all">
+              <button onClick={() => setShowCreate(true)} className="px-6 py-3 rounded-xl bg-[#00beac] hover:bg-[#00a898] text-white font-bold text-sm shadow-md transition-all">
                 Create your first space
               </button>
             )}

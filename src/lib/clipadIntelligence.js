@@ -4,6 +4,7 @@
 
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
+import { getMemories, MEMORY_STATUS } from '@/lib/clipadMemoryService';
 
 // ──────────────────────────────────────────────────────────────────
 // AI JSON Extraction Helper
@@ -422,6 +423,17 @@ export async function buildOrgContext(options = {}) {
     } catch {/* table may not exist yet */}
   }
 
+  let v3Memories = [];
+  try {
+    v3Memories = await getMemories({
+      companyId,
+      userId,
+      spaceIds,
+      status: MEMORY_STATUS.ACTIVE,
+      limit: 25,
+    });
+  } catch {/* memory service safety */}
+
   const meetings     = meetingsRes?.data     || [];
   const decisions    = decisionsRes?.data    || [];
   const blockers     = blockersRes?.data     || [];
@@ -444,6 +456,7 @@ export async function buildOrgContext(options = {}) {
   videos.forEach((v) => { sourceMap[v.id] = { type: 'video', title: v.title, id: v.id }; });
   spaces.forEach((s) => { sourceMap[s.id] = { type: 'space', title: s.name, id: s.id }; });
   integrationKnowledge.forEach((ik) => { sourceMap[ik.id] = { type: ik.integration_type, title: ik.title, id: ik.id, url: ik.source_url }; });
+  v3Memories.forEach((mem) => { sourceMap[mem.id] = { type: 'memory', title: mem.title, id: mem.id, tier: mem.memory_tier, memoryType: mem.memory_type }; });
 
   // Build context text — comprehensive view of the entire org
   const today = new Date().toISOString().slice(0, 10);
@@ -457,6 +470,10 @@ export async function buildOrgContext(options = {}) {
 
   const contextText = [
     `[TODAY: ${today}]`,
+    `\n━━ ORGANIZATIONAL MEMORY & INTELLIGENCE CORE (${v3Memories.length} memories) ━━`,
+    v3Memories.length > 0
+      ? v3Memories.map(m => `• [${m.memory_tier.toUpperCase()}:${m.memory_type}] "${m.title}" (Confidence: ${Math.round((m.confidence_score || 1) * 100)}%): ${m.content}`).join('\n')
+      : '  No v3 organizational memory nodes recorded yet.',
     `\n━━ ACTIVE SPACES (${spaces.length}) ━━`,
     spaces.length > 0
       ? spaces.map(s => `• [SPACE:${s.id}] "${s.name}"${s.is_private ? ' (private)' : ''}: ${s.description?.substring(0, 120) || 'No description'}`).join('\n')
