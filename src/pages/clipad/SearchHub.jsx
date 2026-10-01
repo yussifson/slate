@@ -697,16 +697,13 @@ export default function SearchHub() {
               <div className={`${showLeftPanel ? "lg:col-span-6" : "lg:col-span-12"} h-full flex flex-col overflow-hidden pb-2`}>
                 <div className="flex flex-col h-full bg-transparent overflow-hidden">
                   
-                  {/* Header (Pinned, borderless) */}
-                  <div className="flex items-center justify-between p-4.5 bg-transparent shrink-0">
+                  {/* Clean unboxed inline header */}
+                  <div className="flex items-center justify-between py-3 px-2 shrink-0">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
                         <CliPadLogo size={20} className="text-primary" />
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-sm text-[#0f172a] leading-none">Orbit AI</h3>
-                        <span className="text-[10px] text-slate-500 mt-1 block">Executive synthesis</span>
-                      </div>
+                      <h3 className="font-bold text-sm text-foreground">Orbit AI</h3>
                     </div>
                     <div className="flex items-center gap-3">
                       {isSynthesizing && (
@@ -717,7 +714,7 @@ export default function SearchHub() {
                       )}
                       <button
                         onClick={handleNewSearch}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition-all shadow-sm active:scale-95"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition-all active:scale-95 cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5 text-[#00beac]" />
                         New Search
