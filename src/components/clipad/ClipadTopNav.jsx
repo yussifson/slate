@@ -60,11 +60,6 @@ export default function ClipadTopNav({ forceMobile = false }) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Real-time System Status Pill (Desktop only) */}
-        <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[11px] font-bold tracking-wide uppercase text-white/90">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-          <span>Realtime Sync</span>
-        </div>
       </div>
       
       {/* Search & AI Bar — tablet and up */}
