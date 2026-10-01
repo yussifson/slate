@@ -102,7 +102,7 @@ export async function getOrganizationalContext({
     `Company ID: ${companyId} | User Role: ${userRole}`,
     `\n━━ ACCESSIBLE MEMORY NODES (${activeMemories.length}) ━━`,
     activeMemories.length > 0
-      ? activeMemories.map(m => `• [${m.memory_tier.toUpperCase()}:${m.memory_type}] "${m.title}" (Confidence: ${Math.round(m.confidence_score * 100)}%): ${m.content}`).join('\n')
+      ? activeMemories.map(m => `• [${(m.memory_tier || 'organizational').toUpperCase()}:${m.memory_type || 'FACT'}] "${m.title}" (Confidence: ${Math.round((m.confidence_score || 1) * 100)}%): ${m.content}`).join('\n')
       : '  No memory nodes found.',
 
     `\n━━ ACTIVE DECISIONS (${decisions.length}) ━━`,

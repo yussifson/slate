@@ -365,10 +365,10 @@ export default function CliPadDashboard() {
 
         {/* Personalized Greeting */}
         <div className="mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-1 tracking-tight">
             {greeting()}, {firstName} <span className="inline-block animate-bounce origin-bottom-right delay-500">{getGreetingEmoji()}</span>
           </h1>
-          <p className="text-base text-white/70 font-medium">Here's what's happening across your spaces.</p>
+          <p className="text-base text-slate-600 dark:text-slate-400 font-medium">Here's what's happening across your spaces.</p>
         </div>
 
         {/* Stats Row */}

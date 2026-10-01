@@ -69,11 +69,19 @@ export async function createMemory({
     throw new Error('Memory title and content are required.');
   }
 
+  // Force scope restriction if source/policy is marked private
+  let effectiveTier = memoryTier;
+  if (permissionsPolicy?.is_private || permissionsPolicy?.visibility === 'personal') {
+    effectiveTier = MEMORY_TIERS.PERSONAL;
+  } else if (memoryTier === MEMORY_TIERS.TEAM && !teamSpaceId) {
+    throw new Error('teamSpaceId is required for team tier memories.');
+  }
+
   const newMemory = {
     company_id: companyId,
     user_id: userId,
-    team_space_id: teamSpaceId,
-    memory_tier: memoryTier,
+    team_space_id: effectiveTier === MEMORY_TIERS.TEAM ? teamSpaceId : null,
+    memory_tier: effectiveTier,
     memory_type: memoryType,
     title,
     content,

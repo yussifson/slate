@@ -1179,8 +1179,10 @@ function PlatformRoutes() {
         <Route path="/clipad/timeline" element={<KnowledgeTimeline />} />
         <Route path="/clipad/decisions" element={<DecisionLedger />} />
         <Route path="/clipad/decisions/:decisionId/replay" element={<DecisionReplay />} />
+        <Route path="/clipad/graph" element={<KnowledgeGraph />} />
         <Route path="/clipad/knowledge-graph" element={<KnowledgeGraph />} />
         <Route path="/clipad/action-items" element={<ActionItems />} />
+        <Route path="/clipad/knowledge" element={<KnowledgeJourney />} />
         <Route path="/clipad/journey" element={<KnowledgeJourney />} />
         <Route path="/clipad/commitments" element={<CommitmentIntelligence />} />
         <Route path="/clipad/risk" element={<PredictiveRisk />} />
@@ -1721,8 +1723,10 @@ function App() {
                           <Route path="/timeline" element={<KnowledgeTimeline />} />
                           <Route path="/decisions" element={<DecisionLedger />} />
                           <Route path="/decisions/:decisionId/replay" element={<DecisionReplay />} />
+                          <Route path="/graph" element={<KnowledgeGraph />} />
                           <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
                           <Route path="/action-items" element={<ActionItems />} />
+                          <Route path="/knowledge" element={<KnowledgeJourney />} />
                           <Route path="/journey" element={<KnowledgeJourney />} />
                           <Route path="/integration-analytics" element={<IntegrationAnalytics />} />
                           <Route path="/record" element={<RecordVideo />} />

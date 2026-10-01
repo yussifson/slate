@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
+import { FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ExternalLink, Zap, Layers, Copy, CheckCheck,
-  Users, ArrowUpRight,
-  Brain, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit
+  Users, ArrowUpRight, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
@@ -538,95 +537,70 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className={`bg-[#0b0f19] text-white font-sans selection:bg-[#00beac]/20 selection:text-[#00beac] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen flex flex-col'}`}>
+    <div className={`min-h-full bg-background text-foreground font-sans ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'flex flex-col'}`}>
 
-      {/* ── TOP BAR (ChatGPT style model toggle & upgrade) ── */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#0b0f19]/80 backdrop-blur-md shrink-0">
+      {/* ── TOP SEARCH HEADER ── */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#006065] flex items-center justify-center text-white shadow-sm">
-            <CliPadLogo size={20} className="text-[#00beac]" />
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shadow-sm">
+            <CliPadLogo size={20} className="text-primary" />
           </div>
-          <span className="font-bold text-sm text-white tracking-tight">Orbit AI</span>
+          <span className="font-bold text-sm text-foreground tracking-tight">Intelligence Search</span>
         </div>
 
-        {/* Center Pill Mode Switcher e.g. [ Chat | + Work ] */}
-        <div className="flex items-center bg-[#171d2b] p-1 rounded-full border border-white/10 shadow-inner">
-          <button className="px-5 py-1.5 rounded-full bg-[#242c3d] text-white text-xs font-bold shadow-md transition-all">
-            Chat
-          </button>
-          <button className="px-4 py-1.5 rounded-full text-slate-400 hover:text-white text-xs font-semibold flex items-center gap-1 transition-all">
-            <Plus className="w-3.5 h-3.5 text-[#00beac]" /> Work
-          </button>
-        </div>
-
-        {/* Right Upgrade CTA */}
         <div className="flex items-center gap-3">
-          <button 
-            onClick={() => navigate('/settings')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-xs font-bold text-white transition-all active:scale-95 shadow-sm"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#00beac]" /> Upgrade
-          </button>
+          {hasPerformedSearch && (
+            <button
+              onClick={handleNewSearch}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-muted-foreground hover:bg-secondary border border-border transition-all shadow-sm active:scale-95"
+            >
+              <Plus className="w-3.5 h-3.5 text-primary" />
+              New Search
+            </button>
+          )}
         </div>
       </div>
 
-      {/* ── ZERO STATE: Centered hero (ChatGPT Design Reference media_1790853369310.png) ── */}
+      {/* ── ZERO STATE: Centered search header ── */}
       {!hasPerformedSearch && (
-        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16 -mt-8">
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
 
           {/* Greeting heading */}
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white text-center mb-8 tracking-tight">
-            Hey, {firstName}. Ready to dive in?
+          <h1 className="text-3xl md:text-4xl font-extrabold text-foreground text-center mb-2 tracking-tight">
+            How can I help you today, {firstName}?
           </h1>
+          <p className="text-sm text-muted-foreground text-center mb-8">Search across organizational memory, decisions, action items, documents, and meetings.</p>
 
-          {/* Floating Pill Capsule Search Bar */}
+          {/* Search Input Bar */}
           <div className="w-full max-w-2xl">
             <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-              <div className="relative flex items-center bg-[#181e2b] border border-white/15 rounded-full px-4 py-2.5 shadow-2xl hover:border-white/25 focus-within:border-[#00beac] focus-within:ring-2 focus-within:ring-[#00beac]/20 transition-all">
-                
-                {/* Left + Attachment button */}
-                <button 
-                  type="button" 
-                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white shrink-0 mr-2 transition-all active:scale-95"
-                  title="Add files or context"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-
+              <div className="relative flex items-center bg-card border border-border rounded-2xl px-4 py-3 shadow-lg hover:border-primary/50 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all">
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Ask Orbit AI or search across your workspace..."
-                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[15px] font-medium placeholder:text-slate-500 py-1 text-white"
+                  placeholder="Search decisions, documents, action items, standups..."
+                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-base font-medium placeholder:text-muted-foreground text-foreground px-2"
                 />
 
                 {query && (
-                  <button type="button" onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-white mr-2">
+                  <button type="button" onClick={() => setQuery('')} className="p-1 text-muted-foreground hover:text-foreground mr-2">
                     <X className="w-4 h-4" />
                   </button>
                 )}
 
-                {/* Right controls: Think toggle button */}
-                <button
-                  type="button"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold mr-2 transition-all"
-                >
-                  <Brain className="w-3.5 h-3.5 text-[#00beac]" /> Think
-                </button>
-
-                {/* Send circle button */}
                 <button
                   type="submit"
                   disabled={!query.trim()}
-                  className="w-9 h-9 bg-[#00beac] hover:bg-[#00a898] disabled:opacity-30 text-white font-bold rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 shadow-md"
+                  className="px-5 py-2.5 bg-primary hover:bg-primary/90 disabled:opacity-40 text-primary-foreground font-bold rounded-xl flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md text-sm"
                 >
-                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Send className="w-4 h-4 text-white ml-0.5" />}
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  <span>Search</span>
                 </button>
               </div>
             </form>
 
-            {/* Suggestion chips — compact, clean, horizontal */}
+            {/* Suggestion chips */}
             <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
               {SUGGESTED_PROMPTS.map((item, idx) => {
                 const Icon = item.icon;
@@ -634,9 +608,9 @@ export default function SearchHub() {
                   <button
                     key={idx}
                     onClick={() => { setQuery(item.desc); setSearchParams({ q: item.desc }); runSearch(item.desc); }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#181e2b] border border-white/10 hover:bg-white/10 text-slate-200 text-xs font-semibold transition-all group shadow-sm active:scale-95"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-card border border-border hover:bg-secondary text-foreground text-xs font-semibold transition-all group shadow-sm active:scale-95"
                   >
-                    <Icon className="w-3.5 h-3.5 text-[#00beac] shrink-0" />
+                    <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
                     {item.title}
                   </button>
                 );

@@ -7,8 +7,8 @@ import { useToast } from '@/components/ui/use-toast';
 import {
   CheckCircle2, XCircle, RefreshCw, Plug, Unplug, ExternalLink,
   Loader2, Clock, FileText,
-  AlertCircle, Zap, Search, ArrowLeft, BarChart2, ChevronDown, Key, Eye, EyeOff, Trash2,
-  Settings, Sliders, Network, Scale, Link, CheckSquare,
+  AlertCircle, Zap, Search, ArrowLeft, ChevronDown, Key, Eye, EyeOff, Trash2,
+  Settings, Sliders,
   Lock, Globe, Users, User
 } from 'lucide-react';
 import {
@@ -19,12 +19,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import IntegrationAnalytics from './IntegrationAnalytics';
-import KnowledgeGraph from './KnowledgeGraph';
-import KnowledgeTimeline from './KnowledgeTimeline';
-import DecisionLedger from './DecisionLedger';
-import ActionItems from './ActionItems';
-import KnowledgeJourney from './KnowledgeJourney';
 
 import { INTEGRATIONS, CATEGORIES } from '@/config/integrationsList';
 
@@ -464,70 +458,7 @@ export default function IntegrationsHub() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 md:px-6 mt-6">
-        <div className="flex border-b border-border overflow-x-auto no-scrollbar">
-          <button
-            onClick={() => setActiveView('hub')}
-            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'hub' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <Plug className="w-4 h-4" /> Capture
-          </button>
-          <button
-            onClick={() => setActiveView('analytics')}
-            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'analytics' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <BarChart2 className="w-4 h-4" /> Analytics
-          </button>
-          
-          <div className="w-px h-6 bg-border mx-2 mt-2.5 shrink-0" />
-          
-          <button
-            onClick={() => setActiveView('graph')}
-            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'graph' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <Network className="w-4 h-4" /> Knowledge Graph
-          </button>
-          <button
-            onClick={() => setActiveView('timeline')}
-            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'timeline' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <Clock className="w-4 h-4" /> Timeline
-          </button>
-          <button
-            onClick={() => setActiveView('decisions')}
-            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'decisions' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <Scale className="w-4 h-4" /> Decisions
-          </button>
-          <button
-            onClick={() => setActiveView('actions')}
-            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'actions' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <CheckSquare className="w-4 h-4" /> Action Items
-          </button>
-          <button
-            onClick={() => setActiveView('journey')}
-            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'journey' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-          >
-            <Link className="w-4 h-4" /> Knowledge Journey
-          </button>
-        </div>
-      </div>
-
-      {activeView === 'analytics' ? (
-        <IntegrationAnalytics embedded={true} />
-      ) : activeView === 'graph' ? (
-        <KnowledgeGraph embedded={true} />
-      ) : activeView === 'timeline' ? (
-        <KnowledgeTimeline embedded={true} />
-      ) : activeView === 'decisions' ? (
-        <DecisionLedger embedded={true} />
-      ) : activeView === 'actions' ? (
-        <ActionItems embedded={true} />
-      ) : activeView === 'journey' ? (
-        <KnowledgeJourney embedded={true} />
-      ) : (
-        <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 space-y-8">
 
         {/* Search + Filter */}
         <div className="flex flex-col gap-5">
@@ -901,7 +832,6 @@ export default function IntegrationsHub() {
           </div>
           </div>
         </div>
-      )}
 
       {/* â”€â”€ Scope Selector Modal â€” shown BEFORE connecting any integration â”€â”€â”€â”€â”€â”€â”€ */}
       {scopeModal && createPortal(

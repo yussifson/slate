@@ -91,11 +91,11 @@ export default function EnterpriseDashboard() {
         <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-black text-white dark:text-white flex items-center gap-3">
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
               <Shield className="w-8 h-8 text-indigo-600 dark:text-indigo-400" /> 
               Enterprise Command Center
             </h1>
-            <p className="text-white/70 dark:text-muted-foreground mt-1">Cross-tenant visibility and administrative oversight for your entire organization.</p>
+            <p className="text-slate-600 dark:text-slate-300 mt-1">Cross-tenant visibility and administrative oversight for your entire organization.</p>
           </div>
           <div className="flex items-center gap-3 px-4 py-2 bg-[#006065] text-white border border-white/15/10 text-white border border-white/15 border border-indigo-100 dark:border-indigo-500/20 rounded-xl">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

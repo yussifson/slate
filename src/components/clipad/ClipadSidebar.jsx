@@ -127,14 +127,14 @@ export default function ClipadSidebar({ forceMobile }) {
           "w-full flex items-center px-3 py-2.5 transition-all duration-200 group relative mb-1 rounded-xl",
           isCollapsed ? "justify-center" : "gap-3",
           isActive 
-            ? "bg-[#00beac] text-white shadow-md font-bold" 
+            ? "bg-[#fad503] text-[#006065] shadow-md font-extrabold" 
             : "text-white/75 hover:bg-white/10 hover:text-white font-medium"
         )}
         title={isCollapsed ? item.label : undefined}
       >
         <Icon className={cn("shrink-0 transition-transform duration-200 group-hover:scale-110", 
           isCollapsed ? "w-5 h-5" : "w-4 h-4",
-          isActive ? "text-white" : "text-white/60 group-hover:text-white"
+          isActive ? "text-[#006065]" : "text-white/60 group-hover:text-white"
         )} strokeWidth={isActive ? 2.5 : 2} />
         
         {!isCollapsed && <span className="truncate text-sm">{item.label}</span>}
@@ -183,7 +183,7 @@ export default function ClipadSidebar({ forceMobile }) {
         )}
       </div>
 
-      <div className={cn("flex-1 overflow-y-auto scrollbar-hide pb-4 bg-[#006065]", isCollapsed ? "px-2" : "px-3")}>
+      <div className={cn("flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/30 pb-4 bg-[#006065]", isCollapsed ? "px-2" : "px-3")}>
         {/* Menu */}
         <div className="py-2">
           {!isCollapsed && <div className="px-3 py-1.5 text-[11px] font-bold text-white/40 tracking-wider uppercase">General</div>}
