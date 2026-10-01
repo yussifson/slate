@@ -4,11 +4,12 @@ import {
   Search, Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
   Command, Bot, CornerDownLeft, Filter, Check, Layers, ChevronRight, Copy,
-  CheckCheck, Folder, Clock, User, Users, Hash
+  CheckCheck, Folder, Clock, User, Users, Hash, Brain, Lightbulb
 } from 'lucide-react';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
+import { classifyQuery, buildIntentPromptSupplement } from '@/lib/clipadQueryIntelligence';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin, isSpaceman } from '@/lib/constants';
@@ -17,36 +18,41 @@ import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAcco
 
 // ─── Type metadata ─────────────────────────────────────────────────────────────
 const TYPE_META = {
-  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-700 dark:text-blue-400',       bg: 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50',     route: (id) => `/meetings/${id}` },
-  video:       { icon: Video,         label: 'Video',     color: 'text-purple-700 dark:text-purple-400',   bg: 'bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/50', route: (id) => `/watch/${id}` },
-  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-700 dark:text-amber-400',     bg: 'bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-700 dark:text-indigo-400',   bg: 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
-  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-700 dark:text-rose-400',       bg: 'bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
-  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-700 dark:text-orange-400',   bg: 'bg-orange-100 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
-  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-700 dark:text-teal-400',       bg: 'bg-teal-100 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
-  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-slate-700 dark:text-slate-400',     bg: 'bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700',   route: () => `/integrations` },
-  person:      { icon: User,          label: 'Person',    color: 'text-violet-700 dark:text-violet-400',   bg: 'bg-violet-100 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-700/50', route: () => null },
+  meeting:      { icon: Calendar,      label: 'Meeting',      color: 'text-blue-700 dark:text-blue-400',       bg: 'bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700/50',     route: (id) => `/meetings/${id}` },
+  video:        { icon: Video,         label: 'Video',        color: 'text-purple-700 dark:text-purple-400',   bg: 'bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700/50', route: (id) => `/watch/${id}` },
+  doc:          { icon: FileText,      label: 'Doc',          color: 'text-emerald-700 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:         { icon: CheckCircle,   label: 'Task',         color: 'text-amber-700 dark:text-amber-400',     bg: 'bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50',   route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:      { icon: MessageSquare, label: 'Chat',         color: 'text-indigo-700 dark:text-indigo-400',   bg: 'bg-indigo-100 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:     { icon: ShieldAlert,   label: 'Decision',     color: 'text-rose-700 dark:text-rose-400',       bg: 'bg-rose-100 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:      { icon: AlertTriangle, label: 'Blocker',      color: 'text-orange-700 dark:text-orange-400',   bg: 'bg-orange-100 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
+  standup:      { icon: Zap,           label: 'Standup',      color: 'text-teal-700 dark:text-teal-400',       bg: 'bg-teal-100 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-700/50',     route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration:  { icon: ExternalLink,  label: 'Imported',     color: 'text-slate-700 dark:text-slate-400',     bg: 'bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700',   route: () => `/integrations` },
+  person:       { icon: User,          label: 'Person',       color: 'text-violet-700 dark:text-violet-400',   bg: 'bg-violet-100 dark:bg-violet-900/30 border border-violet-200 dark:border-violet-700/50', route: () => null },
+  // Phase 4 additions
+  smart_moment: { icon: Sparkles,      label: 'Smart Moment', color: 'text-fuchsia-700 dark:text-fuchsia-400', bg: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 border border-fuchsia-200 dark:border-fuchsia-700/50', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}` : null },
+  memory:       { icon: Brain,         label: 'Memory',       color: 'text-cyan-700 dark:text-cyan-400',       bg: 'bg-cyan-100 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-700/50',     route: () => null },
 };
 
 const FILTER_TABS = [
-  { id: 'all',      label: 'All',       icon: Layers },
-  { id: 'doc',      label: 'Docs',      icon: FileText },
-  { id: 'task',     label: 'Tasks',     icon: CheckCircle },
-  { id: 'meeting',  label: 'Meetings',  icon: Calendar },
-  { id: 'decision', label: 'Decisions', icon: ShieldAlert },
-  { id: 'message',  label: 'Chats',     icon: MessageSquare },
-  { id: 'people',   label: 'People',    icon: User },
+  { id: 'all',          label: 'All',          icon: Layers },
+  { id: 'smart_moment', label: 'Moments',      icon: Sparkles },
+  { id: 'doc',          label: 'Docs',         icon: FileText },
+  { id: 'task',         label: 'Tasks',        icon: CheckCircle },
+  { id: 'meeting',      label: 'Meetings',     icon: Calendar },
+  { id: 'decision',     label: 'Decisions',    icon: ShieldAlert },
+  { id: 'message',      label: 'Chats',        icon: MessageSquare },
+  { id: 'people',       label: 'People',       icon: User },
 ];
 
 const FILTER_TYPE_MAP = {
-  all:      null,
-  doc:      ['doc', 'integration'],
-  task:     ['task', 'blocker', 'standup'],
-  meeting:  ['meeting', 'video'],
-  decision: ['decision', 'blocker'],
-  message:  ['message'],
-  people:   ['person'],
+  all:          null,
+  smart_moment: ['smart_moment', 'memory'],
+  doc:          ['doc', 'integration'],
+  task:         ['task', 'blocker', 'standup'],
+  meeting:      ['meeting', 'video'],
+  decision:     ['decision', 'blocker'],
+  message:      ['message'],
+  people:       ['person'],
 };
 
 const matchesFilter = (itemType, filterId) => {
@@ -315,7 +321,6 @@ export default function GlobalSearch() {
     const spaceIdArr = Array.from(accessibleSpaceIds);
     setAccessibleCount(spaceIdArr.length);
     const term = `%${q}%`;
-    const spaceIdsStr = spaceIdArr.length > 0 ? spaceIdArr.join(',') : '00000000-0000-0000-0000-000000000000';
     const cid = user.company_id;
     // Wrap every query safely so one failing query never breaks the whole search
     const safeQuery = (promise) => Promise.resolve(promise).then(res => res.data || []).catch(err => {
@@ -323,7 +328,7 @@ export default function GlobalSearch() {
       return [];
     });
 
-    const [docs, tasks, messages, meetings, decisions, videos, blockers, standups, integrations, people] = await Promise.all([
+    const [docs, tasks, messages, meetings, decisions, videos, blockers, standups, integrations, people, smartMoments, memories] = await Promise.all([
       // Docs: space filter
       safeQuery(
         spaceIdArr.length > 0
@@ -378,10 +383,55 @@ export default function GlobalSearch() {
       ),
       // People search
       Promise.resolve(searchPeople(q, cid)).catch(() => []),
+      // ── Phase 4: Smart Moments — permission filtered by space access ──
+      safeQuery(
+        supabase
+          .from('clipad_v3_smart_moments')
+          .select('id, title, description, moment_type, status, confidence, team_space_id, meeting_id, created_at')
+          .eq('company_id', cid)
+          .neq('status', 'dismissed')
+          .or(`title.ilike.${term},description.ilike.${term},content.ilike.${term}`)
+          .or(
+            spaceIdArr.length > 0
+              ? `team_space_id.is.null,team_space_id.in.(${spaceIdArr.join(',')})`
+              : 'team_space_id.is.null'
+          )
+          .limit(limit)
+      ),
+      // ── Phase 4: V3 Memories — RLS already enforces tenant + space isolation ──
+      safeQuery(
+        supabase
+          .from('clipad_v3_memories')
+          .select('id, title, content, memory_type, memory_tier, team_space_id, confidence_score, created_at')
+          .eq('company_id', cid)
+          .neq('status', 'DELETED')
+          .or(`title.ilike.${term},content.ilike.${term}`)
+          .limit(limit)
+      ),
     ]);
 
     const raw = [
       ...(people || []),
+      ...(smartMoments || []).map(m => ({
+        type: 'smart_moment',
+        id: m.id,
+        space_id: m.team_space_id,
+        label: m.title,
+        snippet: m.description?.substring(0, 200),
+        created_at: m.created_at,
+        moment_type: m.moment_type,
+        confidence: m.confidence,
+        meeting_id: m.meeting_id,
+      })),
+      ...(memories || []).map(m => ({
+        type: 'memory',
+        id: m.id,
+        space_id: m.team_space_id,
+        label: m.title,
+        snippet: m.content?.substring(0, 200),
+        created_at: m.created_at,
+        memory_type: m.memory_type,
+      })),
       ...(docs || []).map(d => ({ type: 'doc', id: d.id, space_id: d.space_id, label: d.title, snippet: d.content?.substring(0, 200), created_at: d.created_at })),
       ...(tasks || []).map(t => ({ type: 'task', id: t.id, space_id: t.space_id, label: t.title, snippet: t.context?.substring(0, 200), created_at: t.created_at })),
       ...(messages || []).map(m => ({ type: 'message', id: m.id, space_id: m.space_id, label: 'Chat Message', snippet: m.content?.substring(0, 200), created_at: m.created_at })),
@@ -396,6 +446,7 @@ export default function GlobalSearch() {
     // Smart ranking: sort by relevance score descending
     return raw.sort((a, b) => scoreResult(b, q) - scoreResult(a, q));
   }, [user]);
+
 
   // ── Live debounced search (fires 300ms after typing) ──────────────────────
   useEffect(() => {
@@ -465,6 +516,10 @@ export default function GlobalSearch() {
       const spaceIdArr = Array.from(accessibleSpaceIds);
       const userRole = isAdmin(user) ? 'Company Admin' : isSpaceman(user) ? 'Spaceman (Space Admin)' : 'Member';
 
+      // ── Phase 4: Query Intelligence ───────────────────────────────────────
+      const intentResult = classifyQuery(q);
+      const intentSupplement = buildIntentPromptSupplement(intentResult);
+
       const [orgContextResult] = await Promise.all([
         buildOrgContext({ limit: 25, companyId: user.company_id, userId: user.id, userRole: user?.role || 'member' })
           .catch(e => { console.warn('[GlobalSearch] org context:', e.message); return { contextText: '' }; }),
@@ -473,27 +528,48 @@ export default function GlobalSearch() {
       const currentResults = results.length > 0 ? results : await runDbSearch(q, 6).catch(() => []);
       const fullOrgContext = orgContextResult?.contextText?.length > 50 ? orgContextResult.contextText : '';
 
-      const keywordResultsContext = currentResults.length > 0
-        ? `\n\nKEYWORD SEARCH RESULTS (${currentResults.length} records matched "${q}"):\n` +
-          currentResults.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\n')
-        : `\n\nKEYWORD SEARCH: No records matched "${q}" directly — check org context.`;
+      // Build enhanced context that includes Smart Moments
+      const smartMomentResults = currentResults.filter(r => r.type === 'smart_moment');
+      const memoryResults = currentResults.filter(r => r.type === 'memory');
+      const otherResults = currentResults.filter(r => r.type !== 'smart_moment' && r.type !== 'memory');
+
+      let keywordResultsContext = '';
+      if (smartMomentResults.length > 0) {
+        keywordResultsContext += `\n\nSMART MOMENTS (${smartMomentResults.length} matched "${q}"):\n` +
+          smartMomentResults.map(r => `[${r.moment_type} ID:${r.id}] "${r.label}": ${r.snippet || ''} (confidence: ${Math.round((r.confidence||0.9)*100)}%)`).join('\n');
+      }
+      if (memoryResults.length > 0) {
+        keywordResultsContext += `\n\nORGANIZATIONAL MEMORIES (${memoryResults.length} matched):\n` +
+          memoryResults.map(r => `[MEMORY:${r.memory_type}] "${r.label}": ${r.snippet || ''}`).join('\n');
+      }
+      if (otherResults.length > 0) {
+        keywordResultsContext += `\n\nKEYWORD SEARCH RESULTS (${otherResults.length} records matched "${q}"):\n` +
+          otherResults.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet || ''}`).join('\n');
+      }
+      if (!keywordResultsContext) {
+        keywordResultsContext = `\n\nKEYWORD SEARCH: No records matched "${q}" directly — check org context.`;
+      }
 
       const now = new Date();
       const timeContext = `CURRENT DATE & TIME: ${now.toLocaleDateString()} ${now.toLocaleTimeString()} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`;
       const userDepartment = user?.department ? ` in the ${user.department} department` : '';
       const userIndustry = user?.company_industry ? ` in the ${user.company_industry} industry` : '';
 
+
       let streamingAnswer = '';
       await generateText([
         {
           role: 'system',
-          content: `You are Orbit AI, an enterprise intelligence assistant.
+          content: `You are Orbit AI, an enterprise intelligence assistant for Clipad V3.
 
 CRITICAL CONTEXT:
 - ${timeContext}.
 - Responding to "${user?.full_name || 'a user'}".
 - Role: "${userRole}"${userDepartment}${userIndustry}.
 - Access scoped strictly to ${spaceIdArr.length} authorized spaces.
+- Query intent detected: ${intentResult.intent}
+
+QUERY FOCUS: ${intentSupplement}
 
 ORGANIZATIONAL CONTEXT:
 ${fullOrgContext ? `FULL ORG CONTEXT:\n${fullOrgContext}` : ''}
@@ -503,7 +579,9 @@ Instructions:
 Be clear, direct, and concise (2-4 sentences). Focus on actionable enterprise answers.
 DO NOT use slow internal reasoning or <think> tags. Keep responses instant.
 If the requested data is found, state exact details, assignees, or dates.
-DO NOT mention internal IDs (e.g. M-123, I-456, or UUIDs) in your text response. Use titles instead.
+When quoting Smart Moments or decisions, cite the source meeting/video by title (not UUID).
+If the organizational data does NOT support the answer, say so clearly — do NOT fabricate facts.
+DO NOT mention internal IDs (UUIDs) in your text response. Use titles instead.
 After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>"}].`,
         },
         { role: 'user', content: `Query: "${q}"` },

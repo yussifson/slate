@@ -2,12 +2,15 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { FileText, CheckCircle, MessageSquare, Calendar, Video,
   Loader2, X, ShieldAlert, AlertTriangle, ExternalLink, Zap, Layers, Copy, CheckCheck,
-  Users, ArrowUpRight, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit
+  Users, ArrowUpRight, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit,
+  Sparkles, Brain
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
+import { getGraphAwareContext } from '@/lib/clipadContextService';
+import { classifyQuery, buildIntentPromptSupplement } from '@/lib/clipadQueryIntelligence';
 import { useAuth } from '@/lib/AuthContext';
 import { isAdmin } from '@/lib/constants';
 import { useToast } from '@/components/ui/use-toast';
@@ -15,27 +18,31 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 const TYPE_META = {
-  person:      { icon: Users,         label: 'Person',    color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20' },
-  meeting:     { icon: Calendar,      label: 'Meeting',   color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-500/10 border border-blue-500/20', route: (id) => `/meetings/${id}` },
-  video:       { icon: Video,         label: 'Video',     color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-500/10 border border-purple-500/20', route: (id) => `/watch/${id}` },
-  doc:         { icon: FileText,      label: 'Doc',       color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
-  task:        { icon: CheckCircle,   label: 'Task',      color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10 border border-amber-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
-  message:     { icon: MessageSquare, label: 'Chat',      color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-500/10 border border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
-  decision:    { icon: ShieldAlert,   label: 'Decision',  color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-500/10 border border-rose-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
-  blocker:     { icon: AlertTriangle, label: 'Blocker',   color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-500/10 border border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
-  standup:     { icon: Zap,           label: 'Standup',   color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10 border border-teal-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
-  integration: { icon: ExternalLink,  label: 'Imported',  color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-500/10 border border-sky-500/20', route: () => `/integrations` },
+  person:       { icon: Users,         label: 'Person',       color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20' },
+  meeting:      { icon: Calendar,      label: 'Meeting',      color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-500/10 border border-blue-500/20', route: (id) => `/meetings/${id}` },
+  video:        { icon: Video,         label: 'Video',        color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-500/10 border border-purple-500/20', route: (id) => `/watch/${id}` },
+  doc:          { icon: FileText,      label: 'Doc',          color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-500/10 border border-emerald-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=docs&docId=${id}` : null },
+  task:         { icon: CheckCircle,   label: 'Task',         color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-500/10 border border-amber-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=tasks&taskId=${id}` : null },
+  message:      { icon: MessageSquare, label: 'Chat',         color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-500/10 border border-indigo-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=chat` : null },
+  decision:     { icon: ShieldAlert,   label: 'Decision',     color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-500/10 border border-rose-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=decisions` : null },
+  blocker:      { icon: AlertTriangle, label: 'Blocker',      color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-500/10 border border-orange-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=overview` : null },
+  standup:      { icon: Zap,           label: 'Standup',      color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-500/10 border border-teal-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}?tab=standup` : null },
+  integration:  { icon: ExternalLink,  label: 'Imported',     color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-500/10 border border-sky-500/20', route: () => `/integrations` },
+  // Phase 4
+  smart_moment: { icon: Sparkles,      label: 'Smart Moment', color: 'text-fuchsia-600 dark:text-fuchsia-400', bg: 'bg-fuchsia-500/10 border border-fuchsia-500/20', route: (id, spaceId) => spaceId ? `/spaces/${spaceId}` : null },
+  memory:       { icon: Brain,         label: 'Memory',       color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-500/10 border border-cyan-500/20', route: () => null },
 };
 
 const FILTER_TABS = [
-  { id: 'all', label: 'All Knowledge', icon: Layers },
-  { id: 'person', label: 'People', icon: Users },
-  { id: 'doc', label: 'Documents', icon: FileText },
-  { id: 'task', label: 'Tasks', icon: CheckCircle },
-  { id: 'meeting', label: 'Meetings', icon: Calendar },
-  { id: 'decision', label: 'Decisions', icon: ShieldAlert },
-  { id: 'message', label: 'Conversations', icon: MessageSquare },
-  { id: 'integration', label: 'Integrations', icon: ExternalLink },
+  { id: 'all',          label: 'All Knowledge',   icon: Layers },
+  { id: 'smart_moment', label: 'Smart Moments',   icon: Sparkles },
+  { id: 'person',       label: 'People',          icon: Users },
+  { id: 'doc',          label: 'Documents',       icon: FileText },
+  { id: 'task',         label: 'Tasks',           icon: CheckCircle },
+  { id: 'meeting',      label: 'Meetings',        icon: Calendar },
+  { id: 'decision',     label: 'Decisions',       icon: ShieldAlert },
+  { id: 'message',      label: 'Conversations',   icon: MessageSquare },
+  { id: 'integration',  label: 'Integrations',    icon: ExternalLink },
 ];
 
 const SUGGESTED_PROMPTS = [
@@ -46,14 +53,15 @@ const SUGGESTED_PROMPTS = [
 ];
 
 const FILTER_TYPE_MAP = {
-  all: null,
-  person: ['person'],
-  doc: ['doc', 'integration'],
-  task: ['task', 'blocker', 'standup'],
-  meeting: ['meeting', 'video'],
-  decision: ['decision', 'blocker'],
-  message: ['message'],
-  integration: ['integration'],
+  all:          null,
+  smart_moment: ['smart_moment', 'memory'],
+  person:       ['person'],
+  doc:          ['doc', 'integration'],
+  task:         ['task', 'blocker', 'standup'],
+  meeting:      ['meeting', 'video'],
+  decision:     ['decision', 'blocker'],
+  message:      ['message'],
+  integration:  ['integration'],
 };
 
 const matchesFilter = (itemType, filterId) => {
@@ -371,29 +379,66 @@ export default function SearchHub() {
     setChatHistory([]);
 
     try {
-      const orgCtx = await buildOrgContext({
-        limit: 25,
-        companyId: user?.company_id,
-        userId: user?.id,
-        userRole: user?.role || 'member',
-        spaceIds: spaceIdArr,
-      }).catch(() => ({ contextText: '' }));
+      // ── Phase 4: Query Intelligence ───────────────────────────────────────
+      const intentResult = classifyQuery(q);
+      const intentSupplement = buildIntentPromptSupplement(intentResult);
+      const adminFlag = isAdmin(user);
+
+      // ── Phase 4: Graph-Aware Context (Memory + Smart Moments + Entities) ──
+      // Authorization is enforced inside getGraphAwareContext before any data
+      // is included — unauthorized content never reaches the AI model.
+      const [graphCtx, orgCtx] = await Promise.all([
+        getGraphAwareContext({
+          companyId: user?.company_id,
+          userId: user?.id,
+          userRole: user?.role || 'member',
+          spaceIds: spaceIdArr,
+          query: q,
+          intentResult,
+          isAdmin: adminFlag,
+        }).catch(() => ({ contextText: '', memories: [], smartMoments: [], entities: [], sources: [] })),
+        buildOrgContext({
+          limit: 15,
+          companyId: user?.company_id,
+          userId: user?.id,
+          userRole: user?.role || 'member',
+          spaceIds: spaceIdArr,
+        }).catch(() => ({ contextText: '' })),
+      ]);
 
       // Bail if a newer synthesis has started
       if (synthSessionRef.current !== sessionId) return;
 
-      const resContext = matchedResults.length > 0
+      // Build result context — keyword results + graph-aware context
+      const keywordContext = matchedResults.length > 0
         ? matchedResults.map(r => `[${r.type.toUpperCase()} ID:${r.id}] ${r.label}: ${r.snippet?.substring(0, 180) || ''}`).join('\n')
         : 'No direct database records matched.';
 
       const promptMessages = [
         {
           role: 'system',
-          content: `You are Orbit AI, an elite enterprise intelligence assistant. Give a concise, authoritative synthesis in clean markdown. Use bullet points for lists. Bold key terms. Be direct and high-signal. Do not repeat the query.`
+          content: `You are Orbit AI, the enterprise intelligence assistant for Clipad V3.
+
+QUERY INTENT: ${intentResult.intent}
+QUERY FOCUS: ${intentSupplement}
+
+KEYWORD MATCHED RECORDS:
+${keywordContext}
+
+${graphCtx.contextText ? `GRAPH-AWARE CONTEXT (Memory + Smart Moments + Entities):\n${graphCtx.contextText}` : ''}
+
+${orgCtx.contextText ? `ORGANIZATIONAL CONTEXT:\n${orgCtx.contextText}` : ''}
+
+RULES:
+- Answer only from the retrieved organizational data above.
+- If the data does not support the answer, say so clearly — do NOT fabricate.
+- Cite source names (meeting titles, document names) but never raw UUIDs.
+- Use clean markdown formatting. Be concise and high-signal.
+- When referencing Smart Moments, include the moment type (DECISION, ACTION, RISK, etc.) and source meeting title.`
         },
         {
           role: 'user',
-          content: `Search query: "${q}"\n\nMATCHED RECORDS:\n${resContext}\n\nORGANIZATIONAL CONTEXT:\n${orgCtx.contextText || 'None'}`
+          content: `Search query: "${q}"`
         }
       ];
 
@@ -402,9 +447,7 @@ export default function SearchHub() {
           .replace(/<(think|thought)>[\s\S]*?<\/\1>/gi, '')
           .replace(/<(think|thought)>[\s\S]*$/gi, '')
           .replace(/<\/(think|thought)>/gi, '')
-          // Clean up raw backslash escaped quotes, braces, brackets, and raw backslash characters
           .replace(/\\([\\`*_{}[\]()#+\-.!])/g, '$1')
-          // Strip out typical malformed token artifacts or corrupt byte markers sometimes outputted by LLMs
           .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
           .trim();
       };
@@ -452,6 +495,7 @@ export default function SearchHub() {
       }
     }
   };
+
 
   const handleFollowUp = async (e) => {
     e.preventDefault();
