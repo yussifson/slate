@@ -7,11 +7,8 @@ import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useAuth} from '@/lib/AuthContext';
 import { AlertCircle} from 'lucide-react';
-import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
-import { toast} from 'react-hot-toast';
-import SEO from '@/components/seo/SEO';
 import IndustryFeatureShowcase from '@/components/shared/IndustryFeatureShowcase';
 
 

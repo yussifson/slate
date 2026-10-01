@@ -5,8 +5,6 @@ import { powerSync } from "@/api/PowerSyncConnector";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import ThemeToggle from '@/components/layout/ThemeToggle';
 import { Logo} from '@/components/ui/Logo';
 import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
