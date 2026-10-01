@@ -13,7 +13,6 @@ export default function CliPadLogin() {
   const [searchParams] = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/search';
   const { toast } = useToast();
-  const [mode, setMode] = useState('sso');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -103,15 +102,15 @@ export default function CliPadLogin() {
         <meta name="description" content="Sign in to your enterprise-grade collaborative productivity workspace." />
         <link rel="icon" type="image/svg+xml" href="/clipad-favicon-round.svg" />
       </Helmet>
-      <div className="h-[100dvh] w-full bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans text-slate-900 shadow-none">
+      <div className="h-[100dvh] max-h-[100dvh] w-full bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans text-slate-900 shadow-none">
         
         {/* Left 50% Panel: Form */}
-        <div className="w-full md:w-1/2 bg-white flex flex-col justify-between p-6 md:p-12 overflow-y-auto shadow-none border-r border-slate-100">
-          <div className="max-w-md w-full mx-auto my-auto py-4">
+        <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-4 sm:p-8 md:p-12 overflow-hidden shadow-none border-r border-slate-100">
+          <div className="max-w-md w-full mx-auto py-2 sm:py-4">
             {/* Logo & Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-4 sm:mb-8">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#006065] flex items-center justify-center text-white shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-[#006065] flex items-center justify-center shadow-sm">
                   <CliPadLogo size={24} />
                 </div>
                 <span className="font-extrabold text-xl tracking-tight text-[#00beac]">
@@ -124,8 +123,8 @@ export default function CliPadLogin() {
             </div>
 
             {/* Welcome Heading */}
-            <div className="mb-6">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight mb-2">
+            <div className="mb-4 sm:mb-6">
+              <h1 className="text-xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight mb-1 sm:mb-2">
                 Welcome back
               </h1>
               <p className="text-xs sm:text-sm text-slate-600 font-medium">
@@ -134,11 +133,11 @@ export default function CliPadLogin() {
             </div>
 
             {/* Social Logins */}
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-2 gap-3 mb-4 sm:mb-6">
               <button
                 onClick={handleSSOLogin}
                 type="button"
-                className="flex items-center justify-center gap-2 h-11 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center justify-center gap-2 h-10 sm:h-11 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
               >
                 <Logo hideText={true} className="w-4 h-4 text-[#00beac]" />
                 Optavel SSO
@@ -147,7 +146,7 @@ export default function CliPadLogin() {
                 onClick={handleGoogleOAuth}
                 disabled={loading}
                 type="button"
-                className="flex items-center justify-center gap-2 h-11 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center justify-center gap-2 h-10 sm:h-11 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -159,7 +158,7 @@ export default function CliPadLogin() {
               </button>
             </div>
 
-            <div className="relative mb-6">
+            <div className="relative mb-4 sm:mb-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200"></div>
               </div>
@@ -169,7 +168,7 @@ export default function CliPadLogin() {
             </div>
 
             {!showWorkspaceSelect ? (
-              <form onSubmit={handleEmailLogin} className="space-y-4">
+              <form onSubmit={handleEmailLogin} className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Email</label>
                   <div className="relative">
@@ -179,7 +178,7 @@ export default function CliPadLogin() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@company.com"
-                      className="w-full pl-10 pr-4 h-11 text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 transition-all outline-none"
+                      className="w-full pl-10 pr-4 h-10 sm:h-11 text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 transition-all outline-none"
                       required
                     />
                   </div>
@@ -196,7 +195,7 @@ export default function CliPadLogin() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
-                      className="w-full pl-10 pr-10 h-11 text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 transition-all outline-none"
+                      className="w-full pl-10 pr-10 h-10 sm:h-11 text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 transition-all outline-none"
                       required
                     />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -207,7 +206,7 @@ export default function CliPadLogin() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-11 mt-2 bg-[#00beac] hover:bg-[#00a898] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full h-10 sm:h-11 mt-1 sm:mt-2 bg-[#00beac] hover:bg-[#00a898] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Sign In'}
                 </button>
@@ -247,7 +246,7 @@ export default function CliPadLogin() {
               </div>
             )}
 
-            <div className="text-center pt-6 mt-6 border-t border-slate-100">
+            <div className="text-center pt-4 sm:pt-6 mt-4 sm:mt-6 border-t border-slate-100">
               <span className="text-xs text-slate-500 font-medium">Don't have an account? </span>
               <span className="text-xs font-bold text-[#00beac] cursor-pointer hover:underline" onClick={() => navigate(`/signup${window.location.search}`)}>
                 Sign up
@@ -262,14 +261,6 @@ export default function CliPadLogin() {
           <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] bg-[#00beac]/15 rounded-full blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-[#6366f1]/20 rounded-full blur-[140px] pointer-events-none" />
           <div className="absolute top-[40%] right-[10%] w-[320px] h-[320px] bg-[#a855f7]/15 rounded-full blur-[100px] pointer-events-none" />
-
-          {/* Header */}
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-[#00beac] animate-pulse" />
-              <span className="text-xs font-bold text-white tracking-wide uppercase">CliPad Enterprise</span>
-            </div>
-          </div>
 
           {/* Center Geometric SVG Artwork */}
           <div className="relative z-10 my-auto flex flex-col items-center justify-center py-4">

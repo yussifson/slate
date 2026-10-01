@@ -1,6 +1,6 @@
 import React, { useId } from 'react';
 
-export function CliPadLogo({ className = "", size = 24 }) {
+export function CliPadLogo({ className = "", size = 24, color = "#00a851", dotColor = "#ef4444" }) {
   const gradientId = useId().replace(/:/g, '');
   const gradRef = `url(#clipad-grad-${gradientId})`;
 
@@ -15,8 +15,8 @@ export function CliPadLogo({ className = "", size = 24 }) {
     >
       <defs>
         <linearGradient id={`clipad-grad-${gradientId}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
+          <stop offset="0%" stopColor={color} stopOpacity="1" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.7" />
         </linearGradient>
       </defs>
       
@@ -36,7 +36,7 @@ export function CliPadLogo({ className = "", size = 24 }) {
       />
       
       {/* Dot for recording/live aspect */}
-      <circle cx="26" cy="6" r="3" fill="#ef4444" />
+      <circle cx="26" cy="6" r="3" fill={dotColor} />
     </svg>
   );
 }
