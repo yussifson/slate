@@ -98,232 +98,297 @@ export default function CliPadLogin() {
   return (
     <>
       <Helmet>
-        <title>Sign In — CliPad Collaborative Workspace</title>
-        <meta name="description" content="Sign in to your enterprise-grade collaborative productivity workspace." />
+        <title>Log In — CliPad Collaborative Workspace</title>
+        <meta name="description" content="Log in to your enterprise-grade collaborative productivity workspace." />
         <link rel="icon" type="image/svg+xml" href="/clipad-favicon-round.svg" />
       </Helmet>
-      <div className="h-[100dvh] max-h-[100dvh] w-full bg-[#f8fafc] flex flex-col md:flex-row overflow-hidden font-sans text-slate-900 shadow-none">
+      <div className="h-[100dvh] max-h-[100dvh] w-full bg-[#eef2f6] flex items-center justify-center p-3 sm:p-6 lg:p-8 font-sans text-slate-900 overflow-hidden select-none">
         
-        {/* Left 50% Panel: Form */}
-        <div className="w-full md:w-1/2 bg-white flex flex-col justify-center p-4 sm:p-8 md:p-12 overflow-hidden shadow-none border-r border-slate-100">
-          <div className="max-w-md w-full mx-auto py-2 sm:py-4">
-            {/* Logo & Header */}
-            <div className="flex items-center justify-between mb-4 sm:mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#006065] flex items-center justify-center shadow-sm">
-                  <CliPadLogo size={24} />
-                </div>
-                <span className="font-extrabold text-xl tracking-tight text-[#00beac]">
+        {/* Main Outer Split Card Container */}
+        <div className="w-full max-w-6xl h-full max-h-[720px] lg:max-h-[760px] bg-white rounded-[24px] sm:rounded-[32px] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] flex flex-col lg:flex-row border border-slate-200/80 overflow-hidden p-2 sm:p-3 lg:p-3.5">
+          
+          {/* Left Panel: Form */}
+          <div className="w-full lg:w-1/2 bg-white flex flex-col justify-between p-6 sm:p-8 lg:p-12 overflow-y-auto">
+            <div className="max-w-sm w-full mx-auto my-auto py-2">
+              
+              {/* Top Logo */}
+              <div className="flex items-center gap-2.5 mb-6 sm:mb-8">
+                <CliPadLogo size={28} />
+                <span className="font-extrabold text-2xl tracking-tight text-slate-900">
                   CliPad
                 </span>
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#00beac] bg-[#006065]/10 px-3 py-1 rounded-full">
-                Workspace Login
-              </span>
-            </div>
 
-            {/* Welcome Heading */}
-            <div className="mb-4 sm:mb-6">
-              <h1 className="text-xl sm:text-3xl font-extrabold text-[#0f172a] tracking-tight mb-1 sm:mb-2">
-                Welcome back
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600 font-medium">
-                Sign in to access your CliPad spaces, documents, and intelligence.
-              </p>
-            </div>
-
-            {/* Social Logins */}
-            <div className="grid grid-cols-2 gap-3 mb-4 sm:mb-6">
-              <button
-                onClick={handleSSOLogin}
-                type="button"
-                className="flex items-center justify-center gap-2 h-10 sm:h-11 px-3 bg-slate-50 hover:bg-slate-100 text-[#00beac] border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
-              >
-                <Logo hideText={true} className="w-4 h-4 text-[#00beac]" />
-                Optavel SSO
-              </button>
-              <button 
-                onClick={handleGoogleOAuth}
-                disabled={loading}
-                type="button"
-                className="flex items-center justify-center gap-2 h-10 sm:h-11 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all cursor-pointer"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                Google
-              </button>
-            </div>
-
-            <div className="relative mb-4 sm:mb-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200"></div>
+              {/* Title & Subtitle */}
+              <div className="mb-6">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1.5">
+                  Log in to your account
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-500 font-medium">
+                  Please enter your details
+                </p>
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-3 text-slate-400 font-semibold tracking-wider text-[10px]">Or email</span>
-              </div>
-            </div>
 
-            {!showWorkspaceSelect ? (
-              <form onSubmit={handleEmailLogin} className="space-y-3 sm:space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Email</label>
-                  <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@company.com"
-                      className="w-full pl-10 pr-4 h-10 sm:h-11 text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 transition-all outline-none"
-                      required
-                    />
+              {/* Form Content */}
+              {!showWorkspaceSelect ? (
+                <form onSubmit={handleEmailLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">Email</label>
+                    <div className="relative">
+                      <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        className="w-full pl-10 pr-4 h-11 text-sm bg-white border border-slate-200 text-slate-900 rounded-xl focus:border-[#006065] focus:ring-2 focus:ring-[#006065]/15 transition-all outline-none shadow-sm placeholder:text-slate-400"
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-semibold text-slate-700">Password</label>
-                    <button type="button" onClick={() => navigate('/forgot-password')} className="text-xs font-bold text-[#00beac] hover:underline">Forgot password?</button>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">Password</label>
+                    <div className="relative">
+                      <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full pl-10 pr-10 h-11 text-sm bg-white border border-slate-200 text-slate-900 rounded-xl focus:border-[#006065] focus:ring-2 focus:ring-[#006065]/15 transition-all outline-none shadow-sm placeholder:text-slate-400"
+                        required
+                      />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter your password"
-                      className="w-full pl-10 pr-10 h-10 sm:h-11 text-sm bg-slate-50 border border-slate-200 text-slate-900 rounded-xl focus:bg-white focus:border-[#00beac] focus:ring-2 focus:ring-[#00beac]/20 transition-all outline-none"
-                      required
-                    />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-10 sm:h-11 mt-1 sm:mt-2 bg-[#00beac] hover:bg-[#00a898] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Sign In'}
-                </button>
-              </form>
-            ) : (
-              <div className="space-y-3">
-                <h3 className="text-base font-bold text-center text-[#00beac] mb-1">Select Workspace</h3>
-                <p className="text-xs text-center text-slate-500 mb-3">Multiple accounts found for {email}. Choose one to access:</p>
-                
-                <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
-                  {workspaces.map((ws) => (
-                    <button
-                      key={ws.company_id}
-                      onClick={() => handleWorkspaceSelect(ws.salted_email)}
-                      disabled={loading}
-                      className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white text-left transition-all group"
+
+                  {/* Options Row: Remember for 30 days & Forgot Password */}
+                  <div className="flex items-center justify-between pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <input 
+                        type="checkbox" 
+                        className="w-4 h-4 rounded border-slate-300 text-[#006065] focus:ring-[#006065] accent-[#006065]" 
+                      />
+                      <span className="text-xs text-slate-600 font-medium">Remember for 30 days</span>
+                    </label>
+                    <button 
+                      type="button" 
+                      onClick={() => navigate('/forgot-password')} 
+                      className="text-xs font-bold text-[#006065] hover:underline"
                     >
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-slate-900 text-xs">{ws.company_name || 'My Workspace'}</span>
-                        <span className="text-[11px] text-slate-500 mt-0.5">{ws.salted_email}</span>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#00beac] transition-colors" />
+                      Forgot password
                     </button>
-                  ))}
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-11 bg-[#006065] hover:bg-[#004d52] text-white font-bold rounded-xl text-sm shadow-md transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {loading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Log in'}
+                  </button>
+                </form>
+              ) : (
+                <div className="space-y-3">
+                  <h3 className="text-base font-bold text-center text-[#006065] mb-1">Select Workspace</h3>
+                  <p className="text-xs text-center text-slate-500 mb-3">Multiple accounts found for {email}. Choose one to access:</p>
+                  
+                  <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+                    {workspaces.map((ws) => (
+                      <button
+                        key={ws.company_id}
+                        onClick={() => handleWorkspaceSelect(ws.salted_email)}
+                        disabled={loading}
+                        className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-white text-left transition-all group"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-slate-900 text-xs">{ws.company_name || 'My Workspace'}</span>
+                          <span className="text-[11px] text-slate-500 mt-0.5">{ws.salted_email}</span>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#006065] transition-colors" />
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <button 
+                    onClick={() => {
+                      setShowWorkspaceSelect(false);
+                      setPassword('');
+                    }} 
+                    disabled={loading}
+                    className="w-full text-center text-xs font-semibold text-slate-500 hover:text-[#006065] pt-2 border-t border-slate-100"
+                  >
+                    Cancel
+                  </button>
                 </div>
-                
-                <button 
-                  onClick={() => {
-                    setShowWorkspaceSelect(false);
-                    setPassword('');
-                  }} 
-                  disabled={loading}
-                  className="w-full text-center text-xs font-semibold text-slate-500 hover:text-[#00beac] pt-2 border-t border-slate-100"
+              )}
+
+              {/* Divider */}
+              <div className="relative my-5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-3 text-slate-400 font-bold tracking-widest text-[10px]">OR</span>
+                </div>
+              </div>
+
+              {/* Secondary SSO / SmartCard Login */}
+              <div className="space-y-2">
+                <button
+                  onClick={handleSSOLogin}
+                  type="button"
+                  className="w-full h-11 px-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
                 >
-                  Cancel
+                  <Logo hideText={true} className="w-4 h-4 text-[#006065]" />
+                  Log in with Optavel SSO
+                </button>
+                <button 
+                  onClick={handleGoogleOAuth}
+                  disabled={loading}
+                  type="button"
+                  className="w-full h-11 px-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Log in with Google
                 </button>
               </div>
-            )}
 
-            <div className="text-center pt-4 sm:pt-6 mt-4 sm:mt-6 border-t border-slate-100">
-              <span className="text-xs text-slate-500 font-medium">Don't have an account? </span>
-              <span className="text-xs font-bold text-[#00beac] cursor-pointer hover:underline" onClick={() => navigate(`/signup${window.location.search}`)}>
-                Sign up
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right 50% Panel: Geometric Artwork */}
-        <div className="hidden md:flex md:w-1/2 bg-[#0b0f19] relative overflow-hidden flex-col justify-between p-10 select-none">
-          {/* Ambient Glows */}
-          <div className="absolute top-[-10%] left-[-10%] w-[450px] h-[450px] bg-[#00beac]/15 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[450px] h-[450px] bg-[#6366f1]/20 rounded-full blur-[140px] pointer-events-none" />
-          <div className="absolute top-[40%] right-[10%] w-[320px] h-[320px] bg-[#a855f7]/15 rounded-full blur-[100px] pointer-events-none" />
-
-          {/* Center Geometric SVG Artwork */}
-          <div className="relative z-10 my-auto flex flex-col items-center justify-center py-4">
-            <svg width="280" height="280" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
-              {/* Intersecting Glowing Polygons */}
-              <rect x="60" y="60" width="200" height="200" rx="36" transform="rotate(15 160 160)" fill="url(#geo-grad1)" opacity="0.8" />
-              <rect x="60" y="60" width="200" height="200" rx="36" transform="rotate(-30 160 160)" fill="url(#geo-grad2)" opacity="0.65" />
-              <circle cx="160" cy="160" r="70" fill="url(#geo-grad3)" opacity="0.9" />
-              
-              {/* 3D Geometric Nodes & Vectors */}
-              <polygon points="160,50 200,80 160,110 120,80" fill="#00beac" opacity="0.95" />
-              <polygon points="160,110 200,80 200,130 160,160" fill="#006065" opacity="0.9" />
-              <polygon points="160,110 120,80 120,130 160,160" fill="#004d52" opacity="0.9" />
-
-              <polygon points="260,170 290,190 260,210 230,190" fill="#fad503" opacity="0.85" />
-              <polygon points="60,220 85,235 60,250 35,235" fill="#a855f7" opacity="0.85" />
-
-              <line x1="160" y1="80" x2="260" y2="190" stroke="#00beac" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" />
-              <line x1="160" y1="160" x2="60" y2="235" stroke="#a855f7" strokeWidth="1.5" strokeDasharray="4 4" opacity="0.6" />
-              <circle cx="260" cy="190" r="4" fill="#fad503" />
-              <circle cx="60" cy="235" r="4" fill="#a855f7" />
-
-              <defs>
-                <linearGradient id="geo-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#006065" />
-                  <stop offset="100%" stopColor="#6366f1" />
-                </linearGradient>
-                <linearGradient id="geo-grad2" x1="100%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#00beac" />
-                  <stop offset="100%" stopColor="#a855f7" />
-                </linearGradient>
-                <linearGradient id="geo-grad3" x1="0%" y1="50%" x2="100%" y2="50%">
-                  <stop offset="0%" stopColor="#00beac" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="#fad503" stopOpacity="0.9" />
-                </linearGradient>
-              </defs>
-            </svg>
-
-            <h2 className="text-2xl font-black text-white text-center mt-6 tracking-tight">
-              AI Organizational Intelligence
-            </h2>
-            <p className="text-xs text-slate-400 text-center max-w-sm mt-2 leading-relaxed font-medium">
-              Centralize decisions, transcribe meetings, and build collective team memory automatically.
-            </p>
-          </div>
-
-          {/* Bottom Card */}
-          <div className="relative z-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex items-center justify-between shadow-2xl">
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                <div className="w-8 h-8 rounded-full bg-indigo-600 border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">AI</div>
-                <div className="w-8 h-8 rounded-full bg-[#006065] border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">CP</div>
-                <div className="w-8 h-8 rounded-full bg-[#00beac] border-2 border-[#0b0f19] flex items-center justify-center text-[10px] font-bold text-white">+17k</div>
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-white">Trusted by 17,000+ professionals</p>
-                <p className="text-[10px] text-slate-400">Enterprise security & zero latency</p>
+              {/* Footer Terms */}
+              <div className="text-center pt-6 text-[11px] text-slate-400 font-medium">
+                By creating an account, you agree to our{' '}
+                <span className="underline cursor-pointer hover:text-slate-600">Terms of Use</span>
               </div>
             </div>
-            <div className="flex items-center gap-1 text-[#fad503] text-xs font-bold">
-              ★★★★★ <span className="text-white text-[11px] ml-1">5.0</span>
-            </div>
           </div>
+
+          {/* Right Panel: Deep Teal Inset Card with Tilted Device Mockup */}
+          <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#006065] via-[#005055] to-[#00393d] relative overflow-hidden flex-col justify-between p-10 lg:p-12 text-white rounded-[20px] sm:rounded-[26px] select-none shadow-inner">
+            
+            {/* Top Branding & Headline */}
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-3">
+                <CliPadLogo size={26} color="#ffffff" dotColor="#fad503" />
+                <span className="font-extrabold text-xl tracking-tight text-white">CliPad</span>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-white leading-tight tracking-tight max-w-sm mt-3">
+                Empowering healthier communities
+              </h2>
+            </div>
+
+            {/* Bottom Right Tilted Perspective 3D Tablet Mockup */}
+            <div className="absolute -bottom-16 -right-16 w-[520px] lg:w-[600px] h-[460px] pointer-events-none select-none transition-transform duration-700 hover:scale-[1.02]">
+              <div 
+                className="w-full h-full bg-slate-900 p-2.5 rounded-[30px] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] border border-slate-700/50 flex flex-col"
+                style={{
+                  transform: 'perspective(1200px) rotateX(12deg) rotateY(-18deg) rotate(-10deg)',
+                  transformStyle: 'preserve-3d'
+                }}
+              >
+                {/* Inner Device Screen */}
+                <div className="w-full h-full bg-[#f8fafc] rounded-[22px] overflow-hidden flex flex-row text-[10px] text-slate-800 font-sans shadow-inner">
+                  {/* Sidebar */}
+                  <div className="w-44 bg-[#006065] text-white p-3 flex flex-col justify-between shrink-0">
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-4">
+                        <CliPadLogo size={14} color="#00beac" />
+                        <span className="font-bold tracking-tight text-xs text-white">CliPad</span>
+                      </div>
+
+                      <div className="text-[9px] uppercase font-bold text-white/40 tracking-wider mb-1.5">General</div>
+                      <div className="space-y-1 mb-3">
+                        <div className="bg-[#fad503] text-[#006065] font-bold px-2 py-1 rounded-md flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#006065]"></span> Home
+                        </div>
+                        <div className="text-white/70 hover:text-white px-2 py-1">Search</div>
+                        <div className="text-white/70 hover:text-white px-2 py-1">Spaces</div>
+                      </div>
+
+                      <div className="text-[9px] uppercase font-bold text-white/40 tracking-wider mb-1.5">Intelligence</div>
+                      <div className="space-y-1">
+                        <div className="text-white/70 px-2 py-0.5">Capture</div>
+                        <div className="text-white/70 px-2 py-0.5">Analytics</div>
+                        <div className="text-white/70 px-2 py-0.5">Graph</div>
+                        <div className="text-white/70 px-2 py-0.5">Timeline</div>
+                        <div className="text-white/70 px-2 py-0.5">Decisions</div>
+                        <div className="text-white/70 px-2 py-0.5">Action Items</div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-white/10 text-white/50 text-[8px]">
+                      Admin Enterprise
+                    </div>
+                  </div>
+
+                  {/* Main App Content View */}
+                  <div className="flex-1 bg-white p-3.5 flex flex-col justify-between overflow-hidden">
+                    <div>
+                      {/* Header Bar */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <div className="text-xs font-extrabold text-slate-900">Welcome Back</div>
+                          <div className="text-[8px] text-slate-500">Manage your patient & workspace records</div>
+                        </div>
+                        <div className="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full text-slate-400 text-[8px] flex items-center gap-1">
+                          🔍 Search...
+                        </div>
+                      </div>
+
+                      {/* Stat Cards */}
+                      <div className="grid grid-cols-2 gap-2 mb-3">
+                        <div className="bg-slate-50 border border-slate-100 p-2 rounded-xl">
+                          <div className="text-slate-400 text-[8px] font-semibold">Avg. Consultation Time</div>
+                          <div className="text-xs font-extrabold text-slate-900 mt-0.5">64 mins</div>
+                        </div>
+                        <div className="bg-slate-50 border border-slate-100 p-2 rounded-xl">
+                          <div className="text-slate-400 text-[8px] font-semibold">Patient Records</div>
+                          <div className="text-xs font-extrabold text-[#006065] mt-0.5">Recently accessed</div>
+                        </div>
+                      </div>
+
+                      {/* Records Table Mockup */}
+                      <div className="border border-slate-100 rounded-xl overflow-hidden">
+                        <div className="bg-slate-50 px-2.5 py-1 border-b border-slate-100 font-bold text-slate-600 text-[8px] flex justify-between">
+                          <span>Full Name</span>
+                          <span>Age / Status</span>
+                        </div>
+                        <div className="divide-y divide-slate-100 text-[8px]">
+                          <div className="px-2.5 py-1 flex justify-between items-center">
+                            <span className="font-semibold text-slate-800">Candice Wu</span>
+                            <span className="bg-emerald-50 text-emerald-600 font-bold px-1.5 py-0.5 rounded text-[7px]">58 yrs</span>
+                          </div>
+                          <div className="px-2.5 py-1 flex justify-between items-center">
+                            <span className="font-semibold text-slate-800">Liam Chen</span>
+                            <span className="bg-blue-50 text-blue-600 font-bold px-1.5 py-0.5 rounded text-[7px]">39 yrs</span>
+                          </div>
+                          <div className="px-2.5 py-1 flex justify-between items-center">
+                            <span className="font-semibold text-slate-800">Sophia Patel</span>
+                            <span className="bg-rose-50 text-rose-600 font-bold px-1.5 py-0.5 rounded text-[7px]">3 alerts</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[8px] text-slate-400 pt-1.5 border-t border-slate-100">
+                      <span>CliPad V3</span>
+                      <span className="text-[#00beac] font-bold">● System Operational</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
