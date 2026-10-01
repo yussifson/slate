@@ -76,12 +76,7 @@ export default function ClipadSidebar({ forceMobile }) {
 
   const isSuperAdmin = user?.role === 'super_admin';
   const intelligenceItems = [
-    { label: 'Timeline', path: '/timeline', icon: Clock },
-    { label: 'Knowledge Graph', path: '/knowledge-graph', icon: Network },
-    { label: 'Decisions', path: '/decisions', icon: Scale },
-    { label: 'Action Items', path: '/action-items', icon: CheckSquare },
-    { label: 'Knowledge Journey', path: '/journey', icon: Map },
-    { label: 'Integrations', path: '/integrations', icon: Plug },
+    { label: 'Integrations & Intelligence', path: '/integrations', icon: Plug },
     { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
     ...(isSuperAdmin ? [
       { label: 'Commitment Engine', path: '/commitments', icon: Target },

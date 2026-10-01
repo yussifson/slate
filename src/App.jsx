@@ -1737,6 +1737,8 @@ function App() {
                           <Route path="/support" element={<CliPadSupport />} />
                           <Route path="/chat" element={<ClipadChat />} />
                           <Route path="/chat/:roomId" element={<ClipadChat />} />
+                          <Route path="/admin/custom-requests" element={<CustomRequests />} />
+                          <Route path="/clipad/admin/custom-requests" element={<CustomRequests />} />
                           <Route element={<SuperAdminRoute />}>
                             <Route path="/commitments" element={<CommitmentIntelligence />} />
                             <Route path="/risk" element={<PredictiveRisk />} />
@@ -1746,8 +1748,6 @@ function App() {
                             <Route path="/admin/firms" element={<AdminFirms />} />
                             <Route path="/admin/users" element={<AdminUsers />} />
                             <Route path="/admin/pricing" element={<SuperAdminBilling title="Pricing Engine" />} />
-                            <Route path="/admin/custom-requests" element={<CustomRequests />} />
-                            <Route path="/clipad/admin/custom-requests" element={<CustomRequests />} />
                           </Route>
                         </Route>
                       <Route path="*" element={<Navigate to="/" replace />} />

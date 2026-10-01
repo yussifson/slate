@@ -31,7 +31,8 @@ export default function DecisionLedger() {
       // Load from clipad_decisions (native AI-detected decisions)
       const { data: nativeDecisions } = await supabase
         .from('clipad_decisions')
-        .select('*').or(`workspace_id.eq.${companyId},company_id.eq.${companyId}`)
+        .select('*')
+        .eq('workspace_id', companyId)
         .order('created_at', { ascending: false })
         .limit(150);
 

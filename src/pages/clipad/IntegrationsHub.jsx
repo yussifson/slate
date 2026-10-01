@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -20,6 +20,11 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import IntegrationAnalytics from './IntegrationAnalytics';
+import KnowledgeGraph from './KnowledgeGraph';
+import KnowledgeTimeline from './KnowledgeTimeline';
+import DecisionLedger from './DecisionLedger';
+import ActionItems from './ActionItems';
+import KnowledgeJourney from './KnowledgeJourney';
 
 import { INTEGRATIONS, CATEGORIES } from '@/config/integrationsList';
 
@@ -463,13 +468,13 @@ export default function IntegrationsHub() {
         <div className="flex border-b border-border overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveView('hub')}
-            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'hub' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'hub' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <Plug className="w-4 h-4" /> Integrations
           </button>
           <button
             onClick={() => setActiveView('analytics')}
-            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'analytics' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+            className={`flex items-center gap-2 px-4 lg:px-6 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'analytics' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <BarChart2 className="w-4 h-4" /> Analytics
           </button>
@@ -477,32 +482,32 @@ export default function IntegrationsHub() {
           <div className="w-px h-6 bg-border mx-2 mt-2.5 shrink-0" />
           
           <button
-            onClick={() => navigate('/knowledge-graph')}
-            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+            onClick={() => setActiveView('graph')}
+            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'graph' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <Network className="w-4 h-4" /> Knowledge Graph
           </button>
           <button
-            onClick={() => navigate('/timeline')}
-            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+            onClick={() => setActiveView('timeline')}
+            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'timeline' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <Clock className="w-4 h-4" /> Timeline
           </button>
           <button
-            onClick={() => navigate('/decisions')}
-            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+            onClick={() => setActiveView('decisions')}
+            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'decisions' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <Scale className="w-4 h-4" /> Decisions
           </button>
           <button
-            onClick={() => navigate('/action-items')}
-            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+            onClick={() => setActiveView('actions')}
+            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'actions' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <CheckSquare className="w-4 h-4" /> Action Items
           </button>
           <button
-            onClick={() => navigate('/journey')}
-            className="flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 border-transparent text-muted-foreground hover:text-foreground whitespace-nowrap transition-colors"
+            onClick={() => setActiveView('journey')}
+            className={`flex items-center gap-2 px-4 py-3 font-semibold text-sm border-b-2 transition-colors whitespace-nowrap ${activeView === 'journey' ? 'border-[#00beac] text-[#00beac] font-bold' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
           >
             <Link className="w-4 h-4" /> Knowledge Journey
           </button>
@@ -511,6 +516,16 @@ export default function IntegrationsHub() {
 
       {activeView === 'analytics' ? (
         <IntegrationAnalytics embedded={true} />
+      ) : activeView === 'graph' ? (
+        <KnowledgeGraph embedded={true} />
+      ) : activeView === 'timeline' ? (
+        <KnowledgeTimeline embedded={true} />
+      ) : activeView === 'decisions' ? (
+        <DecisionLedger embedded={true} />
+      ) : activeView === 'actions' ? (
+        <ActionItems embedded={true} />
+      ) : activeView === 'journey' ? (
+        <KnowledgeJourney embedded={true} />
       ) : (
         <div className="max-w-5xl mx-auto px-4 md:px-6 mt-8 space-y-8">
 

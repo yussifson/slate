@@ -142,10 +142,26 @@ export default function KnowledgeHealth() {
       }
     }
 
-    if (user?.company_id) fetchHealth();
+    if (user?.company_id) {
+      fetchHealth();
+    } else {
+      setLoading(false);
+    }
   }, [user, isUserAdmin]);
 
-  if (loading) return <ClipadLoader fullScreen text="Analyzing Organizational Health..." />;
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 animate-pulse space-y-6 w-full">
+        <div className="h-8 bg-slate-200 dark:bg-white/10 rounded-xl w-48 mb-4" />
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-28 bg-white/10 rounded-2xl border border-white/10" />
+          ))}
+        </div>
+        <div className="h-64 bg-white/10 rounded-3xl border border-white/10" />
+      </div>
+    );
+  }
 
   if (!isUserAdmin) {
     return <Navigate to="/clipad" replace />;
