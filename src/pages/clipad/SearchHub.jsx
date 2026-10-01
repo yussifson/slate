@@ -1,21 +1,17 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import {
-  Search, Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
-  Loader2, X, ShieldAlert, AlertTriangle, ArrowRight, ExternalLink, Zap, Lock,
-  Command, Bot, Filter, Check, Layers, ChevronRight, Copy, CheckCheck, Folder, Clock,
-  Users, RefreshCw, SlidersHorizontal, ArrowUpRight, ChevronDown, UserCheck, Shield,
-  Share2, CornerDownLeft, Sparkle, Compass, Terminal, Cpu, Lightbulb, ArrowRightCircle,
-  Brain, FileSearch, SparklesIcon, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit
+import { Sparkles, FileText, CheckCircle, MessageSquare, Calendar, Video,
+  Loader2, X, ShieldAlert, AlertTriangle, ExternalLink, Zap, Layers, Copy, CheckCheck,
+  Users, ArrowUpRight,
+  Brain, Send, Plus, Volume2, VolumeX, ThumbsUp, ThumbsDown, Edit
 } from 'lucide-react';
 import { CliPadLogo } from '@/components/ui/CliPadLogo';
 import { supabase } from '@/api/supabaseClient';
 import { generateText } from '@/lib/cloudflareAI';
 import { buildOrgContext } from '@/lib/clipadIntelligence';
 import { useAuth } from '@/lib/AuthContext';
-import { isAdmin, isSpaceman } from '@/lib/constants';
+import { isAdmin } from '@/lib/constants';
 import { useToast } from '@/components/ui/use-toast';
-import ThinkingAccordion, { parseThinking } from '@/components/chat/ThinkingAccordion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -542,61 +538,103 @@ export default function SearchHub() {
   const showLeftPanel = isSearching || filteredResults.length > 0;
 
   return (
-    <div className={`bg-[#f8fafc] text-[#0f172a] font-sans selection:bg-[#00beac]/20 selection:text-[#00beac] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`bg-[#0b0f19] text-white font-sans selection:bg-[#00beac]/20 selection:text-[#00beac] ${hasPerformedSearch ? 'h-full flex flex-col overflow-hidden' : 'min-h-screen flex flex-col'}`}>
 
-      {/* ── ZERO STATE: Centered hero ── */}
-      {!hasPerformedSearch && (
-        <div className="flex flex-col items-center justify-center min-h-screen px-4 pb-20 -mt-12">
-
-          {/* Orbit icon mark */}
-          <div className="w-14 h-14 rounded-2xl bg-[#006065] flex items-center justify-center mb-6 shadow-md border border-[#006065]">
-            <CliPadLogo size={36} className="text-[#00beac]" />
+      {/* ── TOP BAR (ChatGPT style model toggle & upgrade) ── */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-[#0b0f19]/80 backdrop-blur-md shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-[#006065] flex items-center justify-center text-white shadow-sm">
+            <CliPadLogo size={20} className="text-[#00beac]" />
           </div>
+          <span className="font-bold text-sm text-white tracking-tight">Orbit AI</span>
+        </div>
+
+        {/* Center Pill Mode Switcher e.g. [ Chat | + Work ] */}
+        <div className="flex items-center bg-[#171d2b] p-1 rounded-full border border-white/10 shadow-inner">
+          <button className="px-5 py-1.5 rounded-full bg-[#242c3d] text-white text-xs font-bold shadow-md transition-all">
+            Chat
+          </button>
+          <button className="px-4 py-1.5 rounded-full text-slate-400 hover:text-white text-xs font-semibold flex items-center gap-1 transition-all">
+            <Plus className="w-3.5 h-3.5 text-[#00beac]" /> Work
+          </button>
+        </div>
+
+        {/* Right Upgrade CTA */}
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => navigate('/settings')}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 text-xs font-bold text-white transition-all active:scale-95 shadow-sm"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#00beac]" /> Upgrade
+          </button>
+        </div>
+      </div>
+
+      {/* ── ZERO STATE: Centered hero (ChatGPT Design Reference media_1790853369310.png) ── */}
+      {!hasPerformedSearch && (
+        <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16 -mt-8">
 
           {/* Greeting heading */}
-          <h1 className="text-2xl md:text-3xl font-bold text-[#0f172a] text-center mb-1 tracking-tight">
-            Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {firstName}.
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white text-center mb-8 tracking-tight">
+            Hey, {firstName}. Ready to dive in?
           </h1>
-          <p className="text-slate-600 text-sm text-center mb-10 font-medium">
-            Search everything across your organization, or ask Orbit AI anything.
-          </p>
 
-          {/* Central Search Bar */}
+          {/* Floating Pill Capsule Search Bar */}
           <div className="w-full max-w-2xl">
             <form onSubmit={(e) => { e.preventDefault(); setSearchParams({ q: query }); runSearch(); }}>
-              <div className="relative flex items-center bg-white border border-slate-200 rounded-2xl px-4 py-1.5 shadow-lg hover:border-slate-300 focus-within:border-[#00beac] focus-within:ring-2 focus-within:ring-[#00beac]/20 transition-all">
-                <Search className="w-5 h-5 text-slate-400 shrink-0 mr-3" />
+              <div className="relative flex items-center bg-[#181e2b] border border-white/15 rounded-full px-4 py-2.5 shadow-2xl hover:border-white/25 focus-within:border-[#00beac] focus-within:ring-2 focus-within:ring-[#00beac]/20 transition-all">
+                
+                {/* Left + Attachment button */}
+                <button 
+                  type="button" 
+                  className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white shrink-0 mr-2 transition-all active:scale-95"
+                  title="Add files or context"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Ask Orbit AI or search across your workspace..."
-                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[16px] font-medium placeholder:text-slate-400 py-3 text-[#0f172a]"
+                  className="flex-1 bg-transparent border-0 outline-none ring-0 text-[15px] font-medium placeholder:text-slate-500 py-1 text-white"
                 />
+
                 {query && (
-                  <button type="button" onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-slate-600 mr-2">
+                  <button type="button" onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-white mr-2">
                     <X className="w-4 h-4" />
                   </button>
                 )}
+
+                {/* Right controls: Think toggle button */}
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold mr-2 transition-all"
+                >
+                  <Brain className="w-3.5 h-3.5 text-[#00beac]" /> Think
+                </button>
+
+                {/* Send circle button */}
                 <button
                   type="submit"
                   disabled={!query.trim()}
-                  className="px-4 py-2.5 bg-[#00beac] hover:bg-[#00a898] disabled:opacity-30 text-white font-bold rounded-xl text-sm flex items-center gap-2 transition-all active:scale-95 shrink-0 shadow-md"
+                  className="w-9 h-9 bg-[#00beac] hover:bg-[#00a898] disabled:opacity-30 text-white font-bold rounded-full flex items-center justify-center transition-all active:scale-95 shrink-0 shadow-md"
                 >
-                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <ArrowRight className="w-4 h-4 text-white" />}
+                  {isSearching ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Send className="w-4 h-4 text-white ml-0.5" />}
                 </button>
               </div>
             </form>
 
             {/* Suggestion chips — compact, clean, horizontal */}
-            <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
               {SUGGESTED_PROMPTS.map((item, idx) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={idx}
                     onClick={() => { setQuery(item.desc); setSearchParams({ q: item.desc }); runSearch(item.desc); }}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-all group shadow-sm active:scale-95"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#181e2b] border border-white/10 hover:bg-white/10 text-slate-200 text-xs font-semibold transition-all group shadow-sm active:scale-95"
                   >
                     <Icon className="w-3.5 h-3.5 text-[#00beac] shrink-0" />
                     {item.title}

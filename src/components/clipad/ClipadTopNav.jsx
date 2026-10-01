@@ -42,20 +42,20 @@ export default function ClipadTopNav({ forceMobile = false }) {
       <div className="flex items-center gap-3 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-[#fad503] shadow-[0_4px_20px_rgba(250,213,3,0.35)] hover:shadow-[0_6px_24px_rgba(250,213,3,0.5)] transition-all duration-300 active:scale-95 cursor-pointer">
-              <div className="flex items-center h-9 bg-[#fad503] text-[#006065] rounded-full px-4 gap-1.5 font-black">
-                <Video className="w-4 h-4 text-[#006065] group-hover:scale-110 transition-transform" />
-                <span className="text-[13px] font-black text-[#006065] uppercase tracking-wider">Studio</span>
-                <ChevronDown className="w-3.5 h-3.5 text-[#006065] ml-0.5 group-hover:translate-y-0.5 transition-transform" />
+            <button className="flex-shrink-0 group relative p-[1px] rounded-full bg-[#00beac] shadow-[0_4px_20px_rgba(0,190,172,0.35)] hover:shadow-[0_6px_24px_rgba(0,190,172,0.5)] transition-all duration-300 active:scale-95 cursor-pointer">
+              <div className="flex items-center h-9 bg-[#00beac] text-white rounded-full px-4 gap-1.5 font-black">
+                <Video className="w-4 h-4 text-white group-hover:scale-110 transition-transform" />
+                <span className="text-[13px] font-black text-white uppercase tracking-wider">Studio</span>
+                <ChevronDown className="w-3.5 h-3.5 text-white ml-0.5 group-hover:translate-y-0.5 transition-transform" />
               </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-52 bg-[#006065] border-white/15 text-white shadow-2xl rounded-2xl p-1.5 backdrop-blur-xl">
             <DropdownMenuItem onClick={() => navigate('/videos')} className="cursor-pointer font-bold py-2.5 rounded-xl text-white hover:bg-white/10 focus:bg-white/10 transition-colors">
-              <Video className="w-4 h-4 mr-2.5 text-[#fad503]" /> Record Async Video
+              <Video className="w-4 h-4 mr-2.5 text-[#00beac]" /> Record Async Video
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate('/meetings')} className="cursor-pointer font-bold py-2.5 rounded-xl text-white hover:bg-white/10 focus:bg-white/10 transition-colors">
-              <Calendar className="w-4 h-4 mr-2.5 text-[#fad503]" /> Start Live Meeting
+              <Calendar className="w-4 h-4 mr-2.5 text-[#00beac]" /> Start Live Meeting
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -115,7 +115,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
         <div className={forceMobile ? "hidden" : "hidden md:block"}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-9 h-9 rounded-xl bg-[#fad503] hover:bg-[#e6c402] flex items-center justify-center font-black text-sm text-[#006065] shadow-md transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-white/20 cursor-pointer">
+              <button className="w-9 h-9 rounded-xl bg-[#00beac] hover:bg-[#00a897] flex items-center justify-center font-black text-sm text-white shadow-md transition-all hover:scale-105 active:scale-95 ml-1 overflow-hidden border border-white/20 cursor-pointer">
                 {user?.avatar_url || user?.user_metadata?.avatar_url ? (
                   <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
                 ) : (
@@ -134,7 +134,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
               <DropdownMenuSeparator className="bg-white/10 my-1" />
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="cursor-pointer py-2.5 rounded-xl text-white hover:bg-white/10 focus:bg-white/10 font-medium">
-                  <User className="mr-3 h-4 w-4 text-[#fad503]" />
+                  <User className="mr-3 h-4 w-4 text-[#00beac]" />
                   <span>Switch Account</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
@@ -150,11 +150,11 @@ export default function ClipadTopNav({ forceMobile = false }) {
                             onClick={() => switchAccount(acc.id)}
                             className="cursor-pointer flex items-center py-2.5 rounded-xl text-white hover:bg-white/10 focus:bg-white/10"
                           >
-                            <div className="w-6 h-6 rounded-full bg-[#fad503] flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-white/20">
+                            <div className="w-6 h-6 rounded-full bg-[#00beac] flex items-center justify-center mr-3 overflow-hidden shrink-0 border border-white/20">
                               {acc.avatar_url ? (
                                 <img src={acc.avatar_url} alt={acc.full_name} className="w-full h-full object-cover" />
                               ) : (
-                                <span className="text-[10px] font-black text-[#006065]">
+                                <span className="text-[10px] font-black text-white">
                                   {acc.full_name ? acc.full_name[0].toUpperCase() : <User className="w-3 h-3"/>}
                                 </span>
                               )}
@@ -169,7 +169,7 @@ export default function ClipadTopNav({ forceMobile = false }) {
                       </>
                     )}
                     
-                    <DropdownMenuItem onClick={handleAddAccount} className="cursor-pointer py-2.5 rounded-xl text-[#fad503] font-bold hover:bg-white/10 focus:bg-white/10">
+                    <DropdownMenuItem onClick={handleAddAccount} className="cursor-pointer py-2.5 rounded-xl text-[#00beac] font-bold hover:bg-white/10 focus:bg-white/10">
                       <Plus className="mr-3 h-4 w-4" />
                       <span>Add another account</span>
                     </DropdownMenuItem>

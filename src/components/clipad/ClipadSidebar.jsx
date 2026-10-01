@@ -22,7 +22,7 @@ export default function ClipadSidebar({ forceMobile }) {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [openSections, setOpenSections] = useState({ intelligence: false, admin: false });
+  const [openSections, setOpenSections] = useState({ intelligence: true, admin: true });
 
   const toggleSection = (section) => {
     setOpenSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -77,7 +77,12 @@ export default function ClipadSidebar({ forceMobile }) {
   const isSuperAdmin = user?.role === 'super_admin';
   const intelligenceItems = [
     { label: 'Capture', path: '/integrations', icon: Plug },
-    { label: 'Integration Analytics', path: '/integration-analytics', icon: BarChart2 },
+    { label: 'Analytics', path: '/analytics', icon: BarChart2 },
+    { label: 'Graph', path: '/graph', icon: Network },
+    { label: 'Timeline', path: '/timeline', icon: Clock },
+    { label: 'Decisions', path: '/decisions', icon: Scale },
+    { label: 'Action Items', path: '/action-items', icon: CheckSquare },
+    { label: 'Knowledge', path: '/knowledge', icon: Map },
     ...(isSuperAdmin ? [
       { label: 'Commitment Engine', path: '/commitments', icon: Target },
       { label: 'Risk Intelligence', path: '/risk', icon: TrendingUp },
@@ -89,11 +94,6 @@ export default function ClipadSidebar({ forceMobile }) {
   const adminItems = [];
 
   if (isAdmin(user)) {
-    adminItems.push({
-      label: 'Analytics',
-      path: '/analytics',
-      icon: BarChart2
-    });
     adminItems.push({
       label: 'Knowledge Health',
       path: '/health',
@@ -127,14 +127,14 @@ export default function ClipadSidebar({ forceMobile }) {
           "w-full flex items-center px-3 py-2.5 transition-all duration-200 group relative mb-1 rounded-xl",
           isCollapsed ? "justify-center" : "gap-3",
           isActive 
-            ? "bg-[#fad503] text-[#006065] shadow-md font-bold" 
+            ? "bg-[#00beac] text-white shadow-md font-bold" 
             : "text-white/75 hover:bg-white/10 hover:text-white font-medium"
         )}
         title={isCollapsed ? item.label : undefined}
       >
         <Icon className={cn("shrink-0 transition-transform duration-200 group-hover:scale-110", 
           isCollapsed ? "w-5 h-5" : "w-4 h-4",
-          isActive ? "text-[#006065]" : "text-white/60 group-hover:text-white"
+          isActive ? "text-white" : "text-white/60 group-hover:text-white"
         )} strokeWidth={isActive ? 2.5 : 2} />
         
         {!isCollapsed && <span className="truncate text-sm">{item.label}</span>}
@@ -168,12 +168,12 @@ export default function ClipadSidebar({ forceMobile }) {
         ) : (
           <>
             <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/dashboard')}>
-              <div className="w-9 h-9 rounded-xl bg-[#fad503] flex items-center justify-center shadow-md text-[#006065] group-hover:scale-105 transition-transform">
-                <CliPadLogo size={20} className="text-[#006065]" />
+              <div className="w-9 h-9 rounded-xl bg-[#00beac] flex items-center justify-center shadow-md text-white group-hover:scale-105 transition-transform">
+                <CliPadLogo size={20} className="text-white" />
               </div>
               <div>
                 <span className="font-black text-[16px] text-white truncate block leading-tight">{workspaceName}</span>
-                <span className="text-[10px] font-bold text-[#fad503] uppercase tracking-wider">Pro Account</span>
+                <span className="text-[10px] font-bold text-[#00beac] uppercase tracking-wider">Pro Account</span>
               </div>
             </div>
             <button onClick={() => setIsCollapsed(true)} className="text-white/60 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/10">
@@ -265,17 +265,17 @@ export default function ClipadSidebar({ forceMobile }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-9 h-9 shrink-0 rounded-full bg-[#fad503] flex items-center justify-center overflow-hidden border border-white/20">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-[#00beac] flex items-center justify-center overflow-hidden border border-white/20">
                 {user?.avatar_url || user?.user_metadata?.avatar_url ? (
                   <img src={user.avatar_url || user.user_metadata.avatar_url} alt={firstName} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-sm font-black text-[#006065]">{firstName[0]?.toUpperCase()}</span>
+                  <span className="text-sm font-black text-white">{firstName[0]?.toUpperCase()}</span>
                 )}
               </div>
               {!isCollapsed && (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-white truncate group-hover:text-[#fad503] transition-colors">{firstName}</p>
+                    <p className="text-[13px] font-bold text-white truncate group-hover:text-[#00beac] transition-colors">{firstName}</p>
                     <p className="text-[11px] text-white/60 truncate">{displayPlanName}</p>
                   </div>
                   <ChevronUp className="w-4 h-4 text-white/60 group-hover:text-white transition-colors" />
