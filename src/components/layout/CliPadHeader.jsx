@@ -33,11 +33,15 @@ export default function CliPadHeader() {
 
   return (
     <nav className="sticky top-0 z-40 flex items-center justify-between px-4 md:px-8 h-16 bg-white/80 dark:bg-card/80 backdrop-blur-xl border-b border-slate-200 dark:border-border">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary">
+      <div 
+        className="flex items-center gap-3 cursor-pointer group" 
+        onClick={() => navigate('/landing')}
+        title="View CliPad Landing Page"
+      >
+        <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-secondary flex items-center justify-center border border-slate-200 dark:border-border shadow-sm text-primary group-hover:scale-105 transition-transform">
           <CliPadLogo size={22} />
         </div>
-        <span className="text-lg font-bold tracking-tight">CliPad</span>
+        <span className="text-lg font-bold tracking-tight group-hover:text-primary transition-colors">CliPad</span>
       </div>
 
       <div className="flex-1 max-w-2xl mx-4 flex justify-center">

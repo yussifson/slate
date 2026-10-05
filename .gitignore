@@ -34,3 +34,5 @@ supabase/.temp
 *.exe
 dist_electron_output/
 dist_electron_output
+.vercel
+.env*

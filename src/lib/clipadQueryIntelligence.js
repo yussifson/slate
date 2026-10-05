@@ -53,7 +53,7 @@ const ACTION_PATTERNS = [
 ];
 
 const COMMITMENT_PATTERNS = [
-  /\bcommitment/i, /\bpromised?\b/i, /\bcommitted?\b/i, /\bwill\s+do\b/i,
+  /\bcommitment/i, /\bpromised?\b/i, /\bcommit(?:ted)?\b/i, /\bwill\s+do\b/i,
   /\bwill\s+deliver/i, /\bpledged?\b/i,
 ];
 
@@ -69,9 +69,10 @@ const PROJECT_PATTERNS = [
 ];
 
 const PEOPLE_PATTERNS = [
-  /\bwho\s+is\b/i, /\bwho\s+did\b/i, /\bwho\s+owns\b/i, /\bfind\s+\w+/i,
+  /\bwho\s+is\b/i, /\bwho\s+did\b/i, /\bwho\s+owns\b/i, /\bfind\s+person\b/i, /\bfind\s+someone\b/i,
   /\bperson\b/i, /\bpeople\b/i, /\bteam\s+member/i, /\bprofile\b/i,
 ];
+
 
 const MEETING_PATTERNS = [
   /\bmeeting/i, /\bcall\b/i, /\bsync\b/i, /\brecording/i, /\btranscript/i,

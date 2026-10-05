@@ -1163,6 +1163,12 @@ function PlatformRoutes() {
       <Route path="/v/trades" element={<VTrades />} />
       
       {/* CliPad Routes (also mounted here for legacy fallback/support) */}
+      <Route path="/clipad" element={<MeetLandingPage />} />
+      <Route path="/clipad/landing" element={<MeetLandingPage />} />
+      <Route path="/clipad/home" element={<MeetLandingPage />} />
+      <Route path="/clipad/marketing" element={<MeetLandingPage />} />
+      <Route path="/meet" element={<MeetLandingPage />} />
+      <Route path="/meet/landing" element={<MeetLandingPage />} />
       <Route element={<ClipadLayout />}>
         <Route path="/clipad/space/:spaceId" element={<SpaceDashboard />} />
         <Route path="/clipad/record" element={<RecordVideo />} />
@@ -1703,6 +1709,10 @@ function App() {
                   <React.Suspense fallback={null}>
                     <Routes>
                       <Route path="/" element={<MeetLandingPage />} />
+                      <Route path="/landing" element={<MeetLandingPage />} />
+                      <Route path="/home" element={<MeetLandingPage />} />
+                      <Route path="/marketing" element={<MeetLandingPage />} />
+                      <Route path="/about" element={<MeetLandingPage />} />
                       <Route path="/custom-pricing" element={<CliPadCustomPricing />} />
                       <Route path="/pricing/custom" element={<CliPadCustomPricing />} />
                       <Route path="/login" element={<CliPadLogin />} />
@@ -1712,6 +1722,7 @@ function App() {
                       <Route element={<ClipadLayout />}>
                         <Route path="/join/:roomId" element={<StandaloneMeeting />} />
                         <Route path="/watch/:videoId" element={<WatchVideo />} />
+                        <Route path="/landing-page" element={<MeetLandingPage />} />
                       </Route>
                         <Route element={<ClipadLayout />}>
                           <Route path="/dashboard" element={<CliPadDashboard />} />

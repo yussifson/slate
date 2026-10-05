@@ -6,6 +6,14 @@ import { createSmartMoment, getSmartMoments, updateSmartMoment, confirmSmartMome
 import { extractSmartMomentsFromTranscript, segmentTranscript } from '../src/lib/clipadTranscriptIntelligence';
 import { MEMORY_TIERS, MEMORY_TYPES } from '../src/lib/clipadMemoryService';
 
+vi.mock('../src/lib/cloudflareAI', () => {
+  return {
+    generateText: vi.fn(async (messages, onChunk, options) => {
+      return JSON.stringify({ moments: [] });
+    }),
+  };
+});
+
 // Mock Supabase client
 vi.mock('../src/api/supabaseClient', () => {
   const store = new Map();

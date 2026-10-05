@@ -72,6 +72,7 @@ export default function ClipadSidebar({ forceMobile }) {
     { label: 'Home', path: '/dashboard', icon: Home },
     { label: 'Search', path: '/search', icon: Search },
     { label: 'Spaces', path: '/spaces', icon: Folder },
+    { label: 'Landing Page', path: '/landing', icon: Globe },
   ];
 
   const isSuperAdmin = user?.role === 'super_admin';

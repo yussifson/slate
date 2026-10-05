@@ -7,6 +7,14 @@ import { upsertEntity, createRelationship, ENTITY_TYPES, RELATIONSHIP_TYPES } fr
 import { ingestSourceToMemory } from '../src/lib/clipadIngestionPipeline';
 import { getRelevantMemories, rankMemories, getOrganizationalContext, getUserContext } from '../src/lib/clipadContextService';
 
+vi.mock('../src/lib/cloudflareAI', () => {
+  return {
+    generateText: vi.fn(async (messages, onChunk, options) => {
+      return JSON.stringify({ summary: "mock", keywords: [] });
+    }),
+  };
+});
+
 // Mock Supabase client
 vi.mock('../src/api/supabaseClient', () => {
   const store = new Map();
