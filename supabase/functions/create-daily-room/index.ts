@@ -30,29 +30,28 @@ serve(async (req) => {
     // Rooms expire in 7 days so scheduled meetings always work
     const expirySeconds = Math.round(Date.now() / 1000) + 86400 * 7
 
-    // Only include `name` if it passes Daily's naming rules
+    // Clean Daily room properties — only valid Daily.co API properties
+    const properties: Record<string, unknown> = {
+      enable_chat: true,
+      enable_screenshare: true,
+      enable_knocking: privacy === 'private',
+      start_video_off: false,
+      start_audio_off: false,
+      exp: expirySeconds,
+    }
+
+    if (max_participants && typeof max_participants === 'number' && max_participants > 0) {
+      properties.max_participants = max_participants;
+    }
+
     const roomBody: Record<string, unknown> = {
-      privacy: privacy === 'public' ? 'public' : 'private',
-      properties: {
-        enable_knocking: privacy === 'public' ? true : false,
-        max_participants: max_participants || undefined,
-        exp: expirySeconds,
-        enable_chat: true,
-        enable_screenshare: true,
-        start_video_off: false,
-        start_audio_off: false,
-        sfu_switchover: 2,
-        enable_noise_cancellation_ui: true,
-        enable_adaptive_layers: true,
-        video_send_bitrate_target: 900,
-        video_receive_bitrate_limit: 1200,
-      },
+      privacy: privacy === 'private' ? 'private' : 'public',
+      properties,
     }
 
     if (roomName && isValidDailyRoomName(roomName)) {
       roomBody.name = roomName;
     }
-    // If roomName is invalid (e.g. a short ID like "4-bzy-lsj"), let Daily auto-generate
 
     const response = await fetch('https://api.daily.co/v1/rooms', {
       method: 'POST',
@@ -67,6 +66,19 @@ serve(async (req) => {
 
     if (room.error) {
       console.error('Daily API error:', room.error, room.info)
+      // If room already exists, fetch it and succeed instead of erroring!
+      if (room.info && room.info.includes('already exists') && roomName) {
+        const getRes = await fetch(`https://api.daily.co/v1/rooms/${roomName}`, {
+          headers: { Authorization: `Bearer ${DAILY_API_KEY}` }
+        });
+        const existingRoom = await getRes.json();
+        if (existingRoom && existingRoom.name) {
+          return new Response(JSON.stringify({ url: existingRoom.url, name: existingRoom.name }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
+          });
+        }
+      }
       throw new Error(room.info || room.error || 'Failed to create Daily room')
     }
 
@@ -87,7 +99,8 @@ serve(async (req) => {
         daily_room_url: room.url,
         daily_room_name: room.name,
         status: 'active',
-        privacy_type: privacy || 'public'
+        privacy_type: privacy === 'private' ? 'private' : 'public',
+        created_at: new Date().toISOString()
       }
 
       const { error: dbError } = await supabase
@@ -96,7 +109,6 @@ serve(async (req) => {
 
       if (dbError) {
         console.error('Failed to insert into video_rooms:', dbError)
-        // Don't block — room was created on Daily, return success even if DB failed
       }
     }
 
@@ -112,4 +124,3 @@ serve(async (req) => {
     })
   }
 })
-

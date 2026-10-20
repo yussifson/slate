@@ -111,10 +111,11 @@ export default function RecordVideo() {
     }
   }, [id, navigate]);
 
-  // Fix #2 — Pre-warm the Render server the moment the page loads so it's
+  // Fix #2 — Pre-warm the ingest server the moment the page loads so it's
   // awake by the time the user clicks Record (avoids cold-start during upload).
   useEffect(() => {
-    fetch('https://slate-gcph.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
+    const pingEndpoint = import.meta.env.VITE_INGEST_PING_URL || '/ping';
+    fetch(pingEndpoint, { mode: 'no-cors' }).catch(() => {});
   }, []);
   
   useEffect(() => {
@@ -986,9 +987,12 @@ export default function RecordVideo() {
       wsEndRequestedRef.current = false;
       wsServerConfigErrorRef.current = false;
 
-      // WebSocket live streamer (Render) with HTTP keep-alive wake-up ping
-      const wsUrl = 'wss://slate-gcph.onrender.com';
-      fetch('https://slate-gcph.onrender.com/health', { mode: 'no-cors' }).catch(() => {});
+      // WebSocket live streamer (Vercel multi-service or custom host) with HTTP keep-alive wake-up ping
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const defaultWsUrl = `${wsProtocol}//${window.location.host}/ingest`;
+      const wsUrl = import.meta.env.VITE_INGEST_WS_URL || defaultWsUrl;
+      const pingUrl = import.meta.env.VITE_INGEST_PING_URL || '/ping';
+      fetch(pingUrl, { mode: 'no-cors' }).catch(() => {});
 
       // ── Application-level heartbeat to keep Render from sleeping ──
       let wsPingInterval = null;

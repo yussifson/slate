@@ -1,4 +1,24 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "app": {
+      "root": ".",
+      "framework": "vite",
+      "bindings": [
+        {
+          "type": "service",
+          "service": "ingest-server",
+          "format": "url",
+          "env": "INGEST_SERVER_URL"
+        }
+      ]
+    },
+    "ingest-server": {
+      "root": "ingest-server",
+      "runtime": "node",
+      "entrypoint": "server.js"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -32,8 +52,22 @@
       "destination": "https://api.cloudflare.com/client/v4/accounts/:accountId/ai/run/:model*"
     },
     {
-      "source": "/((?!api/.*).*)",
-      "destination": "/index.html"
+      "source": "/ingest/(.*)",
+      "destination": {
+        "service": "ingest-server"
+      }
+    },
+    {
+      "source": "/ping",
+      "destination": {
+        "service": "ingest-server"
+      }
+    },
+    {
+      "source": "/(.*)",
+      "destination": {
+        "service": "app"
+      }
     }
   ]
 }
