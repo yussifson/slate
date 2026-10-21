@@ -4,6 +4,12 @@
     "app": {
       "root": ".",
       "framework": "vite",
+      "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ],
       "bindings": [
         {
           "type": "service",
@@ -64,7 +70,7 @@
       }
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/|ingest/|ping).*)",
       "destination": {
         "service": "app"
       }
