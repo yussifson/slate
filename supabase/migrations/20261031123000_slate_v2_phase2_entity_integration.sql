@@ -34,7 +34,7 @@ DO $$ BEGIN
             FOR ALL TO authenticated
             USING (
                 company_id IN (
-                    SELECT company_id FROM profiles WHERE id = auth.uid()
+                    SELECT company_id::uuid FROM profiles WHERE id = auth.uid()
                 ) OR EXISTS (
                     SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin'
                 )
@@ -71,7 +71,7 @@ DO $$ BEGIN
             FOR SELECT TO authenticated
             USING (
                 company_id IN (
-                    SELECT company_id FROM profiles WHERE id = auth.uid()
+                    SELECT company_id::uuid FROM profiles WHERE id = auth.uid()
                 ) OR EXISTS (
                     SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin'
                 )
@@ -85,7 +85,7 @@ DO $$ BEGIN
             FOR INSERT TO authenticated
             WITH CHECK (
                 company_id IN (
-                    SELECT company_id FROM profiles WHERE id = auth.uid()
+                    SELECT company_id::uuid FROM profiles WHERE id = auth.uid()
                 ) OR EXISTS (
                     SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'super_admin'
                 )

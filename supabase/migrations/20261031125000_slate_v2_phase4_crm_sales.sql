@@ -1,5 +1,5 @@
-﻿-- ============================================================================
--- SLATE V2: PHASE 4 — CRM, SALES & COMMERCIAL PIPELINE
+-- ============================================================================
+-- SLATE V2: PHASE 4 � CRM, SALES & COMMERCIAL PIPELINE
 -- Migration: 20261031125000_slate_v2_phase4_crm_sales.sql
 -- Timestamp: 2026-10-31 12:50:00 (Sequenced after Phase 3 12:45:00 and before Phase 6 13:00:00)
 -- Description:

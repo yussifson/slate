@@ -1,5 +1,5 @@
-﻿-- ============================================================================
--- SLATE V2: PHASE 5 — PROJECTS, PEOPLE, OPERATIONS & COMMAND CENTER
+-- ============================================================================
+-- SLATE V2: PHASE 5 � PROJECTS, PEOPLE, OPERATIONS & COMMAND CENTER
 -- Migration: 20261031125500_slate_v2_phase5_ops_projects.sql
 -- Timestamp: 2026-10-31 12:55:00 (Sequenced after Phase 4 12:50:00 and before Phase 6 13:00:00)
 -- Description:
