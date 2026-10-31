@@ -14,7 +14,10 @@ export const EventService = {
       throw new Error('companyId, eventType, aggregateType, and aggregateId are required to publish an event.');
     }
 
-    const key = idempotencyKey || `${companyId}:${aggregateType}:${aggregateId}:${eventType}:${Date.now()}`;
+    // Event occurrence identity: use explicit caller key or generate a unique event occurrence identifier.
+    // Retries of an already created outbox record MUST reuse the stored record's idempotency_key, not generate a new one.
+    const occurrenceId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const key = idempotencyKey || `${companyId}:${aggregateType}:${aggregateId}:${eventType}:${occurrenceId}`;
 
     const record = {
       company_id: companyId,

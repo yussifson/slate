@@ -213,4 +213,148 @@ describe('Slate V2 Phase 6 - Reliability, Idempotency & Concurrency Verification
       expect(res.executionId).not.toBe('exec-victim-tenant');
     });
   });
+
+  describe('Event Idempotency Semantics & Lifecycle Repeatability', () => {
+    it('Case 1: deduplicates duplicate submissions having the exact same idempotency key', async () => {
+      const existingRecord = {
+        id: 'evt-existing-1',
+        company_id: 'tenant-alpha',
+        event_type: 'invoice.issued',
+        aggregate_type: 'invoice',
+        aggregate_id: 'inv-100',
+        idempotency_key: 'idem-key-duplicate-test',
+        status: 'pending'
+      };
+
+      const customSupabase = {
+        from: vi.fn((table) => ({
+          insert: vi.fn().mockImplementation(() => ({
+            select: vi.fn().mockImplementation(() => ({
+              single: vi.fn().mockResolvedValue({
+                data: null,
+                error: { code: '23505', message: 'duplicate key value violates unique constraint' }
+              })
+            }))
+          })),
+          select: vi.fn().mockImplementation(() => ({
+            eq: vi.fn().mockReturnThis(),
+            single: vi.fn().mockResolvedValue({ data: existingRecord, error: null })
+          }))
+        }))
+      };
+
+      const dispatcher = new OutboxDispatcher({ supabase: customSupabase });
+      const res = await dispatcher.enqueueEvent({
+        companyId: 'tenant-alpha',
+        eventType: 'invoice.issued',
+        aggregateType: 'invoice',
+        aggregateId: 'inv-100',
+        idempotencyKey: 'idem-key-duplicate-test'
+      });
+
+      expect(res.duplicate).toBe(true);
+      expect(res.event.id).toBe('evt-existing-1');
+    });
+
+    it('Case 2: retry of an outbox record retains its original event identity across failures', async () => {
+      let statusUpdates = [];
+      const pendingEvents = [
+        {
+          id: 'evt-retry-stable-id',
+          company_id: 'tenant-beta',
+          event_type: 'order.placed',
+          aggregate_type: 'order',
+          aggregate_id: 'ord-55',
+          idempotency_key: 'stable-key-55',
+          retry_count: 0,
+          payload: { orderId: 'ord-55' }
+        }
+      ];
+
+      const customSupabase = {
+        from: vi.fn((table) => {
+          if (table === 'platform_events') {
+            return {
+              select: vi.fn().mockReturnThis(),
+              eq: vi.fn().mockReturnThis(),
+              order: vi.fn().mockReturnThis(),
+              limit: vi.fn().mockResolvedValue({ data: pendingEvents, error: null }),
+              update: vi.fn().mockImplementation((fields) => {
+                statusUpdates.push(fields);
+                return {
+                  eq: vi.fn().mockReturnThis(),
+                  select: vi.fn().mockReturnValue({
+                    maybeSingle: vi.fn().mockResolvedValue({ data: { ...pendingEvents[0], ...fields }, error: null })
+                  })
+                };
+              })
+            };
+          }
+          return {};
+        })
+      };
+
+      const failingInngest = {
+        send: vi.fn().mockRejectedValue(new Error('Network transient timeout'))
+      };
+
+      const dispatcher = new OutboxDispatcher({
+        supabase: customSupabase,
+        inngestSender: failingInngest,
+        maxRetries: 3
+      });
+
+      const res = await dispatcher.dispatchPendingEvents(1);
+      expect(res.failed).toBe(1);
+      // Retained original identity: evt.id remains 'evt-retry-stable-id', retry_count updated to 1
+      const retryUpdate = statusUpdates.find(u => u.retry_count === 1);
+      expect(retryUpdate).toBeDefined();
+      expect(retryUpdate.status).toBe('pending');
+      // Original idempotency_key was never overwritten or regenerated with a new timestamp
+      expect(retryUpdate.idempotency_key).toBeUndefined();
+    });
+
+    it('Case 3: legitimate repeated business lifecycle transitions (e.g. planned -> in-progress -> on-hold -> in-progress) succeed', async () => {
+      const recordsInserted = [];
+      const customSupabase = {
+        from: vi.fn((table) => ({
+          insert: vi.fn().mockImplementation((record) => {
+            recordsInserted.push(record);
+            return {
+              select: vi.fn().mockImplementation(() => ({
+                single: vi.fn().mockResolvedValue({ data: { id: `evt-${recordsInserted.length}`, ...record }, error: null })
+              }))
+            };
+          })
+        }))
+      };
+
+      const dispatcher = new OutboxDispatcher({ supabase: customSupabase });
+      const transitions = [
+        { status: 'planned', transitionId: 'trans-1' },
+        { status: 'in-progress', transitionId: 'trans-2' },
+        { status: 'on-hold', transitionId: 'trans-3' },
+        { status: 'in-progress', transitionId: 'trans-4' } // Legitimate re-entry to in-progress
+      ];
+
+      for (const t of transitions) {
+        const res = await dispatcher.enqueueEvent({
+          companyId: 'comp-10',
+          eventType: 'project.status_changed',
+          aggregateType: 'project',
+          aggregateId: 'proj-999',
+          payload: { status: t.status },
+          // Specific transition identifier ensures repeat status does not falsely suppress
+          idempotencyKey: `comp-10:project:proj-999:status_changed:${t.transitionId}`
+        });
+        expect(res.duplicate).toBe(false);
+      }
+
+      expect(recordsInserted).toHaveLength(4);
+      // Both in-progress transitions exist with distinct transition IDs
+      expect(recordsInserted[1].payload.status).toBe('in-progress');
+      expect(recordsInserted[3].payload.status).toBe('in-progress');
+      expect(recordsInserted[1].idempotency_key).not.toBe(recordsInserted[3].idempotency_key);
+    });
+  });
 });

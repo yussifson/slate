@@ -143,7 +143,9 @@ export class WorkflowRuntime {
     }
 
     // 2. Idempotency Check & Execution Resolution
-    const key = idempotencyKey || `wf_exec_${workflowId}_${Date.now()}`;
+    // If triggered by an event, default to a stable event-keyed execution token so retries do not duplicate executions
+    const execOccurrence = triggerEventId ? `evt_${triggerEventId}` : ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`);
+    const key = idempotencyKey || `wf_exec_${workflowId}_${execOccurrence}`;
     let executionRecord = null;
     let completedStepIds = new Set();
     let runtimeContext = {

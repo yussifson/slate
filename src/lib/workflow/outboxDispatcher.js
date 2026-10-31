@@ -32,7 +32,10 @@ export class OutboxDispatcher {
       throw new Error('Missing required event parameters: companyId, eventType, aggregateType, aggregateId');
     }
 
-    const key = idempotencyKey || `${companyId}_${eventType}_${aggregateId}_${Date.now()}`;
+    // Stable event occurrence key: if caller provides explicit idempotencyKey, use it.
+    // Otherwise generate a distinct occurrence UUID for the new event. Retries reuse the stored record key.
+    const occurrenceId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const key = idempotencyKey || `${companyId}_${eventType}_${aggregateId}_${occurrenceId}`;
 
     const record = {
       company_id: companyId,
