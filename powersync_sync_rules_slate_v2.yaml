@@ -1,0 +1,101 @@
+# SLATE V2: POWERSYNC SYNC RULES (INTEGRATED PLATFORM V2)
+# Configured for Slate V2: Core Parties, Operations, Finance, CRM, Blueprint & Action Center
+# Compatible with PowerSync Service and PostgreSQL replication publication
+
+bucket_definitions:
+  # ============================================================================
+  # 1. GLOBAL / PUBLIC TENANT BUCKET
+  # ============================================================================
+  global:
+    data:
+      - SELECT * FROM companies
+      - SELECT * FROM subscription_plans
+      - SELECT * FROM firm_settings
+      - SELECT * FROM component_registry
+      - SELECT * FROM industry_templates
+      - SELECT * FROM platform_capabilities
+      - SELECT * FROM industry_extension_packs
+
+  # ============================================================================
+  # 2. SUPER ADMIN WORKSPACE BUCKET
+  # ============================================================================
+  super_admin_workspace:
+    parameters:
+      - SELECT 1 AS is_admin FROM profiles WHERE id = request.user_id() AND role = 'super_admin'
+    data:
+      - SELECT * FROM profiles WHERE bucket.is_admin = 1
+      - SELECT * FROM companies WHERE bucket.is_admin = 1
+      - SELECT * FROM platform_capabilities WHERE bucket.is_admin = 1
+      - SELECT * FROM company_capabilities WHERE bucket.is_admin = 1
+
+  # ============================================================================
+  # 3. TENANT STAFF / WORKSPACE OPERATIONAL BUCKET
+  # ============================================================================
+  staff_workspace:
+    parameters:
+      - SELECT company_id FROM profiles WHERE id = request.user_id() AND role != 'client' AND role != 'guest'
+    data:
+      # --- Foundation & Metadata ---
+      - SELECT * FROM profiles WHERE company_id = bucket.company_id
+      - SELECT * FROM company_capabilities WHERE company_id = bucket.company_id
+      - SELECT * FROM audit_logs WHERE company_id = bucket.company_id
+      - SELECT * FROM notifications WHERE company_id = bucket.company_id
+
+      # --- Slate V2: Core Party Graph ---
+      - SELECT * FROM core_parties WHERE company_id = bucket.company_id
+      - SELECT * FROM core_party_roles WHERE company_id = bucket.company_id
+      - SELECT * FROM core_relationships WHERE company_id = bucket.company_id
+      - SELECT * FROM core_party_mappings WHERE company_id = bucket.company_id
+      - SELECT * FROM core_party_activities WHERE company_id = bucket.company_id
+
+      # --- Slate V2: Operations, Projects & People (Phase 5) ---
+      - SELECT * FROM ops_teams WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_team_members WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_projects WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_project_milestones WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_project_tasks WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_work_orders WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_issues WHERE company_id = bucket.company_id
+
+      # --- Slate V2: CRM & Sales (Phase 4) ---
+      - SELECT * FROM crm_opportunities WHERE company_id = bucket.company_id
+      - SELECT * FROM crm_quotations WHERE company_id = bucket.company_id
+      - SELECT * FROM crm_quotation_lines WHERE company_id = bucket.company_id
+      - SELECT * FROM crm_sales_orders WHERE company_id = bucket.company_id
+      - SELECT * FROM crm_sales_order_lines WHERE company_id = bucket.company_id
+      - SELECT * FROM leads WHERE company_id = bucket.company_id
+      - SELECT * FROM clients WHERE company_id = bucket.company_id
+
+      # --- Slate V2: Blueprint, Action Center & Workflow (Phases 6 & 7) ---
+      - SELECT * FROM business_blueprints WHERE company_id = bucket.company_id
+      - SELECT * FROM unified_action_items WHERE company_id = bucket.company_id
+      - SELECT * FROM action_decisions WHERE company_id = bucket.company_id
+      - SELECT * FROM platform_events WHERE company_id = bucket.company_id
+      - SELECT * FROM workflow_definitions WHERE company_id = bucket.company_id
+      - SELECT * FROM workflow_executions WHERE company_id = bucket.company_id
+      - SELECT * FROM workflow_step_executions WHERE company_id = bucket.company_id
+      - SELECT * FROM workflow_dead_letters WHERE company_id = bucket.company_id
+
+      # --- Slate V2: Intelligence & Exceptions (Phase 9) ---
+      - SELECT * FROM business_exceptions WHERE company_id = bucket.company_id
+
+      # --- Legacy & Shared Entities ---
+      - SELECT * FROM invoices WHERE company_id = bucket.company_id
+      - SELECT * FROM expenses WHERE company_id = bucket.company_id
+      - SELECT * FROM documents WHERE company_id = bucket.company_id
+      - SELECT * FROM time_entries WHERE company_id = bucket.company_id
+      - SELECT * FROM tasks WHERE company_id = bucket.company_id
+
+  # ============================================================================
+  # 4. CLIENT PORTAL BUCKET (STRICT ISOLATION)
+  # ============================================================================
+  client_portal:
+    parameters:
+      - SELECT id, company_id FROM profiles WHERE id = request.user_id() AND role = 'client'
+    data:
+      - SELECT * FROM profiles WHERE id = request.user_id()
+      - SELECT * FROM companies WHERE id = bucket.company_id
+      - SELECT * FROM ops_projects WHERE company_id = bucket.company_id
+      - SELECT * FROM ops_project_tasks WHERE company_id = bucket.company_id
+      - SELECT * FROM invoices WHERE company_id = bucket.company_id
+      - SELECT * FROM documents WHERE company_id = bucket.company_id
