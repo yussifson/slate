@@ -65,10 +65,11 @@ export const sendWelcomeNotification = inngest.createFunction(
       };
 
       // Call the internal notify-omnichannel edge function
-      const res = await fetch("https://$("SUPABASE_URL".replace('https://', '')).supabase.co/functions/v1/notify-omnichannel", {
+      const supabaseUrl = (Deno.env.get("SUPABASE_URL") || "").replace('https://', '');
+      const res = await fetch(`https://${supabaseUrl}/functions/v1/notify-omnichannel`, {
         method: "POST",
         headers: {
-          "Authorization": "Bearer $Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')",
+          "Authorization": `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
