@@ -22,7 +22,8 @@ export async function fetchCompanyBrandingFromDomain() {
   const isRootAccount = typeof window !== 'undefined' && (
     window.location.hostname.startsWith('account.') || 
     window.location.hostname === 'optavel.com' || 
-    window.location.hostname === 'slate.optavel.com'
+    window.location.hostname === 'slate.optavel.com' ||
+    window.location.hostname === 'staging.slate.optavel.com'
   );
 
   if (!currentSubdomain || isRootAccount) {

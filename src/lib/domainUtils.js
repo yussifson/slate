@@ -10,6 +10,7 @@ export function getSubdomainAndBase() {
   // - account.optavel.com → Optavel Accounts / SSO portal
   // - optavel.com        → Root marketing / identity domain
   const knownBaseDomains = [
+    'staging.slate.optavel.com',
     'slate.optavel.com',
     'slated.optavel.com',
     'clipad.optavel.com',
@@ -70,6 +71,9 @@ export function getMainAppUrl() {
   let targetDomain = baseDomain;
   if (targetDomain === 'optavel.com') {
     targetDomain = 'slate.optavel.com';
+  }
+  if (targetDomain === 'staging.slate.optavel.com') {
+    targetDomain = 'staging.slate.optavel.com';
   }
   return `${window.location.protocol}//${targetDomain}${port}`;
 }
