@@ -56,7 +56,9 @@ export const ROLE_PERMISSIONS = {
     action_center: ["create", "read", "update"],
     intelligence: ["read"],
     team: ["create", "read", "update"],
-    settings: ["read"]
+    settings: ["read"],
+    core_parties: ["create", "read", "update"],
+    capabilities: ["read"]
   },
   [ROLES.LAWYER]: {
     cases: ["create", "read", "update"],
@@ -82,7 +84,9 @@ export const ROLE_PERMISSIONS = {
     action_center: ["read"],
     intelligence: ["read"],
     team: ["read"],
-    settings: []
+    settings: [],
+    core_parties: ["read", "update"],
+    capabilities: ["read"]
   },
   [ROLES.GUEST]: {
     cases: ["read"],
@@ -108,7 +112,9 @@ export const ROLE_PERMISSIONS = {
     action_center: ["read"],
     intelligence: ["read"],
     team: ["read"],
-    settings: []
+    settings: [],
+    core_parties: ["read", "update"],
+    capabilities: ["read"]
   }
 };
 

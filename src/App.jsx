@@ -150,6 +150,7 @@ const OptavelHR = React.lazy(() => import('@/pages/optavel/OptavelHR'));
 const OptavelSupport = React.lazy(() => import('@/pages/optavel/OptavelSupport'));
 const OptavelPartnerships = React.lazy(() => import('@/pages/optavel/OptavelPartnerships'));
 const AdaptiveDashboard = React.lazy(() => import('@/pages/omnicore/AdaptiveDashboard'));
+const SlateV2Workspace = React.lazy(() => import('@/pages/v2/SlateV2Workspace'));
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -983,6 +984,8 @@ function PlatformRoutes() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/omnicore/dashboard" element={<AdaptiveDashboard />} />
       <Route path="/v2/dashboard" element={<AdaptiveDashboard />} />
+      <Route path="/v2" element={<SlateV2Workspace />} />
+      <Route path="/v2/parties" element={<SlateV2Workspace />} />
       <Route path="/custom-pricing" element={<CliPadCustomPricing />} />
       <Route path="/pricing/custom" element={<CliPadCustomPricing />} />
       

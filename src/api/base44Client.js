@@ -47,7 +47,16 @@ const TABLE_MAP = {
     SmartDocLink: 'smart_doc_links',
     CasePipelineState: 'case_pipeline_states',
     MarketerLocation: 'univ_re_marketer_locations',
-    ClientMeeting: 'univ_re_client_meetings'
+    ClientMeeting: 'univ_re_client_meetings',
+    // Slate V2 Platform Foundation
+    PlatformCapability: 'platform_capabilities',
+    CompanyCapability: 'company_capabilities',
+    CoreParty: 'core_parties',
+    CorePartyRole: 'core_party_roles',
+    CoreRelationship: 'core_relationships',
+    MetaObject: 'meta_objects',
+    MetaField: 'meta_fields',
+    PlatformEvent: 'platform_events',
 };
 
 

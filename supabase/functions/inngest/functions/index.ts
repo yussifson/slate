@@ -5,6 +5,7 @@ import { checkOverdueInvoices, processIncomingEmail, sendWelcomeNotification } f
 import { shiftReminderCron } from "./hospital.ts";
 import { attendanceReportCron } from "./school.ts";
 import { processIntegrationKnowledge } from "./ai_processor.ts";
+import { slateWorkflowDispatcher } from "./slate_workflows.ts";
 
 // Initialize Supabase Client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -125,6 +126,7 @@ export const functions = [
   processIncomingEmail,
   shiftReminderCron,
   attendanceReportCron,
-  processIntegrationKnowledge
+  processIntegrationKnowledge,
+  slateWorkflowDispatcher
 ];
 
