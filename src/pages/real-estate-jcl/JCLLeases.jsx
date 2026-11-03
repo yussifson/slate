@@ -29,7 +29,7 @@ function generateUUID() {
 }
 
 const STATUS_CONFIG = {
-  active: { label: 'Active Tenancy', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30' },
+  active: { label: 'Active Tenancy', badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30' },
   pending: { label: 'Pending Signature', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' },
   expired: { label: 'Expired', badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/30' },
   terminated: { label: 'Terminated', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30' }
@@ -248,7 +248,7 @@ export default function JCLLeases() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <FileText className="h-5 w-5" />
             </div>
             <div>
@@ -276,7 +276,7 @@ export default function JCLLeases() {
           <Button
             onClick={handleOpenCreate}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             New Lease Agreement
@@ -293,7 +293,7 @@ export default function JCLLeases() {
               <p className="text-2xl font-bold text-foreground">{stats.activeCount}</p>
               <p className="text-[11px] text-muted-foreground">Occupied rental units</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <Building2 className="h-5 w-5" />
             </div>
           </CardContent>
@@ -303,7 +303,7 @@ export default function JCLLeases() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Monthly Rent Roll</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503] truncate">
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00] truncate">
                 {formatCurrency(stats.monthlyRentRoll, 'USD')}
               </p>
               <p className="text-[11px] text-muted-foreground">Recurring monthly revenue</p>
@@ -406,7 +406,7 @@ export default function JCLLeases() {
           <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
             No lease agreements match your filters.
           </p>
-          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#006065] hover:bg-[#004e52] text-white">
+          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#005A9C] hover:bg-[#00477D] text-white">
             <Plus className="h-3.5 w-3.5 mr-1" /> New Lease
           </Button>
         </div>
@@ -442,7 +442,7 @@ export default function JCLLeases() {
                   <div className="flex items-baseline justify-between">
                     <div>
                       <p className="text-[10px] uppercase font-semibold text-muted-foreground tracking-wider">Monthly Rent</p>
-                      <p className="text-xl font-extrabold text-[#006065] dark:text-[#fad503]">
+                      <p className="text-xl font-extrabold text-[#005A9C] dark:text-[#FF6B00]">
                         {formatCurrency(lease.monthly_rent, 'USD')}<span className="text-xs font-normal text-muted-foreground">/mo</span>
                       </p>
                     </div>
@@ -535,7 +535,7 @@ export default function JCLLeases() {
                         {lease.property_address}
                       </td>
                       <td className="py-3.5 px-4 text-foreground font-medium">{lease.tenant_name}</td>
-                      <td className="py-3.5 px-4 font-bold text-[#006065] dark:text-[#fad503]">
+                      <td className="py-3.5 px-4 font-bold text-[#005A9C] dark:text-[#FF6B00]">
                         {formatCurrency(lease.monthly_rent, 'USD')}/mo
                       </td>
                       <td className="py-3.5 px-4 font-mono text-muted-foreground">
@@ -616,10 +616,10 @@ export default function JCLLeases() {
               </SheetHeader>
 
               <div className="p-6 space-y-6 flex-1">
-                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#006065]/20 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#005A9C]/20 flex items-center justify-between">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Monthly Rent</p>
-                    <p className="text-2xl font-black text-[#006065] dark:text-[#fad503]">
+                    <p className="text-2xl font-black text-[#005A9C] dark:text-[#FF6B00]">
                       {formatCurrency(inspectorLease.monthly_rent, 'USD')}/mo
                     </p>
                   </div>
@@ -664,7 +664,7 @@ export default function JCLLeases() {
                 <Button
                   size="sm"
                   onClick={() => setInspectorLease(null)}
-                  className="text-xs bg-[#006065] hover:bg-[#004e52] text-white"
+                  className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white"
                 >
                   Close
                 </Button>
@@ -821,7 +821,7 @@ export default function JCLLeases() {
               <Button
                 type="submit"
                 size="sm"
-                className="text-xs bg-[#006065] hover:bg-[#004e52] text-white font-semibold shadow-md shadow-[#006065]/20"
+                className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white font-semibold shadow-md shadow-[#005A9C]/20"
               >
                 {editingId ? 'Save Changes' : 'Execute Lease'}
               </Button>

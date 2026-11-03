@@ -58,7 +58,7 @@ export default function JCLAuditLog() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <ShieldAlert className="h-5 w-5" />
             </div>
             <div>
@@ -99,10 +99,10 @@ export default function JCLAuditLog() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Security State</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">Encrypted</p>
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">Encrypted</p>
               <p className="text-[11px] text-emerald-600/80">Tamper-evident logs</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <Lock className="h-5 w-5" />
             </div>
           </CardContent>
@@ -127,10 +127,10 @@ export default function JCLAuditLog() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Compliance Status</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">100% Compliant</p>
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">100% Compliant</p>
               <p className="text-[11px] text-muted-foreground">SOC2 / Real Estate Standard</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </CardContent>
@@ -197,7 +197,7 @@ export default function JCLAuditLog() {
                       {l.action_text || 'Mutated real estate records'}
                     </td>
                     <td className="py-3.5 px-4">
-                      <Badge variant="outline" className="text-[10px] uppercase font-mono bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30">
+                      <Badge variant="outline" className="text-[10px] uppercase font-mono bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30">
                         {l.module_name || 'General'}
                       </Badge>
                     </td>

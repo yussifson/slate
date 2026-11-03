@@ -160,7 +160,7 @@ export default function JCLContractors() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <Wrench className="h-5 w-5" />
             </div>
             <div>
@@ -180,7 +180,7 @@ export default function JCLContractors() {
             Refresh
           </Button>
 
-          <Button onClick={handleOpenCreate} size="sm" className="h-9 px-4 text-xs font-bold gap-1.5 bg-[#006065] hover:bg-[#004e52] text-white shadow-sm">
+          <Button onClick={handleOpenCreate} size="sm" className="h-9 px-4 text-xs font-bold gap-1.5 bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm">
             <Plus className="h-4 w-4" /> Add Contractor
           </Button>
         </div>
@@ -222,7 +222,7 @@ export default function JCLContractors() {
           <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
             Onboard trade vendors to handle maintenance tickets and work orders.
           </p>
-          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#006065] hover:bg-[#004e52] text-white">
+          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#005A9C] hover:bg-[#00477D] text-white">
             <Plus className="h-3.5 w-3.5 mr-1" /> Add Contractor
           </Button>
         </div>
@@ -271,7 +271,7 @@ export default function JCLContractors() {
 
                   {/* Actions Footer */}
                   <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto" onClick={e => e.stopPropagation()}>
-                    <Badge variant="outline" className="text-[10px] bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30 font-bold uppercase">
+                    <Badge variant="outline" className="text-[10px] bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30 font-bold uppercase">
                       Verified Partner
                     </Badge>
 
@@ -347,7 +347,7 @@ export default function JCLContractors() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
               Save Vendor Record
             </Button>
           </form>

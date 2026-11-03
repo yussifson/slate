@@ -230,7 +230,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </div>
 
  {/* ── DESKTOP TOP BAR ── */}
- <div className="hidden md:flex h-[64px] bg-[#006065] dark:bg-[#0B1418]/95 border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="hidden md:flex h-[64px] bg-[#005A9C] dark:bg-[#0B1418]/95 border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Sidebar Toggle & Breadcrumb */}
  <div className="flex items-center gap-2 sm:gap-3 text-sm shrink-0 mr-4">
  <button 
@@ -320,7 +320,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         <div className="hidden md:block w-full max-w-sm rounded-full p-[1px] bg-white/20 hover:bg-white/30 transition-all cursor-text group">
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
-            className="flex items-center h-9 w-full bg-[#004e52] dark:bg-[#101D22] rounded-full px-3.5 text-white/70 hover:text-white transition-colors"
+            className="flex items-center h-9 w-full bg-[#00477D] dark:bg-[#101D22] rounded-full px-3.5 text-white/70 hover:text-white transition-colors"
             title="Search across people, docs, tasks... (⌘K)"
           >
             <Search className="w-4 h-4 shrink-0 text-white/60 group-hover:text-white" />

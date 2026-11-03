@@ -62,7 +62,7 @@ export default function JCLAgentMetrics() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
             <Award className="h-5 w-5" />
           </div>
           <div>
@@ -96,7 +96,7 @@ export default function JCLAgentMetrics() {
               <TrendingUp className="h-3 w-3" /> Cumulative brokerage volume
             </p>
           </div>
-          <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+          <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
             <DollarSign className="h-5.5 w-5.5" />
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function JCLAgentMetrics() {
         <div className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Commissions Earned</p>
-            <p className="text-2xl font-extrabold text-[#006065] dark:text-[#fad503] font-mono tracking-tight">
+            <p className="text-2xl font-extrabold text-[#005A9C] dark:text-[#FF6B00] font-mono tracking-tight">
               {formatCurrency(totalCommissionsEarned, 'USD')}
             </p>
             <p className="text-[11px] text-emerald-600/80 font-medium">Gross agent earnings</p>
@@ -157,7 +157,7 @@ export default function JCLAgentMetrics() {
             <div key={m.id || idx} className="p-5 rounded-2xl border border-border/80 bg-card hover:border-emerald-500/50 transition-all shadow-xs space-y-4">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#006065] to-[#0B1418] text-white font-extrabold flex items-center justify-center text-sm shadow-md">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#005A9C] to-[#0B1418] text-white font-extrabold flex items-center justify-center text-sm shadow-md">
                     #{idx + 1}
                   </div>
                   <div>
@@ -177,7 +177,7 @@ export default function JCLAgentMetrics() {
                   <span className="text-[9px] uppercase font-semibold text-muted-foreground">Listings</span>
                 </div>
                 <div>
-                  <span className="text-sm font-extrabold text-[#006065] dark:text-[#fad503] block">{m.listings_sold_count || 0}</span>
+                  <span className="text-sm font-extrabold text-[#005A9C] dark:text-[#FF6B00] block">{m.listings_sold_count || 0}</span>
                   <span className="text-[9px] uppercase font-semibold text-muted-foreground">Sold</span>
                 </div>
                 <div>
@@ -202,7 +202,7 @@ export default function JCLAgentMetrics() {
                 </div>
                 <div className="flex justify-between items-center pt-1 border-t border-border/50">
                   <span className="text-muted-foreground font-sans">Commission Earned:</span>
-                  <span className="font-extrabold text-[#006065] dark:text-[#fad503]">{formatCurrency(m.commission_earned || 0, 'USD')}</span>
+                  <span className="font-extrabold text-[#005A9C] dark:text-[#FF6B00]">{formatCurrency(m.commission_earned || 0, 'USD')}</span>
                 </div>
               </div>
             </div>

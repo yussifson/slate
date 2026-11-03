@@ -40,7 +40,7 @@ const STATUS_COLUMNS = [
   { id: 'contacted', title: 'Contact Made', dot: 'bg-amber-500', badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200' },
   { id: 'qualified', title: 'Qualified', dot: 'bg-purple-500', badgeColor: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200' },
   { id: 'negotiating', title: 'Negotiating', dot: 'bg-indigo-500', badgeColor: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200' },
-  { id: 'closed', title: 'Won / Converted', dot: 'bg-emerald-500', badgeColor: 'bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200' },
+  { id: 'closed', title: 'Won / Converted', dot: 'bg-emerald-500', badgeColor: 'bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200' },
   { id: 'lost', title: 'Lost', dot: 'bg-slate-400', badgeColor: 'bg-muted text-muted-foreground border-border' },
 ];
 
@@ -52,7 +52,7 @@ const STATUS_CONFIG = STATUS_COLUMNS.reduce((acc, col) => {
 const getInitialsBg = (name = '') => {
   const code = (name.charCodeAt(0) || 65) + (name.charCodeAt(1) || 66);
   const colors = [
-    'bg-[#006065] text-white',
+    'bg-[#005A9C] text-white',
     'bg-blue-600 text-white',
     'bg-indigo-600 text-white',
     'bg-amber-600 text-white',
@@ -130,7 +130,7 @@ function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, 
                     ref={provided.innerRef}
                     className={cn(
                       "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
-                      snapshot.isDraggingOver && "bg-muted/40 border-dashed border-[#006065]/30"
+                      snapshot.isDraggingOver && "bg-muted/40 border-dashed border-[#005A9C]/30"
                     )}
                   >
                     {columnLeads.map((lead, index) => {
@@ -647,7 +647,7 @@ export default function JCLCrmLeads() {
                 });
                 setShowForm(true);
               }}
-              className="bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
+              className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
             >
               <UserPlus className="w-4 h-4" />
               Capture Lead
@@ -813,7 +813,7 @@ export default function JCLCrmLeads() {
                   <Button
                     size="sm"
                     onClick={() => handleConvertToClient(inspectorLead)}
-                    className="bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs rounded-xl h-8 gap-1.5"
+                    className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl h-8 gap-1.5"
                   >
                     <Users className="w-3.5 h-3.5" /> Convert To Customer
                   </Button>
@@ -893,7 +893,7 @@ export default function JCLCrmLeads() {
                     <Button
                       size="xs"
                       onClick={() => { setSelectedLead(inspectorLead); setShowActivityModal(true); }}
-                      className="bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs rounded-lg h-7 gap-1"
+                      className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-lg h-7 gap-1"
                     >
                       <MessageSquare className="w-3 h-3" /> Log Activity
                     </Button>
@@ -1081,7 +1081,7 @@ export default function JCLCrmLeads() {
               </Button>
               <Button
                 type="submit"
-                className="bg-[#006065] hover:bg-[#004e52] text-white rounded-xl font-bold text-xs"
+                className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl font-bold text-xs"
               >
                 {editingId ? 'Update Lead' : 'Save Lead'}
               </Button>
@@ -1189,7 +1189,7 @@ export default function JCLCrmLeads() {
             <Button
               type="button"
               onClick={handleSaveActivity}
-              className="bg-[#006065] hover:bg-[#004e52] text-white rounded-xl font-bold text-xs"
+              className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl font-bold text-xs"
             >
               Save Activity
             </Button>

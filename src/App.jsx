@@ -1,3 +1,4 @@
+const ApkDownload = React.lazy(() => import('@/pages/ApkDownload'));
 import React, { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
@@ -1444,7 +1445,8 @@ function PlatformRoutes() {
       <Route path="/fleet" element={<GenericModulePage />} />
       <Route path="/pickups" element={<Pickups />} />
       <Route path="/training" element={<GenericModulePage />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/apk" element={<ApkDownload />} />
+                        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/sso" element={<SSOGateway />} />
         <Route path="/auth/callback" element={<SSOCallback />} />
@@ -1821,6 +1823,7 @@ function App() {
                           <Route path="/partners" element={<Partners />} />
                           <Route path="/legal" element={<LegalDocs />} />
                         </Route>
+                        <Route path="/apk" element={<ApkDownload />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/sso" element={<SSOGateway />} />
@@ -1859,6 +1862,7 @@ function App() {
                     ) : (
                       /* App Routes for Subdomains */
                       <Routes>
+                        <Route path="/apk" element={<ApkDownload />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/sso" element={<SSOGateway />} />

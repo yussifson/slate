@@ -28,7 +28,7 @@ function generateUUID() {
 }
 
 const STATUS_CONFIG = {
-  paid: { label: 'Paid Out', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30', dot: 'bg-emerald-500' },
+  paid: { label: 'Paid Out', badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30', dot: 'bg-emerald-500' },
   pending: { label: 'Pending Payout', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30', dot: 'bg-amber-500' },
   scheduled: { label: 'Scheduled', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30', dot: 'bg-blue-500' },
 };
@@ -166,7 +166,7 @@ export default function JCLCommissions() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <TrendingUp className="h-5 w-5" />
             </div>
             <div>
@@ -203,7 +203,7 @@ export default function JCLCommissions() {
               setShowForm(true);
             }}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Log Commission Split
@@ -217,12 +217,12 @@ export default function JCLCommissions() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Paid Payouts</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">
                 {formatCurrency(stats.totalEarned, 'USD')}
               </p>
               <p className="text-[11px] text-emerald-600/80">Disbursed to agents</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </CardContent>
@@ -335,7 +335,7 @@ export default function JCLCommissions() {
                       <td className="py-3.5 px-4 font-mono text-xs">
                         {item.brokerage_split_rate || 70}% / {100 - (item.brokerage_split_rate || 70)}%
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-extrabold text-[#006065] dark:text-[#fad503] text-sm">
+                      <td className="py-3.5 px-4 font-mono font-extrabold text-[#005A9C] dark:text-[#FF6B00] text-sm">
                         {formatCurrency(agentNet, 'USD')}
                       </td>
                       <td className="py-3.5 px-4">
@@ -351,7 +351,7 @@ export default function JCLCommissions() {
                           onClick={() => handleStatusToggle(item.id, item.status)}
                           className={cn(
                             "text-[10px] h-7 px-2 font-bold",
-                            item.status === 'paid' ? "border-[#006065]/30 text-emerald-700 dark:text-emerald-400" : "bg-[#006065] hover:bg-[#004e52] text-white"
+                            item.status === 'paid' ? "border-[#005A9C]/30 text-emerald-700 dark:text-emerald-400" : "bg-[#005A9C] hover:bg-[#00477D] text-white"
                           )}
                         >
                           {item.status === 'paid' ? 'Mark Pending' : 'Mark Paid Out'}
@@ -428,7 +428,7 @@ export default function JCLCommissions() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
               Log Commission
             </Button>
           </form>

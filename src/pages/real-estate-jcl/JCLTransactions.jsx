@@ -35,7 +35,7 @@ const PIPELINE_STAGES = [
   { id: 'appraisal', label: 'Appraisal & Title', color: 'border-blue-500/40 bg-blue-500/5', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30' },
   { id: 'financing', label: 'Escrow Financing', color: 'border-indigo-500/40 bg-indigo-500/5', badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-500/30' },
   { id: 'ready_close', label: 'Ready to Close', color: 'border-purple-500/40 bg-purple-500/5', badge: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30' },
-  { id: 'closed', label: 'Closed / Finalized', color: 'border-emerald-500/40 bg-emerald-500/5', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30' }
+  { id: 'closed', label: 'Closed / Finalized', color: 'border-emerald-500/40 bg-emerald-500/5', badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30' }
 ];
 
 export default function JCLTransactions() {
@@ -255,7 +255,7 @@ export default function JCLTransactions() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <Banknote className="h-5 w-5" />
             </div>
             <div>
@@ -283,7 +283,7 @@ export default function JCLTransactions() {
           <Button
             onClick={handleOpenCreate}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             New Transaction
@@ -310,12 +310,12 @@ export default function JCLTransactions() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pipeline Volume</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503] truncate">
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00] truncate">
                 {formatCurrency(stats.totalVolume, 'USD')}
               </p>
               <p className="text-[11px] text-muted-foreground">Total across all stages</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <DollarSign className="h-5 w-5" />
             </div>
           </CardContent>
@@ -437,7 +437,7 @@ export default function JCLTransactions() {
                         {...providedDroppable.droppableProps}
                         className={cn(
                           "flex-1 space-y-2.5 min-h-[300px] rounded-lg p-1 transition-colors",
-                          snapshot.isDraggingOver && "bg-[#006065]/10 ring-1 ring-emerald-500/30"
+                          snapshot.isDraggingOver && "bg-[#005A9C]/10 ring-1 ring-emerald-500/30"
                         )}
                       >
                         {stageDeals.map((deal, index) => (
@@ -457,7 +457,7 @@ export default function JCLTransactions() {
                                     </span>
                                   </div>
 
-                                  <p className="text-sm font-extrabold text-[#006065] dark:text-[#fad503] mb-2">
+                                  <p className="text-sm font-extrabold text-[#005A9C] dark:text-[#FF6B00] mb-2">
                                     {formatCurrency(deal.sale_price, 'USD')}
                                   </p>
 
@@ -595,10 +595,10 @@ export default function JCLTransactions() {
 
               <div className="p-6 space-y-6 flex-1">
                 {/* Financial Overview Card */}
-                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#006065]/20 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#005A9C]/20 flex items-center justify-between">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Contract Price</p>
-                    <p className="text-2xl font-black text-[#006065] dark:text-[#fad503]">
+                    <p className="text-2xl font-black text-[#005A9C] dark:text-[#FF6B00]">
                       {formatCurrency(inspectorTxn.sale_price, 'USD')}
                     </p>
                   </div>
@@ -649,7 +649,7 @@ export default function JCLTransactions() {
                 <Button
                   size="sm"
                   onClick={() => setInspectorTxn(null)}
-                  className="text-xs bg-[#006065] hover:bg-[#004e52] text-white"
+                  className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white"
                 >
                   Close Deal Sheet
                 </Button>
@@ -781,7 +781,7 @@ export default function JCLTransactions() {
               <Button
                 type="submit"
                 size="sm"
-                className="text-xs bg-[#006065] hover:bg-[#004e52] text-white font-semibold shadow-md shadow-[#006065]/20"
+                className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white font-semibold shadow-md shadow-[#005A9C]/20"
               >
                 {editingId ? 'Save Changes' : 'Log Transaction'}
               </Button>

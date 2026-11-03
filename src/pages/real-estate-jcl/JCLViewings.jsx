@@ -29,7 +29,7 @@ function generateUUID() {
 
 const STATUS_CONFIG = {
   scheduled: { label: 'Scheduled Tour', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30' },
-  completed: { label: 'Tour Completed', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30' },
+  completed: { label: 'Tour Completed', badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30' },
   cancelled: { label: 'Cancelled', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30' },
   rescheduled: { label: 'Rescheduled', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' }
 };
@@ -243,7 +243,7 @@ export default function JCLViewings() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <CalendarIcon className="h-5 w-5" />
             </div>
             <div>
@@ -271,7 +271,7 @@ export default function JCLViewings() {
           <Button
             onClick={handleOpenCreate}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Schedule Viewing
@@ -298,10 +298,10 @@ export default function JCLViewings() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Today's Viewings</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">{stats.todayCount}</p>
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">{stats.todayCount}</p>
               <p className="text-[11px] text-emerald-600/80">Scheduled for today</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <CalendarIcon className="h-5 w-5" />
             </div>
           </CardContent>
@@ -397,7 +397,7 @@ export default function JCLViewings() {
               <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
                 No property inspections match your filter criteria.
               </p>
-              <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#006065] hover:bg-[#004e52] text-white">
+              <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#005A9C] hover:bg-[#00477D] text-white">
                 <Plus className="h-3.5 w-3.5 mr-1" /> Schedule Viewing
               </Button>
             </div>
@@ -554,7 +554,7 @@ export default function JCLViewings() {
                 >
                   <span className={cn(
                     "text-xs font-bold self-end h-5 w-5 rounded-full flex items-center justify-center",
-                    isToday ? "bg-[#006065] text-white" : "text-muted-foreground"
+                    isToday ? "bg-[#005A9C] text-white" : "text-muted-foreground"
                   )}>
                     {format(day, 'd')}
                   </span>
@@ -564,7 +564,7 @@ export default function JCLViewings() {
                       <div
                         key={v.id}
                         onClick={() => setInspectorViewing(v)}
-                        className="text-[10px] p-1 rounded bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 truncate cursor-pointer hover:bg-[#006065]/20"
+                        className="text-[10px] p-1 rounded bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 truncate cursor-pointer hover:bg-[#005A9C]/20"
                       >
                         {v.viewing_time ? `${v.viewing_time} ` : ''}{v.property_address}
                       </div>
@@ -656,7 +656,7 @@ export default function JCLViewings() {
                 <Button
                   size="sm"
                   onClick={() => setInspectorViewing(null)}
-                  className="text-xs bg-[#006065] hover:bg-[#004e52] text-white"
+                  className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white"
                 >
                   Close
                 </Button>
@@ -800,7 +800,7 @@ export default function JCLViewings() {
               <Button
                 type="submit"
                 size="sm"
-                className="text-xs bg-[#006065] hover:bg-[#004e52] text-white font-semibold shadow-md shadow-[#006065]/20"
+                className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white font-semibold shadow-md shadow-[#005A9C]/20"
               >
                 {editingId ? 'Save Changes' : 'Schedule Viewing'}
               </Button>

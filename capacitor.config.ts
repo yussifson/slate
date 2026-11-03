@@ -1,18 +1,29 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.optavel.clipad',
-  appName: 'CliPad',
+  appId: 'com.jclroyalgroup.office',
+  appName: 'JCL Royal Group',
   webDir: 'dist',
+  server: {
+    url: 'https://jcloffice.optavel.com',
+    cleartext: true
+  },
+  android: {
+    allowMixedContent: true,
+    captureInput: true,
+    webContentsDebuggingEnabled: true
+  },
   plugins: {
-    CapacitorUpdater: {
-      version: '0.0.0',
-      appId: 'com.optavel.clipad',
-      autoUpdate: 'always',
-      autoSplashscreen: true
-    },
     SplashScreen: {
-      launchAutoHide: false
+      launchShowDuration: 1200,
+      launchAutoHide: true,
+      launchFadeOutDuration: 250,
+      backgroundColor: '#005A9C',
+      androidSplashResourceName: 'splash',
+      androidScaleType: 'CENTER_CROP',
+      showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: true
     }
   }
 };

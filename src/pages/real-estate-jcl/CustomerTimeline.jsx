@@ -29,7 +29,7 @@ const moduleConfig = {
   crm: {
     label: 'CRM & Outreach',
     icon: MessageSquare,
-    badgeColor: 'bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200',
+    badgeColor: 'bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200',
     nodeColor: 'bg-emerald-500',
   },
   land: {

@@ -39,13 +39,13 @@ export default function ThemeToggle({ iconOnly = false }) {
                   className={cn(
                     "flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left text-xs font-semibold transition-all duration-150 cursor-pointer select-none",
                     isSelected
-                      ? "bg-[#006065]/10 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503]"
+                      ? "bg-[#005A9C]/10 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00]"
                       : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10"
                   )}
                 >
-                  <OptIcon className={cn("w-4 h-4 shrink-0", isSelected ? "text-[#006065] dark:text-[#fad503]" : option.color)} />
+                  <OptIcon className={cn("w-4 h-4 shrink-0", isSelected ? "text-[#005A9C] dark:text-[#FF6B00]" : option.color)} />
                   <span className="flex-1">{option.label}</span>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#006065] dark:text-[#fad503]" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#005A9C] dark:text-[#FF6B00]" />}
                 </DropdownMenuItem>
               );
             })}
@@ -83,13 +83,13 @@ export default function ThemeToggle({ iconOnly = false }) {
                 className={cn(
                   "flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left text-xs font-semibold transition-all duration-150 cursor-pointer select-none",
                   isSelected
-                    ? "bg-[#006065]/10 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503]"
+                    ? "bg-[#005A9C]/10 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00]"
                     : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10"
                 )}
               >
-                <OptIcon className={cn("w-4 h-4 shrink-0", isSelected ? "text-[#006065] dark:text-[#fad503]" : option.color)} />
+                <OptIcon className={cn("w-4 h-4 shrink-0", isSelected ? "text-[#005A9C] dark:text-[#FF6B00]" : option.color)} />
                 <span className="flex-1">{option.label}</span>
-                {isSelected && <Check className="w-3.5 h-3.5 text-[#006065] dark:text-[#fad503]" />}
+                {isSelected && <Check className="w-3.5 h-3.5 text-[#005A9C] dark:text-[#FF6B00]" />}
               </DropdownMenuItem>
             );
           })}

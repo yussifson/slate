@@ -939,8 +939,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-[#006065] dark:bg-[#091114] text-white overflow-x-hidden">
-      <div className={cn("h-[64px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#006065] dark:bg-[#091114] shrink-0", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
+    <div className="flex flex-col h-full bg-[#005A9C] dark:bg-[#091114] text-white overflow-x-hidden">
+      <div className={cn("h-[64px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>
      <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
@@ -990,16 +990,16 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
               "flex items-center rounded-xl text-sm transition-all duration-200 relative font-medium",
               collapsed
                 ? isActive
-                  ? "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#fad503]/20 to-transparent text-[#fad503] font-bold shadow-sm"
+                  ? "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold shadow-sm"
                   : "justify-center mx-auto w-9 h-9 text-white/70 hover:text-white hover:bg-white/10"
                 : "gap-3 px-3 py-2 pr-8",
               !collapsed && (isActive
-                ? "bg-gradient-to-r from-[#fad503]/20 to-transparent text-[#fad503] font-bold border-l-4 border-[#fad503] pl-2.5 shadow-sm"
+                ? "bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold border-l-4 border-[#FF6B00] pl-2.5 shadow-sm"
                 : "text-white/70 hover:text-white hover:bg-white/10 font-medium")
             )}
           >
             <span className="relative flex-shrink-0 flex items-center justify-center">
-              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive ? "text-[#fad503]" : "text-white/60 group-hover:text-white")} />
+              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive ? "text-[#FF6B00]" : "text-white/60 group-hover:text-white")} />
               {showLiveDot && (
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -1110,7 +1110,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
               className="w-full flex items-center justify-between px-3 py-2 mb-1 group transition-all rounded-xl hover:bg-white/10 text-white/70 hover:text-white"
             >
               <div className="flex items-center gap-2.5">
-                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300", isExpanded ? "bg-[#fad503] shadow-[0_0_8px_rgba(250,213,3,0.6)]" : "bg-white/20 group-hover:bg-white/40")} />
+                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300", isExpanded ? "bg-[#FF6B00] shadow-[0_0_8px_rgba(250,213,3,0.6)]" : "bg-white/20 group-hover:bg-white/40")} />
                 <p className="text-[11px] font-bold text-white/60 group-hover:text-white uppercase tracking-[0.15em]">{cat}</p>
               </div>
               <ChevronRight className={cn("w-3.5 h-3.5 text-white/40 group-hover:text-white transition-transform duration-300", isExpanded && "rotate-90")} />
@@ -1156,7 +1156,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-white/10 dark:border-white/5 bg-[#004e52] dark:bg-[#060B0D] text-white">
+ <div className="mt-auto p-3 border-t border-white/10 dark:border-white/5 bg-[#00477D] dark:bg-[#060B0D] text-white">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white">
@@ -1225,7 +1225,7 @@ return (
       {/* Desktop sidebar - Full height sidebar matching reference design */}
       <aside className={cn(
         "hidden md:flex flex-col h-full sticky top-0 border-r border-white/10 dark:border-white/5 transition-all duration-300 relative z-20 overflow-hidden",
-        "bg-[#006065] text-white dark:bg-[#091114] border-white/10 dark:border-white/5",
+        "bg-[#005A9C] text-white dark:bg-[#091114] border-white/10 dark:border-white/5",
         isCollapsed ? "w-[64px] min-w-[64px] max-w-[64px]" : "w-[240px] min-w-[240px] max-w-[240px]"
       )}>
         {renderNavContent(isCollapsed)}

@@ -31,7 +31,7 @@ function generateUUID() {
 const STATUS_CONFIG = {
   proposal_sent: { label: 'Proposal Sent', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30' },
   in_negotiation: { label: 'In Negotiation', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' },
-  accepted: { label: 'Renewal Approved', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30' },
+  accepted: { label: 'Renewal Approved', badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30' },
   declined: { label: 'Notice Given / Expired', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30' }
 };
 
@@ -230,7 +230,7 @@ export default function JCLLeaseRenewals() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <FileCheck className="h-5 w-5" />
             </div>
             <div>
@@ -258,7 +258,7 @@ export default function JCLLeaseRenewals() {
           <Button
             onClick={handleOpenCreate}
             size="sm"
-            className="h-9 px-4 text-xs font-bold gap-1.5 bg-[#006065] hover:bg-[#004e52] text-white shadow-sm"
+            className="h-9 px-4 text-xs font-bold gap-1.5 bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm"
           >
             <Plus className="h-4 w-4" />
             New Renewal Proposal
@@ -298,10 +298,10 @@ export default function JCLLeaseRenewals() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Approved Renewals</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">{stats.approved}</p>
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">{stats.approved}</p>
               <p className="text-[11px] text-emerald-600/80">Contracts extended</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </CardContent>
@@ -314,11 +314,11 @@ export default function JCLLeaseRenewals() {
               <p className="text-2xl font-bold text-foreground">
                 {formatCurrency(stats.avgIncrease, 'USD')}
               </p>
-              <p className="text-[11px] text-[#006065] dark:text-[#fad503] flex items-center gap-0.5">
+              <p className="text-[11px] text-[#005A9C] dark:text-[#FF6B00] flex items-center gap-0.5">
                 <ArrowUpRight className="h-3 w-3" /> Lift per renewal
               </p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <DollarSign className="h-5 w-5" />
             </div>
           </CardContent>
@@ -386,7 +386,7 @@ export default function JCLLeaseRenewals() {
           <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
             No active lease expiration proposals match your search criteria.
           </p>
-          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#006065] hover:bg-[#004e52] text-white">
+          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#005A9C] hover:bg-[#00477D] text-white">
             <Plus className="h-3.5 w-3.5 mr-1" /> Create Proposal
           </Button>
         </div>
@@ -454,14 +454,14 @@ export default function JCLLeaseRenewals() {
                       <span className="text-xs font-bold text-muted-foreground">{formatCurrency(r.current_rent, 'USD')}</span>
                     </div>
                     <div>
-                      <span className="text-[9px] uppercase text-[#006065] dark:text-[#fad503] block mb-0.5">Proposed Rate</span>
-                      <span className="text-xs font-extrabold text-[#006065] dark:text-[#fad503]">{formatCurrency(r.proposed_rent, 'USD')}</span>
+                      <span className="text-[9px] uppercase text-[#005A9C] dark:text-[#FF6B00] block mb-0.5">Proposed Rate</span>
+                      <span className="text-xs font-extrabold text-[#005A9C] dark:text-[#FF6B00]">{formatCurrency(r.proposed_rent, 'USD')}</span>
                     </div>
                   </div>
 
                   {/* Rent Delta Badge */}
                   {delta !== 0 && (
-                    <div className="flex items-center justify-between text-[11px] px-3 py-1 rounded-lg bg-[#006065]/10 border border-[#006065]/20">
+                    <div className="flex items-center justify-between text-[11px] px-3 py-1 rounded-lg bg-[#005A9C]/10 border border-[#005A9C]/20">
                       <span className="text-muted-foreground font-medium">Monthly Adjustment</span>
                       <span className="font-bold font-mono text-emerald-700 dark:text-emerald-400">
                         {delta > 0 ? `+${formatCurrency(delta, 'USD')} (+${Math.round((delta / (r.current_rent || 1)) * 100)}%)` : formatCurrency(delta, 'USD')}
@@ -474,7 +474,7 @@ export default function JCLLeaseRenewals() {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-7 text-[11px] font-semibold gap-1.5 border-[#006065]/30 text-emerald-700 dark:text-emerald-400 hover:bg-[#006065]/10"
+                      className="h-7 text-[11px] font-semibold gap-1.5 border-[#005A9C]/30 text-emerald-700 dark:text-emerald-400 hover:bg-[#005A9C]/10"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleStartCallWithTenant(r.tenant_name);
@@ -534,7 +534,7 @@ export default function JCLLeaseRenewals() {
                       <td className="py-3.5 px-4 font-mono">
                         {formatCurrency(r.current_rent, 'USD')}
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-extrabold text-[#006065] dark:text-[#fad503]">
+                      <td className="py-3.5 px-4 font-mono font-extrabold text-[#005A9C] dark:text-[#FF6B00]">
                         {formatCurrency(r.proposed_rent, 'USD')}
                       </td>
                       <td className="py-3.5 px-4 font-mono text-muted-foreground">
@@ -550,7 +550,7 @@ export default function JCLLeaseRenewals() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-7 text-[10px] gap-1 border-[#006065]/30 text-emerald-600"
+                            className="h-7 text-[10px] gap-1 border-[#005A9C]/30 text-emerald-600"
                             onClick={() => handleStartCallWithTenant(r.tenant_name)}
                           >
                             <Phone className="h-3 w-3" /> Call
@@ -712,7 +712,7 @@ export default function JCLLeaseRenewals() {
               />
             </div>
 
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
               Save Proposal
             </Button>
           </form>
@@ -747,10 +747,10 @@ export default function JCLLeaseRenewals() {
 
               <div className="p-6 space-y-6 flex-1">
                 {/* Proposed Rent Strip */}
-                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#006065]/20 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#005A9C]/20 flex items-center justify-between">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Proposed Monthly Rent</p>
-                    <p className="text-2xl font-black text-[#006065] dark:text-[#fad503]">
+                    <p className="text-2xl font-black text-[#005A9C] dark:text-[#FF6B00]">
                       {formatCurrency(inspectorRenewal.proposed_rent, 'USD')}
                     </p>
                   </div>
@@ -766,7 +766,7 @@ export default function JCLLeaseRenewals() {
                   <p className="text-xs text-muted-foreground">Connect with the tenant in a live audio/video session to review terms.</p>
                   <Button
                     onClick={() => handleStartCallWithTenant(inspectorRenewal.tenant_name)}
-                    className="w-full h-9 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white gap-2"
+                    className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white gap-2"
                   >
                     <Phone className="h-4 w-4" /> Start Live Consultation Call
                   </Button>

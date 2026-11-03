@@ -38,7 +38,7 @@ html, body {
     --popover-foreground: 220 40% 11%;
 
     /* 💎 CORPORATE PETROL TEAL & HIGH-PRECISION ACCENT */
-    --primary: 184 92% 18.5%;               /* #04494F Rich Deep Petrol Teal */
+    --primary: 205 100% 30.6%;               /* #005A9C Deep Corporate Royal Blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 212 30% 95%;               /* #EEF2F6 Satin Cool Gray */
     --secondary-foreground: 220 40% 12%;
@@ -52,11 +52,11 @@ html, body {
     /* 🪞 REFINED MICRO-CONTRAST HAIRLINES & FOCUS */
     --border: 215 24% 88.5%;                /* #DCE3EA Subtle Hairline Divider */
     --input: 215 24% 88.5%;
-    --ring: 184 92% 18.5%;
+    --ring: 205 100% 30.6%;
     --radius: 0.75rem;
 
     /* 📊 PROFESSIONAL METRIC CHARTS */
-    --chart-1: 184 92% 18.5%;               /* Petrol Teal */
+    --chart-1: 205 100% 30.6%;               /* #005A9C Royal Blue */
     --chart-2: 38 95% 48%;                  /* Executive Amber Gold */
     --chart-3: 215 85% 46%;                 /* Corporate Cobalt */
     --chart-4: 158 64% 39%;                 /* Forest Emerald */
@@ -65,12 +65,12 @@ html, body {
     /* 🧭 DISTINCT FROSTED TITANIUM SIDEBAR ARCHITECTURE */
     --sidebar-background: 210 28% 96.2%;    /* #EFF3F7 Structured Architectural Wash */
     --sidebar-foreground: 220 35% 20%;
-    --sidebar-primary: 184 92% 18.5%;
+    --sidebar-primary: 205 100% 30.6%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 212 30% 91.5%;
     --sidebar-accent-foreground: 220 40% 11%;
     --sidebar-border: 215 24% 88.5%;
-    --sidebar-ring: 184 92% 18.5%;
+    --sidebar-ring: 205 100% 30.6%;
     --bg-base-rgb: 248, 249, 250;
 
     /* ────────────────────────────────── */
@@ -113,7 +113,7 @@ html, body {
     --popover-foreground: 0 0% 100%;
     
     /* Brand Accent #fad503 Yellow */
-    --primary: 51 98% 50%;
+    --primary: 25 100% 50%; /* #FF6B00 Vivid Orange */
     --primary-foreground: 196 37% 7%;
     
     /* Secondary Surface elements #15262D */
@@ -138,7 +138,7 @@ html, body {
     --ring: 175 100% 37.3%; /* Brand Cyan #00beac */
     
     --chart-1: 175 100% 37.3%;
-    --chart-2: 51 98% 50%;
+    --chart-2: 25 100% 50%;
     --chart-3: 183 100% 20%;
     --chart-4: 160 60% 45%;
     --chart-5: 38 92% 50%;
@@ -146,7 +146,7 @@ html, body {
     /* Sidebar Palette #091114 */
     --sidebar-background: 196 38% 5.5%;
     --sidebar-foreground: 196 15% 64%;
-    --sidebar-primary: 51 98% 50%;
+    --sidebar-primary: 25 100% 50%;
     --sidebar-primary-foreground: 196 37% 7%;
     --sidebar-accent: 197 36% 10%;
     --sidebar-accent-foreground: 0 0% 100%;

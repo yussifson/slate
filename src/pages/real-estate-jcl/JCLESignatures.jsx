@@ -32,7 +32,7 @@ function generateAuditHash() {
 const STATUS_CONFIG = {
   signed: {
     label: 'Fully Signed & Executed',
-    badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30',
+    badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30',
     dot: 'bg-emerald-500'
   },
   sent: {
@@ -284,13 +284,13 @@ export default function JCLESignatures() {
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-lg shadow-[#006065]/20 shrink-0">
+          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-lg shadow-[#005A9C]/20 shrink-0">
             <Shield className="h-6 w-6" />
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground flex items-center gap-2 flex-wrap">
               E-Signatures & Cryptographic Vault
-              <Badge className="bg-[#006065]/10 text-[#006065] dark:text-[#fad503] border-[#006065]/30 text-[10px] uppercase font-mono px-2 py-0.5 shrink-0">
+              <Badge className="bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] border-[#005A9C]/30 text-[10px] uppercase font-mono px-2 py-0.5 shrink-0">
                 ESIGN & UETA Compliant
               </Badge>
             </h1>
@@ -312,7 +312,7 @@ export default function JCLESignatures() {
               setShowRequestForm(true);
             }}
             size="sm"
-            className="h-9 px-4 text-xs font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md shadow-[#006065]/20 gap-1.5"
+            className="h-9 px-4 text-xs font-extrabold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Request Signature
@@ -326,12 +326,12 @@ export default function JCLESignatures() {
           <CardContent className="p-4 sm:p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Executed Contracts</span>
-              <p className="text-xl sm:text-2xl font-extrabold text-[#006065] dark:text-[#fad503] tracking-tight">{stats.signedCount}</p>
-              <p className="text-[10px] sm:text-[11px] text-[#006065] dark:text-[#fad503] font-semibold flex items-center gap-1">
+              <p className="text-xl sm:text-2xl font-extrabold text-[#005A9C] dark:text-[#FF6B00] tracking-tight">{stats.signedCount}</p>
+              <p className="text-[10px] sm:text-[11px] text-[#005A9C] dark:text-[#FF6B00] font-semibold flex items-center gap-1">
                 <CheckCircle2 className="h-3 w-3" /> Legally Binding
               </p>
             </div>
-            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center border border-[#006065]/20 shadow-inner shrink-0">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center border border-[#005A9C]/20 shadow-inner shrink-0">
               <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
           </CardContent>
@@ -368,7 +368,7 @@ export default function JCLESignatures() {
             <div className="space-y-1">
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Security Vault</span>
               <p className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">Active</p>
-              <p className="text-[10px] sm:text-[11px] text-[#006065] dark:text-[#fad503] font-semibold flex items-center gap-1">
+              <p className="text-[10px] sm:text-[11px] text-[#005A9C] dark:text-[#FF6B00] font-semibold flex items-center gap-1">
                 <Lock className="h-3 w-3" /> Immutable Record
               </p>
             </div>
@@ -427,7 +427,7 @@ export default function JCLESignatures() {
               <div key={item.id} className="bg-card/95 backdrop-blur-xl border border-border/90 rounded-[22px] p-4 space-y-3.5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-10 h-10 rounded-2xl bg-[#006065]/10 text-emerald-600 flex items-center justify-center shrink-0 border border-[#006065]/20">
+                    <div className="w-10 h-10 rounded-2xl bg-[#005A9C]/10 text-emerald-600 flex items-center justify-center shrink-0 border border-[#005A9C]/20">
                       <FileText className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
@@ -461,7 +461,7 @@ export default function JCLESignatures() {
 
                   <div className="flex items-center gap-1.5">
                     {item.status !== 'signed' && (
-                      <Button size="xs" onClick={() => setSigningItem(item)} className="text-xs h-7.5 px-3 font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-lg gap-1">
+                      <Button size="xs" onClick={() => setSigningItem(item)} className="text-xs h-7.5 px-3 font-extrabold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-lg gap-1">
                         <PenTool className="w-3 h-3" /> Sign
                       </Button>
                     )}
@@ -513,7 +513,7 @@ export default function JCLESignatures() {
                     <tr key={item.id} className="hover:bg-muted/20 transition-colors group">
                       <td className="py-4 px-6 max-w-[300px]">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-2xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center shrink-0 border border-[#006065]/20 shadow-xs group-hover:scale-105 transition-transform">
+                          <div className="w-10 h-10 rounded-2xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center shrink-0 border border-[#005A9C]/20 shadow-xs group-hover:scale-105 transition-transform">
                             <FileText className="w-5 h-5" />
                           </div>
                           <div className="min-w-0">
@@ -546,7 +546,7 @@ export default function JCLESignatures() {
                           <span className="font-mono text-foreground font-semibold">{item.sent_date || 'Recent'}</span>
                         </div>
                         {item.signed_date && (
-                          <div className="flex items-center gap-1.5 text-xs text-[#006065] dark:text-[#fad503] font-bold">
+                          <div className="flex items-center gap-1.5 text-xs text-[#005A9C] dark:text-[#FF6B00] font-bold">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                             <span>Signed:</span>
                             <span className="font-mono">{item.signed_date}</span>
@@ -587,7 +587,7 @@ export default function JCLESignatures() {
                             <Button
                               size="sm"
                               onClick={() => setSigningItem(item)}
-                              className="text-xs h-8 px-3 font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-xs gap-1"
+                              className="text-xs h-8 px-3 font-extrabold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1"
                             >
                               <PenTool className="w-3.5 h-3.5" /> Sign
                             </Button>
@@ -625,13 +625,13 @@ export default function JCLESignatures() {
       <div className="mt-8 bg-card/95 backdrop-blur-xl border border-border/90 rounded-[28px] p-4 sm:p-6 shadow-sm space-y-4 w-full max-w-full">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#0B1418] flex items-center justify-center text-white shadow-md shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#005A9C] to-[#0B1418] flex items-center justify-center text-white shadow-md shrink-0">
               <Award className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2 flex-wrap">
                 Cryptographic Signature Governance & Compliance
-                <Badge className="bg-[#006065]/10 text-[#006065] dark:text-[#fad503] border-[#006065]/30 text-[9px] uppercase font-mono">
+                <Badge className="bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] border-[#005A9C]/30 text-[9px] uppercase font-mono">
                   ESIGN Certified
                 </Badge>
               </h3>
@@ -642,7 +642,7 @@ export default function JCLESignatures() {
           </div>
 
           <div className="flex items-center gap-3 shrink-0 flex-wrap">
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-[#006065]/10 px-3 py-1.5 rounded-xl border border-[#006065]/20">
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-[#005A9C]/10 px-3 py-1.5 rounded-xl border border-[#005A9C]/20">
               <Lock className="w-3.5 h-3.5" /> 256-Bit Encrypted
             </div>
             <div className="flex items-center gap-1.5 text-xs text-blue-600 font-bold bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/20">
@@ -740,7 +740,7 @@ export default function JCLESignatures() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full h-9.5 text-xs font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md mt-2">
+            <Button type="submit" className="w-full h-9.5 text-xs font-extrabold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md mt-2">
               Send Signature Request
             </Button>
           </form>
@@ -768,7 +768,7 @@ export default function JCLESignatures() {
                     size="sm"
                     variant={signerMode === 'draw' ? 'default' : 'ghost'}
                     onClick={() => setSignerMode('draw')}
-                    className={cn("h-7 text-xs font-bold rounded-lg", signerMode === 'draw' && "bg-[#006065] text-white")}
+                    className={cn("h-7 text-xs font-bold rounded-lg", signerMode === 'draw' && "bg-[#005A9C] text-white")}
                   >
                     Draw Signature
                   </Button>
@@ -776,7 +776,7 @@ export default function JCLESignatures() {
                     size="sm"
                     variant={signerMode === 'type' ? 'default' : 'ghost'}
                     onClick={() => setSignerMode('type')}
-                    className={cn("h-7 text-xs font-bold rounded-lg", signerMode === 'type' && "bg-[#006065] text-white")}
+                    className={cn("h-7 text-xs font-bold rounded-lg", signerMode === 'type' && "bg-[#005A9C] text-white")}
                   >
                     Type Signature
                   </Button>
@@ -789,7 +789,7 @@ export default function JCLESignatures() {
               </div>
 
               {signerMode === 'draw' ? (
-                <div className="border-2 border-dashed border-[#006065]/30 rounded-2xl p-2 bg-muted/20">
+                <div className="border-2 border-dashed border-[#005A9C]/30 rounded-2xl p-2 bg-muted/20">
                   <canvas
                     ref={canvasRef}
                     width={400}
@@ -839,7 +839,7 @@ export default function JCLESignatures() {
               <Button
                 size="sm"
                 onClick={handleExecuteSigning}
-                className="text-xs font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md gap-1"
+                className="text-xs font-extrabold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md gap-1"
               >
                 <Check className="w-4 h-4" /> Sign & Execute
               </Button>
@@ -877,7 +877,7 @@ export default function JCLESignatures() {
               </div>
               <div className="flex justify-between border-b border-border/60 pb-2">
                 <span className="text-muted-foreground font-sans">Execution Status:</span>
-                <Badge className="bg-[#006065]/10 text-[#006065] dark:text-[#fad503] font-bold uppercase text-[9px]">
+                <Badge className="bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] font-bold uppercase text-[9px]">
                   {certificateItem.status || 'Verified'}
                 </Badge>
               </div>
@@ -903,7 +903,7 @@ export default function JCLESignatures() {
                   toast.success('Certificate downloaded for offline audit archive');
                   setCertificateItem(null);
                 }}
-                className="text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-sm gap-1"
+                className="text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-sm gap-1"
               >
                 <Download className="w-3.5 h-3.5" /> Download Certificate
               </Button>

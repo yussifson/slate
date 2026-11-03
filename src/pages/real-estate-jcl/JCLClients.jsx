@@ -35,7 +35,7 @@ function generateUUID() {
 const getInitialsBg = (name = '') => {
   const code = (name.charCodeAt(0) || 65) + (name.charCodeAt(1) || 66);
   const colors = [
-    'bg-[#006065] text-white',
+    'bg-[#005A9C] text-white',
     'bg-blue-600 text-white',
     'bg-indigo-600 text-white',
     'bg-amber-600 text-white',
@@ -391,7 +391,7 @@ export default function JCLClients() {
                 <div className="text-2xl font-extrabold text-foreground tracking-tight">{metrics.total}</div>
                 <p className="text-[11px] text-muted-foreground font-semibold">{metrics.buyers + metrics.investors} Active Investors & Buyers</p>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-[#006065] dark:text-[#fad503] border border-[#006065]/20 shadow-inner">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-[#005A9C] dark:text-[#FF6B00] border border-[#005A9C]/20 shadow-inner">
                 <Users className="w-6 h-6" />
               </div>
             </CardContent>
@@ -469,7 +469,7 @@ export default function JCLClients() {
                 });
                 setShowFormDrawer(true);
               }}
-              className="bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
+              className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
             >
               <Plus className="w-4 h-4" />
               Register Client
@@ -485,7 +485,7 @@ export default function JCLClients() {
             </div>
           ) : filteredClients.length === 0 ? (
             <div className="text-center py-20 bg-card/60 backdrop-blur-xl rounded-[28px] border border-dashed border-border/80 p-8 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-[#006065]/10 text-emerald-600 flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 rounded-full bg-[#005A9C]/10 text-emerald-600 flex items-center justify-center mx-auto">
                 <Users className="w-8 h-8 opacity-75" />
               </div>
               <div>
@@ -502,7 +502,7 @@ export default function JCLClients() {
                   setFormData({ name: '', email: '', phone: '', type: 'buyer', address: '', city: '', state: '', budget: '', notes: '' });
                   setShowFormDrawer(true);
                 }}
-                className="bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs rounded-xl"
+                className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl"
               >
                 <Plus className="w-4 h-4 mr-1.5" /> Register Client
               </Button>
@@ -537,7 +537,7 @@ export default function JCLClients() {
                           </div>
                         </div>
 
-                        <Badge className="bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] font-extrabold text-[10px] uppercase border-emerald-200">
+                        <Badge className="bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] font-extrabold text-[10px] uppercase border-emerald-200">
                           Active
                         </Badge>
                       </div>
@@ -594,7 +594,7 @@ export default function JCLClients() {
                         <Button
                           size="sm"
                           onClick={() => setSelectedClient(client)}
-                          className="text-xs h-8 px-3 font-bold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-sm gap-1"
+                          className="text-xs h-8 px-3 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-sm gap-1"
                         >
                           <Eye className="w-3.5 h-3.5" /> Inspect
                         </Button>
@@ -714,7 +714,7 @@ export default function JCLClients() {
                         </td>
 
                         <td className="p-4">
-                          <Badge className="bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] font-bold text-[10px] uppercase">
+                          <Badge className="bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] font-bold text-[10px] uppercase">
                             Active
                           </Badge>
                         </td>
@@ -723,7 +723,7 @@ export default function JCLClients() {
                           <Button
                             size="xs"
                             onClick={() => setSelectedClient(client)}
-                            className="text-[11px] h-7 px-2.5 font-bold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl"
+                            className="text-[11px] h-7 px-2.5 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl"
                           >
                             Inspect
                           </Button>
@@ -894,7 +894,7 @@ export default function JCLClients() {
                           <div key={t.id} className="p-3.5 bg-card rounded-2xl border border-border/80 space-y-1.5">
                             <div className="flex items-center justify-between">
                               <span className="font-bold text-xs text-foreground">Sale Transaction: {t.property_address || 'Property'}</span>
-                              <Badge className="bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] text-[9px] uppercase font-bold">{t.status || 'Closed'}</Badge>
+                              <Badge className="bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] text-[9px] uppercase font-bold">{t.status || 'Closed'}</Badge>
                             </div>
                             <div className="text-[11px] text-muted-foreground">
                               Closing Price: <span className="font-bold text-foreground">{formatCurrency(t.sale_price, 'USD')}</span>
@@ -1049,7 +1049,7 @@ export default function JCLClients() {
               </Button>
               <Button
                 type="submit"
-                className="bg-[#006065] hover:bg-[#004e52] text-white rounded-xl font-bold text-xs"
+                className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl font-bold text-xs"
               >
                 {editingId ? 'Update Client' : 'Register Client'}
               </Button>

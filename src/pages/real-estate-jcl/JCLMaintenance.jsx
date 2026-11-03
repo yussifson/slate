@@ -36,7 +36,7 @@ const STATUS_CONFIG = {
   open: { label: 'Open Ticket', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30', dot: 'bg-amber-500' },
   in_progress: { label: 'Work In Progress', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30', dot: 'bg-blue-500' },
   scheduled: { label: 'Contractor Scheduled', badge: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30', dot: 'bg-purple-500' },
-  completed: { label: 'Repair Resolved', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30', dot: 'bg-emerald-500' }
+  completed: { label: 'Repair Resolved', badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30', dot: 'bg-emerald-500' }
 };
 
 export default function JCLMaintenance() {
@@ -116,7 +116,7 @@ export default function JCLMaintenance() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <Wrench className="h-5 w-5" />
             </div>
             <div>
@@ -139,7 +139,7 @@ export default function JCLMaintenance() {
           <Button
             onClick={() => setShowForm(true)}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             New Maintenance Order
@@ -178,10 +178,10 @@ export default function JCLMaintenance() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Completed Repairs</p>
-              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">{stats.completed}</p>
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">{stats.completed}</p>
               <p className="text-[11px] text-emerald-600/80">Resolved tickets</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-emerald-600 flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-emerald-600 flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </CardContent>

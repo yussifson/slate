@@ -59,10 +59,10 @@ export default function JCLLandlordPortal() {
   return (
     <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white border border-[#006065]/20 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white border border-[#005A9C]/20 shadow-xl">
         <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#006065]/20 border border-[#006065]/30 text-emerald-400 text-[11px] font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#005A9C]/20 border border-[#005A9C]/30 text-emerald-400 text-[11px] font-bold uppercase tracking-wider mb-2">
               <Building2 className="h-3.5 w-3.5" /> Property Owner & Landlord Command Hub
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -74,7 +74,7 @@ export default function JCLLandlordPortal() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Badge className="bg-[#006065]/20 text-emerald-300 border-emerald-500/40 text-xs px-3 py-1.5 font-mono">
+            <Badge className="bg-[#005A9C]/20 text-emerald-300 border-emerald-500/40 text-xs px-3 py-1.5 font-mono">
               Owner: {user?.email}
             </Badge>
           </div>
@@ -89,7 +89,7 @@ export default function JCLLandlordPortal() {
             <p className="text-3xl font-extrabold text-foreground">{properties.length}</p>
             <p className="text-[11px] text-muted-foreground font-medium">Registered properties</p>
           </div>
-          <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
+          <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
             <Home className="h-5.5 w-5.5" />
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function JCLLandlordPortal() {
         <div className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Monthly Rent Roll</p>
-            <p className="text-2xl font-extrabold text-[#006065] dark:text-[#fad503] font-mono tracking-tight">
+            <p className="text-2xl font-extrabold text-[#005A9C] dark:text-[#FF6B00] font-mono tracking-tight">
               {formatCurrency(totalMonthlyRentRoll, 'USD')}
             </p>
             <p className="text-[11px] text-emerald-600 font-medium">Active recurring rent</p>
@@ -155,7 +155,7 @@ export default function JCLLandlordPortal() {
                       <p className="text-xs font-bold text-foreground">{p.address || p.title || 'Property Unit'}</p>
                       <p className="text-[10px] text-muted-foreground capitalize">{p.property_type || 'Residential'}</p>
                       {activeLease && (
-                        <p className="text-[10px] text-[#006065] dark:text-[#fad503] font-medium mt-0.5">
+                        <p className="text-[10px] text-[#005A9C] dark:text-[#FF6B00] font-medium mt-0.5">
                           Tenant: {activeLease.tenant_name || activeLease.tenant_email || 'Active'}
                         </p>
                       )}
@@ -163,10 +163,10 @@ export default function JCLLandlordPortal() {
                     <div className="text-right">
                       {activeLease ? (
                         <>
-                          <span className="text-xs font-extrabold text-[#006065] dark:text-[#fad503] font-mono block">
+                          <span className="text-xs font-extrabold text-[#005A9C] dark:text-[#FF6B00] font-mono block">
                             {formatCurrency(activeLease.monthly_rent || 0, 'USD')}/mo
                           </span>
-                          <Badge className="bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30 text-[9px] uppercase font-bold mt-1">
+                          <Badge className="bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30 text-[9px] uppercase font-bold mt-1">
                             Occupied
                           </Badge>
                         </>
@@ -206,7 +206,7 @@ export default function JCLLandlordPortal() {
                   </div>
                   <Badge className={cn(
                     "text-[9px] uppercase font-bold",
-                    m.status === 'resolved' ? 'bg-[#006065]/10 text-emerald-700 border-[#006065]/30' :
+                    m.status === 'resolved' ? 'bg-[#005A9C]/10 text-emerald-700 border-[#005A9C]/30' :
                     m.status === 'in_progress' ? 'bg-amber-500/10 text-amber-700 border-amber-500/30' :
                     'bg-slate-500/10 text-slate-700 border-slate-500/30'
                   )}>

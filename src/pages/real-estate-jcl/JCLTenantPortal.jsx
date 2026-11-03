@@ -85,7 +85,7 @@ export default function JCLTenantPortal() {
     switch (status) {
       case 'paid':
       case 'resolved':
-        return <Badge className="bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30 text-[10px] font-bold uppercase">Paid / Resolved</Badge>;
+        return <Badge className="bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30 text-[10px] font-bold uppercase">Paid / Resolved</Badge>;
       case 'pending':
       case 'in_progress':
         return <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30 text-[10px] font-bold uppercase">In Progress</Badge>;
@@ -99,10 +99,10 @@ export default function JCLTenantPortal() {
   return (
     <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white border border-[#006065]/20 shadow-xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white border border-[#005A9C]/20 shadow-xl">
         <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#006065]/20 border border-[#006065]/30 text-emerald-400 text-[11px] font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#005A9C]/20 border border-[#005A9C]/30 text-emerald-400 text-[11px] font-bold uppercase tracking-wider mb-2">
               <ShieldCheck className="h-3.5 w-3.5" /> Resident Tenant Self-Service Portal
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -116,7 +116,7 @@ export default function JCLTenantPortal() {
           <Button
             onClick={() => setShowRequestForm(true)}
             disabled={!lease}
-            className="bg-emerald-500 hover:bg-[#006065] text-white font-bold text-xs h-10 px-4 rounded-xl shadow-lg shadow-emerald-950/40 gap-1.5 shrink-0"
+            className="bg-emerald-500 hover:bg-[#005A9C] text-white font-bold text-xs h-10 px-4 rounded-xl shadow-lg shadow-emerald-950/40 gap-1.5 shrink-0"
           >
             <Plus className="h-4 w-4" /> Request Maintenance
           </Button>
@@ -128,7 +128,7 @@ export default function JCLTenantPortal() {
         <div className="p-6 rounded-2xl border border-border/80 bg-card shadow-xs space-y-4">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
+              <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
                 <Home className="h-6 w-6" />
               </div>
               <div>
@@ -138,7 +138,7 @@ export default function JCLTenantPortal() {
                 </p>
               </div>
             </div>
-            <Badge className="bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30 text-xs font-bold uppercase">
+            <Badge className="bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30 text-xs font-bold uppercase">
               {lease.status || 'Active Lease'}
             </Badge>
           </div>
@@ -154,7 +154,7 @@ export default function JCLTenantPortal() {
             </div>
             <div>
               <span className="text-[10px] uppercase font-semibold text-muted-foreground block mb-0.5">Monthly Rent</span>
-              <span className="text-xs font-bold text-[#006065] dark:text-[#fad503] font-mono">{formatCurrency(lease.monthly_rent || 0, 'USD')}</span>
+              <span className="text-xs font-bold text-[#005A9C] dark:text-[#FF6B00] font-mono">{formatCurrency(lease.monthly_rent || 0, 'USD')}</span>
             </div>
             <div>
               <span className="text-[10px] uppercase font-semibold text-muted-foreground block mb-0.5">Deposit Held</span>
@@ -281,7 +281,7 @@ export default function JCLTenantPortal() {
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button type="submit" className="flex-1 bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs h-9">
+              <Button type="submit" className="flex-1 bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs h-9">
                 Submit Service Ticket
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowRequestForm(false)} className="h-9 text-xs">
