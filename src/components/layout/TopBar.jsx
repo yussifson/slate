@@ -230,7 +230,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  </div>
 
  {/* ── DESKTOP TOP BAR ── */}
- <div className="hidden md:flex h-12 border-t-[3px] border-t-primary border-b border-primary/40 bg-background/80 backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="hidden md:flex h-12 bg-[#006065] dark:bg-[#0B1418]/95 border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Sidebar Toggle & Breadcrumb */}
  <div className="flex items-center gap-2 sm:gap-3 text-sm shrink-0 mr-4">
  <button 

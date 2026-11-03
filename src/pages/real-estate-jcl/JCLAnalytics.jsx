@@ -84,7 +84,7 @@ export default function JCLAnalytics() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
               <BarChart3 className="h-5 w-5" />
             </div>
             <div>
@@ -120,11 +120,11 @@ export default function JCLAnalytics() {
               <p className="text-2xl font-bold text-foreground">
                 {formatCurrency(data.totalSalesVolume, 'USD')}
               </p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+              <p className="text-[11px] text-[#006065] dark:text-[#fad503] flex items-center gap-1">
                 <ArrowUpRight className="h-3 w-3" /> +14.2% vs last quarter
               </p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
               <DollarSign className="h-5 w-5" />
             </div>
           </CardContent>
@@ -134,7 +134,7 @@ export default function JCLAnalytics() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Gross Commissions</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">
                 {formatCurrency(data.totalCommissions, 'USD')}
               </p>
               <p className="text-[11px] text-muted-foreground">Collected earnings</p>
@@ -150,7 +150,7 @@ export default function JCLAnalytics() {
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Days On Market</p>
               <p className="text-2xl font-bold text-foreground">{data.avgDaysOnMarket} Days</p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400">High velocity turnover</p>
+              <p className="text-[11px] text-[#006065] dark:text-[#fad503]">High velocity turnover</p>
             </div>
             <div className="h-11 w-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
               <Calendar className="h-5 w-5" />
@@ -270,9 +270,9 @@ export default function JCLAnalytics() {
               <p className="text-xs text-muted-foreground uppercase font-semibold">Total Registered Clients</p>
               <p className="text-2xl font-extrabold text-foreground mt-1">{data.totalClients}</p>
             </div>
-            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+            <div className="p-4 rounded-xl bg-[#006065]/10 border border-[#006065]/20">
               <p className="text-xs text-emerald-800 dark:text-emerald-300 uppercase font-semibold">Avg Transaction Value</p>
-              <p className="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">
+              <p className="text-xl font-extrabold text-[#006065] dark:text-[#fad503] mt-1">
                 {formatCurrency(data.avgTransactionValue, 'USD')}
               </p>
             </div>

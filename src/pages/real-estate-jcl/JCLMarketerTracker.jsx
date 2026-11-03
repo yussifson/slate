@@ -801,7 +801,7 @@ export default function JCLMarketerTracker() {
                   // On iOS/Chrome, re-requesting triggers the permission prompt if 'prompt' state
                   handleToggleTracking();
                 }}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold px-4 shadow-sm"
+                className="bg-[#006065] hover:bg-[#004e52] text-white rounded-xl text-xs font-bold px-4 shadow-sm"
               >
                 Try Again
               </Button>
@@ -814,7 +814,7 @@ export default function JCLMarketerTracker() {
       <div className="relative overflow-hidden rounded-3xl bg-card text-card-foreground p-6 shadow-md border border-border">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-600/20 shrink-0">
+            <div className="h-12 w-12 rounded-2xl bg-[#006065] text-white flex items-center justify-center font-bold shadow-md shadow-[#006065]/20 shrink-0">
               <Compass className="h-6 w-6 animate-pulse" />
             </div>
             <div>
@@ -831,7 +831,7 @@ export default function JCLMarketerTracker() {
 
           <div className="flex items-center gap-3 flex-wrap">
             {queueStatus.isOnline ? (
-              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 gap-1.5 py-1.5 px-3 text-xs font-semibold">
+              <Badge variant="outline" className="bg-[#006065]/10 text-[#006065] dark:text-[#fad503] border-[#006065]/30 gap-1.5 py-1.5 px-3 text-xs font-semibold">
                 <Wifi className="h-3.5 w-3.5" /> Online
               </Badge>
             ) : (
@@ -855,10 +855,10 @@ export default function JCLMarketerTracker() {
             {hasAdminPrivileges && (
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
                 <TabsList className="bg-muted p-1 rounded-xl border border-border">
-                  <TabsTrigger value="marketer" className="gap-1.5 text-xs font-bold rounded-lg data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+                  <TabsTrigger value="marketer" className="gap-1.5 text-xs font-bold rounded-lg data-[state=active]:bg-[#006065] data-[state=active]:text-white">
                     <User className="h-3.5 w-3.5" /> Field GPS
                   </TabsTrigger>
-                  <TabsTrigger value="admin" className="gap-1.5 text-xs font-bold rounded-lg data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+                  <TabsTrigger value="admin" className="gap-1.5 text-xs font-bold rounded-lg data-[state=active]:bg-[#006065] data-[state=active]:text-white">
                     <ShieldCheck className="h-3.5 w-3.5" /> Live GPS
                   </TabsTrigger>
                 </TabsList>
@@ -870,15 +870,15 @@ export default function JCLMarketerTracker() {
 
       {/* ── PROPERTY SITE PROXIMITY ALERT BANNER ── */}
       {proximityAlert && (
-        <div className="bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+        <div className="bg-[#006065]/10 border border-[#006065]/30 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 animate-bounce">
+            <div className="h-9 w-9 rounded-xl bg-[#006065] text-white flex items-center justify-center font-bold shrink-0 animate-bounce">
               <Navigation2 className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Site Proximity Alert</span>
-                <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0">Within {proximityAlert.distance}m</Badge>
+                <Badge className="bg-[#006065] text-white text-[10px] px-1.5 py-0">Within {proximityAlert.distance}m</Badge>
               </div>
               <p className="text-xs font-semibold text-foreground">
                 Currently near <span className="font-bold underline">{proximityAlert.site.name}</span>
@@ -888,7 +888,7 @@ export default function JCLMarketerTracker() {
           <Button
             onClick={() => handleOpenMeetingSheet(proximityAlert.site.name)}
             size="sm"
-            className="h-8 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shadow-emerald-600/20"
+            className="h-8 px-4 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md shadow-[#006065]/20"
           >
             Check-in at Site
           </Button>
@@ -914,11 +914,11 @@ export default function JCLMarketerTracker() {
             {/* Field GPS Mode: Clean Control Panel */}
             {currentMode === 'marketer' ? (
               <div className="space-y-4">
-                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-3">
+                <div className="p-4 rounded-2xl bg-[#006065]/10 border border-[#006065]/30 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md transition-colors",
-                        isTracking ? "bg-emerald-600 animate-pulse" :
+                        isTracking ? "bg-[#006065] animate-pulse" :
                         geoPermission === 'checking' ? "bg-blue-500 animate-pulse" :
                         (geoPermission === 'denied' || geoPermission === 'blocked_policy') ? "bg-red-500" :
                         "bg-muted-foreground"
@@ -945,7 +945,7 @@ export default function JCLMarketerTracker() {
                       className={cn("flex-1 text-xs font-bold h-10 rounded-xl shadow-md",
                         isTracking ? "bg-red-600 hover:bg-red-700 text-white" :
                         (geoPermission === 'denied' || geoPermission === 'blocked_policy') ? "bg-amber-600 hover:bg-amber-700 text-white" :
-                        "bg-emerald-600 hover:bg-emerald-700 text-white"
+                        "bg-[#006065] hover:bg-[#004e52] text-white"
                       )}
                     >
                       {geoPermission === 'checking' ? 'Checking Permission...' :
@@ -956,7 +956,7 @@ export default function JCLMarketerTracker() {
                     <Button
                       onClick={() => handleOpenMeetingSheet()}
                       variant="outline"
-                      className="flex-1 text-xs font-bold h-10 rounded-xl border-emerald-500 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                      className="flex-1 text-xs font-bold h-10 rounded-xl border-emerald-500 text-[#006065] dark:text-[#fad503] hover:bg-[#006065]/10"
                     >
                       Log Meeting
                     </Button>
@@ -967,7 +967,7 @@ export default function JCLMarketerTracker() {
                 <div className="p-4 rounded-2xl border border-border bg-muted/30 space-y-2">
                   <div className="flex items-center justify-between text-xs font-bold text-foreground">
                     <span>Logged Check-ins Today</span>
-                    <Badge variant="outline" className="text-xs font-bold border-emerald-500/40 text-emerald-600 dark:text-emerald-400">
+                    <Badge variant="outline" className="text-xs font-bold border-emerald-500/40 text-[#006065] dark:text-[#fad503]">
                       {myMeetings.length}
                     </Badge>
                   </div>
@@ -1007,7 +1007,7 @@ export default function JCLMarketerTracker() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="font-mono text-xs font-bold text-muted-foreground">#{mk.user_id?.substring(0, 7) || 'M-101'}</span>
-                          <Badge className={cn("text-[10px] font-bold px-2 py-0.5", mk.status === 'Active' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" : "bg-amber-500/15 text-amber-600")}>
+                          <Badge className={cn("text-[10px] font-bold px-2 py-0.5", mk.status === 'Active' ? "bg-emerald-500/15 text-[#006065] dark:text-[#fad503]" : "bg-amber-500/15 text-amber-600")}>
                             {mk.status || 'Active'}
                           </Badge>
                         </div>
@@ -1026,7 +1026,7 @@ export default function JCLMarketerTracker() {
 
                       <div className="pt-2 border-t border-border flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
-                          <div className="h-7 w-7 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center text-xs">
+                          <div className="h-7 w-7 rounded-full bg-[#006065]/20 text-[#006065] dark:text-[#fad503] font-bold flex items-center justify-center text-xs">
                             {mk.user_name?.[0] || 'M'}
                           </div>
                           <span className="font-bold text-foreground truncate">{mk.user_name}</span>
@@ -1034,11 +1034,11 @@ export default function JCLMarketerTracker() {
 
                         <div className="flex items-center gap-1">
                           {mk.user_phone && (
-                            <a href={`tel:${mk.user_phone}`} className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10">
+                            <a href={`tel:${mk.user_phone}`} className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-emerald-600 hover:bg-[#006065]/10">
                               <Phone className="h-3.5 w-3.5" />
                             </a>
                           )}
-                          <a href={`mailto:${mk.user_email}`} className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-emerald-600 hover:bg-emerald-500/10">
+                          <a href={`mailto:${mk.user_email}`} className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-emerald-600 hover:bg-[#006065]/10">
                             <Mail className="h-3.5 w-3.5" />
                           </a>
                         </div>
@@ -1071,7 +1071,7 @@ export default function JCLMarketerTracker() {
               <div className="absolute top-4 right-4 w-80 bg-card/95 backdrop-blur-md p-5 rounded-2xl border border-border shadow-2xl z-10 space-y-4 text-card-foreground">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-md">
+                    <div className="h-10 w-10 rounded-full bg-[#006065] text-white font-bold flex items-center justify-center text-sm shadow-md">
                       {selectedRouteMarketer.user_name?.[0] || 'M'}
                     </div>
                     <div>
@@ -1086,13 +1086,13 @@ export default function JCLMarketerTracker() {
                 <div className="flex gap-2">
                   <a
                     href={`tel:${selectedRouteMarketer.user_phone || '+2330000000'}`}
-                    className="flex-1 py-2 px-3 bg-muted rounded-xl text-xs font-bold text-foreground flex items-center justify-center gap-1.5 hover:bg-emerald-500/10 hover:text-emerald-600"
+                    className="flex-1 py-2 px-3 bg-muted rounded-xl text-xs font-bold text-foreground flex items-center justify-center gap-1.5 hover:bg-[#006065]/10 hover:text-emerald-600"
                   >
                     <Phone className="h-3.5 w-3.5 text-emerald-600" /> Call Marketer
                   </a>
                   <a
                     href={`mailto:${selectedRouteMarketer.user_email}`}
-                    className="py-2 px-3 bg-muted rounded-xl text-xs font-bold text-foreground flex items-center justify-center hover:bg-emerald-500/10 hover:text-emerald-600"
+                    className="py-2 px-3 bg-muted rounded-xl text-xs font-bold text-foreground flex items-center justify-center hover:bg-[#006065]/10 hover:text-emerald-600"
                   >
                     <Mail className="h-3.5 w-3.5" />
                   </a>
@@ -1121,7 +1121,7 @@ export default function JCLMarketerTracker() {
                       onClick={() => setShowRouteModal(true)}
                       variant="ghost"
                       size="sm"
-                      className="w-full h-7 text-[11px] text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-500/10 rounded-lg mt-1"
+                      className="w-full h-7 text-[11px] text-[#006065] dark:text-[#fad503] font-bold hover:bg-[#006065]/10 rounded-lg mt-1"
                     >
                       View Full Ping History ({routeHistory.length}) →
                     </Button>
@@ -1147,7 +1147,7 @@ export default function JCLMarketerTracker() {
                   <Button
                     onClick={() => setIsReplaying(!isReplaying)}
                     size="sm"
-                    className="h-8 px-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl gap-1 shadow-sm"
+                    className="h-8 px-3 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl gap-1 shadow-sm"
                   >
                     {isReplaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
                     {isReplaying ? 'Pause Replay' : 'Play Route'}
@@ -1205,7 +1205,7 @@ export default function JCLMarketerTracker() {
                   className={cn(
                     "flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap transition-all border shrink-0",
                     isSel
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-600/20"
+                      ? "bg-[#006065] text-white border-emerald-600 shadow-md shadow-[#006065]/20"
                       : "bg-card text-foreground border-border hover:bg-muted"
                   )}
                 >
@@ -1235,14 +1235,14 @@ export default function JCLMarketerTracker() {
           <div className="absolute bottom-3 left-3 right-3 bg-card/95 text-card-foreground p-4 rounded-2xl backdrop-blur-xl border border-border shadow-xl space-y-2.5 z-10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="h-9 w-9 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center shadow-md shrink-0 text-xs">
+                <div className="h-9 w-9 rounded-full bg-[#006065] text-white font-bold flex items-center justify-center shadow-md shrink-0 text-xs">
                   {currentMode === 'admin' ? (selectedRouteMarketer?.user_name?.[0] || 'M') : (userInfo.name?.[0] || 'M')}
                 </div>
                 <div className="min-w-0">
                   <h4 className="text-xs font-bold text-foreground truncate">
                     {currentMode === 'admin' ? (selectedRouteMarketer?.user_name || 'Select Personnel') : userInfo.name}
                   </h4>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block truncate">
+                  <span className="text-[10px] text-[#006065] dark:text-[#fad503] font-semibold block truncate">
                     {currentMode === 'admin'
                       ? (selectedRouteMarketer?.address_label || 'GPS Location on Map')
                       : (isTracking ? 'GPS Broadcasting' : 'GPS Standby')}
@@ -1253,7 +1253,7 @@ export default function JCLMarketerTracker() {
               <Badge className={cn(
                 "text-[10px] font-bold px-2 py-0.5 shrink-0",
                 (currentMode === 'admin' ? selectedRouteMarketer?.status : (isTracking ? 'Active' : 'Paused')) === 'Active'
-                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                  ? "bg-emerald-500/15 text-[#006065] dark:text-[#fad503] border border-[#006065]/30"
                   : "bg-amber-500/15 text-amber-600 border border-amber-500/30"
               )}>
                 {currentMode === 'admin' ? (selectedRouteMarketer?.status || 'Active') : (isTracking ? 'Tracking Live' : 'Paused')}
@@ -1267,7 +1267,7 @@ export default function JCLMarketerTracker() {
                   onClick={handleToggleTracking}
                   className={cn(
                     "flex-1 text-xs font-bold h-9 rounded-xl shadow-md",
-                    isTracking ? "bg-red-600 hover:bg-red-700 text-white" : "bg-emerald-600 hover:bg-emerald-700 text-white"
+                    isTracking ? "bg-red-600 hover:bg-red-700 text-white" : "bg-[#006065] hover:bg-[#004e52] text-white"
                   )}
                 >
                   {isTracking ? 'Pause Tracking' : 'Enable Live GPS'}
@@ -1275,7 +1275,7 @@ export default function JCLMarketerTracker() {
                 <Button
                   onClick={() => handleOpenMeetingSheet()}
                   variant="outline"
-                  className="flex-1 text-xs font-bold h-9 rounded-xl border-emerald-500 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                  className="flex-1 text-xs font-bold h-9 rounded-xl border-emerald-500 text-[#006065] dark:text-[#fad503] hover:bg-[#006065]/10"
                 >
                   Log Meeting
                 </Button>
@@ -1289,7 +1289,7 @@ export default function JCLMarketerTracker() {
                   {selectedRouteMarketer.user_phone && (
                     <a
                       href={`tel:${selectedRouteMarketer.user_phone}`}
-                      className="h-7 px-2.5 rounded-lg bg-muted flex items-center gap-1.5 text-xs text-foreground font-semibold hover:bg-emerald-500/10 hover:text-emerald-600"
+                      className="h-7 px-2.5 rounded-lg bg-muted flex items-center gap-1.5 text-xs text-foreground font-semibold hover:bg-[#006065]/10 hover:text-emerald-600"
                     >
                       <Phone className="h-3 w-3 text-emerald-600" /> Call
                     </a>
@@ -1297,7 +1297,7 @@ export default function JCLMarketerTracker() {
                   {selectedRouteMarketer.user_email && (
                     <a
                       href={`mailto:${selectedRouteMarketer.user_email}`}
-                      className="h-7 px-2.5 rounded-lg bg-muted flex items-center gap-1.5 text-xs text-foreground font-semibold hover:bg-emerald-500/10 hover:text-emerald-600"
+                      className="h-7 px-2.5 rounded-lg bg-muted flex items-center gap-1.5 text-xs text-foreground font-semibold hover:bg-[#006065]/10 hover:text-emerald-600"
                     >
                       <Mail className="h-3 w-3 text-emerald-600" /> Email
                     </a>
@@ -1371,7 +1371,7 @@ export default function JCLMarketerTracker() {
                         {/* Marketer */}
                         <td className="p-3.5">
                           <div className="flex items-center gap-2">
-                            <div className="h-7 w-7 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-center text-xs shrink-0">
+                            <div className="h-7 w-7 rounded-full bg-[#006065]/20 text-[#006065] dark:text-[#fad503] font-bold flex items-center justify-center text-xs shrink-0">
                               {m.marketer_name?.[0] || 'M'}
                             </div>
                             <span className="font-bold text-foreground truncate max-w-[120px]">{m.marketer_name}</span>
@@ -1388,7 +1388,7 @@ export default function JCLMarketerTracker() {
                                 <a
                                   href={`tel:${m.client_phone}`}
                                   title="Call Client"
-                                  className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
+                                  className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-[#006065]/10"
                                 >
                                   <Phone className="h-3 w-3" />
                                 </a>
@@ -1397,7 +1397,7 @@ export default function JCLMarketerTracker() {
                                   target="_blank"
                                   rel="noreferrer"
                                   title="WhatsApp Client"
-                                  className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
+                                  className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-[#006065]/10"
                                 >
                                   <MessageSquare className="h-3 w-3" />
                                 </a>
@@ -1411,7 +1411,7 @@ export default function JCLMarketerTracker() {
 
                         {/* Purpose & Property */}
                         <td className="p-3.5">
-                          <div className="font-bold text-emerald-600 dark:text-emerald-400">{m.property_interest || 'General Property Inquiry'}</div>
+                          <div className="font-bold text-[#006065] dark:text-[#fad503]">{m.property_interest || 'General Property Inquiry'}</div>
                           <div className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
                             <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
                             <span>{m.meeting_purpose || 'Client Discussion'}</span>
@@ -1437,8 +1437,8 @@ export default function JCLMarketerTracker() {
                         <td className="p-3.5">
                           <Badge className={cn(
                             "text-[10px] font-bold px-2 py-0.5",
-                            m.meeting_outcome === 'Closed Sale' ? "bg-emerald-600 text-white" :
-                            m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" :
+                            m.meeting_outcome === 'Closed Sale' ? "bg-[#006065] text-white" :
+                            m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-[#006065] dark:text-[#fad503] border border-[#006065]/30" :
                             m.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
                             "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border border-zinc-500/30"
                           )}>
@@ -1477,7 +1477,7 @@ export default function JCLMarketerTracker() {
                                 href={`https://www.google.com/maps/search/?api=1&query=${m.latitude},${m.longitude}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="h-7 px-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 inline-flex items-center justify-center font-bold text-xs"
+                                className="h-7 px-2 rounded-lg bg-[#006065]/10 text-[#006065] dark:text-[#fad503] hover:bg-[#006065]/20 inline-flex items-center justify-center font-bold text-xs"
                                 title="Open in Google Maps"
                               >
                                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -1536,7 +1536,7 @@ export default function JCLMarketerTracker() {
                               <a
                                 href={`tel:${m.client_phone}`}
                                 title="Call Client"
-                                className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
+                                className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-[#006065]/10"
                               >
                                 <Phone className="h-3 w-3" />
                               </a>
@@ -1545,7 +1545,7 @@ export default function JCLMarketerTracker() {
                                 target="_blank"
                                 rel="noreferrer"
                                 title="WhatsApp Client"
-                                className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-emerald-500/10"
+                                className="text-emerald-600 hover:text-emerald-700 p-0.5 rounded hover:bg-[#006065]/10"
                               >
                                 <MessageSquare className="h-3 w-3" />
                               </a>
@@ -1555,7 +1555,7 @@ export default function JCLMarketerTracker() {
 
                         {/* 2. Purpose & Property */}
                         <td className="p-3.5">
-                          <div className="font-bold text-emerald-600 dark:text-emerald-400">{m.property_interest || 'General Property Inquiry'}</div>
+                          <div className="font-bold text-[#006065] dark:text-[#fad503]">{m.property_interest || 'General Property Inquiry'}</div>
                           <div className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
                             <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
                             <span>{m.meeting_purpose || 'Client Discussion'}</span>
@@ -1566,8 +1566,8 @@ export default function JCLMarketerTracker() {
                         <td className="p-3.5 text-right">
                           <Badge className={cn(
                             "text-[10px] font-bold px-2.5 py-0.5",
-                            m.meeting_outcome === 'Closed Sale' ? "bg-emerald-600 text-white" :
-                            m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" :
+                            m.meeting_outcome === 'Closed Sale' ? "bg-[#006065] text-white" :
+                            m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-[#006065] dark:text-[#fad503] border border-[#006065]/30" :
                             m.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
                             "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border border-zinc-500/30"
                           )}>
@@ -1596,8 +1596,8 @@ export default function JCLMarketerTracker() {
               {selectedMeetingDetails?.meeting_outcome && (
                 <Badge className={cn(
                   "text-[10px] font-bold px-2 py-0.5",
-                  selectedMeetingDetails.meeting_outcome === 'Closed Sale' ? "bg-emerald-600 text-white" :
-                  selectedMeetingDetails.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30" :
+                  selectedMeetingDetails.meeting_outcome === 'Closed Sale' ? "bg-[#006065] text-white" :
+                  selectedMeetingDetails.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-[#006065] dark:text-[#fad503] border border-[#006065]/30" :
                   selectedMeetingDetails.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
                   "bg-zinc-500/15 text-zinc-600 border border-zinc-500/30"
                 )}>
@@ -1626,7 +1626,7 @@ export default function JCLMarketerTracker() {
                     <div className="flex items-center gap-2">
                       <a
                         href={`tel:${selectedMeetingDetails.client_phone}`}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-1.5 hover:bg-emerald-700 shadow-sm"
+                        className="px-3 py-1.5 rounded-xl bg-[#006065] text-white font-bold text-xs flex items-center gap-1.5 hover:bg-[#004e52] shadow-sm"
                       >
                         <Phone className="h-3.5 w-3.5" /> Call
                       </a>
@@ -1634,7 +1634,7 @@ export default function JCLMarketerTracker() {
                         href={`https://wa.me/${selectedMeetingDetails.client_phone.replace(/[^0-9]/g, '')}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center gap-1.5 hover:bg-emerald-500/25 border border-emerald-500/30"
+                        className="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-[#006065] dark:text-[#fad503] font-bold text-xs flex items-center gap-1.5 hover:bg-emerald-500/25 border border-[#006065]/30"
                       >
                         <MessageSquare className="h-3.5 w-3.5" /> WhatsApp
                       </a>
@@ -1718,14 +1718,14 @@ export default function JCLMarketerTracker() {
           </SheetHeader>
 
           <form onSubmit={handleSubmitMeeting} className="space-y-4 pt-4">
-            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl space-y-2">
+            <div className="p-3.5 bg-[#006065]/10 border border-[#006065]/30 rounded-xl space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-emerald-700 dark:text-emerald-400">
                 <span className="flex items-center gap-1.5">
                   <MapPin className="h-4 w-4 text-emerald-500" />
                   Meeting Location
                 </span>
                 <div className="flex items-center gap-2">
-                  {isCapturingLocation && <span className="text-[10px] text-emerald-600 dark:text-emerald-400 animate-pulse">Locating...</span>}
+                  {isCapturingLocation && <span className="text-[10px] text-[#006065] dark:text-[#fad503] animate-pulse">Locating...</span>}
                   <button
                     type="button"
                     onClick={() => setUseManualGps(!useManualGps)}
@@ -1763,12 +1763,12 @@ export default function JCLMarketerTracker() {
                     onClick={handleManualGpsCapture}
                     disabled={isCapturingLocation}
                     size="sm"
-                    className="w-full h-8 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                    className="w-full h-8 text-xs rounded-lg bg-[#006065] hover:bg-[#004e52] text-white font-bold"
                   >
                     {isCapturingLocation ? 'Looking up address...' : 'Look Up Address from Coords'}
                   </Button>
                   {meetingPositionPreview && (
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold truncate">
+                    <p className="text-[11px] text-[#006065] dark:text-[#fad503] font-semibold truncate">
                       📍 {meetingPositionPreview.addr}
                     </p>
                   )}
@@ -1776,7 +1776,7 @@ export default function JCLMarketerTracker() {
               ) : meetingPositionPreview ? (
                 <div className="text-xs text-foreground space-y-0.5">
                   <p className="font-semibold line-clamp-1">{meetingPositionPreview.addr}</p>
-                  <p className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+                  <p className="text-[10px] font-mono text-[#006065] dark:text-[#fad503]">
                     Lat: {meetingPositionPreview.lat?.toFixed(5)}, Lng: {meetingPositionPreview.lng?.toFixed(5)} (±{meetingPositionPreview.acc}m accuracy)
                   </p>
                 </div>
@@ -1902,7 +1902,7 @@ export default function JCLMarketerTracker() {
               <Button
                 type="submit"
                 disabled={isSubmittingMeeting}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs gap-1.5 font-bold px-5 shadow-md shadow-emerald-500/20"
+                className="bg-[#006065] hover:bg-[#004e52] text-white rounded-xl text-xs gap-1.5 font-bold px-5 shadow-md shadow-[#006065]/20"
               >
                 {isSubmittingMeeting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
                 Submit Meeting Log
@@ -1939,7 +1939,7 @@ export default function JCLMarketerTracker() {
                 {routeHistory.map((ping, idx) => (
                   <div key={ping.id || idx} className="p-3.5 rounded-xl border border-border bg-muted/50 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-3">
-                      <span className="h-6 w-6 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">
+                      <span className="h-6 w-6 rounded-full bg-[#006065] text-white font-bold text-[10px] flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
                       <div>
@@ -1957,7 +1957,7 @@ export default function JCLMarketerTracker() {
                         href={`https://www.google.com/maps/search/?api=1&query=${ping.latitude},${ping.longitude}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[10px] text-emerald-600 dark:text-emerald-400 hover:underline font-bold"
+                        className="text-[10px] text-[#006065] dark:text-[#fad503] hover:underline font-bold"
                       >
                         Google Map
                       </a>

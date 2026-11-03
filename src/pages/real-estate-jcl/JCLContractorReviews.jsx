@@ -99,7 +99,7 @@ export default function JCLContractorReviews() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
               <Star className="h-5 w-5" />
             </div>
             <div>
@@ -119,7 +119,7 @@ export default function JCLContractorReviews() {
             Refresh
           </Button>
 
-          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-4 text-xs font-bold gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm">
+          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-4 text-xs font-bold gap-1.5 bg-[#006065] hover:bg-[#004e52] text-white shadow-sm">
             <Plus className="h-4 w-4" /> Submit Audit Review
           </Button>
         </div>
@@ -146,7 +146,7 @@ export default function JCLContractorReviews() {
           <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
             Audit work order quality and submit ratings for trade partners.
           </p>
-          <Button onClick={() => setShowForm(true)} size="sm" className="mt-4 text-xs bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button onClick={() => setShowForm(true)} size="sm" className="mt-4 text-xs bg-[#006065] hover:bg-[#004e52] text-white">
             <Plus className="h-3.5 w-3.5 mr-1" /> Submit Review
           </Button>
         </div>
@@ -229,7 +229,7 @@ export default function JCLContractorReviews() {
               />
             </div>
 
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white mt-2">
               Save Review
             </Button>
           </form>

@@ -27,7 +27,7 @@ function generateUUID() {
 }
 
 const STATUS_CONFIG = {
-  paid: { label: 'Paid in Full', badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200', dot: 'bg-emerald-500' },
+  paid: { label: 'Paid in Full', badge: 'bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] border-emerald-200', dot: 'bg-emerald-500' },
   pending: { label: 'Payment Pending', badge: 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200 border-amber-200', dot: 'bg-amber-500' },
   overdue: { label: 'Overdue Arrears', badge: 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border-rose-200', dot: 'bg-rose-500' },
 };
@@ -132,7 +132,7 @@ export default function JCLRentPayments() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
               <CreditCard className="h-6 w-6" />
             </div>
             <div>
@@ -152,7 +152,7 @@ export default function JCLRentPayments() {
             Refresh
           </Button>
 
-          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-4 text-xs font-bold gap-2 bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-xl">
+          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-4 text-xs font-bold gap-2 bg-[#006065] hover:bg-[#004e52] text-white shadow-sm rounded-xl">
             <Plus className="h-4 w-4" /> Record Rent Entry
           </Button>
         </div>
@@ -167,7 +167,7 @@ export default function JCLRentPayments() {
               <p className="text-2xl font-extrabold text-foreground tracking-tight">{formatCurrency(stats.totalCollected, 'USD')}</p>
               <p className="text-[11px] text-muted-foreground font-semibold">Received this period</p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-[#006065] dark:text-[#fad503] border border-[#006065]/20 shadow-inner">
               <CheckCircle2 className="w-6 h-6" />
             </div>
           </CardContent>
@@ -362,7 +362,7 @@ export default function JCLRentPayments() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full h-10 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
+            <Button type="submit" className="w-full h-10 rounded-xl text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white mt-2">
               Record Rent Payment
             </Button>
           </form>

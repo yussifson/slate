@@ -939,7 +939,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-white dark:bg-[#0c1a13] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
+    <div className="flex flex-col h-full bg-white dark:bg-[#091114] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
       <div className={cn("py-4 border-b border-black/5 dark:border-white/10 flex items-center transition-all", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>
@@ -1156,7 +1156,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-black/5 dark:border-white/10 bg-slate-50/50 dark:bg-[#08120d]">
+ <div className="mt-auto p-3 border-t border-black/5 dark:border-white/10 bg-slate-50/50 dark:bg-[#060B0D]">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
  <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
@@ -1225,7 +1225,7 @@ return (
       {/* Desktop sidebar - Full height sidebar matching reference design */}
       <aside className={cn(
         "hidden md:flex flex-col h-full sticky top-0 border-r border-black/10 dark:border-white/10 transition-all duration-300 relative z-20 overflow-hidden",
-        "bg-white text-slate-800 dark:bg-[#0c1a13] dark:text-emerald-50",
+        "bg-white text-slate-800 dark:bg-[#091114] dark:text-emerald-50",
         isCollapsed ? "w-[64px] min-w-[64px] max-w-[64px]" : "w-[240px] min-w-[240px] max-w-[240px]"
       )}>
         {renderNavContent(isCollapsed)}

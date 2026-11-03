@@ -38,7 +38,7 @@ function generateUUID() {
 }
 
 const STATUS_COLUMNS = [
-  { id: 'available', title: 'Available For Sale', dot: 'bg-emerald-500', badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30' },
+  { id: 'available', title: 'Available For Sale', dot: 'bg-emerald-500', badgeColor: 'bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] dark:bg-[#006065]/20 dark:text-emerald-400 border-emerald-200 dark:border-[#006065]/30' },
   { id: 'reserved', title: 'Reserved / In Review', dot: 'bg-amber-500', badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 border-amber-200 dark:border-amber-500/30' },
   { id: 'allocated', title: 'Allocated To Buyer', dot: 'bg-indigo-500', badgeColor: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-500/20 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30' },
   { id: 'sold', title: 'Sold / Transferred', dot: 'bg-blue-500', badgeColor: 'bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-400 border-blue-200 dark:border-blue-500/30' },
@@ -47,7 +47,7 @@ const STATUS_COLUMNS = [
 const statusConfig = {
   'available': {
     label: 'Available For Sale',
-    color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30'
+    color: 'bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] dark:bg-[#006065]/20 dark:text-emerald-400 border-emerald-200 dark:border-[#006065]/30'
   },
   'reserved': {
     label: 'Reserved / Review',
@@ -759,10 +759,10 @@ export default function LandManagement() {
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Available For Sale</span>
-              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">{metrics.available}</div>
+              <div className="text-2xl font-extrabold text-[#006065] dark:text-[#fad503] tracking-tight">{metrics.available}</div>
               <p className="text-[11px] text-muted-foreground font-semibold">Ready for allocation</p>
             </div>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-[#006065] dark:text-[#fad503] border border-[#006065]/20 shadow-inner">
               <CheckCircle2 className="w-6 h-6" />
             </div>
           </CardContent>
@@ -978,7 +978,7 @@ export default function LandManagement() {
                         </p>
                       </div>
                     ) : (
-                      <div className="rounded-2xl border border-dashed border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-950/20 p-2.5 flex items-center justify-between text-xs">
+                      <div className="rounded-2xl border border-dashed border-[#006065]/30 bg-emerald-50/30 dark:bg-emerald-950/20 p-2.5 flex items-center justify-between text-xs">
                         <span className="text-emerald-700 dark:text-emerald-300 font-bold text-[11px] flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-emerald-600" /> Unallocated Plot
                         </span>

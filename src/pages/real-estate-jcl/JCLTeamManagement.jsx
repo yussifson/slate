@@ -145,7 +145,7 @@ export default function JCLTeamManagement() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
             <Users className="h-5 w-5" />
           </div>
           <div>
@@ -166,7 +166,7 @@ export default function JCLTeamManagement() {
               setFormData({ name: '', email: '', phone: '', role: 'agent', commissionRate: 0, licenseNumber: '', licenseExpiry: '' });
               setShowForm(true);
             }}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9 px-3 rounded-xl gap-1.5 shadow-md shadow-emerald-950/20"
+            className="bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs h-9 px-3 rounded-xl gap-1.5 shadow-md shadow-emerald-950/20"
           >
             <Plus className="h-4 w-4" /> Add Agent / Member
           </Button>
@@ -181,7 +181,7 @@ export default function JCLTeamManagement() {
             <p className="text-3xl font-extrabold text-foreground">{stats.total}</p>
             <p className="text-[11px] text-muted-foreground font-medium">Active staff</p>
           </div>
-          <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
             <Users className="h-5.5 w-5.5" />
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function JCLTeamManagement() {
         <div className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active Brokers</p>
-            <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{stats.agents}</p>
+            <p className="text-3xl font-extrabold text-[#006065] dark:text-[#fad503]">{stats.agents}</p>
             <p className="text-[11px] text-emerald-600/80 font-medium">Licensed agents</p>
           </div>
           <div className="h-11 w-11 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 flex items-center justify-center">
@@ -256,7 +256,7 @@ export default function JCLTeamManagement() {
                   </div>
                   <div>
                     <h3 className="font-bold text-foreground text-sm line-clamp-1">{m.name}</h3>
-                    <Badge variant="outline" className="text-[9px] uppercase font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
+                    <Badge variant="outline" className="text-[9px] uppercase font-bold bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30">
                       {m.role || 'Agent'}
                     </Badge>
                   </div>
@@ -288,7 +288,7 @@ export default function JCLTeamManagement() {
               <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-muted/40 font-mono text-center">
                 <div>
                   <span className="text-[9px] uppercase font-semibold text-muted-foreground block mb-0.5">Split Rate</span>
-                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{m.commission_rate || 0}%</span>
+                  <span className="text-sm font-bold text-[#006065] dark:text-[#fad503]">{m.commission_rate || 0}%</span>
                 </div>
                 <div>
                   <span className="text-[9px] uppercase font-semibold text-muted-foreground block mb-0.5">License #</span>
@@ -318,7 +318,7 @@ export default function JCLTeamManagement() {
                   <tr key={m.id} className="hover:bg-muted/30 transition-colors">
                     <td className="py-3 px-4 font-bold text-foreground">{m.name}</td>
                     <td className="py-3 px-4">
-                      <Badge variant="outline" className="text-[9px] uppercase font-bold bg-emerald-500/10 text-emerald-700 border-emerald-500/30">
+                      <Badge variant="outline" className="text-[9px] uppercase font-bold bg-[#006065]/10 text-emerald-700 border-[#006065]/30">
                         {m.role || 'Agent'}
                       </Badge>
                     </td>
@@ -393,7 +393,7 @@ export default function JCLTeamManagement() {
             </div>
 
             <div className="flex gap-2 pt-4">
-              <Button type="submit" className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs h-9">
+              <Button type="submit" className="flex-1 bg-[#006065] hover:bg-[#004e52] text-white font-bold text-xs h-9">
                 {editingId ? 'Update Profile' : 'Add Team Member'}
               </Button>
               <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="h-9 text-xs">

@@ -88,7 +88,7 @@ export default function JCLMarketData() {
     switch (trend) {
       case 'up':
         return (
-          <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 gap-1 text-[10px] font-bold uppercase tracking-wider">
+          <Badge className="bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30 gap-1 text-[10px] font-bold uppercase tracking-wider">
             <ArrowUpRight className="h-3 w-3 text-emerald-600" />
             Trending Up
           </Badge>
@@ -115,7 +115,7 @@ export default function JCLMarketData() {
       {/* Premium Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
             <BarChart3 className="h-5 w-5" />
           </div>
           <div>
@@ -149,7 +149,7 @@ export default function JCLMarketData() {
               <TrendingUp className="h-3 w-3" /> Across active regions
             </p>
           </div>
-          <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
             <DollarSign className="h-5.5 w-5.5" />
           </div>
         </div>
@@ -183,7 +183,7 @@ export default function JCLMarketData() {
         <div className="p-5 rounded-2xl border border-border/80 bg-card shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
           <div className="space-y-1">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Completed Sales</p>
-            <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
+            <p className="text-2xl font-extrabold text-[#006065] dark:text-[#fad503] tracking-tight">
               {totalSoldListings.toLocaleString()}
             </p>
             <p className="text-[11px] text-emerald-600/80 font-medium">Closed volume</p>
@@ -266,7 +266,7 @@ export default function JCLMarketData() {
               <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-muted/40 font-mono">
                 <div>
                   <span className="text-[9px] uppercase font-semibold text-muted-foreground block mb-0.5">Average Price</span>
-                  <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-sm font-bold text-[#006065] dark:text-[#fad503]">
                     {formatCurrency(m.average_price || 0, 'USD')}
                   </span>
                 </div>
@@ -322,7 +322,7 @@ export default function JCLMarketData() {
                   <tr key={m.id} className="hover:bg-muted/30 transition-colors">
                     <td className="py-3 px-4 font-bold text-foreground">{m.market_region}</td>
                     <td className="py-3 px-4 text-muted-foreground capitalize">{m.market_level}</td>
-                    <td className="py-3 px-4 text-right font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                    <td className="py-3 px-4 text-right font-bold text-[#006065] dark:text-[#fad503] font-mono">
                       {formatCurrency(m.average_price || 0, 'USD')}
                     </td>
                     <td className="py-3 px-4 text-right font-semibold font-mono text-foreground">

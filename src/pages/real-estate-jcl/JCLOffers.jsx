@@ -30,7 +30,7 @@ function generateUUID() {
 
 const STATUS_CONFIG = {
   pending: { label: 'Under Consideration', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30' },
-  accepted: { label: 'Offer Accepted', badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30' },
+  accepted: { label: 'Offer Accepted', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30' },
   countered: { label: 'Counter-Offered', badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30' },
   rejected: { label: 'Offer Declined', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30' },
   expired: { label: 'Offer Expired', badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/30' }
@@ -261,7 +261,7 @@ export default function JCLOffers() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
               <DollarSign className="h-5 w-5" />
             </div>
             <div>
@@ -289,7 +289,7 @@ export default function JCLOffers() {
           <Button
             onClick={handleOpenCreate}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Create Offer
@@ -316,10 +316,10 @@ export default function JCLOffers() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Accepted Offers</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.accepted}</p>
+              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">{stats.accepted}</p>
               <p className="text-[11px] text-emerald-600/80">{stats.acceptanceRate}% acceptance rate</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </CardContent>
@@ -416,7 +416,7 @@ export default function JCLOffers() {
           <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
             No purchase bids match your search filters.
           </p>
-          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#006065] hover:bg-[#004e52] text-white">
             <Plus className="h-3.5 w-3.5 mr-1" /> Create Offer
           </Button>
         </div>
@@ -464,7 +464,7 @@ export default function JCLOffers() {
                     <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-1">
                       <span>Buyer: <strong className="text-foreground">{offer.buyer_name}</strong></span>
                       {offer.earnest_money > 0 && (
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                        <span className="font-semibold text-[#006065] dark:text-[#fad503] bg-[#006065]/10 px-2 py-0.5 rounded-md border border-[#006065]/20">
                           {formatCurrency(offer.earnest_money, 'USD')} Deposit
                         </span>
                       )}
@@ -539,7 +539,7 @@ export default function JCLOffers() {
                         {offer.property_address}
                       </td>
                       <td className="py-3.5 px-4 text-foreground font-medium">{offer.buyer_name}</td>
-                      <td className="py-3.5 px-4 font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="py-3.5 px-4 font-bold text-[#006065] dark:text-[#fad503]">
                         {formatCurrency(offer.offer_amount, 'USD')}
                       </td>
                       <td className="py-3.5 px-4 font-mono text-muted-foreground">
@@ -618,10 +618,10 @@ export default function JCLOffers() {
               </SheetHeader>
 
               <div className="p-6 space-y-6 flex-1">
-                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#006065]/20 flex items-center justify-between">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Offer Amount</p>
-                    <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                    <p className="text-2xl font-black text-[#006065] dark:text-[#fad503]">
                       {formatCurrency(inspectorOffer.offer_amount, 'USD')}
                     </p>
                   </div>
@@ -698,7 +698,7 @@ export default function JCLOffers() {
                 <Button
                   size="sm"
                   onClick={() => setInspectorOffer(null)}
-                  className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="text-xs bg-[#006065] hover:bg-[#004e52] text-white"
                 >
                   Close
                 </Button>
@@ -854,7 +854,7 @@ export default function JCLOffers() {
               <Button
                 type="submit"
                 size="sm"
-                className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-md shadow-emerald-600/20"
+                className="text-xs bg-[#006065] hover:bg-[#004e52] text-white font-semibold shadow-md shadow-[#006065]/20"
               >
                 {editingId ? 'Save Changes' : 'Register Offer'}
               </Button>

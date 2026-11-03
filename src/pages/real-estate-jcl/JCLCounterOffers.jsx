@@ -27,7 +27,7 @@ function generateUUID() {
 
 const STATUS_CONFIG = {
   pending: { label: 'Pending Response', badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30', dot: 'bg-amber-500' },
-  accepted: { label: 'Offer Accepted', badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30', dot: 'bg-emerald-500' },
+  accepted: { label: 'Offer Accepted', badge: 'bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30', dot: 'bg-emerald-500' },
   rejected: { label: 'Counter Declined', badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30', dot: 'bg-rose-500' },
   expired: { label: 'Offer Expired', badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/30', dot: 'bg-slate-400' }
 };
@@ -168,7 +168,7 @@ export default function JCLCounterOffers() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
               <MessageSquare className="h-5 w-5" />
             </div>
             <div>
@@ -201,7 +201,7 @@ export default function JCLCounterOffers() {
               setShowForm(true);
             }}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#006065] hover:bg-[#004e52] text-white shadow-md shadow-[#006065]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             New Counter Offer
@@ -228,10 +228,10 @@ export default function JCLCounterOffers() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Accepted Counters</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.accepted}</p>
+              <p className="text-2xl font-bold text-[#006065] dark:text-[#fad503]">{stats.accepted}</p>
               <p className="text-[11px] text-emerald-600/80">Converted to binding deal</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </CardContent>
@@ -343,15 +343,15 @@ export default function JCLCounterOffers() {
                     <span className="text-xs font-bold text-muted-foreground line-through">{formatCurrency(item.original_price, 'USD')}</span>
                   </div>
                   <div>
-                    <span className="text-[9px] uppercase text-emerald-600 dark:text-emerald-400 block mb-0.5">Counter Price</span>
-                    <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrency(item.counter_price, 'USD')}</span>
+                    <span className="text-[9px] uppercase text-[#006065] dark:text-[#fad503] block mb-0.5">Counter Price</span>
+                    <span className="text-sm font-extrabold text-[#006065] dark:text-[#fad503]">{formatCurrency(item.counter_price, 'USD')}</span>
                   </div>
                 </div>
 
                 {delta !== 0 && (
-                  <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-[#006065]/10 border border-[#006065]/20">
                     <span className="text-muted-foreground font-medium">Price Delta</span>
-                    <span className="font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                    <span className="font-bold font-mono text-[#006065] dark:text-[#fad503]">
                       {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
                     </span>
                   </div>
@@ -430,7 +430,7 @@ export default function JCLCounterOffers() {
                 className="h-9 text-xs mt-1"
               />
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white mt-2">
               Send Counter Offer
             </Button>
           </form>

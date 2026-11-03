@@ -1,4 +1,3 @@
-@import "./styles/tokens.css";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
@@ -29,40 +28,50 @@ html, body {
 @layer base {
   :root, .light {
     --font-inter: 'Inter', sans-serif;
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    
+    /* 🏛️ EXECUTIVE WARM CERAMIC CANVAS & SURFACES */
+    --background: 210 20% 98.2%;            /* #F8F9FA Silky Warm Off-White / Ceramic */
+    --foreground: 220 40% 11%;              /* #0D1524 Deep Executive Obsidian */
+    --card: 0 0% 100%;                      /* #FFFFFF Pristine Elevated Porcelain */
+    --card-foreground: 220 40% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 149 100% 33%; /* Vibrant Emerald Green */
+    --popover-foreground: 220 40% 11%;
+
+    /* 💎 CORPORATE PETROL TEAL & HIGH-PRECISION ACCENT */
+    --primary: 184 92% 18.5%;               /* #04494F Rich Deep Petrol Teal */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 149 100% 33%;
-    --chart-1: 152 76% 41%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --secondary: 212 30% 95%;               /* #EEF2F6 Satin Cool Gray */
+    --secondary-foreground: 220 40% 12%;
+    --muted: 212 26% 94.2%;                 /* #ECF1F5 Soft Surface Wash */
+    --muted-foreground: 218 17% 44%;        /* #5E6E82 Executive Slate */
+    --accent: 212 32% 92.5%;                /* #E5ECF2 Crisp Interactive Hover */
+    --accent-foreground: 220 40% 11%;
+    --destructive: 0 78% 54%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* 🪞 REFINED MICRO-CONTRAST HAIRLINES & FOCUS */
+    --border: 215 24% 88.5%;                /* #DCE3EA Subtle Hairline Divider */
+    --input: 215 24% 88.5%;
+    --ring: 184 92% 18.5%;
     --radius: 0.75rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 15%;
-    --sidebar-primary: 149 100% 33%;
+
+    /* 📊 PROFESSIONAL METRIC CHARTS */
+    --chart-1: 184 92% 18.5%;               /* Petrol Teal */
+    --chart-2: 38 95% 48%;                  /* Executive Amber Gold */
+    --chart-3: 215 85% 46%;                 /* Corporate Cobalt */
+    --chart-4: 158 64% 39%;                 /* Forest Emerald */
+    --chart-5: 280 60% 52%;                 /* Royal Amethyst */
+
+    /* 🧭 DISTINCT FROSTED TITANIUM SIDEBAR ARCHITECTURE */
+    --sidebar-background: 210 28% 96.2%;    /* #EFF3F7 Structured Architectural Wash */
+    --sidebar-foreground: 220 35% 20%;
+    --sidebar-primary: 184 92% 18.5%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 15%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 152 76% 41%;
-    --bg-base-rgb: 255, 255, 255;
+    --sidebar-accent: 212 30% 91.5%;
+    --sidebar-accent-foreground: 220 40% 11%;
+    --sidebar-border: 215 24% 88.5%;
+    --sidebar-ring: 184 92% 18.5%;
+    --bg-base-rgb: 248, 249, 250;
 
     /* ────────────────────────────────── */
     /* HOTEL VERTICAL — Premium Hospitality Palette */
@@ -86,72 +95,119 @@ html, body {
   }
 
   .dark {
-    --bg-base-rgb-dark: 15, 20, 32;
+    --bg-base-rgb-dark: 11, 20, 24;
 
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 190, 172, 0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0, 190, 172, 0.3); }
 
-    /* SaaSPO Style - Main Background #0F1420 */
-    --background: 222 36% 9.2%;
+    /* Corporate Dark Brand Slate - Deep Charcoal with subtle Green/Teal Undertone #0B1418 */
+    --background: 196 37% 7%;
     
-    /* Primary White Typography #FFFFFF */
+    /* Crisp Pristine White Typography #FFFFFF */
     --foreground: 0 0% 100%;
     
-    /* Secondary Surface / Card Background #151c2d */
-    --card: 222 30% 13%;
+    /* Premium Surface / Card Background #101D22 */
+    --card: 197 36% 10%;
     --card-foreground: 0 0% 100%;
-    --popover: 222 36% 9.2%;
+    --popover: 197 36% 9%;
     --popover-foreground: 0 0% 100%;
     
-    /* Brand Green Accent #0AF395 */
-    --primary: 156 92% 50%;
-    --primary-foreground: 222 36% 9.2%; /* Dark text on bright green */
+    /* Brand Accent #fad503 Yellow */
+    --primary: 51 98% 50%;
+    --primary-foreground: 196 37% 7%;
     
-    /* Secondary Surface elements */
-    --secondary: 222 30% 13%;
+    /* Secondary Surface elements #15262D */
+    --secondary: 198 35% 13%;
     --secondary-foreground: 0 0% 100%;
     
-    /* Secondary Text #A7B0BA */
-    --muted: 222 30% 13%;
-    --muted-foreground: 212 11% 69%;
+    /* Soft Corporate Muted Text #95A9B0 */
+    --muted: 198 35% 13%;
+    --muted-foreground: 196 15% 64%;
     
-    /* Hover / Borders / Divider Color #222b3e */
-    --accent: 222 25% 18%;
+    /* Clean Borders & Hover States #1C333C */
+    --accent: 196 36% 17%;
     --accent-foreground: 0 0% 100%;
     
     /* Destructive Accents */
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
     
-    /* Border / Divider Color #222b3e */
-    --border: 222 25% 18%;
-    --input: 222 25% 18%;
-    --ring: 156 92% 50%;
+    /* Refined Hairline Borders #1A2F38 */
+    --border: 197 37% 16%;
+    --input: 197 37% 16%;
+    --ring: 175 100% 37.3%; /* Brand Cyan #00beac */
     
-    --chart-1: 156 92% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 175 100% 37.3%;
+    --chart-2: 51 98% 50%;
+    --chart-3: 183 100% 20%;
+    --chart-4: 160 60% 45%;
+    --chart-5: 38 92% 50%;
     
-    /* Sidebar matching the SaaSPO palette */
-    --sidebar-background: 222 36% 9.2%;
-    --sidebar-foreground: 212 11% 69%;
-    --sidebar-primary: 156 92% 50%;
-    --sidebar-primary-foreground: 213 29% 6%;
-    --sidebar-accent: 209 31% 16%;
+    /* Sidebar Palette #091114 */
+    --sidebar-background: 196 38% 5.5%;
+    --sidebar-foreground: 196 15% 64%;
+    --sidebar-primary: 51 98% 50%;
+    --sidebar-primary-foreground: 196 37% 7%;
+    --sidebar-accent: 197 36% 10%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 209 31% 16%;
-    --sidebar-ring: 156 92% 50%;
+    --sidebar-border: 197 37% 16%;
+    --sidebar-ring: 175 100% 37.3%;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/70 dark:bg-white/5 backdrop-blur-md border border-slate-200/80 dark:border-white/10;
   }
   .glass-card {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+    @apply bg-white/85 dark:bg-white/5 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-none;
+  }
+  
+  /* 🏛️ EXECUTIVE PORCELAIN CARD ELEVATION */
+  .executive-card {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .executive-card:hover {
+    border-color: hsl(var(--border) / 0.85);
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 12px 24px -4px rgba(15, 23, 42, 0.05);
+    transform: translateY(-1px);
+  }
+
+  /* 🏢 ULTRA-CORP LIGHT SYSTEM COMPONENTS */
+  .corporate-panel {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.03), 0 8px 16px -4px rgba(15, 23, 42, 0.02);
+  }
+
+  .corporate-border {
+    border-color: hsl(var(--border));
+  }
+
+  .corporate-input {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--input));
+    color: hsl(var(--foreground));
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.02);
+    transition: all 0.15s ease-in-out;
+  }
+  .corporate-input:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.12);
+  }
+
+  .corporate-pill {
+    background-color: hsl(var(--secondary));
+    border: 1px solid hsl(var(--border) / 0.8);
+    color: hsl(var(--foreground));
+    transition: all 0.15s ease-in-out;
+  }
+  .corporate-pill:hover {
+    background-color: hsl(var(--accent));
+    border-color: hsl(var(--primary) / 0.3);
   }
   
   .bg-noise {
@@ -457,16 +513,16 @@ html, body {
     @apply w-full border-collapse border-spacing-0;
   }
   thead {
-    @apply bg-muted/40 backdrop-blur-md sticky top-0 z-20;
+    @apply bg-secondary/80 dark:bg-muted/40 backdrop-blur-md sticky top-0 z-20;
   }
   th {
-    @apply px-6 py-4 text-left text-[11px] uppercase tracking-[0.06em] font-medium text-muted-foreground border-b border-border;
+    @apply px-6 py-4 text-left text-[11px] uppercase tracking-[0.08em] font-bold text-muted-foreground border-b border-border;
   }
   td {
-    @apply px-6 py-4 border-b border-border/40 text-sm align-middle transition-colors duration-200;
+    @apply px-6 py-4 border-b border-border/60 text-sm align-middle transition-colors duration-200;
   }
   tbody tr {
-    @apply transition-all duration-300 hover:bg-primary/5 relative z-0 hover:z-10 bg-card;
+    @apply transition-all duration-200 hover:bg-secondary/60 dark:hover:bg-primary/5 relative z-0 hover:z-10 bg-card;
   }
   
   /* Global Input and Button Google/Material Reskin */
@@ -578,17 +634,28 @@ button[class*="bg-primary"]:hover, button[class*="bg-blue"]:hover, button[class*
 }
 
 /* Input Refinements */
-input, select, textarea {
+input:not(.chat-input-raw), select, textarea {
   transition: border-color 150ms ease, box-shadow 150ms ease !important;
 }
-input:focus, select:focus, textarea:focus {
+input:not(.chat-input-raw):focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 3px rgba(25, 184, 110, 0.12) !important;
   border-color: rgba(25, 184, 110, 0.5) !important;
   outline: none !important;
 }
-.dark input:focus, .dark select:focus, .dark textarea:focus {
+.dark input:not(.chat-input-raw):focus, .dark select:focus, .dark textarea:focus {
   box-shadow: 0 0 0 3px rgba(31, 224, 134, 0.12) !important;
   border-color: rgba(31, 224, 134, 0.5) !important;
+}
+
+/* Chat Input Raw: absolute zero outline/borders/shadows to ensure pure capsule look matching ChatGPT */
+.chat-input-raw, .chat-input-raw:focus, .chat-input-raw:active, .chat-input-raw:focus-visible {
+  border: none !important;
+  border-color: transparent !important;
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  background: transparent !important;
 }
 
 /* Interactive Rows and Lists */

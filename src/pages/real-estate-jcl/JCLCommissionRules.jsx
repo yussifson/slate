@@ -40,7 +40,7 @@ export default function JCLCommissionRules() {
     <div className="p-4 sm:p-6 pb-28 w-full max-w-full space-y-6 font-sans">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
             <Percent className="h-5 w-5" />
           </div>
           <div>
@@ -82,7 +82,7 @@ export default function JCLCommissionRules() {
                   <tr key={r.id} className="hover:bg-muted/30 transition-colors">
                     <td className="py-3.5 px-4 font-bold text-foreground">{r.rule_name || 'Standard Tier'}</td>
                     <td className="py-3.5 px-4 font-mono">${(r.min_volume || 0).toLocaleString()}</td>
-                    <td className="py-3.5 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">{r.agent_split || 70}%</td>
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#006065] dark:text-[#fad503]">{r.agent_split || 70}%</td>
                     <td className="py-3.5 px-4 font-mono">{100 - (r.agent_split || 70)}%</td>
                   </tr>
                 ))

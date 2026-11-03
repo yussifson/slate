@@ -247,9 +247,9 @@ export default function JCLDashboard() {
       <div className="relative z-10 space-y-8">
 
         {/* ── JCL Standalone System Status & Confirmation Badge ── */}
-        <div className="flex items-center justify-between flex-wrap gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 shadow-sm backdrop-blur-sm">
+        <div className="flex items-center justify-between flex-wrap gap-3 rounded-2xl border border-[#006065]/30 bg-[#006065]/10 px-4 py-3 shadow-sm backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#006065]/20 text-[#006065] dark:text-[#fad503] font-bold text-sm">
               🛡️
             </div>
             <div>
@@ -257,11 +257,11 @@ export default function JCLDashboard() {
                 <span className="text-xs font-bold text-foreground">
                   Standalone System Active
                 </span>
-                <span className="inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-300">
+                <span className="inline-flex items-center rounded-full bg-[#fad503]/20 px-2 py-0.5 text-[10px] font-semibold text-[#006065] dark:text-[#fad503]">
                   real_estate_jcl
                 </span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live & Isolated
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#006065] dark:text-[#fad503]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#fad503] animate-pulse" /> Live & Isolated
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -363,7 +363,7 @@ export default function JCLDashboard() {
               <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">
                 {activePropertiesCount}
               </h2>
-              <p className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5">
+              <p className="text-[11px] font-medium text-[#006065] dark:text-[#fad503] mt-0.5">
                 {availableLand} available · {activeLandAllocations} reserved
               </p>
             </div>
@@ -393,7 +393,7 @@ export default function JCLDashboard() {
               <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">
                 {currencySymbol}{totalClosedVolume > 1000 ? `${(totalClosedVolume / 1000).toFixed(0)}k` : totalClosedVolume.toLocaleString()}
               </h2>
-              <p className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5">
+              <p className="text-[11px] font-medium text-[#006065] dark:text-[#fad503] mt-0.5">
                 {transactions.filter(t => t.status === 'closed' || t.status === 'completed').length} completed deals
               </p>
             </div>

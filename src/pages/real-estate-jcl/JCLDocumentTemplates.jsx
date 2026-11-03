@@ -189,13 +189,13 @@ export default function JCLDocumentTemplates() {
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-600/25">
+          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#0B1418] flex items-center justify-center text-white shadow-lg shadow-emerald-600/25">
             <Sparkles className="h-5 w-5" />
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-foreground flex items-center gap-2">
               Smart Docs & Legal Contracts Hub
-              <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-mono px-2 py-0.5">
+              <Badge className="bg-[#006065]/10 text-[#006065] dark:text-[#fad503] border-[#006065]/30 text-[10px] uppercase font-mono px-2 py-0.5">
                 Enterprise Suite
               </Badge>
             </h1>
@@ -218,7 +218,7 @@ export default function JCLDocumentTemplates() {
               setShowForm(true);
             }}
             size="sm"
-            className="h-9 px-4 text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shadow-emerald-600/20 gap-1.5"
+            className="h-9 px-4 text-xs font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md shadow-[#006065]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             New Smart Doc
@@ -233,11 +233,11 @@ export default function JCLDocumentTemplates() {
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Smart Docs</span>
               <p className="text-2xl font-extrabold text-foreground tracking-tight">{documents.length}</p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+              <p className="text-[11px] text-[#006065] dark:text-[#fad503] font-semibold flex items-center gap-1">
                 <CheckCircle2 className="h-3.5 w-3.5" /> Version Controlled
               </p>
             </div>
-            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+            <div className="h-12 w-12 rounded-2xl bg-[#006065]/10 text-[#006065] dark:text-[#fad503] flex items-center justify-center border border-[#006065]/20 shadow-inner">
               <FileText className="h-6 w-6" />
             </div>
           </CardContent>
@@ -260,7 +260,7 @@ export default function JCLDocumentTemplates() {
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">E-Signature Ready</span>
-              <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">100%</p>
+              <p className="text-2xl font-extrabold text-[#006065] dark:text-[#fad503] tracking-tight">100%</p>
               <p className="text-[11px] text-muted-foreground font-semibold">SHA-256 Cryptographic Hash</p>
             </div>
             <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20 shadow-inner">
@@ -274,7 +274,7 @@ export default function JCLDocumentTemplates() {
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Security Vault</span>
               <p className="text-2xl font-extrabold text-foreground tracking-tight">Active</p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+              <p className="text-[11px] text-[#006065] dark:text-[#fad503] font-semibold flex items-center gap-1">
                 <Lock className="h-3.5 w-3.5" /> Immutable Audit Trail
               </p>
             </div>
@@ -337,7 +337,7 @@ export default function JCLDocumentTemplates() {
                 <div className="p-6 pb-4 space-y-4 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-[#006065]/10 text-[#006065] dark:text-[#fad503] border border-[#006065]/20">
                         <FileText className="w-6 h-6" />
                       </div>
                       <div className="min-w-0 space-y-1">
@@ -345,7 +345,7 @@ export default function JCLDocumentTemplates() {
                           {title}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-[9px] font-extrabold uppercase py-0.5 px-2 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
+                          <Badge variant="outline" className="text-[9px] font-extrabold uppercase py-0.5 px-2 bg-[#006065]/10 text-emerald-700 dark:text-emerald-400 border-[#006065]/30">
                             {category}
                           </Badge>
                           <span className="text-[10px] font-mono text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-md border border-border/40 font-semibold">
@@ -388,7 +388,7 @@ export default function JCLDocumentTemplates() {
                   <Button
                     size="sm"
                     onClick={() => handleSendForESignature(d)}
-                    className="text-xs h-8.5 px-4 font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shadow-emerald-600/20 gap-1.5"
+                    className="text-xs h-8.5 px-4 font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md shadow-[#006065]/20 gap-1.5"
                   >
                     <Send className="w-3.5 h-3.5" /> Dispatch Sign
                   </Button>
@@ -403,13 +403,13 @@ export default function JCLDocumentTemplates() {
       <div className="mt-8 bg-card/95 backdrop-blur-xl border border-border/90 rounded-[28px] p-6 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#0B1418] flex items-center justify-center text-white shadow-md">
               <Award className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-extrabold text-sm text-foreground flex items-center gap-2">
                 Enterprise Legal Compliance & Audit Standards
-                <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[9px] uppercase font-mono">
+                <Badge className="bg-[#006065]/10 text-[#006065] dark:text-[#fad503] border-[#006065]/30 text-[9px] uppercase font-mono">
                   Verified
                 </Badge>
               </h3>
@@ -420,7 +420,7 @@ export default function JCLDocumentTemplates() {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-500/10 px-3 py-1.5 rounded-xl border border-emerald-500/20">
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-[#006065]/10 px-3 py-1.5 rounded-xl border border-[#006065]/20">
               <Lock className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted
             </div>
             <div className="flex items-center gap-1.5 text-xs text-blue-600 font-bold bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/20">
@@ -513,7 +513,7 @@ export default function JCLDocumentTemplates() {
                 className="h-9.5 text-xs mt-1 rounded-xl"
               />
             </div>
-            <Button type="submit" className="w-full h-9.5 text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md mt-2">
+            <Button type="submit" className="w-full h-9.5 text-xs font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md mt-2">
               Save Smart Document
             </Button>
           </form>
@@ -560,7 +560,7 @@ export default function JCLDocumentTemplates() {
                   setPreviewDoc(null);
                   handleSendForESignature(docToSign);
                 }}
-                className="text-xs font-extrabold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md gap-1.5"
+                className="text-xs font-extrabold bg-[#006065] hover:bg-[#004e52] text-white rounded-xl shadow-md gap-1.5"
               >
                 <Send className="w-3.5 h-3.5" /> Dispatch for E-Signature
               </Button>

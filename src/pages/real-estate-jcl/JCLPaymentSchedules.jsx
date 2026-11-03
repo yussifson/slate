@@ -67,7 +67,7 @@ export default function JCLPaymentSchedules() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-[#006065] to-[#004e52] flex items-center justify-center text-white shadow-md shadow-[#006065]/20">
               <Calendar className="h-6 w-6" />
             </div>
             <div>
@@ -90,7 +90,7 @@ export default function JCLPaymentSchedules() {
           <Button
             onClick={() => setShowForm(true)}
             size="sm"
-            className="h-9 px-4 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm rounded-xl gap-2"
+            className="h-9 px-4 text-xs font-bold bg-[#006065] hover:bg-[#004e52] text-white shadow-sm rounded-xl gap-2"
           >
             <Plus className="h-4 w-4" />
             Add Schedule Rule
@@ -122,12 +122,12 @@ export default function JCLPaymentSchedules() {
                 schedules.map(item => (
                   <tr key={item.id} className="hover:bg-muted/40 transition-colors group">
                     <td className="p-4 pl-5 font-mono font-bold">{item.lease_id || 'LS-GENERAL'}</td>
-                    <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400 font-mono text-sm">{formatCurrency(item.payment_amount, 'USD')}</td>
+                    <td className="p-4 font-bold text-[#006065] dark:text-[#fad503] font-mono text-sm">{formatCurrency(item.payment_amount, 'USD')}</td>
                     <td className="p-4 font-semibold">{item.payment_due_date || 1}st of Month</td>
                     <td className="p-4 text-muted-foreground">{item.grace_period_days || 5} Days</td>
                     <td className="p-4 font-mono text-xs font-semibold">{item.late_fee_percentage || 5}%</td>
                     <td className="p-4 pr-5">
-                      <Badge variant="outline" className={cn("text-[10px] uppercase font-bold py-0.5 px-2.5", item.auto_debit_enabled ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-200" : "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300 border-slate-200")}>
+                      <Badge variant="outline" className={cn("text-[10px] uppercase font-bold py-0.5 px-2.5", item.auto_debit_enabled ? "bg-[#006065]/15 text-[#006065] dark:bg-[#fad503]/15 dark:text-[#fad503] border-emerald-200" : "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300 border-slate-200")}>
                         {item.auto_debit_enabled ? 'Active' : 'Disabled'}
                       </Badge>
                     </td>
