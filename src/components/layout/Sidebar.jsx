@@ -939,8 +939,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-white dark:bg-[#091114] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
-      <div className={cn("py-4 border-b border-black/5 dark:border-white/10 flex items-center transition-all", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
+    <div className="flex flex-col h-full bg-[#006065] dark:bg-[#091114] text-white overflow-x-hidden">
+      <div className={cn("h-[64px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#006065] dark:bg-[#091114] shrink-0", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>
      <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
@@ -954,8 +954,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  {!collapsed && (
  <div className="animate-in fade-in zoom-in duration-200">
  <div className="flex flex-col">
- <span className="font-semibold text-foreground leading-tight tracking-tight mt-0.5">{activeCompanyName}</span>
- <span className="text-[9px] font-extrabold text-[#71717a] dark:text-gray-400 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
+ <span className="font-semibold text-white leading-tight tracking-tight mt-0.5">{activeCompanyName}</span>
+ <span className="text-[9px] font-extrabold text-white/50 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
   {companyData?.tagline || (activeIndustry === 'orbit_build' ? 'WorkSlate' : industryData.name)}
  </span>
  </div>
@@ -990,16 +990,16 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
               "flex items-center rounded-xl text-sm transition-all duration-200 relative font-medium",
               collapsed
                 ? isActive
-                  ? "justify-center mx-auto w-9 h-9 bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
-                  : "justify-center mx-auto w-9 h-9 text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40"
+                  ? "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#fad503]/20 to-transparent text-[#fad503] font-bold shadow-sm"
+                  : "justify-center mx-auto w-9 h-9 text-white/70 hover:text-white hover:bg-white/10"
                 : "gap-3 px-3 py-2 pr-8",
               !collapsed && (isActive
-                ? "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 font-bold border-l-4 border-emerald-500 pl-2.5"
-                : "text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40")
+                ? "bg-gradient-to-r from-[#fad503]/20 to-transparent text-[#fad503] font-bold border-l-4 border-[#fad503] pl-2.5 shadow-sm"
+                : "text-white/70 hover:text-white hover:bg-white/10 font-medium")
             )}
           >
             <span className="relative flex-shrink-0 flex items-center justify-center">
-              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive && "text-emerald-600 dark:text-emerald-400")} />
+              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive ? "text-[#fad503]" : "text-white/60 group-hover:text-white")} />
               {showLiveDot && (
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -1107,13 +1107,13 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
          {!collapsed && (
             <button 
               onClick={() => toggleCat(cat)}
-              className="w-full flex items-center justify-between px-3 py-2.5 mb-1.5 group transition-all rounded-xl hover:bg-sidebar-accent/50 border border-transparent hover:border-sidebar-border"
+              className="w-full flex items-center justify-between px-3 py-2 mb-1 group transition-all rounded-xl hover:bg-white/10 text-white/70 hover:text-white"
             >
               <div className="flex items-center gap-2.5">
-                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300 shadow-sm", isExpanded ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" : "bg-primary/30 group-hover:bg-primary/60")} />
-                <p className="text-[11px] font-bold text-sidebar-foreground/70 group-hover:text-sidebar-foreground uppercase tracking-[0.15em]">{cat}</p>
+                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300", isExpanded ? "bg-[#fad503] shadow-[0_0_8px_rgba(250,213,3,0.6)]" : "bg-white/20 group-hover:bg-white/40")} />
+                <p className="text-[11px] font-bold text-white/60 group-hover:text-white uppercase tracking-[0.15em]">{cat}</p>
               </div>
-              <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-transform duration-300", isExpanded && "rotate-90")} />
+              <ChevronRight className={cn("w-3.5 h-3.5 text-white/40 group-hover:text-white transition-transform duration-300", isExpanded && "rotate-90")} />
             </button>
          )}
          
@@ -1156,10 +1156,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-black/5 dark:border-white/10 bg-slate-50/50 dark:bg-[#060B0D]">
+ <div className="mt-auto p-3 border-t border-white/10 dark:border-white/5 bg-[#004e52] dark:bg-[#060B0D] text-white">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
+ <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white">
  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -1172,17 +1172,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  {!collapsed && (
  <div className="flex-1 text-left min-w-0 animate-in fade-in duration-200">
- <p className="text-[13px] font-medium leading-none text-foreground">
+ <p className="text-[13px] font-bold leading-none text-white">
  {user?.full_name || user?.company_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}
  </p>
- <p className="text-[11px] text-foreground/50 capitalize truncate mt-0.5">
+ <p className="text-[11px] text-white/60 capitalize truncate mt-0.5">
  {user?.role?.replace("_", " ")}
  </p>
  </div>
  )}
  
  {!collapsed && (
- <MoreHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400 flex-shrink-0 ml-auto" />
+ <MoreHorizontal className="w-4 h-4 text-white/50 group-hover:text-white flex-shrink-0 ml-auto" />
  )}
  </button>
  </DropdownMenuTrigger>
@@ -1224,8 +1224,8 @@ return (
     <>
       {/* Desktop sidebar - Full height sidebar matching reference design */}
       <aside className={cn(
-        "hidden md:flex flex-col h-full sticky top-0 border-r border-black/10 dark:border-white/10 transition-all duration-300 relative z-20 overflow-hidden",
-        "bg-white text-slate-800 dark:bg-[#091114] dark:text-emerald-50",
+        "hidden md:flex flex-col h-full sticky top-0 border-r border-white/10 dark:border-white/5 transition-all duration-300 relative z-20 overflow-hidden",
+        "bg-[#006065] text-white dark:bg-[#091114] border-white/10 dark:border-white/5",
         isCollapsed ? "w-[64px] min-w-[64px] max-w-[64px]" : "w-[240px] min-w-[240px] max-w-[240px]"
       )}>
         {renderNavContent(isCollapsed)}
