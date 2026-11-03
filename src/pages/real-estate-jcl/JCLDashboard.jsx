@@ -246,6 +246,36 @@ export default function JCLDashboard() {
     <div className="space-y-8 pb-12 font-sans min-h-screen p-4 sm:p-6 lg:p-8 relative bg-background">
       <div className="relative z-10 space-y-8">
 
+        {/* ── JCL Standalone System Status & Confirmation Badge ── */}
+        <div className="flex items-center justify-between flex-wrap gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
+              🛡️
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-foreground">
+                  Standalone System Active
+                </span>
+                <span className="inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-300">
+                  real_estate_jcl
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live & Isolated
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                The standalone vertical is fully operational and isolated. Users can safely continue daily operations while mobile app wrapping and migration pipelines are prepared.
+              </p>
+            </div>
+          </div>
+          <div className="text-right flex items-center gap-2">
+            <span className="text-[11px] font-semibold text-muted-foreground bg-background/60 border border-border/60 px-2.5 py-1 rounded-lg">
+              Tenant: {company?.name || 'JCL Royal Group'}
+            </span>
+          </div>
+        </div>
+
         {/* ── 24h Real Estate Urgent Reminders Banner ── */}
         {urgentViewings.length > 0 && (
           <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl overflow-hidden shadow-sm">
