@@ -57,7 +57,7 @@ export default function JCLLandlordPortal() {
   const vacantCount = properties.filter(p => !p.leases?.some(l => l.status === 'active')).length;
 
   return (
-    <div className="p-4 sm:p-6 pb-28 max-w-[1600px] mx-auto space-y-6 font-sans">
+    <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
       {/* Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 p-6 sm:p-8 text-white border border-[#005A9C]/20 shadow-xl">
         <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

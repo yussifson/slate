@@ -377,7 +377,7 @@ export default function AppLayout() {
             "flex-1 w-full mx-auto flex flex-col",
             ['/chat', '/email-inbox', '/search'].includes(location.pathname) 
               ? "overflow-hidden p-0" 
-              : "overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-3 md:px-5 lg:px-6 pt-4 md:pt-5 pb-[calc(52px+env(safe-area-inset-bottom)+1rem)] md:pb-6"
+              : "overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-5 pb-[calc(60px+env(safe-area-inset-bottom))] md:pb-6"
           )}>
        <AnimatePresence mode="wait">
          <motion.div

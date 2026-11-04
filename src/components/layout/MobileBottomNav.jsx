@@ -206,12 +206,19 @@ export default function MobileBottomNav() {
            )}>
            <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
            </div>
-           <span className={cn(
-           "text-[17px] tracking-[-0.41px] flex-1",
-           isActive ? "text-primary font-semibold" : "text-black dark:text-white font-normal"
-           )}>
-           {t((shortLabel || '').toLowerCase().replace(/\s+/g, '_'), shortLabel)}
-           </span>
+           <div className="flex flex-col flex-1 min-w-0">
+             {item.section && (
+               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider leading-none mb-0.5">
+                 {item.section}
+               </span>
+             )}
+             <span className={cn(
+               "text-[16px] tracking-[-0.3px] truncate",
+               isActive ? "text-primary font-semibold" : "text-black dark:text-white font-normal"
+             )}>
+               {item.label}
+             </span>
+           </div>
            {/* Chevron for native feel */}
            <LucideIcons.ChevronRight className="w-[18px] h-[18px] text-[#C7C7CC] dark:text-[#5A5A5F]" strokeWidth={2.5} />
            </Link>

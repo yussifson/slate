@@ -243,7 +243,7 @@ export default function JCLDashboard() {
   }
 
   return (
-    <div className="space-y-8 pb-12 font-sans min-h-screen p-4 sm:p-6 lg:p-8 relative bg-background">
+    <div className="space-y-4 sm:space-y-8 pb-20 font-sans min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 relative bg-background w-full max-w-full">
       <div className="relative z-10 space-y-8">
 
         {/* ── 24h Real Estate Urgent Reminders Banner ── */}

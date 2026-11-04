@@ -698,7 +698,7 @@ export default function LandManagement() {
   };
 
   return (
-    <div className="space-y-6 pb-12 font-sans min-h-screen p-4 sm:p-6 lg:p-8 relative bg-background">
+    <div className="space-y-4 sm:space-y-6 pb-20 font-sans min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 relative bg-background w-full max-w-full">
       
       {/* ── Top Header & Breadcrumbs Row ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">

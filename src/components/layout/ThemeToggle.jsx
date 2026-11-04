@@ -21,7 +21,7 @@ export default function ThemeToggle({ iconOnly = false }) {
         <DropdownMenuTrigger asChild>
           <button 
             type="button"
-            className="w-8 h-8 rounded-full bg-white/10 dark:bg-white/5 hover:bg-white/20 text-white flex items-center justify-center focus:outline-none transition-all cursor-pointer border border-white/10 active:scale-95 shadow-sm"
+            className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-foreground flex items-center justify-center focus:outline-none transition-all cursor-pointer border border-black/5 dark:border-white/10 active:scale-95 shadow-sm"
             title={`Theme: ${activeOption.label}`}
           >
             <ActiveIcon className={cn("w-4 h-4", activeOption.color)} />
