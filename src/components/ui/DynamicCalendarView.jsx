@@ -235,8 +235,17 @@ export default function DynamicCalendarView({ data = [], fieldDefinitions = [], 
  return (
  <div
  key={idx}
- onClick={() => hasEvents && setSelectedDay(cell)}
- className={`
+onClick={() => cell.inMonth && setSelectedDay(cell)}
+	 onKeyDown={(event) => {
+	  if (cell.inMonth && (event.key === 'Enter' || event.key === ' ')) {
+	   event.preventDefault();
+	   setSelectedDay(cell);
+	  }
+	 }}
+	 role={cell.inMonth ? 'button' : undefined}
+	 tabIndex={cell.inMonth ? 0 : -1}
+	 aria-label={cell.inMonth ? `${format(cell.date, 'MMMM d, yyyy')}${hasEvents ? `, ${cell.events.length} events` : ', no events'}` : undefined}
+	 className={`
  min-h-[100px] p-2 border-b border-r border-primary/40 relative transition-all duration-150
  ${cell.inMonth ? 'bg-card' : 'bg-muted/50/50'}
  ${hasEvents ? 'cursor-pointer hover:bg-muted/500 ' : ''}
