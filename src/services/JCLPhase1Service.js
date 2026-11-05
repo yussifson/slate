@@ -2,27 +2,31 @@ import { supabase } from '@/api/supabaseClient';
 
 const makeNumber = (prefix) => `${prefix}-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
 
+const attachClients = (rows, clients) => rows.map((row) => {
+  const client = clients.find((item) => item.id === row.client_id);
+  return { ...row, client: client ? { id: client.id, primary_name: client.name, ...client } : null };
+});
+
 export const JCLPhase1Service = {
-  async listEngagements(companyId) {
+  async listClients(companyId) {
     if (!companyId) return [];
     const { data, error } = await supabase
-      .from('jcl_engagements')
-      .select('*, client:core_parties!client_party_id(id, primary_name), responsible:core_parties!responsible_party_id(id, primary_name)')
-      .eq('company_id', companyId)
-      .order('created_at', { ascending: false });
+      .from('univ_re_clients')
+      .select('id, name, email, phone, type, city')
+      .eq('company_id', String(companyId))
+      .order('name');
     if (error) throw error;
     return data || [];
   },
 
-  async listClients(companyId) {
+  async listEngagements(companyId) {
     if (!companyId) return [];
-    const { data, error } = await supabase
-      .from('core_parties')
-      .select('id, primary_name, email, phone')
-      .eq('company_id', companyId)
-      .order('primary_name');
-    if (error) throw error;
-    return data || [];
+    const [engagementResponse, clients] = await Promise.all([
+      supabase.from('jcl_engagements').select('*').eq('company_id', companyId).order('created_at', { ascending: false }),
+      this.listClients(companyId),
+    ]);
+    if (engagementResponse.error) throw engagementResponse.error;
+    return attachClients(engagementResponse.data || [], clients);
   },
 
   async createEngagement(companyId, actorId, payload) {
@@ -30,7 +34,7 @@ export const JCLPhase1Service = {
       company_id: companyId,
       created_by: actorId || null,
       engagement_number: payload.engagement_number || makeNumber('ENG'),
-      client_party_id: payload.client_party_id,
+      client_id: payload.client_party_id,
       title: payload.title.trim(),
       description: payload.description || null,
       engagement_type: payload.engagement_type,
@@ -76,8 +80,7 @@ export const JCLPhase1Service = {
       description: engagement.description,
       status: 'planned',
       priority: engagement.priority === 'urgent' ? 'critical' : engagement.priority,
-      client_party_id: engagement.client_party_id,
-      lead_party_id: engagement.lead_party_id,
+      client_id: engagement.client_id,
       start_date: engagement.expected_start_date,
       target_end_date: engagement.expected_completion_date,
       budget_amount: Number(engagement.budget_max || engagement.budget_min || 0),
@@ -98,11 +101,11 @@ export const JCLPhase1Service = {
 
   async listProjects(companyId) {
     if (!companyId) return [];
-    const { data, error } = await supabase.from('ops_projects')
-      .select('id, project_code, name, status, priority, project_type, site_address, budget_amount, progress_percentage, start_date, target_end_date, engagement_id, client:core_parties!client_party_id(primary_name)')
-      .eq('company_id', companyId)
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data || [];
+    const [projectResponse, clients] = await Promise.all([
+      supabase.from('ops_projects').select('id, project_code, name, status, priority, project_type, site_address, budget_amount, progress_percentage, start_date, target_end_date, engagement_id, client_id').eq('company_id', companyId).order('created_at', { ascending: false }),
+      this.listClients(companyId),
+    ]);
+    if (projectResponse.error) throw projectResponse.error;
+    return attachClients(projectResponse.data || [], clients);
   },
 };
