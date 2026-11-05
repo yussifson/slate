@@ -7,18 +7,16 @@ import { useAuth } from '@/lib/AuthContext';
  * @param {string} moduleKey - The unique key for the module (e.g. 'pharmacy_customers')
  * @param {string} defaultView - The default view to use if none is set ('grid', 'list', 'kanban')
  */
-export function useViewPreference(moduleKey, defaultView = 'grid') {
+export function useViewPreference(moduleKey, defaultView = 'list') {
   const { user } = useAuth();
-  const [view, setView] = useState(defaultView);
+  const [view, setView] = useState('list');
 
   useEffect(() => {
-    if (user?.user_metadata?.views?.[moduleKey]) {
-      setView(user.user_metadata.views[moduleKey]);
-    }
+    setView('list');
   }, [user, moduleKey]);
 
-  const changeView = async (newView) => {
-    setView(newView);
+  const changeView = async () => {
+    setView('list');
     if (!user) return;
 
     try {

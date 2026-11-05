@@ -858,10 +858,10 @@ export const INDUSTRIES = {
     ],    nav: [
       { section: 'Operations', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Calendar', path: '/calendar', icon: 'CalendarDays' },
-      { label: 'Tasks & Projects', path: '/tasks', icon: 'Briefcase' },
+      { label: 'Tasks', path: '/tasks', icon: 'Briefcase' },
       { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
       { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
-      { section: 'Secretary', label: 'Front Desk & Logbooks', path: '/jcl/front-desk', icon: 'BookOpen' },
+      { section: 'Secretary', label: 'Front Desk', path: '/jcl/front-desk', icon: 'BookOpen' },
       { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
       { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
       { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
