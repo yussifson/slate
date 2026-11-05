@@ -857,7 +857,7 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
       { section: 'Operations', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
-      { label: 'Calendar & Reminders', path: '/calendar', icon: 'CalendarDays' },
+      { label: 'Calendar', path: '/calendar', icon: 'CalendarDays' },
       { label: 'Tasks & Projects', path: '/tasks', icon: 'Briefcase' },
       { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
       { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },

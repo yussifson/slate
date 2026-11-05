@@ -30,7 +30,7 @@ const JCL_DEPARTMENTS = [
     id: "overview",
     label: "Overview & Intelligence",
     icon: LayoutDashboard,
-    color: "emerald",
+    color: "orange",
     items: [
       { label: "Dashboard", path: "/", icon: LayoutDashboard },
       { label: "Live GPS", path: "/real-estate/field-tracker", icon: MapPin },
@@ -74,7 +74,7 @@ const JCL_DEPARTMENTS = [
     id: "facilities",
     label: "Facilities & Maintenance",
     icon: Wrench,
-    color: "purple",
+    color: "blue",
     actionLabel: "New Work Order",
     actionPath: "/real-estate/maintenance",
     items: [
@@ -123,7 +123,7 @@ const JCL_DEPARTMENTS = [
     id: "governance",
     label: "Docs & Governance",
     icon: FileText,
-    color: "teal",
+    color: "orange",
     actionLabel: "New Smart Doc",
     actionPath: "/smart-docs",
     items: [
@@ -237,7 +237,7 @@ export default function JCLTwoPanelSidebar({
                   <IconComponent className="h-4 w-4 shrink-0" />
                   {/* Active Pill Indicator Dot */}
                   {isActive && (
-                    <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1 h-4 bg-emerald-600 dark:bg-emerald-400 rounded-r-full" />
+                    <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-1 h-4 bg-[#FF6B00] rounded-r-full" />
                   )}
                 </button>
               );
@@ -265,7 +265,7 @@ export default function JCLTwoPanelSidebar({
       </div>
 
       {/* ── 2. EXPANDED NAVIGATION PANEL (~230px) ── */}
-      <div className="w-[230px] shrink-0 flex flex-col justify-between p-3.5 bg-white dark:bg-background z-10">
+      <div className="w-[200px] shrink-0 flex flex-col justify-between p-3 bg-white dark:bg-background z-10">
         <div className="space-y-4">
           {/* Workspace Switcher Header */}
           <div className="pb-3 border-b border-slate-200/70 dark:border-border/70 space-y-1.5">
@@ -375,7 +375,7 @@ export default function JCLTwoPanelSidebar({
               onClick={() => setShowAvatarDialog(true)}
               className="flex items-center gap-2 min-w-0 text-left"
             >
-              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 text-white font-extrabold flex items-center justify-center text-xs shadow-xs">
+              <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#005A9C] to-[#00477D] text-white font-extrabold flex items-center justify-center text-xs shadow-xs">
                 {(user?.full_name || user?.email || "A")[0].toUpperCase()}
               </div>
               <div className="min-w-0">

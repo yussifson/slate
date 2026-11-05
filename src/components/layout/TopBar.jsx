@@ -234,16 +234,8 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
  {/* ── DESKTOP TOP BAR ── */}
  <div className="hidden md:flex h-[64px] bg-[#005A9C] dark:bg-[#0B1418]/95 border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {/* Sidebar Toggle & Breadcrumb */}
- <div className="flex items-center gap-2 sm:gap-3 text-sm shrink-0 mr-4">
- <button 
- onClick={toggleSidebar}
- className="hidden lg:flex p-1.5 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-colors"
- title={isSidebarCollapsed ? t('expand_sidebar', "Expand sidebar") : t('collapse_sidebar', "Collapse sidebar")}
- >
- <PanelLeft className="w-5 h-5" />
- </button>
- </div>
+ {/* Breadcrumb space reserved for the sidebar rail */}
+ <div className="w-2 shrink-0" />
  {/* Right */}
  <div className="flex items-center justify-end gap-1.5 sm:gap-3 ml-auto">
  {/* Super Admin Version Switcher (V1 Classic vs V2 OmniCore) */}
@@ -358,7 +350,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
 
  {/* User */}
- <button onClick={() => setShowAvatarDialog(true)} className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
+ <button onClick={() => navigate('/personal-info')} aria-label="Open profile" title="Open profile" className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden border border-black/10 dark:border-white/10">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />

@@ -957,7 +957,16 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   const renderNavContent = (collapsed) => (
     <div className="flex flex-col h-full bg-[#005A9C] dark:bg-[#091114] text-white overflow-x-hidden">
-      <div className={cn("h-[64px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
+      <div className={cn("h-[64px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-3 justify-center" : "px-3 gap-3")}>
+        <button
+          type="button"
+          onClick={() => setIsCollapsed(!collapsed)}
+          className="shrink-0 rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <PanelLeft className="h-4 w-4" />
+        </button>
  {activeCompanyLogoDark || activeCompanyLogoLight ? (
    <>
      <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
@@ -1125,16 +1134,10 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
      return (
        <div key={cat} className="space-y-0.5">
          {!collapsed && (
-            <button 
-              onClick={() => toggleCat(cat)}
-              className="w-full flex items-center justify-between px-3 py-2 mb-1 group transition-all rounded-xl hover:bg-white/10 text-white/70 hover:text-white"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300", isExpanded ? "bg-[#FF6B00] shadow-[0_0_8px_rgba(250,213,3,0.6)]" : "bg-white/20 group-hover:bg-white/40")} />
-                <p className="text-[11px] font-bold text-white/60 group-hover:text-white uppercase tracking-[0.15em]">{cat}</p>
-              </div>
-              <ChevronRight className={cn("w-3.5 h-3.5 text-white/40 group-hover:text-white transition-transform duration-300", isExpanded && "rotate-90")} />
-            </button>
+            <div className="flex items-center gap-2.5 px-3 py-2 mb-1">
+              <div className="w-1 h-3.5 rounded-full bg-[#FF6B00]" />
+              <p className="text-[11px] font-bold text-white/65 uppercase tracking-[0.15em]">{cat}</p>
+            </div>
          )}
          
           <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
@@ -1179,7 +1182,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  <div className="mt-auto p-3 border-t border-white/10 dark:border-white/5 bg-[#00477D] dark:bg-[#060B0D] text-white">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white">
+ <button onDoubleClick={() => navigate('/personal-info')} className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white" title="Open profile">
  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -1214,6 +1217,10 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  </div>
  </DropdownMenuLabel>
  <DropdownMenuSeparator />
+ <DropdownMenuItem onClick={() => navigate('/personal-info')} className="cursor-pointer">
+ <UserCircle className="w-4 h-4 mr-2" />
+ Profile
+ </DropdownMenuItem>
  <DropdownMenuItem onClick={() => setShowAvatarDialog(true)} className="cursor-pointer">
  <UserCircle className="w-4 h-4 mr-2" />
  Change Avatar
