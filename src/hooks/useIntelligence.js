@@ -132,7 +132,8 @@ export function useIntelligence(vertical, options = {}) {
       return scored.sort((a, b) => b.relevance_score - a.relevance_score).slice(0, 50);
     },
     enabled: !!companyId,
-    staleTime: 30000, // 30 seconds
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    placeholderData: (previousData) => previousData,
   });
 
   // Run the intelligence engine for a specific vertical

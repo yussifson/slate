@@ -885,20 +885,9 @@ export const INDUSTRIES = {
       { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
       { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
       { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
-      { section: 'Human Resources', label: 'HR Management', path: '/hr', icon: 'HeartHandshake' },
-      { label: 'Employees & Staff', path: '/hr/employees', icon: 'Users' },
-      { label: 'Departments', path: '/hr/departments', icon: 'Building2' },
-      { label: 'Roles & Permissions', path: '/hr/roles', icon: 'Shield' },
-      { label: 'Attendance & Clock-In', path: '/hr/attendance', icon: 'Clock' },
-      { label: 'Leave & Absence', path: '/hr/leave', icon: 'Calendar' },
-      { label: 'Payroll & Salaries', path: '/hr/payroll', icon: 'Banknote' },
-      { label: 'Performance & KPIs', path: '/hr/performance', icon: 'TrendingUp' },
-      { label: 'Recruitment & Hiring', path: '/hr/recruitment', icon: 'UserPlus' },
-      { label: 'Team Management', path: '/real-estate/team-management', icon: 'Users2' },
+      { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' },
       { section: 'System Admin', label: 'Settings', path: '/settings', icon: 'Settings' },
-      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
-      { label: 'Automations', path: '/automations', icon: 'Zap' },
-      { label: 'Settings', path: '/settings', icon: 'Settings' }
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' }
     ]},
 
   

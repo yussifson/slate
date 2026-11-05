@@ -86,6 +86,7 @@ const UnivDocument = React.lazy(() => import('@/components/universal/UnivDocumen
 const UnivInventory = React.lazy(() => import('@/components/universal/UnivInventory'));
 const UnivHREmployee = React.lazy(() => import('@/components/universal/UnivHREmployee'));
 const UnivHRSystem = React.lazy(() => import('@/components/universal/UnivHRSystem'));
+const HRLayout = React.lazy(() => import('@/pages/hr/HRLayout'));
 const UnivInvoice = React.lazy(() => import('@/components/universal/UnivInvoice'));
 const UnivPayroll = React.lazy(() => import('@/components/universal/UnivPayroll'));
 const UnivRecruitment = React.lazy(() => import('@/components/universal/UnivRecruitment'));
@@ -1037,8 +1038,7 @@ function PlatformRoutes() {
       <Route path="/reports" element={<ReportsDashboard />} />
       <Route path="/export" element={<DataExport />} />
       <Route path="/whatsapp" element={<WhatsAppMessenger />} />
-      <Route path="/hr" element={<UnivHRSystem />} />
-      <Route path="/ats" element={<ATS />} />
+            <Route path="/ats" element={<ATS />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/benefits" element={<Benefits />} />
       <Route path="/expenses" element={<Expenses />} />
@@ -1416,19 +1416,22 @@ function PlatformRoutes() {
       <Route path="/logistics-analytics" element={<LogisticsAdvancedAnalytics />} />
       <Route path="/driver-mobile-app" element={<LogisticsDriverMobileApp />} />
 
-      {/* HR Suite Dedicated Pages */}
-      <Route path="/hr/employees" element={<HREmployees />} />
-      <Route path="/hr/departments" element={<HRDepartments />} />
-      <Route path="/hr/roles" element={<HRRoles />} />
-      <Route path="/hr/leave" element={<HRLeave />} />
-      <Route path="/hr/attendance" element={<HRAttendance />} />
-      <Route path="/hr/payroll" element={<HRPayroll />} />
-      <Route path="/hr/performance" element={<HRPerformance />} />
-      <Route path="/hr/training" element={<HRTraining />} />
-      <Route path="/hr/recruitment" element={<HRRecruitment />} />
-      <Route path="/hr/complaints" element={<HRComplaints />} />
-      <Route path="/hr/promotions" element={<HRPromotions />} />
-      <Route path="/hr/salary" element={<HRSalary />} />
+      {/* HR Hub & Sub-pages wrapped in dedicated HRLayout */}
+      <Route element={<HRLayout />}>
+        <Route path="/hr" element={<UnivHRSystem />} />
+        <Route path="/hr/employees" element={<HREmployees />} />
+        <Route path="/hr/departments" element={<HRDepartments />} />
+        <Route path="/hr/roles" element={<HRRoles />} />
+        <Route path="/hr/leave" element={<HRLeave />} />
+        <Route path="/hr/attendance" element={<HRAttendance />} />
+        <Route path="/hr/payroll" element={<HRPayroll />} />
+        <Route path="/hr/performance" element={<HRPerformance />} />
+        <Route path="/hr/training" element={<HRTraining />} />
+        <Route path="/hr/recruitment" element={<HRRecruitment />} />
+        <Route path="/hr/complaints" element={<HRComplaints />} />
+        <Route path="/hr/promotions" element={<HRPromotions />} />
+        <Route path="/hr/salary" element={<HRSalary />} />
+      </Route>
       
       {/* Legacy mappings */}
       <Route path="/employees" element={<HREmployees />} />

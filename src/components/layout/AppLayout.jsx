@@ -379,26 +379,17 @@ export default function AppLayout() {
               ? "overflow-hidden p-0" 
               : "overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-5 pb-[calc(60px+env(safe-area-inset-bottom))] md:pb-6"
           )}>
-       <AnimatePresence mode="wait">
-         <motion.div
-           key={location.pathname}
-           initial={{ opacity: 0, y: 10 }}
-           animate={{ opacity: 1, y: 0 }}
-           exit={{ opacity: 0, y: -10 }}
-           transition={{ duration: 0.15, ease: "easeOut" }}
-           className="flex-1 w-full flex flex-col"
-         >
-           {/* If Chat is docked, don't render it in the main outlet to avoid duplicate IDs/state */}
-           {location.pathname === '/chat' && isChatDocked ? (
-             <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
-               <MessageSquare className="w-8 h-8 opacity-50" />
-               <p>Chat is currently docked to the right sidebar.</p>
-             </div>
-           ) : (
-             <Outlet />
-           )}
-         </motion.div>
-       </AnimatePresence>
+       <div className="flex-1 w-full flex flex-col">
+            {/* If Chat is docked, don't render it in the main outlet to avoid duplicate IDs/state */}
+            {location.pathname === '/chat' && isChatDocked ? (
+              <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
+                <MessageSquare className="w-8 h-8 opacity-50" />
+                <p>Chat is currently docked to the right sidebar.</p>
+              </div>
+            ) : (
+              <Outlet />
+            )}
+          </div>
      </main>
        <GlobalVideoOverlay />
       </div>

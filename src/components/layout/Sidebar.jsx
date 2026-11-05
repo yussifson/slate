@@ -86,7 +86,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const toggleCat = (cat) => {
     setExpandedCats(prev => {
-      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : (cat === 'Platform' || cat === 'Operations');
+      const isDefaultOpen = activeIndustry === 'real_estate_jcl'
+        ? ['Executive Overview', 'Sales & CRM', 'Land & Property', 'Tenancy & Operations', 'Human Resources'].includes(cat)
+        : (cat === 'Platform' || cat === 'Operations');
+      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : isDefaultOpen;
       const next = { ...prev, [cat]: !isCurrentlyExpanded };
       localStorage.setItem('sidebar_expanded_cats', JSON.stringify(next));
       return next;
@@ -441,8 +444,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return allowedPaths.includes(item.path);
 }));
 
-  // Inject Branch Manager
-  if (isAdmin) {
+  // Inject Branch Manager (Excluded for JCL Real Estate)
+  if (isAdmin && activeIndustry !== 'real_estate_jcl') {
     filteredCompanyNav = [...filteredCompanyNav, { label: "Branch Manager", path: "/branch-manager", icon: "Network" }];
   }
 
@@ -778,6 +781,31 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     }
   }
 
+  // Strictly filter out non-essential JCL features requested by user
+  if (activeIndustry === 'real_estate_jcl') {
+    const JCL_BLOCKED_PATHS = new Set([
+      '/enterprise-admin',
+      '/feature-insider',
+      '/feature-vault',
+      '/marketplace',
+      '/branch-manager',
+      '/automations'
+    ]);
+    const JCL_BLOCKED_LABELS = new Set([
+      'enterprise admin',
+      'feature insider',
+      'feature vault',
+      'marketplace',
+      'branch manager',
+      'automations'
+    ]);
+    rawNavItems = rawNavItems.filter(item => {
+      if (item.path && JCL_BLOCKED_PATHS.has(item.path)) return false;
+      if (item.label && JCL_BLOCKED_LABELS.has(item.label.toLowerCase())) return false;
+      return true;
+    });
+  }
+
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
   const seenLabels = new Set();
   let navItems = [];
@@ -1100,7 +1128,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
    return categoryOrder.map(cat => {
      const items = groupedNav[cat];
      if (!items || items.length === 0) return null;
-     const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Platform' || cat === 'Operations');
+     const isDefaultOpen = activeIndustry === 'real_estate_jcl'
+        ? ['Executive Overview', 'Sales & CRM', 'Land & Property', 'Tenancy & Operations', 'Human Resources'].includes(cat)
+        : (cat === 'Platform' || cat === 'Operations');
+      const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : isDefaultOpen;
      
      return (
        <div key={cat} className="space-y-0.5">

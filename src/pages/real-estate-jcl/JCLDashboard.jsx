@@ -28,6 +28,8 @@ import {
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/constants';
 
+let jcl_dash_cache = null;
+
 export default function JCLDashboard() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -37,16 +39,16 @@ export default function JCLDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [properties, setProperties] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [leads, setLeads] = useState([]);
-  const [viewings, setViewings] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [leases, setLeases] = useState([]);
-  const [offers, setOffers] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [company, setCompany] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [properties, setProperties] = useState(() => jcl_dash_cache?.properties || []);
+  const [clients, setClients] = useState(() => jcl_dash_cache?.clients || []);
+  const [leads, setLeads] = useState(() => jcl_dash_cache?.leads || []);
+  const [viewings, setViewings] = useState(() => jcl_dash_cache?.viewings || []);
+  const [transactions, setTransactions] = useState(() => jcl_dash_cache?.transactions || []);
+  const [leases, setLeases] = useState(() => jcl_dash_cache?.leases || []);
+  const [offers, setOffers] = useState(() => jcl_dash_cache?.offers || []);
+  const [tasks, setTasks] = useState(() => jcl_dash_cache?.tasks || []);
+  const [company, setCompany] = useState(() => jcl_dash_cache?.company || null);
+  const [isLoading, setIsLoading] = useState(() => !jcl_dash_cache);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [dateRangeView, setDateRangeView] = useState('Monthly');
 
@@ -64,7 +66,7 @@ export default function JCLDashboard() {
   useEffect(() => {
     let active = true;
     const fetchData = async () => {
-      setIsLoading(true);
+      if (!jcl_dash_cache) setIsLoading(true);
       try {
         const [propRes, clientRes, leadRes, viewRes, txnRes, leaseRes, offerRes, taskRes, compRes] = await Promise.all([
           powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
@@ -89,9 +91,19 @@ export default function JCLDashboard() {
           setOffers(extractRows(offerRes));
           setTasks(extractRows(taskRes));
           const compRows = extractRows(compRes);
-          if (compRows.length > 0) {
-            setCompany(compRows[0]);
-          }
+          const compObj = compRows.length > 0 ? compRows[0] : null;
+          if (compObj) setCompany(compObj);
+          jcl_dash_cache = {
+            properties: extractRows(propRes),
+            clients: extractRows(clientRes),
+            leads: extractRows(leadRes),
+            viewings: extractRows(viewRes),
+            transactions: extractRows(txnRes),
+            leases: extractRows(leaseRes),
+            offers: extractRows(offerRes),
+            tasks: extractRows(taskRes),
+            company: compObj
+          };
         }
       } catch (e) {
         console.error('[JCLDashboard] Data fetch failed:', e);
