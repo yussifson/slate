@@ -343,7 +343,7 @@ const handleInviteClient = async (client) => {
  <p className="font-medium capitalize">{viewingClient.status || "—"}</p>
  </div>
  <div>
- <Label className="text-[#71717a] dark:text-gray-400">{t("address", "Address")}</Label>
+ <Label className="text-[#71717a] dark:text-gray-400">Contract Address</Label>
  <p className="font-medium">{viewingClient.address || "—"}</p>
  </div>
  <div>
@@ -401,6 +401,7 @@ function ClientFormDialog({ open, onClose, onSubmit, initialData, clientTerm = "
  <SelectContent><SelectItem value="active">{t("active", "Active")}</SelectItem><SelectItem value="inactive">{t("inactive", "Inactive")}</SelectItem><SelectItem value="lead">{t("lead", "Lead")}</SelectItem></SelectContent>
  </Select>
  </div>
+ <div className="col-span-2"><Label>Contract Address</Label><Input value={form.address} onChange={(e) => set("address", e.target.value)} placeholder="Enter the contract address" /></div>
  <div><Label>{t("city", "City")}</Label><Input value={form.city} onChange={(e) => set("city", e.target.value)} /></div>
  <div><Label>{t("country", "Country")}</Label><Input value={form.country} onChange={(e) => set("country", e.target.value)} /></div>
  <div className="col-span-2"><Label>{t("notes", "Notes")}</Label><Textarea value={form.notes} onChange={(e) => set("notes", e.target.value)} rows={2} /></div>
