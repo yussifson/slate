@@ -3,7 +3,7 @@ import {
   Users, Plus, Edit, Trash2, Search, Mail, Phone, MapPin,
   DollarSign, Compass, Home,
   ChevronRight, RefreshCw, List,
-  Grid, Download, MoreVertical, Eye
+  Download, MoreVertical, Eye
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
@@ -452,9 +452,6 @@ export default function JCLClients() {
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
             <TabsList className="bg-muted/60 p-1 rounded-xl h-10 border border-border/60">
-              <TabsTrigger value="grid" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                <Grid className="w-3.5 h-3.5" /> Grid
-              </TabsTrigger>
               <TabsTrigger value="list" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 <List className="w-3.5 h-3.5" /> List
               </TabsTrigger>
@@ -478,7 +475,7 @@ export default function JCLClients() {
         </div>
 
         {/* ── Tab Content: Grid View ── */}
-        <TabsContent value="grid" className="mt-0">
+        <TabsContent value="grid" className="hidden">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-pulse">
               {[1, 2, 3].map(i => <div key={i} className="h-72 bg-muted rounded-[26px]" />)}
@@ -829,7 +826,7 @@ export default function JCLClients() {
                           <span className="font-bold text-foreground">{selectedClient.phone || 'None'}</span>
                         </div>
                         <div>
-                          <span className="text-muted-foreground block text-[10px]">Physical Address</span>
+                          <span className="text-muted-foreground block text-[10px]">Contract Address</span>
                           <span className="font-bold text-foreground">{selectedClient.address || 'Unset'}</span>
                         </div>
                         <div>
@@ -998,11 +995,11 @@ export default function JCLClients() {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="font-bold">Street Address</Label>
+              <Label className="font-bold">Contract Address</Label>
               <Input
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                placeholder="Airport Hills Plot 24"
+                placeholder="Contract address"
                 className="rounded-xl h-10 text-xs"
               />
             </div>

@@ -384,17 +384,6 @@ export default function JCLOffers() {
 
         <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50 self-end md:self-auto">
           <button
-            onClick={() => setViewMode('grid')}
-            className={cn(
-              "p-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5",
-              viewMode === 'grid' ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-            )}
-            title="Grid View"
-          >
-            <Grid className="h-3.5 w-3.5" />
-            <span className="text-[11px] hidden sm:inline">Grid</span>
-          </button>
-          <button
             onClick={() => setViewMode('list')}
             className={cn(
               "p-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5",

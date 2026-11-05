@@ -655,6 +655,7 @@ const JCLTenantPortalPage = React.lazy(() => import('./pages/real-estate-jcl/JCL
 const JCLLandlordPortalPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLandlordPortal'));
 const JCLTeamManagementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTeamManagement'));
 const JCLFrontDeskPage = React.lazy(() => import('./pages/real-estate-jcl/JCLFrontDesk'));
+  const JCLItemRegisterPage = React.lazy(() => import('./pages/real-estate-jcl/JCLItemRegister'));
 const JCLAgentMetricsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAgentMetrics'));
 
 const SmartComparablePropertiesRouter = () => {
@@ -693,11 +694,17 @@ const SmartTeamManagementRouter = () => {
 };
 
 const JCLFrontDeskRouter = () => {
-  const { user } = useAuth();
-  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
-  if (ind === 'real_estate_jcl') return <JCLFrontDeskPage />;
-  return <Navigate to="/" replace />;
-};
+    const { user } = useAuth();
+    const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+    if (ind === 'real_estate_jcl') return <JCLFrontDeskPage />;
+    return <Navigate to="/" replace />;
+  };
+  const JCLItemRegisterRouter = () => {
+    const { user } = useAuth();
+    const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+    if (ind === 'real_estate_jcl') return <JCLItemRegisterPage />;
+    return <Navigate to="/" replace />;
+  };
 
 const SmartAgentMetricsRouter = () => {
   const { user } = useAuth();
@@ -1016,6 +1023,7 @@ function PlatformRoutes() {
       <Route path="/clients" element={<Clients />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
+  <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
