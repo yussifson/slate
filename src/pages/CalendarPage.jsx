@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import PageHeader from "@/components/shared/PageHeader";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday} from "date-fns";
 import { useCompany } from "@/hooks/useCompanyId";
+import { toast } from "react-hot-toast";
 
 export default function CalendarPage() {
  const { t} = useTranslation();
@@ -270,9 +271,20 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
 
  const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value}));
 
+ const getReadableLabel = (value) => {
+  if (!value) return "";
+  if (typeof value !== "string") return value.name || value.title || value.address || "Linked record";
+  try {
+   const parsed = JSON.parse(value);
+   return parsed.name || parsed.title || parsed.address || parsed.label || "Linked record";
+  } catch {
+   return value;
+  }
+ };
+
  const handleCaseChange = (caseId) => {
  const c = cases?.find(cs => cs.id === caseId);
- setForm(prev => ({ ...prev, case_id: caseId, case_title: c?.title || "", case_number: c?.case_number || ""}));
+ setForm(prev => ({ ...prev, case_id: caseId, case_title: getReadableLabel(c?.title), case_number: c?.case_number || ""}));
 };
 
  const handleLawyerChange = (email) => {
@@ -306,7 +318,7 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
  <Select value={form.case_id} onValueChange={handleCaseChange}>
  <SelectTrigger><SelectValue placeholder={`Link to ${caseTerm.toLowerCase()}`} /></SelectTrigger>
  <SelectContent>{cases?.map(c => {
- return <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>;
+ return <SelectItem key={c.id} value={c.id}>{getReadableLabel(c.title) || c.case_number || "Linked case"}</SelectItem>;
 })}</SelectContent>
  </Select>
  </div>
