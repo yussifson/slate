@@ -653,6 +653,7 @@ const JCLMarketDataPage = React.lazy(() => import('./pages/real-estate-jcl/JCLMa
 const JCLTenantPortalPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTenantPortal'));
 const JCLLandlordPortalPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLandlordPortal'));
 const JCLTeamManagementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTeamManagement'));
+const JCLFrontDeskPage = React.lazy(() => import('./pages/real-estate-jcl/JCLFrontDesk'));
 const JCLAgentMetricsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAgentMetrics'));
 
 const SmartComparablePropertiesRouter = () => {
@@ -688,6 +689,13 @@ const SmartTeamManagementRouter = () => {
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
   if (ind === 'real_estate_jcl') return <JCLTeamManagementPage />;
   return <RealEstateTeamManagement />;
+};
+
+const JCLFrontDeskRouter = () => {
+  const { user } = useAuth();
+  const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  if (ind === 'real_estate_jcl') return <JCLFrontDeskPage />;
+  return <Navigate to="/" replace />;
 };
 
 const SmartAgentMetricsRouter = () => {
@@ -1006,6 +1014,7 @@ function PlatformRoutes() {
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<Clients />} />
       <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
