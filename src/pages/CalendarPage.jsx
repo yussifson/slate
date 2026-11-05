@@ -29,6 +29,8 @@ export default function CalendarPage() {
  const isAdminUser = ["super_admin", "company_admin", "managing_partner"].includes(user?.role);
  const [showAdminCalendar, setShowAdminCalendar] = useState(true);
  const [showStaffCalendar, setShowStaffCalendar] = useState(true);
+ const [showReminderForm, setShowReminderForm] = useState(false);
+ const [reminderForm, setReminderForm] = useState({ title: "", description: "", dueDate: format(new Date(), "yyyy-MM-dd"), priority: "medium" });
 
  const activeIndustry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
 
@@ -50,6 +52,29 @@ export default function CalendarPage() {
  queryKey: ["staff", companyId],
  queryFn: () => base44.entities.StaffRecord.filter({ company_id: companyId}),
  enabled: !!companyId});
+
+ const { data: reminders = [] } = useQuery({
+ queryKey: ["calendar-reminders", companyId],
+ queryFn: () => base44.entities.Task.filter({ company_id: companyId, category: "calendar_reminder" }),
+ enabled: !!companyId
+ });
+
+ const createReminderMutation = useMutation({
+ mutationFn: () => base44.entities.Task.create({
+ company_id: companyId,
+ title: reminderForm.title,
+ description: reminderForm.description,
+ due_date: reminderForm.dueDate,
+ priority: reminderForm.priority,
+ status: "todo",
+ category: "calendar_reminder"
+ }),
+ onSuccess: () => {
+ queryClient.invalidateQueries({ queryKey: ["calendar-reminders", companyId] });
+ setReminderForm({ title: "", description: "", dueDate: format(new Date(), "yyyy-MM-dd"), priority: "medium" });
+ setShowReminderForm(false);
+ }
+ });
 
  const createMutation = useMutation({
  mutationFn: (data) => base44.entities.Hearing.create({ ...data, company_id: companyId}),
@@ -195,6 +220,31 @@ export default function CalendarPage() {
  </div>
  </div>
  </div>
+ <section className="bg-card rounded-xl border border-primary/40 p-4">
+ <div className="flex items-center justify-between gap-3 mb-3">
+ <div>
+ <h3 className="text-sm font-semibold">Corporate reminders</h3>
+ <p className="text-xs text-muted-foreground">Follow-ups and internal deadlines for the company.</p>
+ </div>
+ <Button size="sm" variant="outline" onClick={() => setShowReminderForm(prev => !prev)}>{showReminderForm ? "Cancel" : "Add reminder"}</Button>
+ </div>
+ {showReminderForm && (
+ <form className="grid gap-3 md:grid-cols-4 mb-4" onSubmit={(event) => { event.preventDefault(); if (reminderForm.title.trim()) createReminderMutation.mutate(); }}>
+ <Input placeholder="Reminder title" value={reminderForm.title} onChange={(event) => setReminderForm(prev => ({ ...prev, title: event.target.value }))} required />
+ <Input type="date" value={reminderForm.dueDate} onChange={(event) => setReminderForm(prev => ({ ...prev, dueDate: event.target.value }))} required />
+ <Input placeholder="Description" value={reminderForm.description} onChange={(event) => setReminderForm(prev => ({ ...prev, description: event.target.value }))} />
+ <Button type="submit" disabled={createReminderMutation.isPending}>Save reminder</Button>
+ </form>
+ )}
+ <div className="grid gap-2 md:grid-cols-2">
+ {reminders.length === 0 ? <p className="text-sm text-muted-foreground">No reminders yet.</p> : reminders.slice(0, 6).map(reminder => (
+ <div key={reminder.id} className="rounded-lg border border-border p-3">
+ <p className="text-sm font-medium">{reminder.title}</p>
+ <p className="text-xs text-muted-foreground">Due {reminder.due_date || "No date"}{reminder.description ? ` · ${reminder.description}` : ""}</p>
+ </div>
+ ))}
+ </div>
+ </section>
  <HearingFormDialog
  open={showForm}
  onClose={() => { setShowForm(false); setSelectedDate(null);}}
