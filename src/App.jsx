@@ -1696,6 +1696,21 @@ function CapacitorKeyboardFixer() {
   return null;
 }
 
+function IndustrySyncInitializer() {
+  const { user, isLoadingAuth } = useAuth();
+
+  useEffect(() => {
+    if (isLoadingAuth) return;
+
+    const industry = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+    if (industry !== 'real_estate_jcl') {
+      initPowerSync().catch(console.error);
+    }
+  }, [isLoadingAuth, user?.company_industry]);
+
+  return null;
+}
+
 function App() {
   const { currentSubdomain } = getSubdomainAndBase();
   const isNativeApp = isDesktopApp();
@@ -1704,7 +1719,6 @@ function App() {
   const isAccountDomain = window.location.hostname.startsWith('account.');
 
   useEffect(() => {
-    initPowerSync().catch(console.error);
     if (isNativeApp) {
       CapacitorUpdater.notifyAppReady().catch(console.error);
     }
@@ -1722,6 +1736,7 @@ function App() {
     <HelmetProvider>
     <ImpersonationProvider>
       <AuthProvider>
+        <IndustrySyncInitializer />
         <ThemeProvider>
           <VideoProvider>
             <QueryClientProvider client={queryClientInstance}>
