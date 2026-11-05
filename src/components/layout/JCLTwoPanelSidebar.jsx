@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, Sparkles, Home, Wrench, Wallet, Briefcase,
+  LayoutDashboard, Sparkles, Home, Wrench, Wallet, Briefcase, Bell,
   FileText, Settings, Compass, Users, Clock, Eye, MessageCircle,
   Banknote, FileCheck, RotateCcw, Users2, Star, Lock, CreditCard,
   Calendar, TrendingUp, Receipt, HeartHandshake, PenTool, Globe,
@@ -26,6 +26,81 @@ import {
 
 // Top-level Department Rail Sections
 const JCL_DEPARTMENTS = [
+  {
+    id: "operations",
+    label: "Operations",
+    icon: LayoutDashboard,
+    color: "orange",
+    items: [
+      { label: "Dashboard", path: "/", icon: LayoutDashboard },
+      { label: "Intelligence", path: "/real-estate/analytics", icon: Sparkles },
+      { label: "Calendar", path: "/calendar", icon: Calendar },
+      { label: "Tasks", path: "/tasks", icon: ClipboardList },
+      { label: "Snapshots", path: "/snapshots", icon: FileText },
+      { label: "Time Tracking", path: "/time-tracking", icon: Clock },
+      { label: "Pipelines", path: "/pipeline", icon: TrendingUp },
+      { label: "Notifications", path: "/notifications", icon: Bell }
+    ]
+  },
+  {
+    id: "admin",
+    label: "Admin",
+    icon: ShieldCheck,
+    color: "slate",
+    items: [
+      { label: "Live GPS", path: "/real-estate/field-tracker", icon: MapPin },
+      { label: "Client Portal", path: "/client-portal", icon: Globe },
+      { label: "Audit Log", path: "/real-estate/audit-log", icon: ShieldCheck }
+    ]
+  },
+  {
+    id: "secretary",
+    label: "Secretary",
+    icon: ClipboardList,
+    color: "teal",
+    items: [
+      { label: "Front Desk", path: "/jcl/front-desk", icon: ClipboardList },
+      { label: "Item Register", path: "/jcl/item-register", icon: Briefcase }
+    ]
+  },
+  {
+    id: "marketing",
+    label: "Marketing",
+    icon: Sparkles,
+    color: "amber",
+    items: [
+      { label: "Clients", path: "/real-estate/clients", icon: Users },
+      { label: "Pipelines", path: "/pipeline", icon: TrendingUp }
+    ]
+  },
+  {
+    id: "properties",
+    label: "Properties",
+    icon: Home,
+    color: "blue",
+    items: [
+      { label: "Leases", path: "/real-estate/leases", icon: FileCheck },
+      { label: "Renewals", path: "/real-estate/lease-renewals", icon: RotateCcw },
+      { label: "Maintenance", path: "/real-estate/maintenance", icon: Wrench },
+      { label: "Contractors", path: "/real-estate/contractors", icon: Users2 },
+      { label: "Reviews", path: "/real-estate/contractor-reviews", icon: Star }
+    ]
+  },
+  {
+    id: "finance-center",
+    label: "Finance",
+    icon: Wallet,
+    color: "indigo",
+    items: [
+      { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
+      { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
+      { label: "Escrow", path: "/real-estate/escrow", icon: Lock },
+      { label: "Rent Payments", path: "/real-estate/rent-payments", icon: CreditCard },
+      { label: "Payment Schedules", path: "/real-estate/payment-schedules", icon: Calendar },
+      { label: "Commissions", path: "/real-estate/commissions", icon: TrendingUp },
+      { label: "Commission Rules", path: "/real-estate/commission-rules", icon: Settings }
+    ]
+  },
   {
     id: "overview",
     label: "Overview & Intelligence",
@@ -248,8 +323,8 @@ export default function JCLTwoPanelSidebar({
         {/* Rail Utility Icons */}
         <div className="flex flex-col gap-1.5 w-full items-center px-2">
           <button
-            onClick={() => navigate('/chat')}
-            title="Chat & Support"
+            onClick={() => navigate('/notifications')}
+            title="Notifications"
             className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors"
           >
             <MessageSquare className="h-4 w-4" />
