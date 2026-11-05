@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks, Calendar, Users, MoreVertical, Edit2, Link2, BarChart2, GanttChartSquare, AlertTriangle } from "lucide-react";
+import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks, Calendar, Users, MoreVertical, Edit2, Link2, BarChart2, LayoutGrid, GanttChartSquare, AlertTriangle } from "lucide-react";
 import { generateText } from "@/lib/cloudflareAI";
 import { format, differenceInDays, addDays, parseISO, isValid } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -460,7 +460,7 @@ export default function Tasks() {
       }},
   ];
 
-  const [activeView, setActiveView] = useState('list');
+  const [activeView, setActiveView] = useState('grid');
 
   return (
     <div className="space-y-6 school-page-enter font-dmsans">
@@ -506,7 +506,7 @@ export default function Tasks() {
       {/* View Toggle + Filters */}
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex items-center bg-muted border border-border rounded-lg p-1 gap-1">
-          <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><ListChecks className="w-4 h-4"/>List</button>
+          <button onClick={() => setActiveView('grid')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'grid' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><LayoutGrid className="w-4 h-4"/>Grid</button>
           <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'board' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><BarChart2 className="w-4 h-4"/>Board</button>
           <button onClick={() => setActiveView('gantt')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'gantt' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><GanttChartSquare className="w-4 h-4"/>Timeline</button>
         </div>
@@ -528,7 +528,7 @@ export default function Tasks() {
       {activeView === 'gantt' ? (
         <GanttView tasks={filtered} />
       ) : (
-      <div className={cn("mt-6", activeView === 'list' ? "space-y-3" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")}>
+      <div className={cn("mt-6", "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")}>
         {isLoading ? (
           <div className={cn("py-12 text-center text-slate-500", activeView === 'list' ? "" : "col-span-full")}>Loading tasks...</div>
         ) : filtered.length === 0 ? (

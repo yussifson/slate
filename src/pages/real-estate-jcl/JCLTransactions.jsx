@@ -45,6 +45,7 @@ export default function JCLTransactions() {
 
   const [transactions, setTransactions] = useState([]);
   const [properties, setProperties] = useState([]);
+  const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [viewMode, setViewMode] = useState('kanban'); // 'kanban' | 'list'
   const [search, setSearch] = useState('');
@@ -60,6 +61,7 @@ export default function JCLTransactions() {
   const [formData, setFormData] = useState({
     propertyId: '',
     propertyAddress: '',
+    clientId: '',
     sellerName: '',
     buyerName: '',
     salePrice: 500000,
@@ -73,16 +75,19 @@ export default function JCLTransactions() {
     if (!companyId) return;
     try {
       setIsLoading(true);
-      const [txnRes, propRes] = await Promise.all([
+      const [txnRes, propRes, clientRes] = await Promise.all([
         powerSync.execute('SELECT * FROM univ_re_transactions WHERE company_id = ? ORDER BY created_at DESC', [companyId]),
-        powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY address ASC', [companyId]).catch(() => ({ rows: [] }))
+        powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY address ASC', [companyId]).catch(() => ({ rows: [] })),
+        powerSync.execute('SELECT * FROM univ_re_clients WHERE company_id = ? ORDER BY name ASC', [companyId]).catch(() => ({ rows: [] }))
       ]);
 
       const txnList = txnRes.rows._array || Array.from(txnRes.rows || []);
       const propList = propRes.rows._array || Array.from(propRes.rows || []);
+      const clientList = clientRes.rows._array || Array.from(clientRes.rows || []);
 
       setTransactions(txnList);
       setProperties(propList);
+      setClients(clientList);
     } catch (_err) {
       toast.error('Failed to load transactions');
     } finally {
@@ -126,8 +131,9 @@ export default function JCLTransactions() {
     setFormData({
       propertyId: properties[0]?.id || '',
       propertyAddress: properties[0]?.address || '',
+      clientId: clients[0]?.id || '',
+      buyerName: clients[0]?.name || '',
       sellerName: '',
-      buyerName: '',
       salePrice: 500000,
       closingDate: format(new Date(), 'yyyy-MM-dd'),
       agentName: user?.user_metadata?.full_name || 'Assigned Broker',
@@ -142,6 +148,7 @@ export default function JCLTransactions() {
     setFormData({
       propertyId: txn.property_id || '',
       propertyAddress: txn.property_address || '',
+      clientId: txn.buyer_id || '',
       sellerName: txn.seller_name || '',
       buyerName: txn.buyer_name || '',
       salePrice: txn.sale_price || 0,
@@ -166,12 +173,12 @@ export default function JCLTransactions() {
       if (editingId) {
         await powerSync.execute(
           `UPDATE univ_re_transactions SET
-            property_id = ?, property_address = ?, seller_name = ?, buyer_name = ?,
+            property_id = ?, property_address = ?, seller_name = ?, buyer_id = ?, buyer_name = ?,
             sale_price = ?, closing_date = ?, status = ?, agent_name = ?, notes = ?
           WHERE id = ? AND company_id = ?`,
           [
             formData.propertyId || null, formData.propertyAddress,
-            formData.sellerName || null, formData.buyerName,
+            formData.sellerName || null, formData.clientId || null, formData.buyerName,
             Number(formData.salePrice) || 0, formData.closingDate || null,
             formData.status, formData.agentName || null, formData.notes || null,
             editingId, companyId
@@ -183,13 +190,13 @@ export default function JCLTransactions() {
         await powerSync.execute(
           `INSERT INTO univ_re_transactions (
             id, created_at, company_id, property_id, property_address,
-            seller_name, buyer_name, sale_price, closing_date, status,
+            seller_id, seller_name, buyer_id, buyer_name, sale_price, closing_date, status,
             agent_id, agent_name, notes
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             newId, now, companyId,
             formData.propertyId || null, formData.propertyAddress,
-            formData.sellerName || null, formData.buyerName,
+            null, formData.sellerName || null, formData.clientId || null, formData.buyerName,
             Number(formData.salePrice) || 0, formData.closingDate || null,
             formData.status, user?.id || null, formData.agentName || null,
             formData.notes || null
@@ -685,14 +692,11 @@ export default function JCLTransactions() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
-                <Label className="text-xs font-semibold">Buyer Name *</Label>
-                <Input
-                  required
-                  placeholder="e.g. Arthur Pendelton"
-                  value={formData.buyerName}
-                  onChange={e => setFormData({ ...formData, buyerName: e.target.value })}
-                  className="text-xs"
-                />
+                <Label className="text-xs font-semibold">Client *</Label>
+                <select required className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs" value={formData.clientId} onChange={e => { const client = clients.find(c => c.id === e.target.value); setFormData({ ...formData, clientId: client?.id || '', buyerName: client?.name || '', propertyAddress: client?.address || formData.propertyAddress }); }}>
+                  <option value="">Select existing client</option>
+                  {clients.map(client => <option key={client.id} value={client.id}>{client.name}{client.address ? ` · ${client.address}` : ''}</option>)}
+                </select>
               </div>
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">Seller Name</Label>

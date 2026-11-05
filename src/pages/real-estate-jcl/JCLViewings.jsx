@@ -44,7 +44,7 @@ export default function JCLViewings() {
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [viewMode, setViewMode] = useState('agenda'); // 'agenda' | 'calendar'
+  const [viewMode, setViewMode] = useState('list'); // 'list' | 'calendar'
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -363,15 +363,15 @@ export default function JCLViewings() {
 
         <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50 self-end md:self-auto">
           <button
-            onClick={() => setViewMode('agenda')}
+            onClick={() => setViewMode('list')}
             className={cn(
               "p-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5",
-              viewMode === 'agenda' ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+              viewMode === 'list' ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
             )}
-            title="Agenda Stream"
+            title="List View"
           >
             <Clock className="h-3.5 w-3.5" />
-            <span className="text-[11px] hidden sm:inline">Agenda</span>
+            <span className="text-[11px] hidden sm:inline">List</span>
           </button>
           <button
             onClick={() => setViewMode('calendar')}
@@ -387,8 +387,8 @@ export default function JCLViewings() {
         </div>
       </div>
 
-      {/* ── 4. Main Body: Agenda Stream or Calendar ── */}
-      {viewMode === 'agenda' ? (
+      {/* ── 4. Main Body: List or Calendar ── */}
+      {viewMode === 'list' ? (
         <div className="space-y-3">
           {filteredViewings.length === 0 ? (
             <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/40">
@@ -402,7 +402,7 @@ export default function JCLViewings() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="space-y-3">
               {filteredViewings.map(v => {
                 const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
                 const bannerColor = 'from-emerald-800 via-emerald-700 to-emerald-600';
@@ -681,25 +681,13 @@ export default function JCLViewings() {
           <form onSubmit={handleSaveViewing} className="p-6 space-y-4 flex-1">
             <div className="space-y-1">
               <Label className="text-xs font-semibold">Property Address *</Label>
-              <Input
-                required
-                placeholder="e.g. 104 Oceanfront Boulevard"
-                value={formData.propertyAddress}
-                onChange={e => setFormData({ ...formData, propertyAddress: e.target.value })}
-                className="text-xs"
-              />
+              <select required className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs" value={formData.propertyId} onChange={e => { const property = properties.find(p => p.id === e.target.value); setFormData({ ...formData, propertyId: property?.id || '', propertyAddress: property?.address || '' }); }}><option value="">Select existing property</option>{properties.map(property => <option key={property.id} value={property.id}>{property.address}</option>)}</select>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">Client Name *</Label>
-                <Input
-                  required
-                  placeholder="e.g. Eleanor Vance"
-                  value={formData.clientName}
-                  onChange={e => setFormData({ ...formData, clientName: e.target.value })}
-                  className="text-xs"
-                />
+                <select required className="h-9 w-full rounded-md border border-input bg-background px-3 text-xs" value={formData.clientId} onChange={e => { const client = clients.find(c => c.id === e.target.value); setFormData({ ...formData, clientId: client?.id || '', clientName: client?.name || '', propertyAddress: client?.address || formData.propertyAddress }); }}><option value="">Select existing client</option>{clients.map(client => <option key={client.id} value={client.id}>{client.name}{client.address ? ` · ${client.address}` : ''}</option>)}</select>
               </div>
               <div className="space-y-1">
                 <Label className="text-xs font-semibold">Assigned Agent</Label>
