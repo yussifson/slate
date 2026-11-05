@@ -864,6 +864,7 @@ export const INDUSTRIES = {
       { label: 'Time Tracking', path: '/time-tracking', icon: 'Clock3' },
       { label: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
       { label: 'Notifications', path: '/notifications', icon: 'Bell' },
+      { section: 'Delivery', label: 'Engagements & Projects', path: '/jcl/engagements', icon: 'FolderKanban' },
       { section: 'Secretary', label: 'Front Desk', path: '/jcl/front-desk', icon: 'BookOpen' },
       { label: 'Item Register', path: '/jcl/item-register', icon: 'ClipboardCheck' },
       { section: 'Marketing', label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
