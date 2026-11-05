@@ -85,7 +85,7 @@ const TABS = [
 ];
 
 const TAB_COLORS = {
-  indigo:  { icon: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',  badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30',  btn: 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20' },
+  indigo:  { icon: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',  badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30',  btn: 'bg-primary hover:bg-primary/90 shadow-indigo-600/20' },
   emerald: { icon: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20', badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30', btn: 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20' },
   rose:    { icon: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',          badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30',          btn: 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20' },
   purple:  { icon: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',  badge: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30',  btn: 'bg-purple-600 hover:bg-purple-700 shadow-purple-600/20' },
@@ -554,7 +554,7 @@ export default function FirmAccountingHub() {
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary to-primary/70 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
             <Building2 className="h-5 w-5" />
           </div>
           <div>
@@ -568,7 +568,7 @@ export default function FirmAccountingHub() {
           <Button variant="outline" size="sm" onClick={loadData} className="h-9 px-3 text-xs gap-1.5 border-border">
             <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} /> Refresh
           </Button>
-          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="h-9 px-4 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 gap-1.5">
+          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="h-9 px-4 text-xs font-semibold bg-primary hover:bg-primary/90 text-white shadow-md shadow-indigo-600/20 gap-1.5">
             <Plus className="h-4 w-4" /> New Invoice
           </Button>
         </div>
@@ -583,7 +583,7 @@ export default function FirmAccountingHub() {
       </div>
 
       {/* ── 3. Tab Navigation ── */}
-      <div className="flex items-center gap-1 bg-muted/60 p-1.5 rounded-2xl border border-border/60 overflow-x-auto">
+      <aside className="sticky top-4 z-10 flex flex-col gap-1 rounded-2xl border border-border/60 bg-card/90 p-2 shadow-sm md:w-64 md:self-start">
         {TABS.map(tab => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -592,7 +592,7 @@ export default function FirmAccountingHub() {
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={cn(
-                'flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-[11px] font-semibold whitespace-nowrap transition-all',
+                'flex w-full items-center gap-2 px-3.5 py-2.5 rounded-xl text-left text-[11px] font-semibold transition-all',
                 isActive
                   ? 'bg-card shadow-sm text-foreground'
                   : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
@@ -603,7 +603,7 @@ export default function FirmAccountingHub() {
             </button>
           );
         })}
-      </div>
+      </aside>
 
       {/* ══════════════════════════════════════════════════════ */}
       {/* TAB: CHART OF ACCOUNTS                                */}
@@ -1194,7 +1194,7 @@ export default function FirmAccountingHub() {
                 <SelectContent>{['Asset','Liability','Equity','Revenue','Expense'].map(t => <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white mt-2">Add Account</Button>
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-primary hover:bg-primary/90 text-white mt-2">Add Account</Button>
           </form>
         </SheetContent>
       </Sheet>

@@ -857,10 +857,13 @@ export const INDUSTRIES = {
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
       { section: 'Operations', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Intelligence', path: '/real-estate/analytics', icon: 'Brain' },
       { label: 'Calendar', path: '/calendar', icon: 'CalendarDays' },
       { label: 'Tasks', path: '/tasks', icon: 'Briefcase' },
-      { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
-      { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
+      { label: 'Snapshots', path: '/snapshots', icon: 'Camera' },
+      { label: 'Time Tracking', path: '/time-tracking', icon: 'Clock3' },
+      { label: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
+      { label: 'Notifications', path: '/notifications', icon: 'Bell' },
       { section: 'Secretary', label: 'Front Desk', path: '/jcl/front-desk', icon: 'BookOpen' },
       { section: 'Marketing', label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
       { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
@@ -870,10 +873,9 @@ export const INDUSTRIES = {
       { label: 'Timeline', path: '/real-estate/customer-timeline', icon: 'Clock' },
       { label: 'Field GPS', path: '/real-estate/marketer-tracker', icon: 'MapPin' },
       { label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
-      { section: 'Client Services', label: 'Client Portal', path: '/portal', icon: 'Globe' },
-      { section: 'Land & Property', label: 'Land Parcels', path: '/real-estate/land', icon: 'Compass' },
+      { section: 'Property', label: 'Land Parcels', path: '/real-estate/land', icon: 'Compass' },
       { label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
-      { section: 'Property Management', label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
+      { label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
       { label: 'Renewals', path: '/real-estate/lease-renewals', icon: 'RotateCcw' },
       { label: 'Maintenance', path: '/real-estate/maintenance', icon: 'Wrench' },
       { label: 'Contractors', path: '/real-estate/contractors', icon: 'Users2' },
@@ -885,10 +887,12 @@ export const INDUSTRIES = {
       { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: 'Calendar' },
       { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
       { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
-      { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' },
-      { section: 'Administration', label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
+      { section: 'Administration', label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
+      { label: 'Client Portal', path: '/portal', icon: 'Globe' },
+      { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
-      { label: 'Settings', path: '/settings', icon: 'Settings' }
+      { label: 'Settings', path: '/settings', icon: 'Settings' },
+      { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' }
     ]},
 
   
@@ -1064,22 +1068,20 @@ export const getIndustryNav = (industryKey, educationLevel) => {
      nav = nav.filter(n => allowedModules.includes(n.path) || n.path === '/' || n.path === '/settings' || n.path === '/integrations' || n.path === '/hr' || n.path === '/smart-docs' || n.path === '/tasks');
   }
   
-  // Ensure Email Inbox exists globally across all industries
-  if (!nav.find(n => n.path === '/email-inbox')) {
+  // Keep communication tools available to other industries, but not the JCL workspace.
+  if (industryKey !== 'real_estate_jcl' && !nav.find(n => n.path === '/email-inbox')) {
     // Insert it right before Integrations/Settings
     const insertIndex = Math.max(0, nav.length - 2);
     nav.splice(insertIndex, 0, { label: 'Email Inbox', path: '/email-inbox', icon: 'Mail' });
   }
 
-  // Ensure Chat exists globally
-  if (!nav.find(n => n.path === '/chat')) {
+  if (industryKey !== 'real_estate_jcl' && !nav.find(n => n.path === '/chat')) {
     // Insert it before Email Inbox
     const insertIndex = Math.max(0, nav.length - 3);
     nav.splice(insertIndex, 0, { label: 'Team Chat', path: '/chat', icon: 'MessageSquare' });
   }
 
-  // Ensure Board exists globally
-  if (!nav.find(n => n.path === '/board')) {
+  if (industryKey !== 'real_estate_jcl' && !nav.find(n => n.path === '/board')) {
     const insertIndex = Math.max(0, nav.length - 3);
     nav.splice(insertIndex, 0, { label: 'Video Calls', path: '/board', icon: 'Video' });
   }
