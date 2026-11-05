@@ -858,11 +858,11 @@ export const INDUSTRIES = {
     ],    nav: [
       { section: 'Operations', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
       { label: 'Calendar', path: '/calendar', icon: 'CalendarDays' },
-      { label: 'Tasks & Projects', path: '/tasks', icon: 'Briefcase' },
+      { label: 'Tasks', path: '/tasks', icon: 'Briefcase' },
       { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
       { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
-      { section: 'Secretary', label: 'Front Desk & Logbooks', path: '/jcl/front-desk', icon: 'BookOpen' },
-      { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
+      { section: 'Secretary', label: 'Front Desk', path: '/jcl/front-desk', icon: 'BookOpen' },
+      { section: 'Clients & Sales', label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
       { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
       { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
       { label: 'Counter Offers', path: '/real-estate/counter-offers', icon: 'MessageCircle' },
@@ -884,10 +884,10 @@ export const INDUSTRIES = {
       { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: 'Calendar' },
       { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
       { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
-      { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
       { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' },
-      { section: 'System Admin', label: 'Settings', path: '/settings', icon: 'Settings' },
-      { label: 'Integrations', path: '/integrations', icon: 'Blocks' }
+      { section: 'Administration', label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
+      { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Settings', path: '/settings', icon: 'Settings' }
     ]},
 
   

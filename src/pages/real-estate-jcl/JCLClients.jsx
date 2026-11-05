@@ -136,7 +136,7 @@ export default function JCLClients() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'grid' | 'list'
 
   // Selected client for detail sheet / edit
   const [selectedClient, setSelectedClient] = useState(null);

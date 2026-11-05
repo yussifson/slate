@@ -322,16 +322,16 @@ export default function Viewings() {
               }
             }} className="space-y-4 mt-6 pb-28 sm:pb-6">
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Property ID</label>
-                <input type="text" placeholder="Property ID" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Property reference</label>
+                <input type="text" placeholder="Optional property reference" value={formData.propertyId} onChange={(e) => setFormData({...formData, propertyId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Property Address *</label>
                 <input type="text" placeholder="Property Address" value={formData.propertyAddress} onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" required />
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Client ID</label>
-                <input type="text" placeholder="Client ID" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
+                <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Client reference</label>
+                <input type="text" placeholder="Optional client reference" value={formData.clientId} onChange={(e) => setFormData({...formData, clientId: e.target.value})} className="w-full px-3 py-2 border border-slate-300 dark:border-border rounded-lg text-sm bg-white dark:bg-card text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-600 dark:text-foreground mb-1.5 block">Client Name *</label>

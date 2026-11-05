@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
+
+/* The product uses one consistent list-first information architecture. */
+[title="Grid View"], [aria-label="Grid View"], [data-view="grid"] {
+  display: none !important;
+}
 @tailwind components;
 @tailwind utilities;
 

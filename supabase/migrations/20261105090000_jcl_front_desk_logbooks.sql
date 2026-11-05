@@ -19,8 +19,8 @@ CREATE INDEX IF NOT EXISTS idx_jcl_visitor_logbook_company_time ON public.jcl_vi
 ALTER TABLE public.jcl_visitor_logbook ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS jcl_visitor_logbook_company_access ON public.jcl_visitor_logbook;
 CREATE POLICY jcl_visitor_logbook_company_access ON public.jcl_visitor_logbook FOR ALL TO authenticated
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-WITH CHECK (company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+USING (company_id::text IN (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+WITH CHECK (company_id::text IN (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.jcl_staff_logbook (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -38,8 +38,8 @@ CREATE INDEX IF NOT EXISTS idx_jcl_staff_logbook_company_time ON public.jcl_staf
 ALTER TABLE public.jcl_staff_logbook ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS jcl_staff_logbook_company_access ON public.jcl_staff_logbook;
 CREATE POLICY jcl_staff_logbook_company_access ON public.jcl_staff_logbook FOR ALL TO authenticated
-USING (company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid()))
-WITH CHECK (company_id IN (SELECT company_id FROM public.profiles WHERE id = auth.uid()));
+USING (company_id::text IN (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()))
+WITH CHECK (company_id::text IN (SELECT company_id::text FROM public.profiles WHERE id = auth.uid()));
 
 DO $$ BEGIN
   EXECUTE 'ALTER PUBLICATION powersync ADD TABLE public.jcl_visitor_logbook';

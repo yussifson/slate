@@ -653,10 +653,10 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
   if (!isOpen) {
     return (
       <>
-        <div className="hidden md:block w-full max-w-sm rounded-full p-[1.5px] bg-gradient-to-r from-blue-500 to-pink-500 hover:shadow-md transition-shadow cursor-text group">
+        <div className="hidden md:block w-full max-w-sm rounded-full p-px bg-white/20 hover:bg-white/35 transition-colors cursor-text group">
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center h-10 w-full bg-[#006065] rounded-full px-4 text-white/60 hover:text-white transition-colors"
+            className="flex items-center h-10 w-full bg-[#00477D] rounded-full px-4 text-white/70 hover:text-white transition-colors"
           >
             <Search className="w-[18px] h-[18px] shrink-0 text-white/60" />
             <div className="w-[1px] h-5 bg-white/20 mx-3 shrink-0" />
@@ -676,7 +676,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
   return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6 bg-[#006065]/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-start justify-center pt-[6vh] sm:pt-[9vh] px-3 sm:px-4 pb-6 bg-slate-950/45 backdrop-blur-md"
       onMouseDown={(e) => { if (e.target === overlayRef.current) setIsOpen(false); }}
     >
       <style>{`
@@ -689,11 +689,11 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
       <div className="w-full max-w-[720px] flex flex-col relative" style={{ animation: 'spotlightFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1)' }}>
 
         {/* Gradient Search Input Box */}
-        <div className="bg-gradient-to-r from-purple-500 via-pink-400 to-amber-500 p-[1.5px] rounded-xl shadow-lg relative z-20">
-          <div className="bg-[#005055] rounded-[10px] flex items-center px-4 py-3 h-[52px] gap-3">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl relative z-20">
+          <div className="rounded-[15px] flex items-center px-4 py-3 h-[58px] gap-3">
             {isSearching
               ? <Loader2 className="w-5 h-5 text-white/60 shrink-0 animate-spin" />
-              : <Search className="w-5 h-5 text-white/60 shrink-0" />
+              : <Search className="w-5 h-5 text-slate-400 shrink-0" />
             }
             <input
               ref={inputRef}
@@ -701,7 +701,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search people, docs, tasks, meetings… (Enter for AI)"
-              className="flex-1 bg-transparent text-white text-[16px] font-medium placeholder:text-white/40 min-w-0 border-0 outline-none ring-0 shadow-none focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none"
+              className="flex-1 bg-transparent text-slate-900 dark:text-white text-[16px] font-medium placeholder:text-slate-400 min-w-0 border-0 outline-none ring-0 shadow-none focus:border-0 focus:outline-none focus:ring-0 focus:shadow-none"
               style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
             />
             {/* AI-only trigger hint */}
@@ -739,7 +739,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
         </div>
 
         {/* Results Panel */}
-        <div className="bg-[#006065] rounded-b-xl shadow-xl border-x border-b border-white/10 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
+        <div className="bg-white dark:bg-slate-900 rounded-b-2xl shadow-2xl border-x border-b border-slate-200 dark:border-slate-700 mt-[-10px] pt-[10px] relative z-10 flex flex-col min-h-[300px]">
 
           {/* Filters Row + Scope Badge */}
           <div className="px-6 py-3 border-b border-white/10 flex items-center gap-3 flex-wrap">
@@ -750,7 +750,7 @@ After your answer, list source IDs as JSON: SOURCES:[{"id":"<id>","type":"<type>
                   onClick={() => setSelectedFilter(tab.id)}
                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                     selectedFilter === tab.id
-                      ? 'bg-[#00beac] text-[#00beac] font-bold'
+                      ? 'bg-primary text-primary-foreground font-bold'
                       : 'bg-white/10 border border-white/15 text-white/70 hover:bg-white/20 hover:text-white'
                   }`}
                 >

@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/
 import PageHeader from "@/components/shared/PageHeader";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday} from "date-fns";
 import { useCompany } from "@/hooks/useCompanyId";
+import { toast } from "react-hot-toast";
 
 export default function CalendarPage() {
  const { t} = useTranslation();
@@ -77,8 +78,10 @@ export default function CalendarPage() {
  });
 
  const createMutation = useMutation({
- mutationFn: (data) => base44.entities.Hearing.create({ ...data, company_id: companyId}),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["hearings"]}); setShowForm(false);}});
+ mutationFn: (data) => base44.entities.Hearing.create({ ...data, company_id: companyId, created_by: user?.id, created_by_email: user?.email }),
+ onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["hearings"]}); setShowForm(false);},
+ onError: (error) => { console.error('[v0] Calendar creation failed:', error); toast.error('You do not have permission to create this calendar item.'); }
+});
 
  const monthStart = startOfMonth(currentMonth);
  const monthEnd = endOfMonth(currentMonth);
@@ -88,7 +91,7 @@ export default function CalendarPage() {
  // Enforce Calendar toggles and assigned visibility logic
  const filteredHearings = hearings.filter(h => {
  if (!isAdminUser) {
- return h.lawyer_email === user?.email;
+ return h.lawyer_email === user?.email || h.created_by === user?.id || h.created_by_email === user?.email;
 }
  const assignedStaff = staff.find(s => s.user_email === h.lawyer_email);
  const isEventAdmin = !assignedStaff || ["company_admin", "managing_partner", "super_admin"].includes(assignedStaff.role);
@@ -268,9 +271,20 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
 
  const handleChange = (field, value) => setForm(prev => ({ ...prev, [field]: value}));
 
+ const getReadableLabel = (value) => {
+  if (!value) return "";
+  if (typeof value !== "string") return value.name || value.title || value.address || "Linked record";
+  try {
+   const parsed = JSON.parse(value);
+   return parsed.name || parsed.title || parsed.address || parsed.label || "Linked record";
+  } catch {
+   return value;
+  }
+ };
+
  const handleCaseChange = (caseId) => {
  const c = cases?.find(cs => cs.id === caseId);
- setForm(prev => ({ ...prev, case_id: caseId, case_title: c?.title || "", case_number: c?.case_number || ""}));
+ setForm(prev => ({ ...prev, case_id: caseId, case_title: getReadableLabel(c?.title), case_number: c?.case_number || ""}));
 };
 
  const handleLawyerChange = (email) => {
@@ -278,7 +292,7 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
  setForm(prev => ({ ...prev, lawyer_email: email, lawyer_name: s?.full_name || ""}));
 };
 
- const handleSubmit = (e) => { e.preventDefault(); onSubmit(form);};
+ const handleSubmit = (e) => { e.preventDefault(); onSubmit({ ...form, lawyer_email: form.lawyer_email || '' });};
 
  const hearingTerm = getTerm(activeIndustry, "hearing", true);
  const venueTerm = getTerm(activeIndustry, "venue", true);
@@ -304,18 +318,14 @@ function HearingFormDialog({ open, onClose, onSubmit, initialDate, cases, staff,
  <Select value={form.case_id} onValueChange={handleCaseChange}>
  <SelectTrigger><SelectValue placeholder={`Link to ${caseTerm.toLowerCase()}`} /></SelectTrigger>
  <SelectContent>{cases?.map(c => {
- return <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>;
+ return <SelectItem key={c.id} value={c.id}>{getReadableLabel(c.title) || c.case_number || "Linked case"}</SelectItem>;
 })}</SelectContent>
  </Select>
  </div>
  <div>
  <Label>{staffTerm}</Label>
- <Select value={form.lawyer_email} onValueChange={handleLawyerChange}>
- <SelectTrigger><SelectValue placeholder={`Assign ${staffTerm.toLowerCase()}`} /></SelectTrigger>
- <SelectContent>{staff?.filter(s => ["lawyer", "company_admin", "teacher", "doctor", "staff"].includes(s.role) || s.role?.includes("admin")).map(s => {
- return <SelectItem key={s.user_email} value={s.user_email}>{s.full_name}</SelectItem>;
-})}</SelectContent>
- </Select>
+ <Input value={form.lawyer_name} onChange={(e) => handleChange("lawyer_name", e.target.value)} placeholder={`Type ${staffTerm.toLowerCase()} name`} list="calendar-agent-names" />
+ <datalist id="calendar-agent-names">{staff?.filter(s => s.full_name).map(s => <option key={s.user_email || s.id} value={s.full_name}>{s.user_email}</option>)}</datalist>
  </div>
  <div><Label>{t("notes", "Notes")}</Label><Textarea value={form.notes} onChange={(e) => handleChange("notes", e.target.value)} rows={2} /></div>
  <div className="flex justify-end gap-2">

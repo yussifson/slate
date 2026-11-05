@@ -44,7 +44,7 @@ export default function JCLLeases() {
   const [properties, setProperties] = useState([]);
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'grid' | 'list'
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -410,7 +410,7 @@ export default function JCLLeases() {
             <Plus className="h-3.5 w-3.5 mr-1" /> New Lease
           </Button>
         </div>
-      ) : viewMode === 'grid' ? (
+      ) : false ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredLeases.map(lease => {
             const st = STATUS_CONFIG[lease.status] || STATUS_CONFIG.active;
