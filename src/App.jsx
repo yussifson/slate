@@ -1787,7 +1787,7 @@ function App() {
                   </React.Suspense>
                 ) : isAccountDomain ? (
                   /* ── ACCOUNT DOMAIN: Global Identity Portal ── */
-                  <React.Suspense fallback={<AppPageSkeleton />}>
+                  <React.Suspense fallback={null}>
                     <Routes>
                       <Route path="/login" element={<AccountLogin />} />
                       <Route path="/signup" element={<AccountSignUp />} />
@@ -1815,7 +1815,7 @@ function App() {
                   </React.Suspense>
                 ) : (
                   /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
-                  <React.Suspense fallback={<AppPageSkeleton />}>
+                  <React.Suspense fallback={null}>
                     {isBaseDomain ? (
                       /* Storefront Routes for the Base Domain */
                       <Routes>
