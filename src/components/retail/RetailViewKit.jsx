@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutGrid, List, Edit, Trash2, Eye} from "lucide-react";
+import { List, Edit, Trash2, Eye} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import { cn} from "@/lib/utils";
 
@@ -23,17 +23,6 @@ export function ViewModeToggle({ viewMode, onChange, className}) {
  title="List view"
  >
  <List className="w-4 h-4" />
- </button>
- <button
- type="button"
- onClick={() => onChange("grid")}
- className={cn(
- "p-2 rounded-lg transition-colors",
- viewMode === "grid" ? "bg-primary text-primary-foreground" : "text-[#71717a] dark:text-gray-400 hover:bg-muted"
- )}
- title="Grid view"
- >
- <LayoutGrid className="w-4 h-4" />
  </button>
  </div>
  );

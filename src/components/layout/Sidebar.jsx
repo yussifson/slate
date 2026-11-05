@@ -86,8 +86,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const toggleCat = (cat) => {
     setExpandedCats(prev => {
-      const isDefaultOpen = activeIndustry === 'real_estate_jcl'
-        ? ['Executive Overview', 'Sales & CRM', 'Land & Property', 'Tenancy & Operations', 'Human Resources'].includes(cat)
+const isDefaultOpen = activeIndustry === 'real_estate_jcl'
+        ? ['Operations', 'Secretary', 'Marketing', 'Land & Property', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
         : (cat === 'Platform' || cat === 'Operations');
       const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : isDefaultOpen;
       const next = { ...prev, [cat]: !isCurrentlyExpanded };
@@ -334,7 +334,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   law: ["/", "/my-dashboard", "/cases", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"],
   software: ["/", "/my-dashboard", "/sprints", "/bugs", "/product-tasks", "/product-docs", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   real_estate: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
-  real_estate_jcl: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  real_estate_jcl: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/calendar", "/jcl/front-desk", "/real-estate/analytics", "/real-estate/field-tracker", "/real-estate/marketer-tracker", "/email-inbox", "/chat", "/board"],
   hospital: ["/", "/my-dashboard", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   school: ["/", "/my-dashboard", "/classes", "/students", "/attendance", "/grades", "/assignments", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   accounting: ["/", "/my-dashboard", "/invoices", "/billing", "/clients", "/reports", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
@@ -844,38 +844,27 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       return activeIndustry === 'real_estate_jcl' ? "System Admin" : "System Administration";
     }
 
-    // Dedicated Department Grouping for JCL Royal Group
+    // JCL Royal Group is organized by department, not by nested feature groups.
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/', '/my-dashboard', '/intelligence', '/real-estate/field-tracker'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview', 'Live GPS', 'Live GPS Operations'].includes(item.label)) {
-        return "Executive Overview";
+      if (['/jcl/front-desk', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline'].includes(p)) {
+        return "Secretary";
       }
-      if (['/real-estate/crm-leads', '/real-estate/clients', '/real-estate/customer-timeline', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/marketer-tracker'].includes(p) || p.startsWith('/real-estate/crm') || ['Field GPS', 'GPS Field Tracker', 'Marketer GPS Tracker'].includes(item.label)) {
-        return "Sales & CRM";
+      if (['/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
+        return "Marketing";
       }
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data'].includes(p) || p.startsWith('/real-estate/land')) {
         return "Land & Property";
       }
-      if (['/real-estate/transactions', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p)) {
-        return "Tenancy & Operations";
-      }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||
           p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
           p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
-        return "Finance & Accounting";
-      }
-      if (['/tasks', '/smart-docs', '/real-estate/document-templates', '/real-estate/e-signatures'].includes(p)) {
-        return "Projects & Smart Docs";
+        return "Finance";
       }
       if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
         return "Human Resources";
       }
-      if (['/real-estate/agent-metrics', '/real-estate/analytics'].includes(p)) {
-        return "Executive Overview";
-      }
-      if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
-        return "Communications";
-      }
-      return "Tenancy & Operations";
+      if (['/settings', '/integrations'].includes(p)) return "System Admin";
+      return "Operations";
     }
 
     // Default Grouping for all other industries
@@ -904,7 +893,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Executive Overview", "Sales & CRM", "Land & Property", "Tenancy & Operations", "Finance & Accounting", "Projects & Smart Docs", "Human Resources", "System Admin", "Communications"]
+    ? ["Operations", "Secretary", "Marketing", "Land & Property", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
@@ -1111,7 +1100,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
      return (
         <div className="space-y-0.5 mt-2">
           {navItems.map((item, idx) => {
-            if (item.section) {
+            if (item.section && activeIndustry !== 'real_estate_jcl') {
               return (
                 <div key={`sec-${idx}`} className={cn("px-4 py-2 mt-4 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider", collapsed && "hidden")}>
                   {item.section}
@@ -1129,7 +1118,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
      const items = groupedNav[cat];
      if (!items || items.length === 0) return null;
      const isDefaultOpen = activeIndustry === 'real_estate_jcl'
-        ? ['Executive Overview', 'Sales & CRM', 'Land & Property', 'Tenancy & Operations', 'Human Resources'].includes(cat)
+        ? ['Operations', 'Secretary', 'Marketing', 'Land & Property', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
         : (cat === 'Platform' || cat === 'Operations');
       const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : isDefaultOpen;
      
@@ -1150,7 +1139,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
          
           <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
             {items.map((item, idx) => {
-              if (item.section) {
+              if (item.section && activeIndustry !== 'real_estate_jcl') {
                 return (
                   <div key={`sec-${idx}`} className={cn("px-4 py-2 mt-4 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider", collapsed && "hidden")}>
                     {item.section}

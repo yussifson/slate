@@ -1,6 +1,6 @@
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import React from "react";
-import { LayoutGrid, List, Edit, Trash2, Eye, BookOpen, Calendar, Clock, MapPin, FileText, RefreshCw} from "lucide-react";
+import { List, Edit, Trash2, Eye, BookOpen, Calendar, Clock, MapPin, FileText, RefreshCw} from "lucide-react";
 import { Button} from "@/components/ui/button";
 import { cn} from "@/lib/utils";
 
@@ -25,17 +25,6 @@ export function ViewModeToggle({ viewMode, onChange, className}) {
  title="List view"
  >
  <List className="w-4 h-4" />
- </button>
- <button
- type="button"
- onClick={() => onChange("grid")}
- className={cn(
- "p-2 rounded-xl transition-all duration-200",
- viewMode === "grid" ? "bg-primary text-white " : "text-[#71717a] dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-slate-700"
- )}
- title="Grid view"
- >
- <LayoutGrid className="w-4 h-4" />
  </button>
  </div>
  );
