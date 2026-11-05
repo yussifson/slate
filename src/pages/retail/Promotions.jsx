@@ -38,7 +38,7 @@ export default function Promotions() {
   }, [companyId]);
 
  const [searchTerm, setSearchTerm] = useState("");
- const [viewMode, setViewMode] = useState("grid");
+ const [viewMode, setViewMode] = useState("list");
  const [isDialogOpen, setIsDialogOpen] = useState(false);
  
  const [editId, setEditId] = useState(null);

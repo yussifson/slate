@@ -88,7 +88,7 @@ export default function UnivLandManagement() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [zoningFilter, setZoningFilter] = useState('all');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table' | 'kanban'
+  const [viewMode, setViewMode] = useState('list'); // 'grid' | 'table' | 'kanban'
 
   // Modals & Drawers
   const [showParcelDrawer, setShowParcelDrawer] = useState(false);

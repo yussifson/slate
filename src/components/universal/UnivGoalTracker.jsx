@@ -29,7 +29,7 @@ export default function UnivGoalTracker({
  const [searchQuery, setSearchQuery] = useState('');
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [editingGoal, setEditingGoal] = useState(null);
- const [view, setView] = useState('grid'); // grid, list
+ const [view, setView] = useState('list'); // grid, list
 
  const [formState, setFormState] = useState({
  title: '',
