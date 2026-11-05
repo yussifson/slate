@@ -1182,7 +1182,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  <div className="mt-auto p-3 border-t border-white/10 dark:border-white/5 bg-[#00477D] dark:bg-[#060B0D] text-white">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button onDoubleClick={() => navigate('/personal-info')} className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white" title="Open profile">
+ <button onClick={() => navigate('/personal-info')} className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white" title="Open profile">
  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
