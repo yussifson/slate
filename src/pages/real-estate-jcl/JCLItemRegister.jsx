@@ -43,11 +43,14 @@ export default function JCLItemRegister() {
     const safe = (sql, params = []) => powerSync.execute(sql, params).catch(() => ({ rows: [] }));
     const [itemResult, peopleResult, historyResult] = await Promise.all([
       safe('SELECT * FROM jcl_item_register WHERE company_id = ? ORDER BY issued_at DESC', [companyId]),
-      safe('SELECT id, name, email FROM univ_hr_employees WHERE company_id = ? AND (status IS NULL OR status = \'active\') ORDER BY name ASC', [companyId]),
+      safe('SELECT id, name, first_name, last_name, email, status FROM univ_hr_employees WHERE company_id = ? ORDER BY name ASC, first_name ASC, last_name ASC', [companyId]),
       safe('SELECT * FROM jcl_item_register_history WHERE company_id = ? ORDER BY changed_at DESC', [companyId])
     ]);
     setItems(rowsOf(itemResult));
-    setPeople(rowsOf(peopleResult));
+    setPeople(rowsOf(peopleResult).map(person => ({
+      ...person,
+      name: person.name || [person.first_name, person.last_name].filter(Boolean).join(' ') || person.email || 'Unnamed employee'
+    })).filter(person => !person.status || String(person.status).toLowerCase() === 'active'));
     setHistory(rowsOf(historyResult));
     setLoading(false);
   };
