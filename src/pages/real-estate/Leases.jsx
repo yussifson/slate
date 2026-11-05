@@ -28,7 +28,7 @@ export default function Leases() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
-  const [view, setView] = useViewPreference('re_leases', 'grid');
+  const [view, setView] = useViewPreference('re_leases', 'list');
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     propertyId: '',
@@ -224,7 +224,7 @@ export default function Leases() {
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage rental agreements and tenants</p>
           </div>
           <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); }}
               className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4"

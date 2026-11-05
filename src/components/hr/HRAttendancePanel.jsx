@@ -166,7 +166,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
   return (
     <div className="space-y-6 p-6 font-dmsans">
       {/* â”€â”€ Hero Header â”€â”€ */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-primary/90 to-primary/75 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
         <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
@@ -179,13 +179,13 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">{t("time_and_attendance", "Time & Attendance")}</h1>
-                <p className="text-green-100 text-sm">Manage daily check-ins and remote tracking.</p>
+                <p className="text-primary-foreground/80 text-sm">Manage daily check-ins and remote tracking.</p>
               </div>
             </div>
           </div>
           <div className="flex gap-2">
             {!myRecord ? (
-              <Button onClick={clockIn} disabled={clockingIn} className="bg-white text-green-700 hover:bg-green-50 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
+              <Button onClick={clockIn} disabled={clockingIn} className="bg-white text-primary hover:bg-primary/10 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
                 <LogIn className="w-4 h-4" /> {clockingIn ? gpsStatus || "Processing..." : "Clock In"}
               </Button>
             ) : !myRecord.clock_out ? (
@@ -194,7 +194,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                   <Timer className="w-4 h-4" />
                   Clocked in at {formatTime(myRecord.clock_in)}
                 </div>
-                <Button onClick={clockOut} className="bg-white text-green-700 hover:bg-green-50 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
+                <Button onClick={clockOut} className="bg-white text-primary hover:bg-primary/10 rounded-xl shadow-sm gap-2 font-bold px-6 h-10">
                   <LogOut className="w-4 h-4" /> Clock Out
                 </Button>
               </div>
@@ -212,11 +212,11 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-start justify-between mb-4">
-              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${kpi.alt ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}>
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${kpi.alt ? 'bg-gradient-to-br from-primary/80 to-primary' : 'bg-gradient-to-br from-primary to-primary/75'}`}>
                 <kpi.icon className="w-5 h-5 text-white" />
               </div>
               {kpi.trend && (
-                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.trendUp ? 'text-green-700 bg-green-50 dark:bg-green-900/40' : 'text-orange-700 bg-orange-50 dark:bg-orange-900/40'}`}>
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.trendUp ? 'text-primary bg-primary/10 dark:bg-primary/20' : 'text-muted-foreground bg-muted dark:bg-secondary'}`}>
                   {kpi.trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                   {kpi.trend}
                 </span>
@@ -224,7 +224,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
             </div>
             <p className="text-2xl font-bold text-foreground mb-1 tabular-nums">{kpi.value}</p>
             <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
-            <p className={`text-xs ${(!kpi.trendUp && kpi.icon === AlertTriangle) ? 'text-orange-500' : 'text-muted-foreground'}`}>{kpi.sub}</p>
+            <p className={`text-xs ${(!kpi.trendUp && kpi.icon === AlertTriangle) ? 'text-muted-foreground' : 'text-muted-foreground'}`}>{kpi.sub}</p>
           </div>
         ))}
       </div>
@@ -238,7 +238,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
         <TabsContent value="today" className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {boardData.map(s => (
-              <div key={s.id} className="bg-slate-50 dark:bg-secondary/30 border border-border/50 rounded-2xl p-5 flex flex-col hover:border-emerald-500/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
+              <div key={s.id} className="bg-slate-50 dark:bg-secondary/30 border border-border/50 rounded-2xl p-5 flex flex-col hover:border-primary/30 hover:-translate-y-1 transition-all group relative overflow-hidden">
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="flex gap-3">
                     <div className="w-10 h-10 rounded-xl bg-white dark:bg-card flex items-center justify-center font-bold text-foreground shadow-sm border border-border/50 shrink-0">
@@ -265,7 +265,7 @@ export default function HRAttendancePanel({ companyId, isAdmin, staff = [] }) {
                     <div className="flex justify-between items-center pt-2">
                       <StatusBadge status={s.record.status} />
                       {s.record.location_lat && (
-                        <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2 py-1 rounded-full border border-emerald-100 dark:border-emerald-800" title="GPS Verified">
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded-full border border-emerald-100 dark:border-emerald-800" title="GPS Verified">
                           <MapPin className="w-3 h-3" /> GPS
                         </span>
                       )}

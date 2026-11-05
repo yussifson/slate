@@ -31,7 +31,7 @@ export default function TeamManagement() {
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_teammanagement', 'grid');
+  const [view, setView] = useViewPreference('re_teammanagement', 'list');
 const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -134,7 +134,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage your team members and roles</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ name: '', email: '', phone: '', role: 'agent', commissionRate: 0, licenseNumber: '', licenseExpiry: '' }); }} className="gap-2 bg-orange-600 hover:bg-orange-700">
           <Plus className="w-4 h-4" /> Add Member
         </Button>

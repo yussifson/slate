@@ -28,7 +28,7 @@ export default function CommissionRules() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_commissionrules', 'grid');
+  const [view, setView] = useViewPreference('re_commissionrules', 'list');
 const [formData, setFormData] = useState({
     ruleName: '',
     ruleType: 'percentage',
@@ -163,7 +163,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Configure commission structures for transactions</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           ruleName: '',
           ruleType: 'percentage',

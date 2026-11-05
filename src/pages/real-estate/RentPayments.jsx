@@ -37,7 +37,7 @@ export default function RentPayments() {
     collectionRate: 0
   });
   const [showForm, setShowForm] = useState(false);
-  const [view, setView] = useViewPreference('re_rentpayments', 'grid');
+  const [view, setView] = useViewPreference('re_rentpayments', 'list');
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -80,7 +80,7 @@ export default function RentPayments() {
             <p className="text-gray-600 dark:text-gray-400 mt-1">Track and manage tenant rent payments</p>
           </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 dark:bg-orange-500 dark:hover:bg-orange-600 gap-2 shadow-lg hover:shadow-orange-500/25 transition-all duration-300 hover:-translate-y-0.5">
             <Plus className="w-4 h-4" /> Record Payment
           </Button>

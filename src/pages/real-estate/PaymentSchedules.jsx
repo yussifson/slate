@@ -28,7 +28,7 @@ export default function PaymentSchedules() {
   const [automationFilter, setAutomationFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_paymentschedules', 'grid');
+  const [view, setView] = useViewPreference('re_paymentschedules', 'list');
 const [formData, setFormData] = useState({
     leaseId: '',
     paymentAmount: 0,
@@ -170,7 +170,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Configure and manage rent payment schedules</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           leaseId: '',
           paymentAmount: 0,

@@ -23,7 +23,7 @@ const HRPromotionsPanel = React.lazy(() => import('../hr/HRPromotionsPanel'));
 const HRSalaryPanel = React.lazy(() => import('../hr/HRSalaryPanel'));
 
 export default function UnivHRSystem() {
-  const [activeTab, setActiveTab] = useState("employees");
+  const [activeTab, setActiveTab] = useState("overview");
   const { user } = useAuth();
   const companyId = user?.company_id;
   const isAdmin = user?.role === "company_admin" || user?.role === "hr" || isSuperAdmin(user);
@@ -65,7 +65,7 @@ export default function UnivHRSystem() {
         {/* Enterprise-style horizontal scrolling tabs */}
         <div className="mt-6 border-b border-border/60">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-transparent p-0 w-full flex justify-start overflow-x-auto overflow-y-hidden whitespace-nowrap gap-1 md:gap-3 scrollbar-hide h-auto rounded-none border-0">
+            <TabsList className="hidden">
               
               <TabsTrigger value="employees" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
                 <Users className="w-4 h-4 opacity-70" />Employees
@@ -121,6 +121,30 @@ export default function UnivHRSystem() {
       </div>
 
       <div className="flex-1 w-full pb-8 pt-4">
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-primary/10 via-card to-card p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">HR workspace</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground">People operations at a glance</h2>
+              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Use the dedicated HR sidebar to move between your workforce modules. This overview keeps the main dashboard focused on status and quick access.</p>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                ['Employees', staff.length, '/hr/employees', Users],
+                ['Departments', 'Manage', '/hr/departments', Building2],
+                ['Attendance', 'Today', '/hr/attendance', Clock],
+                ['Leave requests', leaves.length, '/hr/leave', CalendarHeart],
+                ['Recruitment', 'Open', '/hr/recruitment', UserPlus],
+                ['Payroll', 'Review', '/hr/payroll', BadgeDollarSign],
+              ].map(([label, value, href, Icon]) => (
+                <a key={href} href={href} className="group rounded-2xl border border-border/60 bg-card p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+                  <div className="flex items-center justify-between"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="h-5 w-5" /></div><ArrowUpCircle className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" /></div>
+                  <p className="mt-4 text-sm font-semibold text-foreground">{label}</p><p className="mt-1 text-2xl font-bold tracking-tight text-foreground">{value}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
         {activeTab === 'employees' && (
           <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm">Loading Employees...</div>}>
             <UnivHREmployee />

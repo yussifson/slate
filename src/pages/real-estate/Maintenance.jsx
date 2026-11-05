@@ -43,7 +43,7 @@ export default function Maintenance() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [view, setView] = useViewPreference('re_maintenance', 'grid');
+  const [view, setView] = useViewPreference('re_maintenance', 'list');
   const [stats, setStats] = useState({
     total: 0,
     critical: 0,
@@ -146,7 +146,7 @@ export default function Maintenance() {
             <p className="text-gray-600 mt-1">Manage and prioritize property maintenance tasks</p>
           </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list', 'kanban']} />
             <Button onClick={() => setShowForm(true)} className="bg-orange-600 hover:bg-orange-700 gap-2">
             <Plus className="w-4 h-4" /> New Request
             </Button>

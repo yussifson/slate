@@ -7,7 +7,7 @@ import ViewToggle from '@/components/shared/ViewToggle';
 export default function AuditLog() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-    const [view, setView] = useViewPreference('re_auditlog', 'grid');
+    const [view, setView] = useViewPreference('re_auditlog', 'list');
 const [filters, setFilters] = useState({
     resourceType: '',
     action: ''

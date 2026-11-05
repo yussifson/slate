@@ -34,7 +34,7 @@ export default function Offers() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [view, setView] = useViewPreference('re_offers', 'grid');
+  const [view, setView] = useViewPreference('re_offers', 'list');
   
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -169,7 +169,7 @@ export default function Offers() {
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">Track and manage property negotiations</p>
           </div>
           <div className="flex items-center gap-2.5 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list', 'kanban']} />
             <Button
               onClick={() => { setShowForm(true); setEditingId(null); setFormData({ propertyAddress: '', buyerName: '', offerAmount: 0, earnestMoney: 0, contingencies: '', expirationDate: '', agentName: '', notes: '', status: 'pending' }); }}
               className="bg-gradient-to-r from-primary to-teal-600 hover:from-primary hover:to-teal-700 text-white shadow-md border-0 h-9 sm:h-10 text-xs sm:text-sm px-3.5 sm:px-4"

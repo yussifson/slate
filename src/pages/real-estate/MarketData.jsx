@@ -26,7 +26,7 @@ export default function MarketData() {
   const [search, setSearch] = useState('');
   const [trendFilter, setTrendFilter] = useState('all');
   const [levelFilter, setLevelFilter] = useState('all');
-  const [view, setView] = useViewPreference('re_marketdata', 'grid');
+  const [view, setView] = useViewPreference('re_marketdata', 'list');
 
   // Fetch market data
   useEffect(() => {

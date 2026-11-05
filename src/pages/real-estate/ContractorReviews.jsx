@@ -28,7 +28,7 @@ export default function ContractorReviews() {
   const [ratingFilter, setRatingFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_contractorreviews', 'grid');
+  const [view, setView] = useViewPreference('re_contractorreviews', 'list');
   const [formData, setFormData] = useState({
     contractorId: '',
     reviewTitle: '',
@@ -167,7 +167,7 @@ export default function ContractorReviews() {
           <p className="text-sm text-muted-foreground mt-1">Track feedback and ratings from contractor work</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           contractorId: '',
           reviewTitle: '',

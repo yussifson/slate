@@ -30,7 +30,7 @@ export default function DocumentTemplates() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [showPreview, setShowPreview] = useState(null);
-  const [view, setView] = useViewPreference('re_documenttemplates', 'grid');
+  const [view, setView] = useViewPreference('re_documenttemplates', 'list');
 const [formData, setFormData] = useState({
     templateName: '',
     documentType: 'contract',
@@ -188,7 +188,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage reusable document templates for transactions</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           templateName: '',
           documentType: 'contract',

@@ -28,7 +28,7 @@ export default function ESignatures() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_esignatures', 'grid');
+  const [view, setView] = useViewPreference('re_esignatures', 'list');
 const [formData, setFormData] = useState({
     documentId: '',
     signerName: '',
@@ -169,7 +169,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage digital signatures on documents</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           documentId: '',
           signerName: '',

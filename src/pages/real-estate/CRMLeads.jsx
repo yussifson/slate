@@ -47,7 +47,7 @@ export default function CRMLeads() {
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_crm_leads', 'grid');
+  const [view, setView] = useViewPreference('re_crm_leads', 'list');
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '', leadType: 'buyer',
     source: 'website', status: 'new', budgetMin: 0, budgetMax: 0, notes: '',
@@ -188,7 +188,7 @@ export default function CRMLeads() {
           <p className="text-sm text-muted-foreground mt-1">Track and manage your property leads</p>
         </div>
         <div className="flex items-center gap-4">
-          <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list', 'kanban']} />
+          <ViewToggle view={view} onViewChange={setView} allowedViews={['list', 'kanban']} />
           <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({ firstName: '', lastName: '', email: '', phone: '', leadType: 'buyer', source: 'website', status: 'new', budgetMin: 0, budgetMax: 0, notes: '' }); }} className="gap-2 bg-orange-600 hover:bg-orange-700">
             <Plus className="w-4 h-4" /> Add Lead
           </Button>

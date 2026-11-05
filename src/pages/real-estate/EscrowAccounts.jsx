@@ -28,7 +28,7 @@ export default function EscrowAccounts() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_escrowaccounts', 'grid');
+  const [view, setView] = useViewPreference('re_escrowaccounts', 'list');
 const [formData, setFormData] = useState({
     escrowType: 'earnest_money',
     escrowAmount: 0,
@@ -181,7 +181,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage escrow holdings and releases for transactions</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           escrowType: 'earnest_money',
           escrowAmount: 0,

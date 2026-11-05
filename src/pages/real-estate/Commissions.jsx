@@ -32,7 +32,7 @@ export default function Commissions() {
   const [selectedAgent, setSelectedAgent] = useState('all');
   const [showDetails, setShowDetails] = useState(false);
   const [selectedCommission, setSelectedCommission] = useState(null);
-    const [view, setView] = useViewPreference('re_commissions', 'grid');
+    const [view, setView] = useViewPreference('re_commissions', 'list');
 const [stats, setStats] = useState({
     totalEarned: 0,
     totalPending: 0,

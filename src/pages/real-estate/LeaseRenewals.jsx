@@ -28,7 +28,7 @@ export default function LeaseRenewals() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_leaserenewals', 'grid');
+  const [view, setView] = useViewPreference('re_leaserenewals', 'list');
 const [formData, setFormData] = useState({
     leaseId: '',
     tenantId: '',
@@ -181,7 +181,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage lease renewal offers and track tenant responses</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           leaseId: '',
           tenantId: '',

@@ -26,7 +26,7 @@ export default function Analytics() {
     pendingOffers: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [view, setView] = useViewPreference('re_analytics', 'grid');
+  const [view, setView] = useViewPreference('re_analytics', 'list');
 
   useEffect(() => {
     const fetchAnalytics = async () => {

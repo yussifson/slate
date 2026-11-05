@@ -28,7 +28,7 @@ export default function Recommendations() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_recommendations', 'grid');
+  const [view, setView] = useViewPreference('re_recommendations', 'list');
 const [formData, setFormData] = useState({
     clientId: '',
     recommendedAgentId: '',

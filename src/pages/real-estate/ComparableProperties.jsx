@@ -28,7 +28,7 @@ export default function ComparableProperties() {
   const [similarityFilter, setSimilarityFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_comparableproperties', 'grid');
+  const [view, setView] = useViewPreference('re_comparableproperties', 'list');
 const [formData, setFormData] = useState({
     address: '',
     salePrice: 0,
@@ -171,7 +171,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Compare properties for valuation and market analysis</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           address: '',
           salePrice: 0,

@@ -28,7 +28,7 @@ export default function CounterOffers() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_counteroffers', 'grid');
+  const [view, setView] = useViewPreference('re_counteroffers', 'list');
 const [formData, setFormData] = useState({
     originalOfferId: '',
     counterPrice: 0,
@@ -169,7 +169,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage offer negotiations and counter-offers</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           originalOfferId: '',
           counterPrice: 0,

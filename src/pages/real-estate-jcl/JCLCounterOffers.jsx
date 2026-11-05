@@ -293,7 +293,7 @@ export default function JCLCounterOffers() {
       </div>
 
       {/* ── Counter Offers Cards ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="space-y-3">
         {filteredCounterOffers.map(item => {
           const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
           const delta = (item.counter_price || 0) - (item.original_price || 0);

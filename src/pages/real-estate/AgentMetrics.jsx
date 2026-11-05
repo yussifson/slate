@@ -8,7 +8,7 @@ import ViewToggle from '@/components/shared/ViewToggle';
 export default function AgentMetrics() {
   const [metrics, setMetrics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useViewPreference('re_agentmetrics', 'grid');
+  const [view, setView] = useViewPreference('re_agentmetrics', 'list');
   const companyId = useCompanyId();
 
   useEffect(() => {

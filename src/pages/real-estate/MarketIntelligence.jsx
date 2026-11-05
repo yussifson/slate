@@ -23,7 +23,7 @@ export default function MarketIntelligence() {
   const [comparables, setComparables] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCompForm, setShowCompForm] = useState(false);
-    const [view, setView] = useViewPreference('re_marketintelligence', 'grid');
+    const [view, setView] = useViewPreference('re_marketintelligence', 'list');
 const [compFormData, setCompFormData] = useState({
     subjectAddress: '',
     subjectPrice: 0,
@@ -105,7 +105,7 @@ const [compFormData, setCompFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Market trends and comparable analysis</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => setShowCompForm(true)} className="gap-2 bg-orange-600 hover:bg-orange-700">
           <Plus className="w-4 h-4" /> New Analysis
         </Button>

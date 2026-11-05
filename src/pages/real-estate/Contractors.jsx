@@ -28,7 +28,7 @@ export default function Contractors() {
   const [typeFilter, setTypeFilter] = useState('all');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [view, setView] = useViewPreference('re_contractors', 'grid');
+  const [view, setView] = useViewPreference('re_contractors', 'list');
 const [formData, setFormData] = useState({
     contractorName: '',
     contractorType: 'plumber',
@@ -175,7 +175,7 @@ const [formData, setFormData] = useState({
           <p className="text-sm text-muted-foreground mt-1">Manage approved contractors and service providers</p>
         </div>
           <div className="flex items-center gap-4">
-            <ViewToggle view={view} onViewChange={setView} allowedViews={['grid', 'list']} />
+            <ViewToggle view={view} onViewChange={setView} allowedViews={['list']} />
             <Button onClick={() => { setShowForm(true); setEditingId(null); setFormData({
           contractorName: '',
           contractorType: 'plumber',
