@@ -12,8 +12,8 @@ export function useViewPreference(moduleKey, defaultView = 'list') {
     setView('list');
   }, [moduleKey]);
 
-  const changeView = () => {
-    setView('list');
+  const changeView = (nextView) => {
+    setView(nextView === 'kanban' ? 'kanban' : 'list');
   };
 
   return [view, changeView];

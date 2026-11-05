@@ -44,7 +44,7 @@ export default function JCLLeaseRenewals() {
   const [renewals, setRenewals] = useState([]);
   const [leases, setLeases] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'grid' | 'list'
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -390,7 +390,7 @@ export default function JCLLeaseRenewals() {
             <Plus className="h-3.5 w-3.5 mr-1" /> Create Proposal
           </Button>
         </div>
-      ) : viewMode === 'grid' ? (
+      ) : false ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredRenewals.map(r => {
             const st = STATUS_CONFIG[r.status] || STATUS_CONFIG.proposal_sent;

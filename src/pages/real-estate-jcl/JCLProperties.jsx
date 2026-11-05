@@ -69,7 +69,7 @@ export default function JCLProperties() {
   const [properties, setProperties] = useState([]);
   const [viewings, setViewings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'grid' | 'list'
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -455,7 +455,7 @@ export default function JCLProperties() {
             <Plus className="h-3.5 w-3.5 mr-1" /> Add Property
           </Button>
         </div>
-      ) : viewMode === 'grid' ? (
+      ) : false ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredProperties.map(property => {
             const st = STATUS_CONFIG[property.status] || STATUS_CONFIG.active;

@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
   Compass, Plus, Edit, Trash2, Search, DollarSign, Layers,
   CheckCircle2, Clock, MapPin, Users,
-  ChevronRight, RefreshCw, LayoutGrid, List,
-  Grid, UserCheck, Download, MoreVertical,
+ChevronRight, RefreshCw, LayoutGrid, List,
+ UserCheck, Download, MoreVertical,
   ShieldCheck, Eye, Sparkles
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -264,7 +264,7 @@ export default function LandManagement() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [zoningFilter, setZoningFilter] = useState('all');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'board' | 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'list' | 'board'
   
   // Drawers & Modals
   const [showParcelDrawer, setShowParcelDrawer] = useState(false);
@@ -840,9 +840,9 @@ export default function LandManagement() {
 
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end overflow-x-auto">
             <TabsList className="bg-muted/60 p-1 rounded-xl h-10 border border-border/60 shrink-0">
-              <TabsTrigger value="grid" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
-                <Grid className="w-3.5 h-3.5" /> Grid
-              </TabsTrigger>
+<TabsTrigger value="list" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
+ <List className="w-3.5 h-3.5" /> List
+ </TabsTrigger>
               <TabsTrigger value="board" className="rounded-lg text-xs font-bold gap-1.5 px-3 data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 <LayoutGrid className="w-3.5 h-3.5" /> Board
               </TabsTrigger>
@@ -861,8 +861,8 @@ export default function LandManagement() {
           </div>
         </div>
 
-        {/* ── Tab Content: Modern Luxury Grid Card View ── */}
-        <TabsContent value="grid" className="mt-0">
+{/* ── Tab Content: List View ── */}
+ <TabsContent value="list" className="mt-0">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-pulse">
               {[1, 2, 3].map(i => <div key={i} className="h-80 bg-muted rounded-[26px]" />)}
