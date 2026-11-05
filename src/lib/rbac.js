@@ -74,7 +74,9 @@ export const ROLE_PERMISSIONS = {
     settings: ["read"]
   },
   [ROLES.USER]: {
+    hearings: ["create", "read", "update"],
     cases: ["read", "update"],
+    hearings: ["create", "read", "update"],
     clients: ["read", "update"],
     documents: ["create", "read", "update"], // Users generally can't delete globally
     billing: ["read"],
@@ -102,7 +104,9 @@ export const ROLE_PERMISSIONS = {
     settings: []
   },
   [ROLES.EMPLOYEE]: {
+    hearings: ["create", "read", "update"],
     cases: ["read", "update"],
+    hearings: ["create", "read", "update"],
     clients: ["read", "update"],
     documents: ["create", "read", "update"],
     billing: ["read"],
