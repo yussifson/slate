@@ -74,6 +74,7 @@ export const ROLE_PERMISSIONS = {
     settings: ["read"]
   },
   [ROLES.USER]: {
+    case_pipelines: ["create", "read", "update", "delete"],
     hearings: ["create", "read", "update"],
     cases: ["read", "update"],
     clients: ["read", "update"],

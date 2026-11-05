@@ -227,17 +227,17 @@ export default function JCLContractors() {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="space-y-2">
           {filteredContractors.map(c => {
             const initials = (c.name || 'C').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
             return (
               <div
                 key={c.id}
                 onClick={() => setInspectorContractor(c)}
-                className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+                className="group relative flex items-stretch rounded-xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
               >
                 {/* Emerald Header Banner */}
-                <div className="relative h-24 flex items-center justify-between p-4 overflow-hidden bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600">
+                <div className="relative w-[min(34%,260px)] min-w-[210px] flex items-center justify-between gap-3 p-3 overflow-hidden bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 max-md:w-[38%] max-md:min-w-0">
                   <div className="flex items-center gap-3 relative z-10">
                     <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-base font-black shadow-inner">
                       {initials}
@@ -257,7 +257,7 @@ export default function JCLContractors() {
                 </div>
 
                 {/* Body Details */}
-                <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                <div className="p-3 space-y-2 flex-1 flex items-center justify-between gap-4">
                   <div className="space-y-2 text-xs text-muted-foreground">
                     <div className="flex items-center justify-between p-2.5 rounded-xl bg-muted/30 border border-border/60">
                       <span className="flex items-center gap-1.5 text-foreground font-medium">

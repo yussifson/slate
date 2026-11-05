@@ -28,7 +28,7 @@ function PipelineCard({ pipeline, onEdit, onDelete, caseStates}) {
  const activeCases = caseStates.filter(cs => cs.pipeline_id === pipeline.id).length;
 
  return (
- <div className="bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 overflow-hidden hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="bg-card rounded-lg border border-border/70 overflow-hidden hover:shadow-sm transition-shadow duration-200">
  <div className="p-4 border-b border-primary/40 flex items-start justify-between gap-3">
  <div>
  <div className="flex items-center gap-2 flex-wrap">
@@ -236,7 +236,7 @@ export default function CasePipelinePage() {
 
  const createMutation = useMutation({
  mutationFn: (data) => base44.entities.CasePipeline.create({ ...data, company_id: user?.company_id}),
- onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["pipelines"]}); setShowNew(false); toast({ title: "Pipeline created"});}});
+ onSuccess: async () => { await queryClient.invalidateQueries({ queryKey: ["pipelines", user?.company_id]}); setShowNew(false); toast({ title: "Pipeline created"});}});
 
  const updateMutation = useMutation({
  mutationFn: ({ id, data}) => base44.entities.CasePipeline.update(id, data),
