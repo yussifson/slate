@@ -6,6 +6,7 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
+import { getCompanyProjects } from '@/services/ProjectLookupService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -44,22 +45,19 @@ export default function JCLBillOfQuantities() {
     if (!companyId) return;
     setLoading(true);
     try {
-      const [boqRes, projRes] = await Promise.all([
+      const [boqRes, projList] = await Promise.all([
         supabase.from('univ_boqs')
           .select('*')
           .eq('company_id', companyId)
           .order('created_at', { ascending: false }),
-        supabase.from('ops_projects')
-          .select('id, name, project_code')
-          .eq('company_id', companyId)
-          .order('name')
+        getCompanyProjects(companyId)
       ]);
 
       if (boqRes.error && boqRes.error.code !== '42P01') {
         console.warn('BOQ load error:', boqRes.error);
       }
       setBoqs(boqRes.data || []);
-      setProjects(projRes.data || []);
+      setProjects(projList || []);
     } catch (err) {
       console.error('BOQ fetch error:', err);
       toast.error('Unable to load BOQ items');

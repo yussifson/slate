@@ -473,6 +473,7 @@ const JCLPurchaseOrdersPage = React.lazy(() => import('./pages/real-estate-jcl/J
 const JCLMaterialsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaterials'));
 const JCLTechnicalDrawingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTechnicalDrawings'));
 const JCLBillOfQuantitiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLBillOfQuantities'));
+const HREmployeeAssetsPage = React.lazy(() => import('./pages/real-estate-jcl/HREmployeeAssets'));
 const JCLProjectOperationsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectOperations'));
 const JCLProjectCollaborationPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectCollaboration'));
 const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
@@ -1036,6 +1037,7 @@ function PlatformRoutes() {
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
       <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
+      <Route path="/jcl/employee-assets" element={<HREmployeeAssetsPage />} />
       <Route path="/jcl/engagements" element={<JCLEngagementsPage />} />
       <Route path="/engineering" element={<JCLEngineeringPage />} />
       <Route path="/engineering/drawings" element={<JCLTechnicalDrawingsPage />} />
@@ -1465,6 +1467,7 @@ function PlatformRoutes() {
         <Route path="/hr/employees" element={<HREmployees />} />
         <Route path="/hr/departments" element={<HRDepartments />} />
         <Route path="/hr/roles" element={<HRRoles />} />
+        <Route path="/hr/assets" element={<HREmployeeAssetsPage />} />
         <Route path="/hr/leave" element={<HRLeave />} />
         <Route path="/hr/attendance" element={<HRAttendance />} />
         <Route path="/hr/payroll" element={<HRPayroll />} />

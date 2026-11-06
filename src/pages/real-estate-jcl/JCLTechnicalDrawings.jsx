@@ -6,6 +6,7 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
+import { getCompanyProjects } from '@/services/ProjectLookupService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -61,10 +62,7 @@ export default function JCLTechnicalDrawings() {
           .select('*, ops_projects(id,name,project_code)')
           .eq('company_id', companyId)
           .order('created_at', { ascending: false }),
-        supabase.from('ops_projects')
-          .select('id, name, project_code')
-          .eq('company_id', companyId)
-          .order('name')
+        getCompanyProjects(companyId)
       ]);
 
       if (dwgRes.error && dwgRes.error.code !== '42P01') {

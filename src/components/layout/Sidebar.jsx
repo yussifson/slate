@@ -762,7 +762,8 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         { label: "Materials", path: "/jcl/inventory", icon: "Warehouse" },
         { label: "Engineering", path: "/engineering", icon: "Layers" },
         { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
-        { label: "Bill of Quantities", path: "/boq", icon: "Calculator" }
+        { label: "Bill of Quantities", path: "/boq", icon: "Calculator" },
+        { label: "Company Items Issued", path: "/jcl/employee-assets", icon: "ShieldCheck" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);

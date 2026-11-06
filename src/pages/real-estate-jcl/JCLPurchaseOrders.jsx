@@ -6,6 +6,7 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
+import { getCompanyProjects } from '@/services/ProjectLookupService';
 import { JCLProcurementService } from '@/services/JCLProcurementService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -62,11 +63,7 @@ export default function JCLPurchaseOrders() {
           .select('id, reference, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at, ops_projects(id,name,project_code)')
           .eq('company_id', companyId)
           .order('created_at', { ascending: false }),
-        supabase
-          .from('ops_projects')
-          .select('id, name, project_code')
-          .eq('company_id', companyId)
-          .order('name')
+        getCompanyProjects(companyId)
       ]);
 
       if (resOrders.error) throw resOrders.error;
