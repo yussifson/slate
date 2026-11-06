@@ -761,7 +761,15 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         { label: "Procurement dashboard", path: "/jcl/procurement", icon: "Package" },
         { label: "Requisitions", path: "/jcl/procurement?tab=requisitions", icon: "ClipboardList" },
         { label: "Purchase orders", path: "/jcl/procurement?tab=orders", icon: "FileCheck" },
-        { label: "Materials & inventory", path: "/jcl/procurement?tab=inventory", icon: "Warehouse" }
+        { label: "Materials & inventory", path: "/jcl/procurement?tab=inventory", icon: "Warehouse" },
+        { label: "Engineering dashboard", path: "/jcl/engineering", icon: "Settings" },
+        { label: "Assignments", path: "/jcl/engineering?tab=assignments", icon: "ClipboardList" },
+        { label: "Technical requirements", path: "/jcl/engineering?tab=requirements", icon: "ClipboardList" },
+        { label: "Drawing register", path: "/jcl/engineering?tab=drawings", icon: "FileText" },
+        { label: "Submissions & reviews", path: "/jcl/engineering?tab=submissions", icon: "GitPullRequest" },
+        { label: "Technical reports", path: "/jcl/engineering?tab=reports", icon: "FileBarChart" },
+        { label: "Technical issues", path: "/jcl/engineering?tab=issues", icon: "AlertTriangle" },
+        { label: "Design changes", path: "/jcl/engineering?tab=changes", icon: "GitBranch" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -858,6 +866,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (p === '/jcl/procurement') {
         return "Procurement";
       }
+      if (p === '/jcl/engineering') {
+        return "Engineering";
+      }
       if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
         return "Marketing";
       }
@@ -905,7 +916,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Operations", "Secretary", "Marketing", "Procurement", "Properties", "Finance", "Human Resources", "System Admin"]
+    ? ["Operations", "Secretary", "Marketing", "Procurement", "Engineering", "Properties", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
