@@ -50,6 +50,19 @@ export const JCLProcurementService = {
     return data;
   },
 
+  async updateRequisition(companyId, requisitionId, payload) {
+    const { data, error } = await supabase.from('jcl_purchase_requisitions').update({
+      project_id: payload.project_id,
+      department: payload.department,
+      required_date: payload.required_date || null,
+      priority: payload.priority || 'normal',
+      description: payload.description,
+      justification: payload.justification
+    }).eq('id', requisitionId).eq('company_id', companyId).select().single();
+    selectError(error, 'Unable to update requisition');
+    return data;
+  },
+
   async createMaterial(companyId, payload) {
     const { data, error } = await supabase.from('jcl_materials').insert({ company_id: companyId, ...payload }).select().single();
     selectError(error, 'Unable to create material');

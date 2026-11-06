@@ -1028,7 +1028,11 @@ function PlatformRoutes() {
         <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
         <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
   <Route path="/jcl/engagements" element={<JCLEngagementsPage />} />
-  <Route path="/jcl/procurement" element={<JCLProcurementPage />} />
+  <Route path="/jcl/procurement" element={<JCLProcurementPage defaultTab="requisitions" />} />
+  <Route path="/jcl/requisitions" element={<JCLProcurementPage defaultTab="requisitions" />} />
+  <Route path="/jcl/purchase-orders" element={<JCLProcurementPage defaultTab="orders" />} />
+  <Route path="/jcl/inventory" element={<JCLProcurementPage defaultTab="inventory" />} />
+  <Route path="/jcl/projects" element={<JCLEngagementsPage />} />
   <Route path="/jcl/project-finance" element={<JCLProjectFinancePage />} />
   <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
