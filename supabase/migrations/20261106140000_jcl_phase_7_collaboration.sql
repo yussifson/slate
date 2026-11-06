@@ -89,12 +89,12 @@ alter table public.ops_project_risks enable row level security;
 alter table public.ops_project_milestones enable row level security;
 
 -- Replace the company membership predicate with the firm's existing access helper if its name differs.
-create policy ops_project_members_company_access on public.ops_project_members for all using (company_id = (select company_id::uuid from public.profiles where id = auth.uid())) with check (company_id = (select company_id::uuid from public.profiles where id = auth.uid()));
-create policy ops_project_messages_company_access on public.ops_project_messages for all using (company_id = (select company_id::uuid from public.profiles where id = auth.uid())) with check (company_id = (select company_id::uuid from public.profiles where id = auth.uid()));
-create policy ops_project_message_reactions_company_access on public.ops_project_message_reactions for all using (company_id = (select company_id::uuid from public.profiles where id = auth.uid())) with check (company_id = (select company_id::uuid from public.profiles where id = auth.uid()));
-create policy ops_project_message_mentions_company_access on public.ops_project_message_mentions for all using (company_id = (select company_id::uuid from public.profiles where id = auth.uid())) with check (company_id = (select company_id::uuid from public.profiles where id = auth.uid()));
-create policy ops_project_risks_company_access on public.ops_project_risks for all using (company_id = (select company_id::uuid from public.profiles where id = auth.uid())) with check (company_id = (select company_id::uuid from public.profiles where id = auth.uid()));
-create policy ops_project_milestones_company_access on public.ops_project_milestones for all using (company_id = (select company_id::uuid from public.profiles where id = auth.uid())) with check (company_id = (select company_id::uuid from public.profiles where id = auth.uid()));
+create policy ops_project_members_company_access on public.ops_project_members for all using (company_id::text = (select company_id from public.profiles where id = auth.uid())) with check (company_id::text = (select company_id from public.profiles where id = auth.uid()));
+create policy ops_project_messages_company_access on public.ops_project_messages for all using (company_id::text = (select company_id from public.profiles where id = auth.uid())) with check (company_id::text = (select company_id from public.profiles where id = auth.uid()));
+create policy ops_project_message_reactions_company_access on public.ops_project_message_reactions for all using (company_id::text = (select company_id from public.profiles where id = auth.uid())) with check (company_id::text = (select company_id from public.profiles where id = auth.uid()));
+create policy ops_project_message_mentions_company_access on public.ops_project_message_mentions for all using (company_id::text = (select company_id from public.profiles where id = auth.uid())) with check (company_id::text = (select company_id from public.profiles where id = auth.uid()));
+create policy ops_project_risks_company_access on public.ops_project_risks for all using (company_id::text = (select company_id from public.profiles where id = auth.uid())) with check (company_id::text = (select company_id from public.profiles where id = auth.uid()));
+create policy ops_project_milestones_company_access on public.ops_project_milestones for all using (company_id::text = (select company_id from public.profiles where id = auth.uid())) with check (company_id::text = (select company_id from public.profiles where id = auth.uid()));
 
 alter publication supabase_realtime add table public.ops_project_messages;
 alter publication supabase_realtime add table public.ops_project_risks;
