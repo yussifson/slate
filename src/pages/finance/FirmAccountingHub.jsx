@@ -3,9 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import {
   Building2, BookOpen, Receipt, FileText, Landmark, LineChart,
   Plus, Search, RefreshCw, CheckCircle2, ArrowUpRight, ArrowDownLeft,
-  DollarSign, Wallet, TrendingUp, Users, ShoppingBag, BarChart2,
-  Banknote, Shield, Lock, Eye, Printer, CreditCard, ChevronDown,
-  ClipboardList, UserCheck, BarChart, Package, Phone
+  DollarSign, TrendingUp, Users, ShoppingBag, BarChart2,
+  Banknote, Shield,
+  ClipboardList, BarChart, Phone, PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -204,6 +204,7 @@ export default function FirmAccountingHub() {
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'coa');
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [financeNavCollapsed, setFinanceNavCollapsed] = useState(false);
 
   useEffect(() => {
     if (tabFromUrl && tabFromUrl !== activeTab) setActiveTab(tabFromUrl);
@@ -583,8 +584,20 @@ export default function FirmAccountingHub() {
       </div>
 
       {/* ── 3. Tab Navigation ── */}
-      <nav aria-label="Finance sections" className="w-full rounded-2xl border border-border/60 bg-card/90 p-2 shadow-sm">
-        <div className="flex flex-wrap gap-2">
+      <nav aria-label="Finance sections" className={cn('w-full rounded-2xl border border-border/60 bg-card/90 p-2 shadow-sm transition-all', financeNavCollapsed && 'md:w-fit')}>
+        <div className="flex items-center justify-between gap-2 border-b border-border/60 px-1 pb-2 mb-2">
+          {!financeNavCollapsed && <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Finance sections</span>}
+          <button
+            type="button"
+            onClick={() => setFinanceNavCollapsed(prev => !prev)}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            aria-label={financeNavCollapsed ? 'Expand Finance navigation' : 'Collapse Finance navigation'}
+            title={financeNavCollapsed ? 'Expand Finance navigation' : 'Collapse Finance navigation'}
+          >
+            {financeNavCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+          </button>
+        </div>
+        <div className={cn('flex flex-wrap gap-2', financeNavCollapsed && 'md:flex-col')}>
           {TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -594,13 +607,16 @@ export default function FirmAccountingHub() {
                 onClick={() => handleTabChange(tab.id)}
                 className={cn(
                   'inline-flex min-h-10 items-center gap-2 rounded-xl px-3.5 py-2.5 text-left text-[11px] font-semibold transition-all',
+                  financeNavCollapsed && 'md:w-10 md:justify-center md:px-0',
                   isActive
                     ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
+                title={financeNavCollapsed ? tab.label : undefined}
+                aria-label={financeNavCollapsed ? tab.label : undefined}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" />
-                {tab.label}
+                {!financeNavCollapsed && tab.label}
               </button>
             );
           })}
