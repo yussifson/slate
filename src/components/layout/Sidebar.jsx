@@ -334,7 +334,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   law: ["/", "/my-dashboard", "/cases", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"],
   software: ["/", "/my-dashboard", "/sprints", "/bugs", "/product-tasks", "/product-docs", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   real_estate: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
-  real_estate_jcl: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/calendar", "/jcl/front-desk", "/real-estate/analytics", "/real-estate/field-tracker", "/real-estate/marketer-tracker", "/email-inbox", "/chat", "/board"],
+  real_estate_jcl: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/calendar", "/jcl/front-desk", "/real-estate/analytics", "/real-estate/field-tracker", "/real-estate/marketer-tracker", "/jcl/procurement", "/email-inbox", "/chat", "/board"],
   hospital: ["/", "/my-dashboard", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   school: ["/", "/my-dashboard", "/classes", "/students", "/attendance", "/grades", "/assignments", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   accounting: ["/", "/my-dashboard", "/invoices", "/billing", "/clients", "/reports", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
@@ -757,7 +757,11 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       const jclItems = [
         { label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" },
         { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
-        { label: "Client Portal", path: "/client-portal", icon: "Globe" }
+        { label: "Client Portal", path: "/client-portal", icon: "Globe" },
+        { label: "Procurement dashboard", path: "/jcl/procurement", icon: "Package" },
+        { label: "Requisitions", path: "/jcl/procurement?tab=requisitions", icon: "ClipboardList" },
+        { label: "Purchase orders", path: "/jcl/procurement?tab=orders", icon: "FileCheck" },
+        { label: "Materials & inventory", path: "/jcl/procurement?tab=inventory", icon: "Warehouse" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -851,6 +855,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/jcl/front-desk', '/jcl/item-register'].includes(p)) {
         return "Secretary";
       }
+      if (p === '/jcl/procurement') {
+        return "Procurement";
+      }
       if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
         return "Marketing";
       }
@@ -898,7 +905,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Operations", "Secretary", "Marketing", "Properties", "Finance", "Human Resources", "System Admin"]
+    ? ["Operations", "Secretary", "Marketing", "Procurement", "Properties", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
