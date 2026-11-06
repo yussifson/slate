@@ -314,8 +314,15 @@ export default function SignUp() {
  <div className="flex-1 flex flex-col pt-12 lg:pt-20 px-8 lg:px-16 pb-12">
  <div className="max-w-lg w-full mx-auto">
  <div className="flex flex-col mb-8">
- <Logo className="w-10 h-10" />
- <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>
+ <div className="flex items-center gap-3">
+   <div className="bg-white rounded-xl p-1.5 shadow-sm border border-slate-100 flex items-center justify-center">
+     <img src="/jcl-logo.png" alt="JCL Real Estate" className="h-12 w-auto object-contain" />
+   </div>
+   <div className="flex flex-col">
+     <span className="font-extrabold text-lg text-slate-900 tracking-tight leading-tight">JCL Real Estate</span>
+     <span className="text-[11px] font-semibold text-primary uppercase tracking-wider">Enterprise Portal</span>
+   </div>
+ </div>
  </div>
  
   <div className="mb-8">

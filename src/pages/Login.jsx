@@ -44,7 +44,7 @@ export default function Login() {
  const [workspace, setWorkspace] = useState('');
  const [error, setError] = useState('');
  const [loading, setLoading] = useState(false);
- const [branding, setBranding] = useState({ name: 'Slate', logo_url: null, tagline: 'Enter your credentials to access your account'});
+ const [branding, setBranding] = useState({ name: 'JCL Real Estate', logo_url: '/jcl-logo.png', tagline: 'Enter your credentials to access your JCL Portal'});
 
  const randomQuote = useMemo(() => {
     return LOGIN_QUOTES[Math.floor(Math.random() * LOGIN_QUOTES.length)];
