@@ -47,6 +47,7 @@ const JCL_DEPARTMENTS = [
     items: [
       { label: "Tasks", path: "/tasks", icon: ClipboardList },
   { label: "Project Operations", path: "/jcl/project-operations", icon: Briefcase },
+      { label: "Project Workspace", path: "/jcl/project-collaboration", icon: MessageCircle },
       { label: "Time Tracking", path: "/time-tracking", icon: Clock },
       { label: "Pipelines", path: "/pipeline", icon: TrendingUp }
     ]
