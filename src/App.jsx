@@ -469,6 +469,7 @@ const JCLEngineeringPage = React.lazy(() => import('./pages/real-estate-jcl/JCLE
 const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
 const JCLProcurementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProcurement'));
 const JCLProjectOperationsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectOperations'));
+const JCLProjectCollaborationPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectCollaboration'));
 const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
 const JCLTransactionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTransactions'));
 const JCLViewingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLViewings'));
@@ -1038,6 +1039,7 @@ function PlatformRoutes() {
       <Route path="/jcl/projects" element={<JCLEngagementsPage />} />
       <Route path="/jcl/project-finance" element={<JCLProjectFinancePage />} />
       <Route path="/jcl/project-operations" element={<JCLProjectOperationsPage />} />
+      <Route path="/jcl/project-collaboration" element={<JCLProjectCollaborationPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
