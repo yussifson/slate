@@ -857,7 +857,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land')) {
         return "Properties";
       }
-      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal'].includes(p)) {
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p)) {
         return "System Admin";
       }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||
