@@ -130,8 +130,8 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-5xl h-[min(92vh,900px)] flex flex-col p-0 gap-0 overflow-hidden bg-[#F2F2F7] dark:bg-card">
-        <DialogHeader className="px-6 py-4 border-b border-black/5 dark:border-white/5 bg-white dark:bg-[#2C2C2E] shrink-0">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-5xl h-[min(90vh,880px)] flex flex-col p-0 gap-0 overflow-hidden bg-background text-foreground border border-border/80 shadow-2xl rounded-2xl">
+        <DialogHeader className="px-6 py-4 border-b border-black/5 dark:border-white/5 bg-gradient-to-r from-background via-muted/20 to-background border-b border-border/70 shrink-0">
           <DialogTitle className="text-xl font-bold tracking-tight">{isEdit ? "Task Details" : "New Task"}</DialogTitle>
         </DialogHeader>
         
@@ -147,7 +147,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
           
           <div className="flex-1 overflow-hidden relative">
             <TabsContent value="details" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
-              <div className="space-y-6 w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm">
+              <div className="space-y-6 w-full bg-card p-6 sm:p-8 rounded-2xl border border-border/80 shadow-xs">
           <div>
             <Label>{t("title", "Title *")}</Label>
             <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />
@@ -320,7 +320,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
         </div>
         </Tabs>
 
-        <DialogFooter className="px-6 py-4 border-t border-black/5 dark:border-white/5 bg-white dark:bg-[#2C2C2E] shrink-0 mt-auto">
+        <DialogFooter className="px-6 py-4 border-t border-border/70 bg-gradient-to-r from-background via-muted/20 to-background shrink-0 mt-auto">
           <Button variant="outline" onClick={onClose} type="button">{t("cancel", "Cancel")}</Button>
           <Button onClick={() => mutation.mutate(form)} disabled={mutation.isPending || !form.title}>
             {mutation.isPending ? t("saving", "Saving...") : t("save", "Save")}
