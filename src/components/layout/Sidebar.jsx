@@ -755,11 +755,14 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       const jclItems = [
         { label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" },
         { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
-        { label: "Client Portal", path: "/client-portal", icon: "Globe" },
-        { label: "Procurement dashboard", path: "/jcl/procurement", icon: "Package" },
-        { label: "Requisitions", path: "/jcl/procurement?tab=requisitions", icon: "ClipboardList" },
-        { label: "Purchase orders", path: "/jcl/procurement?tab=orders", icon: "FileCheck" },
-        { label: "Materials & inventory", path: "/jcl/procurement?tab=inventory", icon: "Warehouse" }
+        { label: "Client Portal", path: "/portal", icon: "Globe" },
+        { label: "Procurement", path: "/jcl/procurement", icon: "Package" },
+        { label: "Requisitions", path: "/jcl/requisitions", icon: "ClipboardList" },
+        { label: "Purchase Orders", path: "/jcl/purchase-orders", icon: "FileCheck" },
+        { label: "Materials & Inventory", path: "/jcl/inventory", icon: "Warehouse" },
+        { label: "Engineering", path: "/bom", icon: "Layers" },
+        { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
+        { label: "Bill of Quantities", path: "/boq", icon: "Calculator" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -842,7 +845,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   navItems = navItems.filter(item => item.path !== '/real-estate/trust-accounting');
 
   const getCategory = (item) => {
-    const p = item.path || '';
+    const p = (item.path || '').split('?')[0];
     const normalizedLabel = (item.label || '').trim().toLowerCase();
 
     // JCL department rules must run before dynamic-module fallback so legacy entries cannot fall back to Operations.
@@ -938,7 +941,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Operations", "Secretary", "Marketing", "Procurement", "Properties", "Finance", "Human Resources", "System Admin"]
+    ? ["Operations", "Secretary", "Marketing", "Procurement", "Engineering", "Properties", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
