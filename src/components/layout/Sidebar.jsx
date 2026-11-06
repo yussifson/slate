@@ -426,7 +426,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   let filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // Core features everyone gets
- const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking', '/integrations'];
+ const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking', '/integrations', '/hr'];
  
  // If activeModules is explicitly set (Custom Selection mode)
  if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board', '/hr', '/roles', '/departments'].includes(item.path)) {
