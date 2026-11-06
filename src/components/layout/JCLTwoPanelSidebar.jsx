@@ -34,7 +34,8 @@ const JCL_DEPARTMENTS = [
     color: "orange",
     items: [
       { label: "Dashboard", path: "/", icon: LayoutDashboard },
-      { label: "Intelligence", path: "/real-estate/analytics", icon: Sparkles },
+      { label: "Intelligence", path: "/jcl/intelligence", icon: Sparkles },
+      { label: "Legacy Analytics", path: "/real-estate/analytics", icon: LineChart },
       { label: "Calendar", path: "/calendar", icon: Calendar },
       { label: "Notifications", path: "/notifications", icon: Bell }
     ]

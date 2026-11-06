@@ -593,6 +593,7 @@ const SmartLeaseRenewalsRouter = () => {
   return <RealEstateLeaseRenewals />;
 };
 const JCLAnalyticsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLAnalytics'));
+const JCLPhase8IntelligencePage = React.lazy(() => import('./pages/real-estate-jcl/JCLPhase8Intelligence'));
 const JCLCommissionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCommissions'));
 const JCLCounterOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCounterOffers'));
 const JCLPaymentSchedulesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPaymentSchedules'));
@@ -1387,7 +1388,7 @@ function PlatformRoutes() {
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
       <Route path="/real-estate/trust-accounting" element={<FinanceLayout><SmartTrustAccountingRouter /></FinanceLayout>} />
       <Route path="/finance/accounting" element={<FinanceLayout><SmartFirmAccountingRouter /></FinanceLayout>} />
-      <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
+      <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />\n  <Route path="/jcl/intelligence" element={<JCLPhase8IntelligencePage />} />
       <Route path="/real-estate/field-tracker" element={<JCLMarketerTrackerPage />} />
       <Route path="/real-estate/marketer-tracker" element={<JCLMarketerTrackerPage />} />
 
