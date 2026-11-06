@@ -2,10 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Clock, Play, Square, Pause, Plus, FileText, 
+  Clock, Play, Square, Plus, FileText,
   Brain, Tag, DollarSign, Calendar, Search, 
-  Trash2, Edit3, CheckCircle2, ChevronDown, ListFilter,
-  BarChart3, PieChart, AlertTriangle
+  Trash2, Edit3, AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -19,7 +18,6 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import TimeRemindersTab from '@/components/shared/TimeRemindersTab';
@@ -447,7 +445,7 @@ export default function TimeTracking() {
   }, [filteredEntries]);
 
   return (
-    <div className="p-4 md:p-8 space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto min-h-screen pb-24 text-foreground bg-background">
+    <div className="w-full min-h-screen p-4 md:p-8 lg:p-10 space-y-8 animate-in fade-in duration-500 pb-24 text-foreground bg-background">
       {/* Header & Stats */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-2">
         <div>
