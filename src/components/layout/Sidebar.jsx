@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 import { useTranslation} from "react-i18next";
 import ProfileAvatarDialog from "@/components/shared/ProfileAvatarDialog";
-import JCLTwoPanelSidebar from "./JCLTwoPanelSidebar";
 import { cn} from "@/lib/utils";
 import {
  DropdownMenu,
@@ -18,7 +17,7 @@ import {
  Receipt, CheckSquare, FolderOpen, Settings,
  Scale, UserCog, LogOut, CreditCard, UserCircle, UserPlus, GitBranch,
  BookOpen, Shield, TrendingUp, Trophy, Search, Mail, BarChart2, Download, MessageCircle, HeartHandshake,
- ChevronLeft, ChevronRight, PanelLeft, X,
+ PanelLeft,
  GraduationCap, BookMarked, ClipboardList, Bus, FileText,
  Stethoscope, Bed, Pill, FlaskConical, Activity,
  Sparkles, UtensilsCrossed, Star,
@@ -26,7 +25,7 @@ import {
  Award, Library, Building2, AlertCircle, Clock,
  Network, AlertTriangle, Gift, Banknote, CalendarOff,
  HandCoins, Users2, Blocks, Map, Warehouse, Car, MapPin,
- FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Pencil, Trash2, Eye, EyeOff, Zap, Store
+ FileSearch, LayoutGrid, BedDouble, BellRing, MoreHorizontal, Trash2, Eye, EyeOff, Zap, Store
 , Edit3, ShieldAlert, HeartPulse, FilePlus, FileCheck, Gavel, CalendarDays, CalendarCheck, UserCheck, PenTool, Target, Calculator, Home, Moon, CalendarSearch, Wallet, PieChart, ArrowUpRight, ArrowDownLeft, Laptop, Smartphone, MessageSquare, LineChart, Brain, PackageSearch, Globe, Archive, Navigation
 } from "lucide-react";
 import { base44} from "@/api/base44Client";
@@ -52,7 +51,6 @@ const ICON_MAP = {
 
 import { generateText } from '@/lib/cloudflareAI';
 import { powerSync} from "@/api/PowerSyncConnector";
-import { useAuth} from "@/lib/AuthContext";
 import { useCompanyId, useCompany} from "@/hooks/useCompanyId";
 import { useQuery, useQueryClient} from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
@@ -861,7 +859,13 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p) || ['live gps', 'audit log', 'client portal'].includes(normalizedLabel)) {
         return "System Admin";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
+      if (['/procurement', '/purchase-orders'].includes(p) || p.startsWith('/procurement') || ['procurement', 'purchase orders', 'suppliers', 'goods receipts'].includes(normalizedLabel)) {
+        return "Procurement";
+      }
+      if (['/bom', '/boq'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering'].includes(normalizedLabel)) {
+        return "Engineering";
+      }
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
         return "Finance";
       }
     }
