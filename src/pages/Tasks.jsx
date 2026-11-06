@@ -130,13 +130,13 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[85vh] flex flex-col p-0 gap-0 overflow-hidden bg-[#F2F2F7] dark:bg-card">
+      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-5xl h-[min(92vh,900px)] flex flex-col p-0 gap-0 overflow-hidden bg-[#F2F2F7] dark:bg-card">
         <DialogHeader className="px-6 py-4 border-b border-black/5 dark:border-white/5 bg-white dark:bg-[#2C2C2E] shrink-0">
           <DialogTitle className="text-xl font-bold tracking-tight">{isEdit ? "Task Details" : "New Task"}</DialogTitle>
         </DialogHeader>
         
         <Tabs defaultValue="details" className="flex-1 flex flex-col overflow-hidden">
-          <div className="px-6 py-3 bg-white dark:bg-[#2C2C2E] border-b border-black/5 dark:border-white/5 shrink-0">
+          <div className="px-4 sm:px-8 py-3 bg-white dark:bg-[#2C2C2E] border-b border-black/5 dark:border-white/5 shrink-0">
             <TabsList className="grid w-full max-w-md grid-cols-4">
               <TabsTrigger value="details">Details</TabsTrigger>
               <TabsTrigger value="checklist">Checklist</TabsTrigger>
@@ -146,8 +146,8 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
           </div>
           
           <div className="flex-1 overflow-hidden relative">
-            <TabsContent value="details" className="h-full absolute inset-0 overflow-y-auto px-6 py-6 custom-scrollbar m-0 outline-none">
-              <div className="space-y-6 max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm">
+            <TabsContent value="details" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
+              <div className="space-y-6 w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm">
           <div>
             <Label>{t("title", "Title *")}</Label>
             <Input value={form.title} onChange={e => set("title", e.target.value)} placeholder="Task title" />
@@ -302,18 +302,18 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
           </div>
         </div>
         </TabsContent>
-        <TabsContent value="checklist" className="h-full absolute inset-0 overflow-y-auto px-6 py-6 custom-scrollbar m-0 outline-none">
-          <div className="max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm min-h-full">
+        <TabsContent value="checklist" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
+          <div className="w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm min-h-full">
             <TaskChecklist taskId={initialData?.id} />
           </div>
         </TabsContent>
-        <TabsContent value="comments" className="h-full absolute inset-0 overflow-y-auto px-6 py-6 custom-scrollbar m-0 outline-none">
-          <div className="max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm h-full flex flex-col">
+        <TabsContent value="comments" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
+          <div className="w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm h-full flex flex-col">
             <TaskComments taskId={initialData?.id} />
           </div>
         </TabsContent>
-        <TabsContent value="files" className="h-full absolute inset-0 overflow-y-auto px-6 py-6 custom-scrollbar m-0 outline-none">
-          <div className="max-w-2xl mx-auto bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm min-h-full">
+        <TabsContent value="files" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
+          <div className="w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm min-h-full">
             <TaskAttachments taskId={initialData?.id} />
           </div>
         </TabsContent>

@@ -14,8 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, GitBranch, Trash2, Save, Edit2, Bell, Clock, Sparkles, Loader2,
-  GripVertical, Zap, BarChart3, Target, TrendingUp, ChevronRight,
-  CheckCircle2, AlertTriangle, Lightbulb, X, Tag, Building2
+  GripVertical, Zap, ChevronRight,
+  CheckCircle2, X
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { generateText } from "@/lib/cloudflareAI";
@@ -528,14 +528,14 @@ function PipelineCard({ pipeline, onEdit, onDelete, itemCount }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-card/95 backdrop-blur-xl rounded-[26px] border border-border/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-emerald-500/50 transition-all cursor-pointer flex flex-col justify-between overflow-hidden group relative"
+      className="bg-card/95 backdrop-blur-xl rounded-xl border border-border/90 shadow-sm hover:shadow-md hover:border-emerald-500/50 transition-all cursor-pointer flex flex-col justify-between overflow-hidden group relative"
       onClick={() => onEdit(pipeline)}
     >
-      <div className="p-5 pb-4 space-y-3.5 flex-1">
+      <div className="p-4 pb-3 space-y-2.5 flex-1">
         {/* Card Top: Avatar & Name */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
               <GitBranch className="w-5 h-5" />
             </div>
             <div className="min-w-0">
@@ -761,7 +761,7 @@ export default function PipelinePage() {
               <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                 Pipeline Templates
               </h2>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <div className="space-y-2">
                 {pipelines.map(p => (
                   <PipelineCard
                     key={p.id}
