@@ -9,7 +9,7 @@ import {
   Calendar, TrendingUp, Receipt, HeartHandshake, PenTool, Globe,
   LineChart, ClipboardList, Blocks, Zap, ChevronDown, Plus,
   MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck, Landmark,
-  BookOpen, CheckCircle2, Building2, MapPin
+  BookOpen, CheckCircle2, Building2, MapPin, Package, Warehouse
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -37,6 +37,18 @@ const JCL_DEPARTMENTS = [
       { label: "Intelligence", path: "/real-estate/analytics", icon: Sparkles },
       { label: "Calendar", path: "/calendar", icon: Calendar },
       { label: "Notifications", path: "/notifications", icon: Bell }
+    ]
+  },
+  {
+    id: "procurement",
+    label: "Procurement",
+    icon: Package,
+    color: "teal",
+    actionLabel: "New requisition",
+    actionPath: "/jcl/procurement",
+    items: [
+      { label: "Procurement dashboard", path: "/jcl/procurement", icon: Package },
+      { label: "Materials & inventory", path: "/jcl/procurement?tab=inventory", icon: Warehouse }
     ]
   },
   {
