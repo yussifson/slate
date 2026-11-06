@@ -859,10 +859,10 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p) || ['live gps', 'audit log', 'client portal'].includes(normalizedLabel)) {
         return "System Admin";
       }
-      if (['/procurement', '/purchase-orders'].includes(p) || p.startsWith('/procurement') || ['procurement', 'purchase orders', 'suppliers', 'goods receipts'].includes(normalizedLabel)) {
+      if (['/procurement', '/purchase-orders', '/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) || p.startsWith('/procurement') || ['procurement', 'purchase orders', 'suppliers', 'goods receipts'].includes(normalizedLabel)) {
         return "Procurement";
       }
-      if (['/bom', '/boq'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering'].includes(normalizedLabel)) {
+      if (['/bom', '/boq', '/jcl/projects'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'projects'].includes(normalizedLabel)) {
         return "Engineering";
       }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
