@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -7,7 +7,6 @@ import { useAuth } from "@/lib/AuthContext";
 import { useCompanyId, useCompany } from "@/hooks/useCompanyId";
 import { getTerm } from "@/config/industries";
 import PageHeader from "@/components/shared/PageHeader";
-import DataTable from "@/components/shared/DataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks, Calendar, Users, MoreVertical, Edit2, Link2, BarChart2, LayoutGrid, GanttChartSquare, AlertTriangle } from "lucide-react";
+import { Plus, Search, CheckCircle2, Clock, AlertCircle, Sparkles, ListChecks, Calendar, Users, Edit2, Link2, BarChart2, List, GanttChartSquare, AlertTriangle } from "lucide-react";
 import { generateText } from "@/lib/cloudflareAI";
 import { format, differenceInDays, addDays, parseISO, isValid } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -460,7 +459,7 @@ export default function Tasks() {
       }},
   ];
 
-  const [activeView, setActiveView] = useState('grid');
+  const [activeView, setActiveView] = useState('list');
 
   return (
     <div className="space-y-6 school-page-enter font-dmsans">
@@ -506,7 +505,7 @@ export default function Tasks() {
       {/* View Toggle + Filters */}
       <div className="flex flex-wrap gap-3 items-center">
         <div className="flex items-center bg-muted border border-border rounded-lg p-1 gap-1">
-          <button onClick={() => setActiveView('grid')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'grid' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><LayoutGrid className="w-4 h-4"/>Grid</button>
+          <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><List className="w-4 h-4"/>List</button>
           <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'board' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><BarChart2 className="w-4 h-4"/>Board</button>
           <button onClick={() => setActiveView('gantt')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'gantt' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><GanttChartSquare className="w-4 h-4"/>Timeline</button>
         </div>
@@ -528,11 +527,11 @@ export default function Tasks() {
       {activeView === 'gantt' ? (
         <GanttView tasks={filtered} />
       ) : (
-      <div className={cn("mt-6", "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")}>
+      <div className="mt-6 flex flex-col divide-y rounded-xl border bg-card overflow-hidden">
         {isLoading ? (
-          <div className={cn("py-12 text-center text-slate-500", activeView === 'list' ? "" : "col-span-full")}>Loading tasks...</div>
+          <div className="py-12 text-center text-slate-500">Loading tasks...</div>
         ) : filtered.length === 0 ? (
-          <div className={cn("py-12 text-center bg-card rounded-xl border border-dashed border-slate-300 dark:border-border", activeView === 'list' ? "" : "col-span-full")}>
+          <div className="py-12 text-center bg-card border-dashed border-slate-300 dark:border-border">
             <ListChecks className="w-12 h-12 mx-auto text-slate-400 mb-3" />
             <h3 className="text-lg font-medium">No tasks yet</h3>
             <p className="text-slate-500 text-sm">Create your first task to get started.</p>
@@ -570,7 +569,7 @@ export default function Tasks() {
               <div 
                 key={row.id} 
                 onClick={() => { setEditing(row); setShowForm(true); }}
-                className={`group relative rounded-2xl p-5 border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between cursor-pointer ${statusConfig.bg} ${statusConfig.border}`}
+                className={`group relative p-4 sm:p-5 hover:bg-muted/40 transition-colors flex flex-col justify-between cursor-pointer ${statusConfig.bg}`}
               >
                 {/* Top Section */}
                 <div>
