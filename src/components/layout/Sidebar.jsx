@@ -207,8 +207,10 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return finalUrl;
   };
 
- const activeCompanyLogoDark = cleanLogo(companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url);
- const activeCompanyLogoLight = cleanLogo(companyData?.logo_light_url || impersonatedCompany?.logo_light_url || activeCompanyLogoDark);
+ const isJCL = activeIndustry === 'real_estate_jcl' || companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl');
+ const rawLogo = isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png');
+ const activeCompanyLogoDark = cleanLogo(rawLogo);
+ const activeCompanyLogoLight = cleanLogo(rawLogo);
  const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || "Slate";
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
@@ -1025,16 +1027,13 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         >
           <PanelLeft className="h-4 w-4" />
         </button>
- {activeCompanyLogoDark || activeCompanyLogoLight ? (
-   <>
-     <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
-     <img src={activeCompanyLogoLight || activeCompanyLogoDark} alt="Logo" className={cn("object-contain block dark:hidden", collapsed ? "w-8 h-8" : "w-9 h-9")} />
-   </>
- ) : (
- <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 text-lg">
- {industryData.icon}
- </div>
- )}
+ <div className="flex items-center justify-center bg-white rounded-xl p-1 shadow-sm shrink-0">
+  <img
+    src="/jcl-logo.png"
+    alt="JCL Real Estate"
+    className={cn("object-contain", collapsed ? "w-8 h-8" : "w-9 h-9")}
+  />
+</div>
  {!collapsed && (
  <div className="animate-in fade-in zoom-in duration-200">
  <div className="flex flex-col">

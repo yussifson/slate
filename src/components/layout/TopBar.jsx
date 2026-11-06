@@ -200,10 +200,8 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-none max-w-[200px] justify-center">
   {location.pathname === '/' ? (
     <>
-     <div className="w-[18px] h-[18px] bg-primary rounded-[5px] flex items-center justify-center shrink-0">
-       <div className="w-2 h-2 bg-white rounded-sm transform rotate-45" />
-     </div>
-     <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[160px]">{activeCompanyName}</span>
+     <img src="/jcl-logo.png" alt="JCL" className="h-6 w-auto object-contain bg-white rounded p-0.5 shadow-2xs" />
+     <span className="font-extrabold text-[15px] tracking-tight text-foreground truncate max-w-[160px]">JCL REAL ESTATE</span>
     </>
   ) : (
     <span className="font-semibold text-[17px] tracking-[-0.41px] text-black dark:text-white truncate max-w-[150px]">{title}</span>
@@ -235,7 +233,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  {/* ── DESKTOP TOP BAR ── */}
  <div className="hidden md:flex h-[64px] bg-[#005A9C] dark:bg-[#0B1418]/95 border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
  {/* Breadcrumb space reserved for the sidebar rail */}
- <div className="w-2 shrink-0" />
+ <div className="flex items-center gap-2.5 shrink-0">
+    <img src="/jcl-logo.png" alt="JCL Real Estate" className="h-8 w-auto object-contain rounded-md bg-white p-0.5 shadow-sm" />
+    <span className="hidden lg:inline-block font-extrabold text-sm tracking-tight text-white">JCL REAL ESTATE</span>
+  </div>
  {/* Right */}
  <div className="flex items-center justify-end gap-1.5 sm:gap-3 ml-auto">
  {/* Super Admin Version Switcher (V1 Classic vs V2 OmniCore) */}
