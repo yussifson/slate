@@ -3,11 +3,10 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
   Users, Building2, Shield, CalendarHeart, Clock,
   BadgeDollarSign, Target, GraduationCap, UserPlus,
-  AlertCircle, ArrowUpCircle, Wallet, LayoutDashboard, ChevronRight,
+  AlertCircle, Wallet, LayoutDashboard,
   Menu, X, PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import PageHeader from '@/components/shared/PageHeader';
 
 const HR_NAV_ITEMS = [
   { label: 'HR Overview', path: '/hr', icon: LayoutDashboard, exact: true },
@@ -58,12 +57,12 @@ export default function HRLayout() {
 
       {/* Secondary Left Sidebar */}
       <aside className={cn(
-        "bg-card border-r border-border/70 flex-col shrink-0 transition-all duration-300 z-20",
+        "bg-card border-r border-border/70 flex-col shrink-0 overflow-hidden transition-all duration-300 z-20",
         sidebarCollapsed ? "w-full md:w-[76px]" : "w-full md:w-56 lg:w-60",
         mobileSubNavOpen ? "flex" : "hidden md:flex",
         "h-full min-h-0"
       )}>
-        <div className={cn("p-3 border-b border-border/60 bg-gradient-to-br from-primary/10 via-transparent to-transparent", sidebarCollapsed && "md:px-2")}>
+        <div className={cn("shrink-0 min-h-[76px] p-3 border-b border-border/60 bg-gradient-to-br from-primary/10 via-transparent to-transparent", sidebarCollapsed && "md:px-2")}>
           <div className={cn("flex items-center gap-3", sidebarCollapsed && "md:justify-center")}>
 
             <div className="w-9 h-9 rounded-xl bg-[#005A9C] text-white flex items-center justify-center shadow-sm">
