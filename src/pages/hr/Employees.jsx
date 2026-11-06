@@ -8,6 +8,7 @@ import { Input} from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord, useDeleteIndustryRecord} from '@/hooks/useIndustryData';
 import { toast} from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import ExportButton from '@/components/shared/ExportButton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription} from '@/components/ui/sheet';
 import { Link} from 'react-router-dom';
 import { useNotifications} from '@/hooks/integrations/useNotifications';
@@ -324,6 +325,20 @@ export default function Employees() {
             <Network className="w-4 h-4 inline-block mr-1.5" /> Org Chart
           </button>
         </div>
+        <ExportButton
+          data={filteredEmployees.map(e => ({
+            name: e.name,
+            position: e.position,
+            department: departments.find(d => d.id === e.departmentId)?.name || 'General',
+            email: e.email,
+            phone: e.phone,
+            status: e.status,
+            join_date: e.joinDate
+          }))}
+          filename="jcl_staff_directory"
+          title="Corporate Staff Directory"
+          subtitle="Official Employee Register"
+        />
         <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm">
           <Plus className="w-4 h-4" /> {t("add_employee", "Add Employee")}
         </Button>

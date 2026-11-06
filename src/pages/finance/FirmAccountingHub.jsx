@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Building2, BookOpen, Trash2, Receipt, FileText, Landmark, LineChart,
+  Building2, BookOpen, Trash2, MoreVertical, Edit, Eye, Printer, Receipt, FileText, Landmark, LineChart,
   Plus, Search, RefreshCw, CheckCircle2, ArrowUpRight, ArrowDownLeft,
   DollarSign, TrendingUp, Users, ShoppingBag, BarChart2,
   Banknote, Shield,
@@ -11,6 +11,14 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 import { FirmAccountingAPI } from '@/api/FirmAccountingAPI';
 import { powerSync } from '@/api/PowerSyncConnector';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import ExportButton from '@/components/shared/ExportButton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -184,7 +192,7 @@ function KpiCard({ label, value, sub, icon: Icon, color = 'indigo' }) {
 }
 
 // ── Status badge ──────────────────────────────────────────────
-function StatusBadge({ status }) {
+function StatusBadge({ status, onStatusChange, allowedStatuses = [] }) {
   const map = {
     paid: 'emerald', active: 'emerald', posted: 'emerald', reconciled: 'emerald', approved: 'emerald', collected: 'emerald',
     draft: 'amber', pending: 'amber', in_progress: 'amber', partial: 'amber',
@@ -193,10 +201,40 @@ function StatusBadge({ status }) {
     cancelled: 'rose', fully_depreciated: 'purple',
   };
   const color = map[status] || 'indigo';
+
+  if (!onStatusChange || allowedStatuses.length === 0) {
+    return (
+      <Badge variant="outline" className={cn('text-[9px] uppercase font-bold px-2 py-0.5', TAB_COLORS[color]?.badge || 'bg-muted text-foreground')}>
+        {status?.replace(/_/g, ' ')}
+      </Badge>
+    );
+  }
+
   return (
-    <Badge variant="outline" className={cn('text-[9px] uppercase font-bold px-2 py-0.5', TAB_COLORS[color].badge)}>
-      {status?.replace(/_/g, ' ')}
-    </Badge>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className={cn('inline-flex items-center gap-1 text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-full border shadow-xs transition-all hover:scale-105 hover:opacity-90 cursor-pointer', TAB_COLORS[color]?.badge || 'bg-muted text-foreground')}
+          title="Click to change status"
+        >
+          <span>{status?.replace(/_/g, ' ')}</span>
+          <span className="text-[8px] opacity-60">▼</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="center" className="w-36 text-xs p-1">
+        {allowedStatuses.map(st => (
+          <DropdownMenuItem
+            key={st}
+            onClick={() => onStatusChange(st)}
+            className={cn('cursor-pointer font-semibold capitalize text-xs px-2.5 py-1.5 rounded-md flex items-center justify-between', status === st && 'bg-primary/10 text-primary')}
+          >
+            {st.replace(/_/g, ' ')}
+            {status === st && <span className="text-primary font-bold text-xs">✓</span>}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -241,6 +279,31 @@ export default function FirmAccountingHub() {
   // ── Modal states ─────────────────────────────────────────────
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showJVModal, setShowJVModal] = useState(false);
+  const [viewRecord, setViewRecord] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ open: false, table: '', id: '', name: '' });
+
+  const handleUpdateStatus = async (tableName, id, newStatus) => {
+    try {
+      await FirmAccountingAPI.updateRecordStatus(tableName, id, newStatus);
+      toast.success(`Status updated to ${newStatus.replace(/_/g, ' ')}`);
+      loadData();
+    } catch (e) {
+      toast.error('Failed to update status');
+    }
+  };
+
+  const handleDeleteItem = async () => {
+    if (!deleteModal.id || !deleteModal.table) return;
+    try {
+      await FirmAccountingAPI.deleteRecord(deleteModal.table, deleteModal.id);
+      toast.success(`Deleted successfully`);
+      setDeleteModal({ open: false, table: '', id: '', name: '' });
+      loadData();
+    } catch (e) {
+      toast.error('Failed to delete record');
+    }
+  };
+
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
@@ -660,9 +723,18 @@ export default function FirmAccountingHub() {
           <SectionHeader icon={Receipt} title="Accounts Receivable — Customer Invoices" color="emerald"
             action={<Button size="sm" onClick={() => setShowInvoiceModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.emerald.btn)}><Plus className="w-3.5 h-3.5" /> Create Invoice</Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by customer or invoice number..." />
-          <TableShell headers={[{ label: 'Invoice #' }, { label: 'Customer' }, { label: 'Issue Date' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }]}>
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs text-muted-foreground">{filteredInvoices.length} invoices found</span>
+            <ExportButton
+              data={filteredInvoices.map(i => ({ invoice_number: i.invoice_number, customer: i.customer_name, issue_date: i.issue_date, due_date: i.due_date, total_amount: i.total_amount, status: i.status }))}
+              filename="invoices_report"
+              title="Accounts Receivable — Invoices"
+              subtitle="Customer Invoices Register"
+            />
+          </div>
+          <TableShell headers={[{ label: 'Invoice #' }, { label: 'Customer' }, { label: 'Issue Date' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }, { label: 'Actions', center: true }]}>
             {filteredInvoices.length === 0 ? (
-              <tr><td colSpan={6}><EmptyState icon={Receipt} title="No Invoices Created" desc="Create your first customer invoice. GL journal entry posts automatically." color="emerald" /></td></tr>
+              <tr><td colSpan={7}><EmptyState icon={Receipt} title="No Invoices Created" desc="Create your first customer invoice. GL journal entry posts automatically." color="emerald" /></td></tr>
             ) : filteredInvoices.map(inv => (
               <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4 font-mono font-bold text-foreground">{inv.invoice_number}</td>
@@ -670,7 +742,23 @@ export default function FirmAccountingHub() {
                 <td className="py-3 px-4 text-muted-foreground font-medium">{inv.issue_date || '—'}</td>
                 <td className="py-3 px-4 text-muted-foreground font-medium">{inv.due_date}</td>
                 <td className="py-3 px-4 text-right font-extrabold text-emerald-600 dark:text-emerald-400">{fmt(inv.total_amount)}</td>
-                <td className="py-3 px-4 text-center"><StatusBadge status={inv.status} /></td>
+                <td className="py-3 px-4 text-center">
+                  <StatusBadge
+                    status={inv.status}
+                    onStatusChange={(newSt) => handleUpdateStatus('univ_firm_invoices', inv.id, newSt)}
+                    allowedStatuses={['draft', 'sent', 'paid', 'overdue', 'cancelled']}
+                  />
+                </td>
+                <td className="py-3 px-4 text-center">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <Button variant="ghost" size="icon" onClick={() => setViewRecord({ type: 'Invoice', data: inv })} className="h-7 w-7 text-primary hover:bg-primary/10" title="View details">
+                      <Eye className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => setDeleteModal({ open: true, table: 'univ_firm_invoices', id: inv.id, name: `Invoice ${inv.invoice_number}` })} className="h-7 w-7 text-destructive hover:bg-destructive/10" title="Delete invoice">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </td>
               </tr>
             ))}
           </TableShell>
@@ -685,16 +773,41 @@ export default function FirmAccountingHub() {
           <SectionHeader icon={FileText} title="Accounts Payable — Vendor Bills" color="rose"
             action={<Button size="sm" onClick={() => setShowBillModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.rose.btn)}><Plus className="w-3.5 h-3.5" /> Record Bill</Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by vendor or bill number..." />
-          <TableShell headers={[{ label: 'Bill #' }, { label: 'Vendor' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }]}>
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-xs text-muted-foreground">{filteredBills.length} vendor bills found</span>
+            <ExportButton
+              data={filteredBills.map(b => ({ bill_number: b.bill_number, vendor: b.vendor_name, due_date: b.due_date, total_amount: b.total_amount, status: b.status }))}
+              filename="vendor_bills_report"
+              title="Accounts Payable — Bills"
+              subtitle="Vendor Bills Register"
+            />
+          </div>
+          <TableShell headers={[{ label: 'Bill #' }, { label: 'Vendor' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }, { label: 'Actions', center: true }]}>
             {filteredBills.length === 0 ? (
-              <tr><td colSpan={5}><EmptyState icon={FileText} title="No Bills Recorded" desc="Record a vendor bill. GL AP journal entry posts automatically." color="rose" /></td></tr>
+              <tr><td colSpan={6}><EmptyState icon={FileText} title="No Bills Recorded" desc="Record a vendor bill. GL AP journal entry posts automatically." color="rose" /></td></tr>
             ) : filteredBills.map(b => (
               <tr key={b.id} className="hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4 font-mono font-bold text-foreground">{b.bill_number}</td>
                 <td className="py-3 px-4 font-semibold text-foreground">{b.vendor_name}</td>
                 <td className="py-3 px-4 text-muted-foreground font-medium">{b.due_date}</td>
                 <td className="py-3 px-4 text-right font-extrabold text-rose-600 dark:text-rose-400">{fmt(b.total_amount)}</td>
-                <td className="py-3 px-4 text-center"><StatusBadge status={b.status} /></td>
+                <td className="py-3 px-4 text-center">
+                  <StatusBadge
+                    status={b.status}
+                    onStatusChange={(newSt) => handleUpdateStatus('univ_firm_bills', b.id, newSt)}
+                    allowedStatuses={['draft', 'approved', 'paid', 'overdue', 'rejected']}
+                  />
+                </td>
+                <td className="py-3 px-4 text-center">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <Button variant="ghost" size="icon" onClick={() => setViewRecord({ type: 'Vendor Bill', data: b })} className="h-7 w-7 text-primary hover:bg-primary/10" title="View details">
+                      <Eye className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => setDeleteModal({ open: true, table: 'univ_firm_bills', id: b.id, name: `Bill ${b.bill_number}` })} className="h-7 w-7 text-destructive hover:bg-destructive/10" title="Delete bill">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </td>
               </tr>
             ))}
           </TableShell>
@@ -1681,6 +1794,56 @@ export default function FirmAccountingHub() {
         </SheetContent>
       </Sheet>
 
-    </div>
+    
+      {/* ── Corporate Details View Modal ── */}
+      <Sheet open={!!viewRecord} onOpenChange={(open) => !open && setViewRecord(null)}>
+        <SheetContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl shadow-2xl">
+          <SheetHeader className="mb-4">
+            <SheetTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5 text-primary" />
+              <span>{viewRecord?.type} Details</span>
+            </SheetTitle>
+            <SheetDescription>Executive record preview & corporate data breakdown</SheetDescription>
+          </SheetHeader>
+          {viewRecord && (
+            <div className="space-y-4 text-xs">
+              <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-2.5">
+                {Object.entries(viewRecord.data).map(([k, v]) => {
+                  if (typeof v === 'object' && v !== null) return null;
+                  return (
+                    <div key={k} className="flex justify-between items-center py-1 border-b border-border/30 last:border-0">
+                      <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">{k.replace(/_/g, ' ')}</span>
+                      <span className="font-medium text-foreground text-right max-w-[65%] truncate">{String(v ?? '—')}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <Button type="button" onClick={() => setViewRecord(null)} className="w-full bg-primary text-white">
+                Close Preview
+              </Button>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* ── Corporate Delete Confirmation Modal ── */}
+      <Sheet open={deleteModal.open} onOpenChange={(open) => !open && setDeleteModal({ open: false, table: '', id: '', name: '' })}>
+        <SheetContent className="sm:max-w-md max-h-[85vh] overflow-y-auto rounded-2xl shadow-2xl">
+          <SheetHeader className="mb-2">
+            <SheetTitle className="flex items-center gap-2 text-rose-600">
+              <Trash2 className="w-5 h-5 text-rose-600" />
+              <span>Confirm Deletion</span>
+            </SheetTitle>
+            <SheetDescription>
+              Are you sure you want to permanently delete <strong className="text-foreground">{deleteModal.name}</strong>? This action cannot be undone.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex justify-end gap-3 pt-4">
+            <Button variant="outline" size="sm" onClick={() => setDeleteModal({ open: false, table: '', id: '', name: '' })}>Cancel</Button>
+            <Button variant="destructive" size="sm" onClick={handleDeleteItem} className="bg-rose-600 hover:bg-rose-700 text-white font-semibold">Delete Permanently</Button>
+          </div>
+        </SheetContent>
+      </Sheet>
+</div>
   );
 }

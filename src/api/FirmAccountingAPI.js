@@ -423,4 +423,76 @@ export const FirmAccountingAPI = {
       throw e;
     }
   }
+
+  // ────────────────────────────────────────────────────────
+  // 7. EDIT, UPDATE STATUS & DELETE HELPERS
+  // ────────────────────────────────────────────────────────
+
+  async updateRecordStatus(tableName, id, status) {
+    try {
+      const now = getNowISO();
+      await powerSync.execute(
+        `UPDATE ${tableName} SET status = ?, updated_at = ? WHERE id = ?`,
+        [status, now, id]
+      );
+      return true;
+    } catch (e) {
+      console.error(`[FirmAccountingAPI] updateRecordStatus for ${tableName} failed:`, e);
+      throw e;
+    }
+  },
+
+  async deleteRecord(tableName, id) {
+    try {
+      await powerSync.execute(
+        `DELETE FROM ${tableName} WHERE id = ?`,
+        [id]
+      );
+      return true;
+    } catch (e) {
+      console.error(`[FirmAccountingAPI] deleteRecord for ${tableName} failed:`, e);
+      throw e;
+    }
+  },
+
+  async updateInvoice(id, data) {
+    try {
+      const now = getNowISO();
+      let subtotal = 0;
+      let taxAmount = 0;
+      (data.items || []).forEach(item => {
+        const lineTotal = (Number(item.quantity) || 1) * (Number(item.unitPrice) || 0);
+        subtotal += lineTotal;
+        taxAmount += lineTotal * ((Number(item.taxRate) || 0) / 100);
+      });
+      const totalAmount = subtotal + taxAmount;
+      await powerSync.execute(
+        `UPDATE univ_firm_invoices SET customer_name = ?, customer_email = ?, due_date = ?, status = ?, subtotal = ?, tax_amount = ?, total_amount = ?, updated_at = ? WHERE id = ?`,
+        [data.customerName, data.customerEmail || '', data.dueDate, data.status || 'draft', subtotal, taxAmount, totalAmount, now, id]
+      );
+      return true;
+    } catch (e) {
+      console.error('[FirmAccountingAPI] updateInvoice failed:', e);
+      throw e;
+    }
+  },
+
+  async updateBill(id, data) {
+    try {
+      const now = getNowISO();
+      let subtotal = 0;
+      (data.items || []).forEach(item => {
+        subtotal += (Number(item.quantity) || 1) * (Number(item.unitPrice) || 0);
+      });
+      const totalAmount = subtotal;
+      await powerSync.execute(
+        `UPDATE univ_firm_bills SET vendor_name = ?, vendor_email = ?, due_date = ?, status = ?, subtotal = ?, total_amount = ?, updated_at = ? WHERE id = ?`,
+        [data.vendorName, data.vendorEmail || '', data.dueDate, data.status || 'approved', subtotal, totalAmount, now, id]
+      );
+      return true;
+    } catch (e) {
+      console.error('[FirmAccountingAPI] updateBill failed:', e);
+      throw e;
+    }
+  }
 };
