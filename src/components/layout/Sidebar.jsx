@@ -31,6 +31,7 @@ import {
 import { base44} from "@/api/base44Client";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import { INDUSTRIES, getIndustryNav} from "@/config/industries";
+import { getJCLRolePermissions } from "@/config/jclRolePermissions";
 
 const clientNav = [
  { label: "My Portal", icon: "LayoutDashboard", path: "/client-portal"},
@@ -391,7 +392,8 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  return paths;
 }, [univAccessData, industryNavRaw]);
 
- const allowedPaths = isAdmin ? null : (customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
+ const jclCalculatedPaths = activeIndustry === 'real_estate_jcl' ? getJCLRolePermissions(activeRoleName) : null;
+ const allowedPaths = isAdmin ? null : (jclCalculatedPaths || customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
  { label: "Search", icon: "Search", path: "/search"},
@@ -788,6 +790,13 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   // Strictly filter out non-essential JCL features requested by user
   if (activeIndustry === 'real_estate_jcl') {
+    if (!isAdmin && allowedPaths) {
+      rawNavItems = rawNavItems.filter(item => {
+        if (!item.path) return true;
+        const p = item.path.split('?')[0];
+        return allowedPaths.includes(p) || allowedPaths.includes(item.path);
+      });
+    }
     const JCL_BLOCKED_PATHS = new Set([
       '/enterprise-admin',
       '/feature-insider',
