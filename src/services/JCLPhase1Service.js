@@ -114,10 +114,26 @@ export const JCLPhase1Service = {
 
   async listProjects(companyId) {
     if (!companyId) return [];
-    const [projectResponse, clients] = await Promise.all([
-      supabase.from('ops_projects').select('id, project_code, name, status, priority, project_type, site_address, budget_amount, progress_percentage, start_date, target_end_date, engagement_id, client_id').eq('company_id', companyId).order('created_at', { ascending: false }),
-      this.listClients(companyId),
-    ]);
+
+    const clients = await this.listClients(companyId);
+    const fieldsWithClient = 'id, project_code, name, status, priority, project_type, site_address, budget_amount, progress_percentage, start_date, target_end_date, engagement_id, client_id';
+    const fieldsWithoutClient = 'id, project_code, name, status, priority, project_type, site_address, budget_amount, progress_percentage, start_date, target_end_date, engagement_id';
+
+    let projectResponse = await supabase
+      .from('ops_projects')
+      .select(fieldsWithClient)
+      .eq('company_id', companyId)
+      .order('created_at', { ascending: false });
+
+    // Older deployments may not have received the client_id repair column yet.
+    if (projectResponse.error?.code === '42703' || projectResponse.error?.code === 'PGRST204') {
+      projectResponse = await supabase
+        .from('ops_projects')
+        .select(fieldsWithoutClient)
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+    }
+
     if (projectResponse.error) throw projectResponse.error;
     return attachClients(projectResponse.data || [], clients);
   },

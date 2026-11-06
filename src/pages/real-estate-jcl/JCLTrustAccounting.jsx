@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Wallet, TrendingUp, Plus, ArrowUpRight, ArrowDownLeft, Search, Filter, Eye, Edit, Trash2,
-  CheckCircle2, RefreshCw, Shield, AlertCircle, FileText, Banknote, Building2, Lock, DollarSign
+  Wallet, Plus, ArrowUpRight, ArrowDownLeft, Search, Eye,
+  CheckCircle2, RefreshCw, Shield, Banknote, Building2, Lock
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { toast } from 'react-hot-toast';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
@@ -79,7 +78,7 @@ export default function JCLTrustAccounting() {
       setLedger(ledgerRes.rows._array || Array.from(ledgerRes.rows || []));
     } catch (_err) {
       toast.error('Failed to load trust accounting data');
-    } font
+    }
     setIsLoading(false);
   };
 
