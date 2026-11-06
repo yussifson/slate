@@ -540,38 +540,57 @@ export default function JCLViewings() {
             ))}
             {daysInMonth.map(day => {
               const dayStr = format(day, 'yyyy-MM-dd');
-              const dayViewings = filteredViewings.filter(v => v.viewing_date === dayStr);
+              const dayViewings = filteredViewings.filter(v => {
+                if (!v.viewing_date) return false;
+                // Normalize date string (handles 'YYYY-MM-DD' or full ISO strings)
+                const vDateStr = v.viewing_date.length >= 10 ? v.viewing_date.substring(0, 10) : v.viewing_date;
+                return vDateStr === dayStr;
+              });
               const isToday = isSameDay(day, new Date());
 
               return (
                 <div
                   key={day.toISOString()}
                   className={cn(
-                    "min-h-[90px] p-2 bg-card transition-colors flex flex-col justify-between",
+                    "min-h-[110px] p-2 bg-card transition-colors flex flex-col justify-between hover:bg-muted/15",
                     !isSameMonth(day, currentMonth) && "opacity-40 bg-muted/10",
-                    isToday && "bg-emerald-500/5 ring-1 ring-emerald-500/30"
+                    isToday && "bg-blue-500/5 ring-1 ring-[#005A9C]/40"
                   )}
                 >
-                  <span className={cn(
-                    "text-xs font-bold self-end h-5 w-5 rounded-full flex items-center justify-center",
-                    isToday ? "bg-[#005A9C] text-white" : "text-muted-foreground"
-                  )}>
-                    {format(day, 'd')}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    {dayViewings.length > 0 ? (
+                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-[#FF6B00]/15 text-[#FF6B00]">
+                        {dayViewings.length} {dayViewings.length === 1 ? 'tour' : 'tours'}
+                      </span>
+                    ) : <span />}
+                    <span className={cn(
+                      "text-xs font-bold h-5 w-5 rounded-full flex items-center justify-center",
+                      isToday ? "bg-[#005A9C] text-white" : "text-muted-foreground"
+                    )}>
+                      {format(day, 'd')}
+                    </span>
+                  </div>
 
-                  <div className="space-y-1 mt-1">
-                    {dayViewings.slice(0, 2).map(v => (
+                  <div className="space-y-1 mt-1 flex-1 overflow-hidden">
+                    {dayViewings.slice(0, 3).map(v => (
                       <div
                         key={v.id}
                         onClick={() => setInspectorViewing(v)}
-                        className="text-[10px] p-1 rounded bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 truncate cursor-pointer hover:bg-[#005A9C]/20"
+                        className="text-[10px] p-1.5 rounded-md bg-[#005A9C]/10 hover:bg-[#005A9C]/20 border border-[#005A9C]/20 cursor-pointer transition-all leading-tight shadow-xs"
                       >
-                        {v.viewing_time ? `${v.viewing_time} ` : ''}{v.property_address}
+                        <div className="font-bold text-[#005A9C] dark:text-blue-300 truncate">
+                          {v.viewing_time ? `${v.viewing_time} - ` : ''}{v.property_address || 'Property Inspection'}
+                        </div>
+                        {(v.notes || v.feedback || v.client_name) && (
+                          <div className="text-[9px] text-muted-foreground truncate mt-0.5">
+                            {v.client_name ? `Client: ${v.client_name}` : ''} {v.notes ? `• ${v.notes}` : (v.feedback ? `• ${v.feedback}` : '')}
+                          </div>
+                        )}
                       </div>
                     ))}
-                    {dayViewings.length > 2 && (
-                      <span className="text-[9px] text-muted-foreground font-semibold">
-                        +{dayViewings.length - 2} more
+                    {dayViewings.length > 3 && (
+                      <span className="text-[9px] text-[#FF6B00] font-bold block text-center">
+                        +{dayViewings.length - 3} more viewings
                       </span>
                     )}
                   </div>

@@ -258,7 +258,7 @@ class SupabaseConnector {
               // Real Estate tables - allow all fields for PATCH
               const realtEstateTablesForPatch = ['univ_re_properties', 'univ_re_clients', 'univ_re_viewings', 
                 'univ_re_offers', 'univ_re_transactions', 'univ_re_commissions', 'univ_re_documents', 
-                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests', 'univ_re_leads'];
+                'univ_re_leases', 'univ_re_rent_payments', 'univ_re_maintenance_requests', 'univ_re_leads', 'univ_re_maintenance', 'univ_re_esignatures', 'univ_frontdesk_visitors', 'univ_frontdesk_staff_logs', 'univ_office_custody_items', 'univ_re_counter_offers', 'univ_re_contractors', 'univ_re_contractor_reviews', 'univ_re_escrow_accounts', 'univ_re_document_templates', 'univ_re_lease_renewals', 'univ_re_trust_accounts', 'univ_re_trust_ledger', 'univ_re_team_members', 'univ_re_lead_activities'];
               
               if (Object.keys(payload).length > 0) {
                 const { error } = await this.safeUpdate(table, payload, op.id);

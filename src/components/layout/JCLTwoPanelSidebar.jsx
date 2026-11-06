@@ -33,15 +33,14 @@ const JCL_DEPARTMENTS = [
     color: "emerald",
     items: [
       { label: "Dashboard", path: "/", icon: LayoutDashboard },
-      { label: "Live GPS", path: "/real-estate/field-tracker", icon: MapPin },
       { label: "Customer Timeline", path: "/real-estate/customer-timeline", icon: Clock },
       { label: "Market Data", path: "/real-estate/market-data", icon: Globe },
       { label: "Analytics & Insights", path: "/real-estate/analytics", icon: LineChart }
     ]
   },
   {
-    id: "sales",
-    label: "Sales & CRM",
+    id: "marketing",
+    label: "Marketing & Sales",
     icon: Sparkles,
     color: "amber",
     actionLabel: "New Lead",
@@ -58,29 +57,31 @@ const JCL_DEPARTMENTS = [
   },
   {
     id: "property",
-    label: "Land & Properties",
+    label: "Properties & Land",
     icon: Home,
     color: "blue",
     actionLabel: "Add Property",
     actionPath: "/real-estate/properties",
     items: [
-      { label: "Land Parcels", path: "/real-estate/land", icon: Compass },
       { label: "Properties Portfolio", path: "/real-estate/properties", icon: Home },
+      { label: "Land Parcels", path: "/real-estate/land", icon: Compass },
       { label: "Leases & Contracts", path: "/real-estate/leases", icon: FileCheck },
-      { label: "Lease Renewals", path: "/real-estate/lease-renewals", icon: RotateCcw, badgeKey: "renewals" }
-    ]
-  },
-  {
-    id: "facilities",
-    label: "Facilities & Maintenance",
-    icon: Wrench,
-    color: "purple",
-    actionLabel: "New Work Order",
-    actionPath: "/real-estate/maintenance",
-    items: [
+      { label: "Lease Renewals", path: "/real-estate/lease-renewals", icon: RotateCcw, badgeKey: "renewals" },
       { label: "Maintenance Tickets", path: "/real-estate/maintenance", icon: Wrench, badgeKey: "tickets" },
       { label: "Approved Contractors", path: "/real-estate/contractors", icon: Users2 },
       { label: "Contractor Reviews", path: "/real-estate/contractor-reviews", icon: Star }
+    ]
+  },
+  {
+    id: "operations",
+    label: "Operations & Front Desk",
+    icon: ShieldCheck,
+    color: "purple",
+    items: [
+      { label: "Secretary & Front Desk", path: "/real-estate/front-desk", icon: Building2 },
+      { label: "Visitor Logs", path: "/real-estate/front-desk?tab=visitors", icon: LogOut },
+      { label: "Staff Movements", path: "/real-estate/front-desk?tab=staff_logs", icon: Users },
+      { label: "Items & Custody Tracker", path: "/real-estate/front-desk?tab=custody_items", icon: BookOpen }
     ]
   },
   {
@@ -93,12 +94,6 @@ const JCL_DEPARTMENTS = [
     items: [
       { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
       { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
-      { label: "Chart of Accounts", path: "/finance/accounting?tab=coa", icon: BookOpen },
-      { label: "Invoices & AR", path: "/finance/accounting?tab=invoices", icon: Receipt },
-      { label: "Bills & AP", path: "/finance/accounting?tab=bills", icon: FileText },
-      { label: "General Ledger (JV)", path: "/finance/accounting?tab=jv", icon: LineChart },
-      { label: "Bank Feed Rec", path: "/finance/accounting?tab=bankrec", icon: CheckCircle2 },
-      { label: "Fixed Assets", path: "/finance/accounting?tab=assets", icon: Building2 },
       { label: "Escrow Accounts", path: "/real-estate/escrow", icon: Lock },
       { label: "Rent Payments", path: "/real-estate/rent-payments", icon: CreditCard },
       { label: "Payment Schedules", path: "/real-estate/payment-schedules", icon: Calendar },
@@ -108,39 +103,28 @@ const JCL_DEPARTMENTS = [
   },
   {
     id: "projects",
-    label: "Projects & Engineering",
+    label: "Projects & HR",
     icon: Briefcase,
     color: "orange",
     actionLabel: "New Project",
     actionPath: "/tasks",
     items: [
       { label: "Projects & Tasks", path: "/tasks", icon: Briefcase },
-      { label: "HR & Team Roster", path: "/hr", icon: HeartHandshake },
-      { label: "Civil Engineering & QS", path: "/real-estate/team-management", icon: UserCheck }
-    ]
-  },
-  {
-    id: "governance",
-    label: "Docs & Governance",
-    icon: FileText,
-    color: "teal",
-    actionLabel: "New Smart Doc",
-    actionPath: "/smart-docs",
-    items: [
+      { label: "Human Resources Hub", path: "/hr", icon: HeartHandshake },
       { label: "Smart Docs", path: "/smart-docs", icon: FileText },
-      { label: "E-Signatures Hub", path: "/real-estate/e-signatures", icon: PenTool },
-      { label: "Executive Reports", path: "/reports", icon: ClipboardList },
-      { label: "Audit & Compliance Log", path: "/real-estate/audit-log", icon: ShieldCheck }
+      { label: "E-Signatures Hub", path: "/real-estate/e-signatures", icon: PenTool }
     ]
   },
   {
     id: "settings",
-    label: "Settings & System",
+    label: "System Admin & Settings",
     icon: Settings,
     color: "slate",
     items: [
+      { label: "Live GPS Tracking", path: "/real-estate/field-tracker", icon: MapPin },
+      { label: "Client Portal", path: "/client-portal", icon: Globe },
+      { label: "Audit & Compliance Log", path: "/real-estate/audit-log", icon: ShieldCheck },
       { label: "Integrations Hub", path: "/integrations", icon: Blocks },
-      { label: "Automations Engine", path: "/automations", icon: Zap },
       { label: "Workspace Settings", path: "/settings", icon: Settings }
     ]
   }

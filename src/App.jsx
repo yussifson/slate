@@ -1,3 +1,4 @@
+import JCLFrontDeskHub from '@/pages/real-estate-jcl/JCLFrontDeskHub';
 const ApkDownload = React.lazy(() => import('@/pages/ApkDownload'));
 import React, { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster"
@@ -1351,7 +1352,8 @@ function PlatformRoutes() {
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
       <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
       <Route path="/finance/accounting" element={<SmartFirmAccountingRouter />} />
-      <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
+      <Route path="/real-estate/front-desk" element={<JCLFrontDeskHub />} />
+                          <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />
       <Route path="/real-estate/field-tracker" element={<JCLMarketerTrackerPage />} />
       <Route path="/real-estate/marketer-tracker" element={<JCLMarketerTrackerPage />} />
 
@@ -1778,7 +1780,7 @@ function App() {
                   </React.Suspense>
                 ) : isAccountDomain ? (
                   /* ── ACCOUNT DOMAIN: Global Identity Portal ── */
-                  <React.Suspense fallback={<AppPageSkeleton />}>
+                  <React.Suspense fallback={<div className="w-full h-1 bg-[#FF6B00]/20 overflow-hidden"><div className="w-full h-full bg-[#FF6B00] animate-pulse" /></div>}>
                     <Routes>
                       <Route path="/login" element={<AccountLogin />} />
                       <Route path="/signup" element={<AccountSignUp />} />
@@ -1806,7 +1808,7 @@ function App() {
                   </React.Suspense>
                 ) : (
                   /* ── ALL OTHER DOMAINS: workspace / marketing / app routes ── */
-                  <React.Suspense fallback={<AppPageSkeleton />}>
+                  <React.Suspense fallback={<div className="w-full h-1 bg-[#FF6B00]/20 overflow-hidden"><div className="w-full h-full bg-[#FF6B00] animate-pulse" /></div>}>
                     {isBaseDomain ? (
                       /* Storefront Routes for the Base Domain */
                       <Routes>
