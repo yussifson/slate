@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { User, Mail, Camera, Crown } from 'lucide-react';
+import { User, Camera, Crown } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
 
@@ -79,8 +79,8 @@ export default function AccountPersonalInfo() {
         localStorage.setItem('slate_cached_user', JSON.stringify(parsed));
       }
       
-      // Force refresh for context
-      window.location.reload();
+      if (refreshUser) await refreshUser();
+      setIsEditingAvatar(false);
     } catch (err) {
       alert("Error uploading avatar: " + err.message);
     } finally {
