@@ -87,7 +87,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   const toggleCat = (cat) => {
     setExpandedCats(prev => {
 const isDefaultOpen = activeIndustry === 'real_estate_jcl'
-        ? ['Operations', 'Secretary', 'Marketing', 'Land & Property', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
+        ? ['Operations', 'Secretary', 'Marketing', 'Properties', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
         : (cat === 'Platform' || cat === 'Operations');
       const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : isDefaultOpen;
       const next = { ...prev, [cat]: !isCurrentlyExpanded };
@@ -755,14 +755,16 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       rawNavItems.push({ label: "Firm Accounting", path: "/finance/accounting", icon: "Landmark" });
     }
 
-    // Inject GPS Operations (Executive) & GPS Field Tracker (Marketers) — JCL only
+    // Inject JCL-only navigation that must remain visible in the rendered sidebar.
     if (activeIndustry === 'real_estate_jcl') {
-      if (!rawNavItems.some(n => n.path === '/real-estate/field-tracker')) {
-        rawNavItems.push({ label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" });
-      }
-      if (!rawNavItems.some(n => n.path === '/real-estate/marketer-tracker')) {
-        rawNavItems.push({ label: "Field GPS", path: "/real-estate/marketer-tracker", icon: "MapPin" });
-      }
+      const jclItems = [
+        { label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" },
+        { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
+        { label: "Client Portal", path: "/client-portal", icon: "Globe" }
+      ];
+      jclItems.forEach(item => {
+        if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
+      });
     }
 
     // Inject SmartDocs
@@ -846,14 +848,17 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
     // JCL Royal Group is organized by department, not by nested feature groups.
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/jcl/front-desk', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline'].includes(p)) {
+      if (['/jcl/front-desk', '/jcl/item-register'].includes(p)) {
         return "Secretary";
       }
-      if (['/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
         return "Marketing";
       }
-      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data'].includes(p) || p.startsWith('/real-estate/land')) {
-        return "Land & Property";
+      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land')) {
+        return "Properties";
+      }
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal'].includes(p)) {
+        return "System Admin";
       }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||
           p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
@@ -893,7 +898,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Operations", "Secretary", "Marketing", "Land & Property", "Finance", "Human Resources", "System Admin"]
+    ? ["Operations", "Secretary", "Marketing", "Properties", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
@@ -1127,7 +1132,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
      const items = groupedNav[cat];
      if (!items || items.length === 0) return null;
      const isDefaultOpen = activeIndustry === 'real_estate_jcl'
-        ? ['Operations', 'Secretary', 'Marketing', 'Land & Property', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
+        ? ['Operations', 'Secretary', 'Marketing', 'Properties', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
         : (cat === 'Platform' || cat === 'Operations');
       const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : isDefaultOpen;
      

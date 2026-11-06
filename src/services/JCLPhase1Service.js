@@ -1,4 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
+import { powerSync } from '@/api/PowerSyncConnector';
 
 const makeNumber = (prefix) => `${prefix}-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
 
@@ -10,6 +11,18 @@ const attachClients = (rows, clients) => rows.map((row) => {
 export const JCLPhase1Service = {
   async listClients(companyId) {
     if (!companyId) return [];
+
+    try {
+      const result = await powerSync.execute(
+        'SELECT id, name, email, phone, type, city FROM univ_re_clients WHERE company_id = ? ORDER BY name ASC',
+        [String(companyId)]
+      );
+      const clients = result?.rows?._array || Array.from(result?.rows || []);
+      if (clients.length > 0) return clients;
+    } catch (_error) {
+      // Fall back to Supabase when the local replica is not ready yet.
+    }
+
     const { data, error } = await supabase
       .from('univ_re_clients')
       .select('id, name, email, phone, type, city')
