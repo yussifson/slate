@@ -465,6 +465,7 @@ const JCLCrmLeadsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCrmL
  const JCLClientsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLClients'));
  const JCLEngagementsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngagements'));
  const JCLProjectFinancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectFinance'));
+ const JCLEngineeringPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngineering'));
  const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
 const JCLProcurementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProcurement'));
 const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
@@ -1028,6 +1029,7 @@ function PlatformRoutes() {
         <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
         <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
   <Route path="/jcl/engagements" element={<JCLEngagementsPage />} />
+  <Route path="/engineering" element={<JCLEngineeringPage />} />
   <Route path="/jcl/procurement" element={<JCLProcurementPage defaultTab="requisitions" />} />
   <Route path="/jcl/requisitions" element={<JCLProcurementPage defaultTab="requisitions" />} />
   <Route path="/jcl/purchase-orders" element={<JCLProcurementPage defaultTab="orders" />} />

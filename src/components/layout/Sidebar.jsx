@@ -757,12 +757,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
         { label: "Client Portal", path: "/portal", icon: "Globe" },
         { label: "Procurement", path: "/jcl/procurement", icon: "Package" },
-        { label: "Requisitions", path: "/jcl/requisitions", icon: "ClipboardList" },
-        { label: "Purchase Orders", path: "/jcl/purchase-orders", icon: "FileCheck" },
-        { label: "Materials & Inventory", path: "/jcl/inventory", icon: "Warehouse" },
-        { label: "Engineering", path: "/bom", icon: "Layers" },
-        { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
-        { label: "Bill of Quantities", path: "/boq", icon: "Calculator" }
+        { label: "Engineering", path: "/engineering", icon: "Layers" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -797,7 +792,13 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       '/snapshots',
       '/snapshot',
       '/real-estate/marketer-tracker',
-      '/real-estate/trust-accounting'
+      '/real-estate/trust-accounting',
+      '/jcl/requisitions',
+      '/jcl/purchase-orders',
+      '/jcl/inventory',
+      '/jcl/projects',
+      '/bom',
+      '/boq'
     ]);
     const JCL_BLOCKED_LABELS = new Set([
       'enterprise admin',
@@ -865,7 +866,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/procurement', '/purchase-orders', '/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) || p.startsWith('/procurement') || ['procurement', 'purchase orders', 'suppliers', 'goods receipts'].includes(normalizedLabel)) {
         return "Procurement";
       }
-      if (['/bom', '/boq', '/jcl/projects'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'projects'].includes(normalizedLabel)) {
+      if (['/engineering', '/bom', '/boq', '/jcl/projects'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'projects'].includes(normalizedLabel)) {
         return "Engineering";
       }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
