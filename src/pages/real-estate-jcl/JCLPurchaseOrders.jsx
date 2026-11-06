@@ -318,12 +318,12 @@ export default function JCLPurchaseOrders() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label className="text-xs font-semibold">Project Association</Label>
-                <Select value={form.project_id} onValueChange={(val) => setForm({ ...form, project_id: val })}>
+                <Select value={form.project_id || 'unassigned'} onValueChange={(val) => setForm({ ...form, project_id: val === 'unassigned' ? '' : val })}>
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select Project" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">General / Central Depot</SelectItem>
+                    <SelectItem value="unassigned">General / Central Depot</SelectItem>
                     {projects.map((p) => (
                       <SelectItem key={p.id} value={p.id}>
                         {p.name}

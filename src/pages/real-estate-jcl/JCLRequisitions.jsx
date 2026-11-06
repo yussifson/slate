@@ -305,12 +305,12 @@ export default function JCLRequisitions() {
           <form onSubmit={handleSave} className="space-y-4 py-2">
             <div>
               <Label className="text-xs font-semibold">Project Association</Label>
-              <Select value={form.project_id} onValueChange={(val) => setForm({ ...form, project_id: val })}>
+              <Select value={form.project_id || 'unassigned'} onValueChange={(val) => setForm({ ...form, project_id: val })}>
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Select Project (or General Site)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">General Operations / Unassigned</SelectItem>
+                  <SelectItem value="unassigned">General Operations / Unassigned</SelectItem>
                   {projects.map((p) => (
                     <SelectItem key={p.id} value={p.id}>
                       {p.name} {p.project_code ? `(${p.project_code})` : ''}

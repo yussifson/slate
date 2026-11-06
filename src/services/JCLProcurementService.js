@@ -71,7 +71,7 @@ export const JCLProcurementService = {
   async createRequisition(companyId, actorId, payload) {
     const { data, error } = await supabase.from('jcl_purchase_requisitions').insert({
       company_id: companyId,
-      project_id: payload.project_id,
+      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
       reference: payload.reference || `REQ-${Date.now().toString().slice(-6)}`,
       department: payload.department || 'Construction',
       requested_by: actorId,
@@ -87,7 +87,7 @@ export const JCLProcurementService = {
 
   async updateRequisition(companyId, requisitionId, payload) {
     const { data, error } = await supabase.from('jcl_purchase_requisitions').update({
-      project_id: payload.project_id,
+      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
       department: payload.department,
       required_date: payload.required_date || null,
       priority: payload.priority || 'normal',
@@ -113,7 +113,7 @@ export const JCLProcurementService = {
     const ref = payload.reference || payload.po_number || `PO-${Date.now().toString().slice(-6)}`;
     const { data, error } = await supabase.from('jcl_purchase_orders').insert({
       company_id: companyId,
-      project_id: payload.project_id,
+      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
       reference: ref,
       po_number: ref,
       supplier_name: payload.supplier_name,
@@ -122,7 +122,7 @@ export const JCLProcurementService = {
       delivery_address: payload.delivery_address || 'Main Site',
       payment_terms: payload.payment_terms || 'Net 30',
       status: payload.status || 'draft',
-      requisition_id: payload.requisition_id || null
+      requisition_id: payload.requisition_id && payload.requisition_id.trim() !== "" ? payload.requisition_id : null
     }).select().single();
     selectError(error, 'Unable to create purchase order');
     return data;
@@ -130,7 +130,7 @@ export const JCLProcurementService = {
 
   async updatePurchaseOrder(companyId, orderId, payload) {
     const { data, error } = await supabase.from('jcl_purchase_orders').update({
-      project_id: payload.project_id,
+      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
       supplier_name: payload.supplier_name,
       total_amount: Number(payload.total_amount || 0),
       expected_delivery_date: payload.expected_delivery_date || null,
@@ -156,8 +156,8 @@ export const JCLProcurementService = {
     const ref = payload.reference || `GRN-${Date.now().toString().slice(-6)}`;
     const { data, error } = await supabase.from('jcl_goods_receipts').insert({
       company_id: companyId,
-      purchase_order_id: payload.purchase_order_id,
-      project_id: payload.project_id,
+      purchase_order_id: payload.purchase_order_id && payload.purchase_order_id.trim() !== "" ? payload.purchase_order_id : null,
+      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
       reference: ref,
       receipt_number: ref,
       delivery_note_reference: payload.delivery_note_reference || '',
