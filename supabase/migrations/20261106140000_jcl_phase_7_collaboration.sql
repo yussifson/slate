@@ -4,7 +4,7 @@ create extension if not exists pgcrypto;
 
 create table if not exists public.ops_project_members (
   id uuid primary key default gen_random_uuid(),
-  company_id uuid not null,
+  company_id text not null,
   project_id uuid not null references public.ops_projects(id) on delete cascade,
   user_id uuid not null,
   display_name text,
@@ -16,7 +16,7 @@ create table if not exists public.ops_project_members (
 
 create table if not exists public.ops_project_messages (
   id uuid primary key default gen_random_uuid(),
-  company_id uuid not null,
+  company_id text not null,
   project_id uuid not null references public.ops_projects(id) on delete cascade,
   author_id uuid,
   body text not null check (char_length(trim(body)) between 1 and 10000),
@@ -28,7 +28,7 @@ create table if not exists public.ops_project_messages (
 
 create table if not exists public.ops_project_message_reactions (
   id uuid primary key default gen_random_uuid(),
-  company_id uuid not null,
+  company_id text not null,
   message_id uuid not null references public.ops_project_messages(id) on delete cascade,
   user_id uuid not null,
   reaction text not null check (reaction in ('like','acknowledged','question','important')),
@@ -38,7 +38,7 @@ create table if not exists public.ops_project_message_reactions (
 
 create table if not exists public.ops_project_message_mentions (
   id uuid primary key default gen_random_uuid(),
-  company_id uuid not null,
+  company_id text not null,
   message_id uuid not null references public.ops_project_messages(id) on delete cascade,
   mentioned_user_id uuid not null,
   created_at timestamptz not null default now(),
@@ -47,7 +47,7 @@ create table if not exists public.ops_project_message_mentions (
 
 create table if not exists public.ops_project_risks (
   id uuid primary key default gen_random_uuid(),
-  company_id uuid not null,
+  company_id text not null,
   project_id uuid not null references public.ops_projects(id) on delete cascade,
   title text not null,
   description text,
@@ -64,7 +64,7 @@ create table if not exists public.ops_project_risks (
 
 create table if not exists public.ops_project_milestones (
   id uuid primary key default gen_random_uuid(),
-  company_id uuid not null,
+  company_id text not null,
   project_id uuid not null references public.ops_projects(id) on delete cascade,
   title text not null,
   description text,
