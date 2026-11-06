@@ -788,7 +788,11 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       '/feature-vault',
       '/marketplace',
       '/branch-manager',
-      '/automations'
+      '/automations',
+      '/snapshots',
+      '/snapshot',
+      '/real-estate/marketer-tracker',
+      '/real-estate/trust-accounting'
     ]);
     const JCL_BLOCKED_LABELS = new Set([
       'enterprise admin',
@@ -796,7 +800,11 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       'feature vault',
       'marketplace',
       'branch manager',
-      'automations'
+      'automations',
+      'snapshot',
+      'snapshots',
+      'field gps',
+      'trust accounting'
     ]);
     rawNavItems = rawNavItems.filter(item => {
       if (item.path && JCL_BLOCKED_PATHS.has(item.path)) return false;
@@ -833,6 +841,27 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   const getCategory = (item) => {
     const p = item.path || '';
+    const normalizedLabel = (item.label || '').trim().toLowerCase();
+
+    // JCL department rules must run before dynamic-module fallback so legacy entries cannot fall back to Operations.
+    if (activeIndustry === 'real_estate_jcl') {
+      if (['/jcl/front-desk', '/jcl/item-register'].includes(p) || normalizedLabel === 'item register') {
+        return "Secretary";
+      }
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || normalizedLabel === 'engagement' || normalizedLabel === 'engagements & projects' || normalizedLabel === 'clients') {
+        return "Marketing";
+      }
+      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land') || ['leases', 'renewals', 'maintenance', 'contractors', 'reviews'].includes(normalizedLabel)) {
+        return "Properties";
+      }
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p) || ['live gps', 'audit log', 'client portal'].includes(normalizedLabel)) {
+        return "System Admin";
+      }
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
+        return "Finance";
+      }
+    }
+
     if (item.isDynamic) return activeIndustry === 'real_estate_jcl' ? "Projects & Smart Docs" : "Workspace";
 
     // Administrative & Management Features (Admin Section)
