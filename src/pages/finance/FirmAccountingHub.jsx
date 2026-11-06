@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Building2, BookOpen, Receipt, FileText, Landmark, LineChart,
+  Building2, BookOpen, Trash2, Receipt, FileText, Landmark, LineChart,
   Plus, Search, RefreshCw, CheckCircle2, ArrowUpRight, ArrowDownLeft,
   DollarSign, TrendingUp, Users, ShoppingBag, BarChart2,
   Banknote, Shield,
@@ -1256,13 +1256,114 @@ export default function FirmAccountingHub() {
         <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Create Customer Invoice</SheetTitle><SheetDescription>Invoice auto-posts AR journal entry to GL</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateInvoice} className="space-y-4 text-xs">
-            <div><Label className="text-xs">Customer Name</Label><Input value={invoiceForm.customerName} onChange={e => setInvoiceForm({ ...invoiceForm, customerName: e.target.value })} placeholder="Acme Corp" className="h-9 text-xs mt-1" required /></div>
-            <div><Label className="text-xs">Customer Email</Label><Input value={invoiceForm.customerEmail} onChange={e => setInvoiceForm({ ...invoiceForm, customerEmail: e.target.value })} placeholder="billing@acme.com" className="h-9 text-xs mt-1" /></div>
-            <div><Label className="text-xs">Service / Item Description</Label><Input value={invoiceForm.items[0].description} onChange={e => { const items = [...invoiceForm.items]; items[0].description = e.target.value; setInvoiceForm({ ...invoiceForm, items }); }} className="h-9 text-xs mt-1" required /></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-xs">Amount (GH₵)</Label><Input type="number" value={invoiceForm.items[0].unitPrice} onChange={e => { const items = [...invoiceForm.items]; items[0].unitPrice = Number(e.target.value); setInvoiceForm({ ...invoiceForm, items }); }} className="h-9 text-xs mt-1" required /></div>
-              <div><Label className="text-xs">Due Date</Label><Input type="date" value={invoiceForm.dueDate} onChange={e => setInvoiceForm({ ...invoiceForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required /></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div><Label className="text-xs">Customer Name</Label><Input value={invoiceForm.customerName} onChange={e => setInvoiceForm({ ...invoiceForm, customerName: e.target.value })} placeholder="Acme Corp" className="h-9 text-xs mt-1" required /></div>
+              <div><Label className="text-xs">Customer Email</Label><Input value={invoiceForm.customerEmail} onChange={e => setInvoiceForm({ ...invoiceForm, customerEmail: e.target.value })} placeholder="billing@acme.com" className="h-9 text-xs mt-1" /></div>
             </div>
+
+            {/* Multiple Line Items */}
+            <div className="border border-border/60 rounded-xl p-3 bg-muted/20 space-y-3">
+              <div className="flex items-center justify-between pb-1 border-b border-border/40">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider">Invoice Line Items</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setInvoiceForm({
+                    ...invoiceForm,
+                    items: [...invoiceForm.items, { description: "", quantity: 1, unitPrice: 0, taxRate: 0 }]
+                  })}
+                  className="h-7 text-xs px-2.5 font-medium border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Add Item
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {invoiceForm.items.map((it, idx) => {
+                  const lineTotal = (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0);
+                  return (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-card p-2 rounded-lg border border-border/50">
+                      <div className="col-span-5">
+                        <Input
+                          placeholder="Item description"
+                          value={it.description}
+                          onChange={e => {
+                            const newItems = [...invoiceForm.items];
+                            newItems[idx].description = e.target.value;
+                            setInvoiceForm({ ...invoiceForm, items: newItems });
+                          }}
+                          className="h-8 text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <Input
+                          type="number"
+                          placeholder="Qty"
+                          min="1"
+                          value={it.quantity}
+                          onChange={e => {
+                            const newItems = [...invoiceForm.items];
+                            newItems[idx].quantity = Number(e.target.value) || 1;
+                            setInvoiceForm({ ...invoiceForm, items: newItems });
+                          }}
+                          className="h-8 text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-3">
+                        <Input
+                          type="number"
+                          placeholder="Rate (GH₵)"
+                          step="0.01"
+                          value={it.unitPrice}
+                          onChange={e => {
+                            const newItems = [...invoiceForm.items];
+                            newItems[idx].unitPrice = Number(e.target.value) || 0;
+                            setInvoiceForm({ ...invoiceForm, items: newItems });
+                          }}
+                          className="h-8 text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-2 flex items-center justify-between pl-1">
+                        <span className="font-semibold text-xs text-foreground truncate">
+                          GH₵{lineTotal.toLocaleString()}
+                        </span>
+                        {invoiceForm.items.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              const newItems = invoiceForm.items.filter((_, i) => i !== idx);
+                              setInvoiceForm({ ...invoiceForm, items: newItems });
+                            }}
+                            className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="flex justify-between items-center pt-2 border-t border-border/40 text-xs font-semibold">
+                <span>Subtotal ({invoiceForm.items.length} items):</span>
+                <span className="text-emerald-600 font-bold text-sm">
+                  GH₵{invoiceForm.items.reduce((s, it) => s + ((Number(it.quantity) || 0) * (Number(it.unitPrice) || 0)), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-xs">Due Date</Label>
+              <Input type="date" value={invoiceForm.dueDate} onChange={e => setInvoiceForm({ ...invoiceForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required />
+            </div>
+
             <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white">Create & Post Invoice</Button>
           </form>
         </SheetContent>
@@ -1274,11 +1375,110 @@ export default function FirmAccountingHub() {
           <SheetHeader className="mb-4"><SheetTitle>Record Vendor Bill</SheetTitle><SheetDescription>Bill auto-posts AP journal to GL</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateBill} className="space-y-4 text-xs">
             <div><Label className="text-xs">Vendor Name</Label><Input value={billForm.vendorName} onChange={e => setBillForm({ ...billForm, vendorName: e.target.value })} placeholder="Dell Commercial" className="h-9 text-xs mt-1" required /></div>
-            <div><Label className="text-xs">Bill Description</Label><Input value={billForm.items[0].description} onChange={e => { const items = [...billForm.items]; items[0].description = e.target.value; setBillForm({ ...billForm, items }); }} className="h-9 text-xs mt-1" required /></div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label className="text-xs">Amount (GH₵)</Label><Input type="number" value={billForm.items[0].unitPrice} onChange={e => { const items = [...billForm.items]; items[0].unitPrice = Number(e.target.value); setBillForm({ ...billForm, items }); }} className="h-9 text-xs mt-1" required /></div>
-              <div><Label className="text-xs">Due Date</Label><Input type="date" value={billForm.dueDate} onChange={e => setBillForm({ ...billForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required /></div>
+
+            {/* Multiple Line Items for Bill */}
+            <div className="border border-border/60 rounded-xl p-3 bg-muted/20 space-y-3">
+              <div className="flex items-center justify-between pb-1 border-b border-border/40">
+                <span className="font-semibold text-foreground text-xs uppercase tracking-wider">Bill Line Items</span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBillForm({
+                    ...billForm,
+                    items: [...billForm.items, { description: "", quantity: 1, unitPrice: 0 }]
+                  })}
+                  className="h-7 text-xs px-2.5 font-medium border-rose-500/40 text-rose-600 hover:bg-rose-500/10"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Add Item
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                {billForm.items.map((it, idx) => {
+                  const lineTotal = (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0);
+                  return (
+                    <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-card p-2 rounded-lg border border-border/50">
+                      <div className="col-span-5">
+                        <Input
+                          placeholder="Item description"
+                          value={it.description}
+                          onChange={e => {
+                            const newItems = [...billForm.items];
+                            newItems[idx].description = e.target.value;
+                            setBillForm({ ...billForm, items: newItems });
+                          }}
+                          className="h-8 text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <Input
+                          type="number"
+                          placeholder="Qty"
+                          min="1"
+                          value={it.quantity}
+                          onChange={e => {
+                            const newItems = [...billForm.items];
+                            newItems[idx].quantity = Number(e.target.value) || 1;
+                            setBillForm({ ...billForm, items: newItems });
+                          }}
+                          className="h-8 text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-3">
+                        <Input
+                          type="number"
+                          placeholder="Rate (GH₵)"
+                          step="0.01"
+                          value={it.unitPrice}
+                          onChange={e => {
+                            const newItems = [...billForm.items];
+                            newItems[idx].unitPrice = Number(e.target.value) || 0;
+                            setBillForm({ ...billForm, items: newItems });
+                          }}
+                          className="h-8 text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-2 flex items-center justify-between pl-1">
+                        <span className="font-semibold text-xs text-foreground truncate">
+                          GH₵{lineTotal.toLocaleString()}
+                        </span>
+                        {billForm.items.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              const newItems = billForm.items.filter((_, i) => i !== idx);
+                              setBillForm({ ...billForm, items: newItems });
+                            }}
+                            className="h-7 w-7 text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="flex justify-between items-center pt-2 border-t border-border/40 text-xs font-semibold">
+                <span>Subtotal ({billForm.items.length} items):</span>
+                <span className="text-rose-600 font-bold text-sm">
+                  GH₵{billForm.items.reduce((s, it) => s + ((Number(it.quantity) || 0) * (Number(it.unitPrice) || 0)), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </span>
+              </div>
             </div>
+
+            <div>
+              <Label className="text-xs">Due Date</Label>
+              <Input type="date" value={billForm.dueDate} onChange={e => setBillForm({ ...billForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required />
+            </div>
+
             <Button type="submit" className="w-full h-9 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white">Record Vendor Bill</Button>
           </form>
         </SheetContent>
