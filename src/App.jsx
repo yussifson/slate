@@ -286,8 +286,13 @@ class ErrorBoundary extends React.Component {
       return (
         <div style={{ padding: 20, color: 'red', background: '#ffebee', minHeight: '100vh' }}>
           <h2>Something went wrong in the UI.</h2>
-          <pre>{this.state.error?.toString()}</pre>
-          <pre>{this.state.error?.stack}</pre>
+          <p>Please reload the app. If the problem continues, contact your administrator.</p>
+          {import.meta.env.DEV && this.state.error && (
+            <details style={{ marginTop: 16 }}>
+              <summary>Development error details</summary>
+              <pre>{this.state.error.stack || this.state.error.toString()}</pre>
+            </details>
+          )}
           <button onClick={() => window.location.reload()} style={{ padding: '12px 24px', background: 'white', color: 'red', border: '1px solid red', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', marginTop: 16 }}>Reload App</button>
         </div>
       );

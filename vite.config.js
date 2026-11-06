@@ -115,22 +115,6 @@ export default defineConfig(({ mode }) => {
                 statuses: [200]
               }
             }
-          },
-          {
-            // Cache Supabase REST API responses (profiles, companies, etc.) for offline use
-            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
-            handler: 'NetworkFirst',
-            method: 'GET',
-            options: {
-              cacheName: 'supabase-data-cache',
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 // 1 day
-              },
-              cacheableResponse: {
-                statuses: [200]
-              }
-            }
           }
         ]
       }

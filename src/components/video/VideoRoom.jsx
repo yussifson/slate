@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import DailyIframe from '@daily-co/daily-js';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation} from "react-i18next";
@@ -925,7 +927,9 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode, initialBac
             <p className="mt-4 text-sm font-medium">AI is analyzing the conversation...</p>
           </div>
         ) : (
-          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aiResponse }} />
+          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{aiResponse}</ReactMarkdown>
+          </div>
         )}
       </div>
     </div>

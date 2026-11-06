@@ -48,7 +48,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
  const { theme, changeTheme } = useTheme();
  const [showEmojis, setShowEmojis] = useState(false);
  const [floatingEmojis, setFloatingEmojis] = useState([]);
-  const EMOJIS = ['=ƒæì', 'G¥ñn+Å', '=ƒæÅ', '=ƒÿé', '=ƒÄë', '=ƒöÑ'];
+  const EMOJIS = ['=ï¿½ï¿½ï¿½', 'Gï¿½ï¿½n+ï¿½', '=ï¿½ï¿½ï¿½', '=ï¿½ï¿½ï¿½', '=ï¿½ï¿½ï¿½', '=ï¿½ï¿½ï¿½'];
   const [activeBg, setActiveBg] = useState('none');
   const [isApplyingBg, setIsApplyingBg] = useState(false);
 
@@ -486,7 +486,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
             <p className="mt-4 text-sm font-medium">AI is analyzing the conversation...</p>
           </div>
         ) : (
-          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aiResponse }} />
+          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none">{aiResponse}</div>
         )}
       </div>
     </div>

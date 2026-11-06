@@ -486,7 +486,7 @@ function VideoRoomInner({ roomUrl, onLeave, isPipMode, togglePipMode}) {
             <p className="mt-4 text-sm font-medium">AI is analyzing the conversation...</p>
           </div>
         ) : (
-          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aiResponse }} />
+          <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none">{aiResponse}</div>
         )}
       </div>
     </div>
