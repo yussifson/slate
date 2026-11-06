@@ -80,5 +80,18 @@ export function useCompany() {
     }
   }
 
+    // Corporate branding defaults for JCL Real Estate
+  if (finalCompany) {
+    if (!finalCompany.logo_url) {
+      finalCompany.logo_url = '/jcl-logo.png';
+    }
+    if (!finalCompany.logo_light_url) {
+      finalCompany.logo_light_url = '/jcl-logo.png';
+    }
+    if (!finalCompany.tagline) {
+      finalCompany.tagline = 'JCL Real Estate & Construction Solutions';
+    }
+  }
+
   return { company: finalCompany, isLoading: isLoading && !!companyId };
 }

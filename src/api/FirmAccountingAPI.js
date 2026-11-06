@@ -422,7 +422,7 @@ export const FirmAccountingAPI = {
       console.error('[FirmAccountingAPI] createBankReconciliation failed:', e);
       throw e;
     }
-  }
+  },
 
   // ────────────────────────────────────────────────────────
   // 7. EDIT, UPDATE STATUS & DELETE HELPERS
