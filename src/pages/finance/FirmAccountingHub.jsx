@@ -15,7 +15,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import {
+  Dialog as Sheet,
+  DialogContent as SheetContent,
+  DialogHeader as SheetHeader,
+  DialogTitle as SheetTitle,
+  DialogDescription as SheetDescription
+} from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { toast } from 'react-hot-toast';
@@ -1201,7 +1207,7 @@ export default function FirmAccountingHub() {
 
       {/* Add Account */}
       <Sheet open={showAccountModal} onOpenChange={setShowAccountModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Add Account to Chart of Accounts</SheetTitle><SheetDescription>Configure a new GL account code</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateAccount} className="space-y-4 text-xs">
             <div><Label className="text-xs">Account Code (e.g. 1300)</Label><Input value={accountForm.code} onChange={e => setAccountForm({ ...accountForm, code: e.target.value })} placeholder="1300" className="h-9 text-xs mt-1" required /></div>
@@ -1219,7 +1225,7 @@ export default function FirmAccountingHub() {
 
       {/* Journal Entry */}
       <Sheet open={showJVModal} onOpenChange={setShowJVModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Post Journal Voucher</SheetTitle><SheetDescription>Double-entry — Debits must equal Credits</SheetDescription></SheetHeader>
           <form onSubmit={handlePostJV} className="space-y-4 text-xs">
             <div><Label className="text-xs">Description</Label><Input value={jvForm.description} onChange={e => setJvForm({ ...jvForm, description: e.target.value })} placeholder="Monthly rent accrual" className="h-9 text-xs mt-1" required /></div>
@@ -1247,7 +1253,7 @@ export default function FirmAccountingHub() {
 
       {/* Create Invoice */}
       <Sheet open={showInvoiceModal} onOpenChange={setShowInvoiceModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Create Customer Invoice</SheetTitle><SheetDescription>Invoice auto-posts AR journal entry to GL</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateInvoice} className="space-y-4 text-xs">
             <div><Label className="text-xs">Customer Name</Label><Input value={invoiceForm.customerName} onChange={e => setInvoiceForm({ ...invoiceForm, customerName: e.target.value })} placeholder="Acme Corp" className="h-9 text-xs mt-1" required /></div>
@@ -1264,7 +1270,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Bill */}
       <Sheet open={showBillModal} onOpenChange={setShowBillModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Record Vendor Bill</SheetTitle><SheetDescription>Bill auto-posts AP journal to GL</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateBill} className="space-y-4 text-xs">
             <div><Label className="text-xs">Vendor Name</Label><Input value={billForm.vendorName} onChange={e => setBillForm({ ...billForm, vendorName: e.target.value })} placeholder="Dell Commercial" className="h-9 text-xs mt-1" required /></div>
@@ -1280,7 +1286,7 @@ export default function FirmAccountingHub() {
 
       {/* Add Asset */}
       <Sheet open={showAssetModal} onOpenChange={setShowAssetModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Register Fixed Asset</SheetTitle><SheetDescription>Capital expenditure asset — straight-line depreciation</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateAsset} className="space-y-4 text-xs">
             <div><Label className="text-xs">Asset Name</Label><Input value={assetForm.assetName} onChange={e => setAssetForm({ ...assetForm, assetName: e.target.value })} placeholder="Office Workstations" className="h-9 text-xs mt-1" required /></div>
@@ -1302,7 +1308,7 @@ export default function FirmAccountingHub() {
 
       {/* Bank Reconciliation */}
       <Sheet open={showBankRecModal} onOpenChange={setShowBankRecModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Reconcile Bank Statement</SheetTitle><SheetDescription>Compare bank ending balance against GL ledger</SheetDescription></SheetHeader>
           <form onSubmit={handleBankRec} className="space-y-4 text-xs">
             <div><Label className="text-xs">Statement Date</Label><Input type="date" value={bankRecForm.statementDate} onChange={e => setBankRecForm({ ...bankRecForm, statementDate: e.target.value })} className="h-9 text-xs mt-1" required /></div>
@@ -1314,7 +1320,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Office Income */}
       <Sheet open={showIncomeModal} onOpenChange={setShowIncomeModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Record Office Income</SheetTitle><SheetDescription>Track company revenue — agency fees, commissions, rent, etc.</SheetDescription></SheetHeader>
           <form onSubmit={handleAddIncome} className="space-y-4 text-xs">
             <div><Label className="text-xs">Income Source</Label><Input value={incomeForm.source} onChange={e => setIncomeForm({ ...incomeForm, source: e.target.value })} placeholder="e.g. Acme Client Agency Fee" className="h-9 text-xs mt-1" required /></div>
@@ -1336,7 +1342,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Office Expense */}
       <Sheet open={showExpenseModal} onOpenChange={setShowExpenseModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Record Office Expense</SheetTitle><SheetDescription>Track office-level operating costs</SheetDescription></SheetHeader>
           <form onSubmit={handleAddExpense} className="space-y-4 text-xs">
             <div><Label className="text-xs">Description</Label><Input value={expenseForm.description} onChange={e => setExpenseForm({ ...expenseForm, description: e.target.value })} placeholder="e.g. Office Rent — September" className="h-9 text-xs mt-1" required /></div>
@@ -1358,7 +1364,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Project Expense */}
       <Sheet open={showProjectExpenseModal} onOpenChange={setShowProjectExpenseModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Add Project Expense</SheetTitle><SheetDescription>Track costs tied to a specific real estate project</SheetDescription></SheetHeader>
           <form onSubmit={handleAddProjectExpense} className="space-y-4 text-xs">
             <div><Label className="text-xs">Project Name</Label><Input value={projExpenseForm.projectName} onChange={e => setProjExpenseForm({ ...projExpenseForm, projectName: e.target.value })} placeholder="e.g. Adjiringanor Residential Block A" className="h-9 text-xs mt-1" required /></div>
@@ -1380,7 +1386,7 @@ export default function FirmAccountingHub() {
 
       {/* Add Employee */}
       <Sheet open={showPayrollEmployeeModal} onOpenChange={setShowPayrollEmployeeModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Add Employee to Payroll</SheetTitle><SheetDescription>Ghana PAYE & SSNIT calculated automatically</SheetDescription></SheetHeader>
           <form onSubmit={handleAddEmployee} className="space-y-4 text-xs">
             <div><Label className="text-xs">Full Name</Label><Input value={employeeForm.name} onChange={e => setEmployeeForm({ ...employeeForm, name: e.target.value })} placeholder="Kofi Mensah" className="h-9 text-xs mt-1" required /></div>
@@ -1409,7 +1415,7 @@ export default function FirmAccountingHub() {
 
       {/* Run Payroll */}
       <Sheet open={showPayrollRunModal} onOpenChange={setShowPayrollRunModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Run Payroll</SheetTitle><SheetDescription>Process payroll for all active employees</SheetDescription></SheetHeader>
           <form onSubmit={handleRunPayroll} className="space-y-4 text-xs">
             <div><Label className="text-xs">Payroll Period (e.g. September 2026)</Label><Input value={payrollRunForm.period} onChange={e => setPayrollRunForm({ ...payrollRunForm, period: e.target.value })} placeholder="September 2026" className="h-9 text-xs mt-1" required /></div>
@@ -1426,7 +1432,7 @@ export default function FirmAccountingHub() {
 
       {/* TONEFO New Sale */}
       <Sheet open={showTonefoSaleModal} onOpenChange={setShowTonefoSaleModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4"><SheetTitle>Record TONEFO Sale</SheetTitle><SheetDescription>Electronics sale on installment or full payment</SheetDescription></SheetHeader>
           <form onSubmit={handleAddTonefoSale} className="space-y-4 text-xs">
             <div><Label className="text-xs">Customer Name</Label><Input value={tonefoSaleForm.customerName} onChange={e => setTonefoSaleForm({ ...tonefoSaleForm, customerName: e.target.value })} placeholder="Ama Owusu" className="h-9 text-xs mt-1" required /></div>
@@ -1455,7 +1461,7 @@ export default function FirmAccountingHub() {
 
       {/* TONEFO Record Payment */}
       <Sheet open={showTonefoPaymentModal} onOpenChange={setShowTonefoPaymentModal}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
           <SheetHeader className="mb-4">
             <SheetTitle>Record Installment Payment</SheetTitle>
             <SheetDescription>{selectedTonefoCase?.customer_name} — {selectedTonefoCase?.item_description}</SheetDescription>

@@ -3,7 +3,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import {
   Users, Building2, Shield, CalendarHeart, Clock,
   BadgeDollarSign, Target, GraduationCap, UserPlus,
-  AlertCircle, Wallet, LayoutDashboard,
+  AlertCircle, Wallet, LayoutDashboard, ShieldCheck,
   Menu, X, PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -13,6 +13,7 @@ const HR_NAV_ITEMS = [
   { label: 'Employees & Staff', path: '/hr/employees', icon: Users },
   { label: 'Departments', path: '/hr/departments', icon: Building2 },
   { label: 'Roles & Permissions', path: '/hr/roles', icon: Shield },
+  { label: 'Company Items Issued', path: '/hr/assets', icon: ShieldCheck },
   { label: 'Attendance & Clock-In', path: '/hr/attendance', icon: Clock },
   { label: 'Leave Management', path: '/hr/leave', icon: CalendarHeart },
   { label: 'Payroll & Salaries', path: '/hr/payroll', icon: BadgeDollarSign },

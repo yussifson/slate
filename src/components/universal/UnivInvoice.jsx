@@ -13,7 +13,18 @@ import { FileText, Plus, Search, Trash2, Edit2, Loader2, XCircle, Send, Download
 import { toast} from 'react-hot-toast';
 import { jsPDF} from 'jspdf';
 
-const EMPTY_FORM = { client_name: '', client_email: '', invoice_number: '', amount: '', currency: 'USD', status: 'Draft', due_date: '', issue_date: '', notes: ''};
+const EMPTY_FORM = { 
+  client_name: '', 
+  client_email: '', 
+  invoice_number: '', 
+  amount: '0', 
+  currency: 'USD', 
+  status: 'Draft', 
+  due_date: '', 
+  issue_date: '', 
+  notes: '',
+  items: [{ description: '', quantity: 1, unit_price: 0, amount: 0 }]
+};
 const STATUS_COLORS = { Draft: 'bg-muted text-foreground border-primary/40', Sent: 'bg-blue-50 text-blue-700 border-blue-200', Paid: 'bg-emerald-50 text-emerald-700 border-emerald-200', Overdue: 'bg-red-50 text-red-700 border-red-200', Cancelled: 'bg-zinc-100 text-zinc-600 border-zinc-200'};
 
 export default function UnivInvoice() {
@@ -82,7 +93,26 @@ export default function UnivInvoice() {
  fetchInvoices();
 };
 
- const openModal = (inv = null) => { setForm(inv ? { ...inv} : EMPTY_FORM); setEditingId(inv?.id || null); setIsModalOpen(true);};
+ const openModal = (inv = null) => {
+    if (inv) {
+      let parsedItems = [{ description: 'Main Service / Line Item', quantity: 1, unit_price: Number(inv.amount) || 0, amount: Number(inv.amount) || 0 }];
+      let cleanedNotes = inv.notes || '';
+      try {
+        if (cleanedNotes.includes('<!--ITEMS_JSON:')) {
+          const match = cleanedNotes.match(/<!--ITEMS_JSON:(.*?)-->/);
+          if (match && match[1]) {
+            parsedItems = JSON.parse(match[1]);
+            cleanedNotes = cleanedNotes.replace(/<!--ITEMS_JSON:.*?-->/, '').trim();
+          }
+        }
+      } catch(e) {}
+      setForm({ ...inv, notes: cleanedNotes, items: parsedItems });
+    } else {
+      setForm(EMPTY_FORM);
+    }
+    setEditingId(inv?.id || null);
+    setIsModalOpen(true);
+  };
  const closeModal = () => { setIsModalOpen(false); setEditingId(null); setForm(EMPTY_FORM);};
  const filtered = invoices.filter(i => `${i.invoice_number} ${i.client_name} ${i.client_email}`.toLowerCase().includes(search.toLowerCase()) && (statusFilter === 'All' || i.status === statusFilter));
 
@@ -220,7 +250,109 @@ export default function UnivInvoice() {
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Client Name *</label><input required type="text" value={form.client_name} onChange={e=>setForm({...form,client_name:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Client Email</label><input type="email" value={form.client_email} onChange={e=>setForm({...form,client_email:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Invoice Number</label><input type="text" value={form.invoice_number} onChange={e=>setForm({...form,invoice_number:e.target.value})} placeholder="Auto-generated if blank" className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
- <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Amount *</label><input required type="number" min="0" step="0.01" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
+ 
+<div className="col-span-2 pt-2">
+  <div className="flex justify-between items-center mb-2">
+    <label className="text-xs font-bold uppercase tracking-wider text-primary">Invoice Line Items</label>
+    <button
+      type="button"
+      onClick={() => setForm(f => ({ ...f, items: [...(f.items || []), { description: '', quantity: 1, unit_price: 0, amount: 0 }] }))}
+      className="text-xs px-2.5 py-1 bg-primary/10 hover:bg-primary/20 text-primary font-semibold rounded-lg flex items-center gap-1 transition-colors"
+    >
+      <Plus className="w-3 h-3" /> Add Item
+    </button>
+  </div>
+  <div className="space-y-2 border border-border/80 rounded-xl p-3 bg-muted/20">
+    {(form.items || []).map((lineItem, idx) => {
+      const lineTotal = (Number(lineItem.quantity || 0) * Number(lineItem.unit_price || 0));
+      return (
+        <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-card p-2 rounded-lg border border-border/60">
+          <div className="col-span-5">
+            <input
+              placeholder="Item description / service..."
+              required
+              value={lineItem.description}
+              onChange={(e) => {
+                const val = e.target.value;
+                setForm(f => {
+                  const updated = [...(f.items || [])];
+                  updated[idx] = { ...updated[idx], description: val };
+                  return { ...f, items: updated };
+                });
+              }}
+              className="w-full h-9 px-2.5 bg-background border border-border rounded-lg text-xs"
+            />
+          </div>
+          <div className="col-span-2">
+            <input
+              type="number"
+              min="1"
+              step="any"
+              placeholder="Qty"
+              required
+              value={lineItem.quantity}
+              onChange={(e) => {
+                const val = Number(e.target.value) || 0;
+                setForm(f => {
+                  const updated = [...(f.items || [])];
+                  updated[idx] = { ...updated[idx], quantity: val, amount: val * Number(updated[idx].unit_price || 0) };
+                  const newTotal = updated.reduce((s, it) => s + (Number(it.quantity || 0) * Number(it.unit_price || 0)), 0);
+                  return { ...f, items: updated, amount: String(newTotal.toFixed(2)) };
+                });
+              }}
+              className="w-full h-9 px-2 bg-background border border-border rounded-lg text-xs text-right font-mono"
+            />
+          </div>
+          <div className="col-span-2">
+            <input
+              type="number"
+              step="0.01"
+              placeholder="Unit Rate"
+              required
+              value={lineItem.unit_price}
+              onChange={(e) => {
+                const val = Number(e.target.value) || 0;
+                setForm(f => {
+                  const updated = [...(f.items || [])];
+                  updated[idx] = { ...updated[idx], unit_price: val, amount: (Number(updated[idx].quantity || 0)) * val };
+                  const newTotal = updated.reduce((s, it) => s + (Number(it.quantity || 0) * Number(it.unit_price || 0)), 0);
+                  return { ...f, items: updated, amount: String(newTotal.toFixed(2)) };
+                });
+              }}
+              className="w-full h-9 px-2 bg-background border border-border rounded-lg text-xs text-right font-mono"
+            />
+          </div>
+          <div className="col-span-2 text-right font-mono font-bold text-xs text-emerald-600">
+            ${lineTotal.toFixed(2)}
+          </div>
+          <div className="col-span-1 flex justify-end">
+            <button
+              type="button"
+              disabled={(form.items || []).length <= 1}
+              onClick={() => {
+                setForm(f => {
+                  const updated = (f.items || []).filter((_, i) => i !== idx);
+                  const newTotal = updated.reduce((s, it) => s + (Number(it.quantity || 0) * Number(it.unit_price || 0)), 0);
+                  return { ...f, items: updated, amount: String(newTotal.toFixed(2)) };
+                });
+              }}
+              className="p-1 text-muted-foreground hover:text-destructive disabled:opacity-30"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      );
+    })}
+    <div className="flex justify-between items-center pt-2 px-1 text-xs font-semibold">
+      <span className="text-muted-foreground">Total Computed Invoice Amount:</span>
+      <span className="font-mono font-bold text-sm text-primary">
+        ${((form.items || []).reduce((s, it) => s + (Number(it.quantity || 0) * Number(it.unit_price || 0)), 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      </span>
+    </div>
+  </div>
+</div>
+<div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Total Amount ({form.currency}) *</label><input required type="number" min="0" step="0.01" value={form.amount} onChange={e=>setForm({...form,amount:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm font-mono font-bold text-emerald-600"/></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Currency</label><select value={form.currency} onChange={e=>setForm({...form,currency:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{['USD','EUR','GBP','GHS','NGN','KES','ZAR','CAD','AUD'].map(c=><option key={c}>{c}</option>)}</select></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm">{Object.keys(STATUS_COLORS).map(s=><option key={s}>{s}</option>)}</select></div>
  <div><label className="block text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase mb-1.5 tracking-[0.04em]">Issue Date</label><input type="date" value={form.issue_date} onChange={e=>setForm({...form,issue_date:e.target.value})} className="w-full h-10 px-3 bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm"/></div>
