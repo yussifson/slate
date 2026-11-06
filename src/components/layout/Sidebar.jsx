@@ -745,10 +745,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       rawNavItems.push({ label: "Tasks", path: "/tasks", icon: "CheckSquare" });
     }
 
-    // Inject Trust Accounting system for all industries
-    if (!rawNavItems.some(n => n.path === '/real-estate/trust-accounting')) {
-      rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
-    }
+  // Trust Accounting is now accessed via Finance inner tabs — removed from main sidebar
 
     // Inject Firm Accounting system — JCL only
     if (activeIndustry === 'real_estate_jcl' && !rawNavItems.some(n => n.path === '/finance/accounting')) {
@@ -831,6 +828,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return aOrder - bOrder;
   });
 
+  // Trust Accounting is available inside Finance and must not appear in the main sidebar.
+  navItems = navItems.filter(item => item.path !== '/real-estate/trust-accounting');
+
   const getCategory = (item) => {
     const p = item.path || '';
     if (item.isDynamic) return activeIndustry === 'real_estate_jcl' ? "Projects & Smart Docs" : "Workspace";
@@ -857,7 +857,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land')) {
         return "Properties";
       }
-      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal'].includes(p)) {
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal'].includes(p)) {
         return "System Admin";
       }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||

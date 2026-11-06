@@ -124,8 +124,10 @@ export default function HRLayout() {
       </aside>
 
       {/* HR Content Outlet */}
-      <main className="flex-1 h-full min-h-0 w-full min-w-0 overflow-y-auto p-4 sm:p-6 lg:p-8">
-        <Outlet />
+      <main className="flex-1 h-full min-h-0 min-w-0 overflow-y-auto p-3 sm:p-5 lg:p-6">
+        <div className="w-full min-w-0">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

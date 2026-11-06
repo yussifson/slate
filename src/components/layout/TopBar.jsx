@@ -188,7 +188,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <div className="md:hidden relative w-full bg-white/80 dark:bg-card/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 pt-[env(safe-area-inset-top)] shadow-sm z-[60]">
  <div className="flex items-center justify-between px-4 h-[44px]">
  {/* Left: Avatar */}
- <button onClick={() => setShowAvatarDialog(true)} className="relative w-[30px] h-[30px] rounded-full bg-[#F2F2F7] dark:bg-[#2C2C2E] flex items-center justify-center overflow-hidden active:scale-95 transition-transform">
+ <button onClick={() => navigate('/personal-info')} className="relative w-[30px] h-[30px] rounded-full bg-[#F2F2F7] dark:bg-[#2C2C2E] flex items-center justify-center overflow-hidden active:scale-95 transition-transform" aria-label="Open profile">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
