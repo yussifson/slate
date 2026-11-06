@@ -8,27 +8,32 @@ const requireMoney = (value, label) => {
 };
 
 const scoped = (table, companyId) => supabase.from(table).select('*').eq('company_id', companyId);
+const isMissingFinanceSchema = (error) => error?.code === 'PGRST205' || error?.status === 404;
+
+async function safeRows(query) {
+  const { data, error } = await query;
+  if (error && !isMissingFinanceSchema(error)) throw error;
+  return { data: data || [], missing: Boolean(error) };
+}
 
 export const JCLFinanceService = {
   async getDashboard(companyId, projectId = null) {
     if (!companyId) return null;
     const [budgets, variations, claims, forecasts, retentions, commitments, bills] = await Promise.all([
-      scoped('jcl_project_budgets', companyId).order('created_at', { ascending: false }),
-      scoped('jcl_project_variations', companyId).order('created_at', { ascending: false }),
-      scoped('jcl_progress_claims', companyId).order('claim_date', { ascending: false }),
-      scoped('jcl_cost_forecasts', companyId).order('updated_at', { ascending: false }),
-      scoped('jcl_retention_ledger', companyId).order('created_at', { ascending: false }),
-      scoped('jcl_project_commitments', companyId).order('created_at', { ascending: false }),
-      scoped('fin_supplier_bills', companyId).order('due_date', { ascending: true })
+      safeRows(scoped('jcl_project_budgets', companyId).order('created_at', { ascending: false })),
+      safeRows(scoped('jcl_project_variations', companyId).order('created_at', { ascending: false })),
+      safeRows(scoped('jcl_progress_claims', companyId).order('claim_date', { ascending: false })),
+      safeRows(scoped('jcl_cost_forecasts', companyId).order('updated_at', { ascending: false })),
+      safeRows(scoped('jcl_retention_ledger', companyId).order('created_at', { ascending: false })),
+      safeRows(scoped('jcl_project_commitments', companyId).order('created_at', { ascending: false })),
+      safeRows(scoped('fin_supplier_bills', companyId).order('due_date', { ascending: true }))
     ]);
-    const firstError = [budgets, variations, claims, forecasts, retentions, commitments, bills].find((result) => result.error);
-    if (firstError) throw firstError.error;
     const filter = (rows) => projectId ? rows.filter((row) => row.project_id === projectId) : rows;
-    const budgetRows = filter(budgets.data || []);
-    const variationRows = filter(variations.data || []);
-    const claimRows = filter(claims.data || []);
-    const commitmentRows = filter(commitments.data || []);
-    const billRows = filter(bills.data || []);
+    const budgetRows = filter(budgets.data);
+    const variationRows = filter(variations.data);
+    const claimRows = filter(claims.data);
+    const commitmentRows = filter(commitments.data);
+    const billRows = filter(bills.data);
     const approvedBudgets = budgetRows.filter((row) => row.approval_status === 'approved');
     const approvedVariations = variationRows.filter((row) => row.status === 'approved' || row.client_acceptance_status === 'accepted');
     const actualCosts = billRows.reduce((sum, bill) => sum + money(bill.amount_paid), 0);
@@ -37,17 +42,17 @@ export const JCLFinanceService = {
     const variationValue = approvedVariations.reduce((sum, row) => sum + money(row.cost_impact), 0);
     const certifiedClaims = claimRows.filter((row) => ['approved', 'partially_certified', 'invoiced', 'partially_paid', 'paid'].includes(row.status));
     const collectedRevenue = claimRows.reduce((sum, row) => sum + money(row.amount_paid), 0);
-    const forecast = filter(forecasts.data || []).find((row) => row.is_current) || null;
+    const forecast = filter(forecasts.data).find((row) => row.is_current) || null;
     const forecastFinalCost = forecast ? money(forecast.forecast_final_cost) : money(actualCosts + committedCosts);
     const contractValue = claimRows.reduce((sum, row) => sum + money(row.contract_value), 0);
     return {
-      budgets: budgetRows, variations: variationRows, claims: claimRows, forecasts: filter(forecasts.data || []), retentions: filter(retentions.data || []), commitments: commitmentRows, bills: billRows,
+      budgets: budgetRows, variations: variationRows, claims: claimRows, forecasts: filter(forecasts.data), retentions: filter(retentions.data), commitments: commitmentRows, bills: billRows, missingSchema: [budgets, variations, claims, forecasts, retentions, commitments].some((result) => result.missing),
       metrics: { originalBudget: money(budgetRows.reduce((sum, row) => sum + money(row.original_amount), 0)), currentBudget, pendingChanges: variationRows.filter((row) => !['approved', 'rejected', 'cancelled'].includes(row.status)).reduce((sum, row) => sum + money(row.cost_impact), 0), approvedVariations: variationValue, committedCosts, actualCosts, remainingBudget: money(currentBudget - actualCosts - committedCosts), forecastFinalCost, forecastVariance: money(currentBudget - forecastFinalCost), submittedClaims: claimRows.filter((row) => ['draft', 'submitted', 'under_review'].includes(row.status)).reduce((sum, row) => sum + money(row.current_claim_amount), 0), certifiedClaims: certifiedClaims.reduce((sum, row) => sum + money(row.certified_amount), 0), outstandingReceivables: claimRows.reduce((sum, row) => sum + money(row.net_amount_due) - money(row.amount_paid), 0), retentionBalance: filter(retentions.data || []).filter((row) => row.status !== 'released').reduce((sum, row) => sum + money(row.retained_amount) - money(row.released_amount), 0), forecastGrossProfit: money(contractValue - forecastFinalCost), forecastGrossMargin: contractValue ? money(((contractValue - forecastFinalCost) / contractValue) * 100) : 0 }
     };
   },
 
   async listProjects(companyId) {
-    const { data, error } = await supabase.from('ops_projects').select('id, project_code, name, status, currency, budget_amount').eq('company_id', companyId).order('name');
+    const { data, error } = await supabase.from('ops_projects').select('id, project_code, name, status').eq('company_id', companyId).order('name');
     if (error) throw error;
     return data || [];
   },
