@@ -76,6 +76,7 @@
     "@tiptap/react": "^3.27.3",
     "@tiptap/starter-kit": "^3.27.3",
     "@tldraw/tldraw": "^5.2.4",
+    "@vercel/blob": "^2.8.2",
     "@xyflow/react": "^12.11.0",
     "canvas-confetti": "^1.9.4",
     "chart.js": "^4.5.1",

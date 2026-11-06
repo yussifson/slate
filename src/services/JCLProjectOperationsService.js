@@ -5,7 +5,7 @@ const scoped = (table, companyId) => supabase.from(table).select('*').eq('compan
 export const JCLProjectOperationsService = {
   async list(companyId) {
     if (!companyId) return { projects: [], packages: [], tasks: [], diary: [], reports: [], allocations: [], issues: [], inspections: [], activity: [] };
-    const tables = ['ops_projects', 'ops_work_packages', 'ops_project_tasks', 'ops_site_diary', 'ops_daily_reports', 'ops_resource_allocations', 'ops_project_issues', 'ops_site_inspections', 'ops_project_activity'];
+    const tables = ['ops_projects', 'ops_work_packages', 'ops_project_tasks', 'ops_site_diary', 'ops_daily_reports', 'ops_resource_allocations', 'ops_project_issues', 'ops_site_inspections', 'ops_project_activity', 'ops_project_attachments'];
     const results = await Promise.all(tables.map((table) => scoped(table, companyId)));
     return Object.fromEntries(tables.map((table, index) => [table.replace('ops_', ''), results[index].data || []]));
   },
