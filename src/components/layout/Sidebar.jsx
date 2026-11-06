@@ -757,7 +757,12 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
         { label: "Client Portal", path: "/portal", icon: "Globe" },
         { label: "Procurement", path: "/jcl/procurement", icon: "Package" },
-        { label: "Engineering", path: "/engineering", icon: "Layers" }
+        { label: "Requisitions", path: "/jcl/requisitions", icon: "ClipboardList" },
+        { label: "Purchase Orders", path: "/jcl/purchase-orders", icon: "FileCheck" },
+        { label: "Materials", path: "/jcl/inventory", icon: "Warehouse" },
+        { label: "Engineering", path: "/engineering", icon: "Layers" },
+        { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
+        { label: "Bill of Quantities", path: "/boq", icon: "Calculator" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -792,13 +797,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       '/snapshots',
       '/snapshot',
       '/real-estate/marketer-tracker',
-      '/real-estate/trust-accounting',
-      '/jcl/requisitions',
-      '/jcl/purchase-orders',
-      '/jcl/inventory',
-      '/jcl/projects',
-      '/bom',
-      '/boq'
+      '/real-estate/trust-accounting'
     ]);
     const JCL_BLOCKED_LABELS = new Set([
       'enterprise admin',
