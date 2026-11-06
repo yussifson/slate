@@ -1174,8 +1174,8 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
    return categoryOrder.map(cat => {
      const items = groupedNav[cat];
      if (!items || items.length === 0) return null;
-     const isDefaultOpen = activeIndustry === 'real_estate_jcl'
-        ? ['Operations', 'Secretary', 'Marketing', 'Properties', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
+const isDefaultOpen = activeIndustry === 'real_estate_jcl'
+        ? ['Operations', 'Secretary', 'Marketing', 'Procurement', 'Engineering', 'Properties', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
         : (cat === 'Platform' || cat === 'Operations');
       const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : isDefaultOpen;
      
