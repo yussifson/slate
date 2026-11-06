@@ -462,12 +462,13 @@ const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analyti
 const JCLLandManagement = React.lazy(() => import('./pages/real-estate-jcl/LandManagement'));
 const JCLCustomerTimeline = React.lazy(() => import('./pages/real-estate-jcl/CustomerTimeline'));
 const JCLCrmLeadsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCrmLeads'));
- const JCLClientsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLClients'));
- const JCLEngagementsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngagements'));
- const JCLProjectFinancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectFinance'));
- const JCLEngineeringPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngineering'));
- const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
+const JCLClientsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLClients'));
+const JCLEngagementsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngagements'));
+const JCLProjectFinancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectFinance'));
+const JCLEngineeringPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngineering'));
+const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
 const JCLProcurementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProcurement'));
+const JCLProjectOperationsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectOperations'));
 const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
 const JCLTransactionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTransactions'));
 const JCLViewingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLViewings'));
@@ -1026,17 +1027,18 @@ function PlatformRoutes() {
       <Route path="/cases" element={<UnivProject />} />
       <Route path="/clients" element={<Clients />} />
       <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
-        <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
-  <Route path="/jcl/engagements" element={<JCLEngagementsPage />} />
-  <Route path="/engineering" element={<JCLEngineeringPage />} />
-  <Route path="/jcl/procurement" element={<JCLProcurementPage defaultTab="requisitions" />} />
-  <Route path="/jcl/requisitions" element={<JCLProcurementPage defaultTab="requisitions" />} />
-  <Route path="/jcl/purchase-orders" element={<JCLProcurementPage defaultTab="orders" />} />
-  <Route path="/jcl/inventory" element={<JCLProcurementPage defaultTab="inventory" />} />
-  <Route path="/jcl/projects" element={<JCLEngagementsPage />} />
-  <Route path="/jcl/project-finance" element={<JCLProjectFinancePage />} />
-  <Route path="/invoices" element={<UnivInvoice />} />
+      <Route path="/jcl/front-desk" element={<JCLFrontDeskRouter />} />
+      <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
+      <Route path="/jcl/engagements" element={<JCLEngagementsPage />} />
+      <Route path="/engineering" element={<JCLEngineeringPage />} />
+      <Route path="/jcl/procurement" element={<JCLProcurementPage defaultTab="requisitions" />} />
+      <Route path="/jcl/requisitions" element={<JCLProcurementPage defaultTab="requisitions" />} />
+      <Route path="/jcl/purchase-orders" element={<JCLProcurementPage defaultTab="orders" />} />
+      <Route path="/jcl/inventory" element={<JCLProcurementPage defaultTab="inventory" />} />
+      <Route path="/jcl/projects" element={<JCLEngagementsPage />} />
+      <Route path="/jcl/project-finance" element={<JCLProjectFinancePage />} />
+      <Route path="/jcl/project-operations" element={<JCLProjectOperationsPage />} />
+      <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
       <Route path="/smart-docs" element={<HCMSmartDocs />} />
