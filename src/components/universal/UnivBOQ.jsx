@@ -63,12 +63,11 @@ export default function UnivBOQ() {
  try {
  const payload = {
  company_id: companyId,
- project_id: '00000000-0000-0000-0000-000000000000',
+ project_name: form.project_name || '',
  item_description: `${form.item_description} (Project: ${form.project_name})`,
  unit: form.unit,
  quantity: Number(form.quantity) || 0,
  unit_rate: Number(form.unit_rate) || 0,
- total_amount: (Number(form.quantity) || 0) * (Number(form.unit_rate) || 0),
  status: form.status
 };
 

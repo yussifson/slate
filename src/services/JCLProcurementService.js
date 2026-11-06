@@ -21,11 +21,11 @@ export const JCLProcurementService = {
         .eq('company_id', companyId)
         .order('created_at', { ascending: false }),
       supabase.from('jcl_purchase_orders')
-        .select('id, reference, po_number, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at, ops_projects(id,name,project_code)')
+        .select('id, reference, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at, ops_projects(id,name,project_code)')
         .eq('company_id', companyId)
         .order('created_at', { ascending: false }),
       supabase.from('jcl_goods_receipts')
-        .select('id, reference, receipt_number, status, received_at, purchase_order_id, project_id, delivery_note_reference')
+        .select('id, reference, status, received_at, purchase_order_id, project_id, delivery_note_reference')
         .eq('company_id', companyId)
         .order('received_at', { ascending: false }),
       supabase.from('jcl_inventory_balances')
