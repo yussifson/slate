@@ -1,0 +1,79 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
+import { JCLFinanceService, money } from '@/services/JCLFinanceService';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { AlertCircle, BarChart3, FileCheck2, Landmark, Plus, RefreshCw, TrendingUp } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+
+const currency = (value, code = 'USD') => new Intl.NumberFormat('en-US', { style: 'currency', currency: code, maximumFractionDigits: 2 }).format(Number(value || 0));
+const statusClass = (status) => status === 'approved' || status === 'paid' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : status === 'rejected' || status === 'cancelled' ? 'bg-red-500/15 text-red-400 border-red-500/30' : 'bg-amber-500/15 text-amber-400 border-amber-500/30';
+
+function Kpi({ label, value, detail, icon: Icon, tone = 'blue' }) {
+  return <Card className="border-white/10 bg-white/[0.04]"><CardContent className="p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-[11px] uppercase tracking-[0.14em] text-white/50">{label}</p><p className="mt-2 text-xl font-semibold text-white">{value}</p><p className="mt-1 text-[11px] text-white/45">{detail}</p></div><div className={`rounded-xl p-2.5 bg-${tone}-500/15 text-${tone}-300`}><Icon className="h-4 w-4" /></div></div></CardContent></Card>;
+}
+
+function Empty({ label }) { return <div className="rounded-xl border border-dashed border-white/10 p-8 text-center text-sm text-white/45">{label}</div>; }
+
+export default function JCLFinance() {
+  const { user } = useAuth();
+  const companyId = useCompanyId() || user?.company_id;
+  const [params, setParams] = useSearchParams();
+  const [tab, setTab] = useState(params.get('tab') || 'overview');
+  const [projects, setProjects] = useState([]);
+  const [dashboard, setDashboard] = useState(null);
+  const [projectId, setProjectId] = useState(params.get('project') || 'all');
+  const [loading, setLoading] = useState(true);
+  const [drawer, setDrawer] = useState(null);
+  const [form, setForm] = useState({});
+
+  const load = async () => {
+    if (!companyId) return;
+    setLoading(true);
+    try { const [nextProjects, nextDashboard] = await Promise.all([JCLFinanceService.listProjects(companyId), JCLFinanceService.getDashboard(companyId, projectId === 'all' ? null : projectId)]); setProjects(nextProjects); setDashboard(nextDashboard); } catch (error) { toast.error(error.message || 'Unable to load project finance data'); } finally { setLoading(false); }
+  };
+  useEffect(() => { load(); }, [companyId, projectId]);
+  useEffect(() => { const next = params.get('tab'); if (next && next !== tab) setTab(next); }, [params]);
+  const changeTab = (value) => { setTab(value); setParams((current) => { current.set('tab', value); return current; }); };
+  const metrics = dashboard?.metrics || {};
+  const setField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
+  const openForm = (type) => { setDrawer(type); setForm({ project_id: projectId === 'all' ? '' : projectId }); };
+  const save = async (event) => {
+    event.preventDefault();
+    try {
+      if (drawer === 'budget') await JCLFinanceService.createBudget(companyId, form, user?.id);
+      if (drawer === 'variation') await JCLFinanceService.createVariation(companyId, form, user?.id);
+      if (drawer === 'claim') await JCLFinanceService.createClaim(companyId, form, user?.id);
+      if (drawer === 'forecast') await JCLFinanceService.createForecast(companyId, form, user?.id);
+      if (drawer === 'retention') await JCLFinanceService.recordRetention(companyId, form, user?.id);
+      toast.success('Financial record saved'); setDrawer(null); await load();
+    } catch (error) { toast.error(error.message || 'Unable to save financial record'); }
+  };
+  const rows = useMemo(() => dashboard || { budgets: [], variations: [], claims: [], commitments: [], bills: [], forecasts: [], retentions: [] }, [dashboard]);
+  const title = drawer === 'budget' ? 'New project budget' : drawer === 'variation' ? 'New project variation' : drawer === 'claim' ? 'New client progress claim' : drawer === 'forecast' ? 'New cost forecast' : 'Record retention';
+  const field = (key, label, type = 'text', required = false) => <div className="space-y-1.5"><Label className="text-xs text-white/70">{label}</Label><Input required={required} type={type} value={form[key] || ''} onChange={(event) => setField(key, event.target.value)} className="border-white/10 bg-white/[0.04] text-white" /></div>;
+
+  return <div className="min-h-full space-y-6 p-4 pb-24 text-white sm:p-6">
+    <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center"><div><div className="flex items-center gap-3"><div className="rounded-xl bg-indigo-500/15 p-3 text-indigo-300"><Landmark className="h-5 w-5" /></div><div><h1 className="text-2xl font-bold tracking-tight">Project Finance & Commercial Control</h1><p className="mt-1 text-sm text-white/50">Budgets, commitments, actual costs, claims, retention and forecast profitability.</p></div></div></div><div className="flex flex-wrap items-center gap-2"><select value={projectId} onChange={(event) => setProjectId(event.target.value)} className="h-9 rounded-lg border border-white/10 bg-white/[0.04] px-3 text-xs text-white"><option value="all">All projects</option>{projects.map((project) => <option key={project.id} value={project.id}>{project.project_code} · {project.name}</option>)}</select><Button variant="outline" size="sm" onClick={load} className="border-white/10 text-white"><RefreshCw className="mr-2 h-3.5 w-3.5" />Refresh</Button><Button size="sm" onClick={() => openForm('budget')} className="bg-indigo-600 text-white hover:bg-indigo-500"><Plus className="mr-2 h-3.5 w-3.5" />New budget</Button></div></div>
+    <div className="grid grid-cols-2 gap-3 xl:grid-cols-5"><Kpi label="Approved budget" value={currency(metrics.currentBudget)} detail={`Original ${currency(metrics.originalBudget)}`} icon={BarChart3} /><Kpi label="Committed" value={currency(metrics.committedCosts)} detail="Approved commitments, not paid" icon={FileCheck2} tone="amber" /><Kpi label="Actual paid costs" value={currency(metrics.actualCosts)} detail="Supplier bill payments" icon={Landmark} tone="rose" /><Kpi label="Remaining budget" value={currency(metrics.remainingBudget)} detail={`Forecast ${currency(metrics.forecastFinalCost)}`} icon={TrendingUp} tone="emerald" /><Kpi label="Forecast margin" value={`${Number(metrics.forecastGrossMargin || 0).toFixed(1)}%`} detail={`Gross profit ${currency(metrics.forecastGrossProfit)}`} icon={TrendingUp} tone="violet" /></div>
+    <Tabs value={tab} onValueChange={changeTab}><TabsList className="flex h-auto flex-wrap justify-start gap-1 border border-white/10 bg-white/[0.04] p-1"><TabsTrigger value="overview">Overview</TabsTrigger><TabsTrigger value="budgets">Budgets</TabsTrigger><TabsTrigger value="costs">Cost control</TabsTrigger><TabsTrigger value="variations">Variations</TabsTrigger><TabsTrigger value="claims">Progress claims</TabsTrigger><TabsTrigger value="retention">Retention</TabsTrigger><TabsTrigger value="reports">Reports</TabsTrigger></TabsList>
+      <TabsContent value="overview" className="mt-4"><div className="grid gap-4 lg:grid-cols-2"><Card className="border-white/10 bg-white/[0.04]"><CardHeader><CardTitle className="text-sm text-white">Financial control position</CardTitle></CardHeader><CardContent className="space-y-3 text-sm"><div className="flex justify-between border-b border-white/10 pb-3"><span className="text-white/55">Pending budget changes</span><strong>{currency(metrics.pendingChanges)}</strong></div><div className="flex justify-between border-b border-white/10 pb-3"><span className="text-white/55">Approved variations</span><strong>{currency(metrics.approvedVariations)}</strong></div><div className="flex justify-between border-b border-white/10 pb-3"><span className="text-white/55">Outstanding client receivables</span><strong>{currency(metrics.outstandingReceivables)}</strong></div><div className="flex justify-between"><span className="text-white/55">Retention held</span><strong>{currency(metrics.retentionBalance)}</strong></div></CardContent></Card><Card className="border-white/10 bg-white/[0.04]"><CardHeader><CardTitle className="text-sm text-white">Control notes</CardTitle></CardHeader><CardContent className="space-y-3 text-xs text-white/55"><p><AlertCircle className="mr-2 inline h-4 w-4 text-amber-300" />Purchase orders are shown as commitments and are never treated as paid expenditure.</p><p><AlertCircle className="mr-2 inline h-4 w-4 text-amber-300" />Submitted claims remain separate from certified and collected revenue.</p><p><AlertCircle className="mr-2 inline h-4 w-4 text-amber-300" />Forecast values are assumptions and do not alter posted accounting records.</p></CardContent></Card></div></TabsContent>
+      <TabsContent value="budgets" className="mt-4"><Register title="Project budgets" action="New budget" onAction={() => openForm('budget')} loading={loading} rows={rows.budgets} empty="No project budgets have been prepared." columns={['budget_reference','title','version','original_amount','current_approved_amount','approval_status']} /></TabsContent>
+      <TabsContent value="costs" className="mt-4"><div className="grid gap-4 lg:grid-cols-2"><Register title="Commitments" action="" loading={loading} rows={rows.commitments} empty="No approved project commitments are linked yet." columns={['commitment_reference','source_type','approved_amount','received_amount','outstanding_amount','status']} /><Register title="Supplier bills" action="" loading={loading} rows={rows.bills} empty="No supplier bills are available." columns={['bill_number','issue_date','due_date','total_amount','amount_paid','status']} /></div></TabsContent>
+      <TabsContent value="variations" className="mt-4"><Register title="Commercial variations" action="New variation" onAction={() => openForm('variation')} loading={loading} rows={rows.variations} empty="No variations have been recorded." columns={['variation_reference','title','variation_type','cost_impact','status','approval_status']} /></TabsContent>
+      <TabsContent value="claims" className="mt-4"><Register title="Client progress claims" action="New claim" onAction={() => openForm('claim')} loading={loading} rows={rows.claims} empty="No client claims have been prepared." columns={['claim_reference','claim_date','current_claim_amount','certified_amount','net_amount_due','status']} /></TabsContent>
+      <TabsContent value="retention" className="mt-4"><Register title="Retention ledger" action="Record retention" onAction={() => openForm('retention')} loading={loading} rows={rows.retentions} empty="No retention entries have been recorded." columns={['source_type','retention_basis','retained_amount','released_amount','expected_release_date','status']} /></TabsContent>
+      <TabsContent value="reports" className="mt-4"><Register title="Cost forecasts" action="New forecast" onAction={() => openForm('forecast')} loading={loading} rows={rows.forecasts} empty="No project forecasts have been prepared." columns={['forecast_reference','actual_costs','remaining_commitments','estimated_uncommitted_cost','forecast_final_cost','is_current']} /></TabsContent>
+    </Tabs>
+    {drawer && <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onMouseDown={(event) => event.target === event.currentTarget && setDrawer(null)}><form onSubmit={save} className="h-full w-full max-w-md overflow-y-auto border-l border-white/10 bg-[#101820] p-6 shadow-2xl"><div className="mb-6 flex items-start justify-between"><div><h2 className="text-lg font-semibold">{title}</h2><p className="mt-1 text-xs text-white/45">All amounts are validated before persistence.</p></div><Button type="button" variant="ghost" onClick={() => setDrawer(null)} className="text-white/60">Close</Button></div><div className="space-y-4">{field('project_id','Project')}{field(drawer === 'budget' ? 'title' : drawer === 'variation' ? 'title' : drawer === 'claim' ? 'description' : drawer === 'forecast' ? 'assumption_notes' : 'retention_basis', drawer === 'budget' ? 'Budget title' : drawer === 'variation' ? 'Variation title' : drawer === 'claim' ? 'Completed work description' : drawer === 'forecast' ? 'Forecast assumptions' : 'Retention basis', 'text', true)}{drawer === 'budget' && <>{field('original_amount','Original amount','number',true)}{field('currency','Currency')}</>}{drawer === 'variation' && <>{field('variation_type','Variation type')}{field('cost_impact','Cost impact','number',true)}{field('schedule_impact_days','Schedule impact days','number')}</>}{drawer === 'claim' && <>{field('current_claim_amount','Current claim amount','number',true)}{field('retention_deduction','Retention deduction','number')}{field('other_deductions','Other deductions','number')}{field('tax_amount','Tax amount','number')}</>}{drawer === 'forecast' && <>{field('actual_costs','Actual posted costs','number',true)}{field('remaining_commitments','Remaining commitments','number',true)}{field('estimated_cost_to_complete','Uncommitted estimate','number',true)}</>}{drawer === 'retention' && <>{field('retained_amount','Retained amount','number',true)}{field('retention_percentage','Retention percentage','number')}{field('expected_release_date','Expected release date','date')}</>}{drawer !== 'claim' && drawer !== 'forecast' && drawer !== 'retention' && <Textarea value={form.notes || ''} onChange={(event) => setField('notes', event.target.value)} placeholder="Notes" className="border-white/10 bg-white/[0.04] text-white" />}<Button type="submit" className="w-full bg-indigo-600 text-white hover:bg-indigo-500">Save record</Button></div></form></div>}
+  </div>;
+}
+
+function Register({ title, action, onAction, rows, columns, empty, loading }) { return <Card className="border-white/10 bg-white/[0.04]"><CardHeader className="flex flex-row items-center justify-between"><CardTitle className="text-sm text-white">{title}</CardTitle>{action && <Button size="sm" onClick={onAction} className="bg-indigo-600 text-white hover:bg-indigo-500"><Plus className="mr-2 h-3.5 w-3.5" />{action}</Button>}</CardHeader><CardContent>{loading ? <div className="py-8 text-center text-sm text-white/45">Loading persisted records…</div> : !rows.length ? <Empty label={empty} /> : <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-xs"><thead><tr className="border-b border-white/10 text-white/45">{columns.map((column) => <th key={column} className="px-3 py-3 font-medium uppercase tracking-wider">{column.replaceAll('_',' ')}</th>)}</tr></thead><tbody>{rows.map((row) => <tr key={row.id} className="border-b border-white/5 text-white/75"><td className="px-3 py-3">{row[columns[0]] || '—'}</td>{columns.slice(1).map((column) => <td key={column} className="px-3 py-3">{column.includes('amount') || column.includes('cost') || column.includes('budget') || column.includes('impact') || column.includes('balance') ? currency(row[column]) : column.includes('status') || column.includes('approval') ? <Badge variant="outline" className={statusClass(row[column])}>{String(row[column] || 'pending').replaceAll('_',' ')}</Badge> : String(row[column] ?? '—')}</td>)}</tr>)}</tbody></table></div>}</CardContent></Card>; }

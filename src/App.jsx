@@ -466,8 +466,9 @@ const JCLCrmLeadsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLCrmL
  const JCLEngagementsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngagements'));
  const JCLDashboardPage = React.lazy(() => import('./pages/real-estate-jcl/JCLDashboard'));
 const JCLProcurementPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProcurement'));
-const JCLEngineeringPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngineering'));
-const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
+  const JCLEngineeringPage = React.lazy(() => import('./pages/real-estate-jcl/JCLEngineering'));
+  const JCLFinancePage = React.lazy(() => import('./pages/real-estate-jcl/JCLFinance'));
+  const JCLPropertiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProperties'));
 const JCLTransactionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTransactions'));
 const JCLViewingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLViewings'));
 const JCLLeasesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeases'));
@@ -1029,7 +1030,8 @@ function PlatformRoutes() {
         <Route path="/jcl/item-register" element={<JCLItemRegisterRouter />} />
         <Route path="/jcl/engagements" element={<JCLEngagementsPage />} />
   <Route path="/jcl/procurement" element={<JCLProcurementPage />} />
-      <Route path="/jcl/engineering" element={<JCLEngineeringPage />} />
+  <Route path="/jcl/engineering" element={<JCLEngineeringPage />} />
+  <Route path="/jcl/finance" element={<JCLFinancePage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
       <Route path="/tasks" element={<Tasks />} />
       <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
