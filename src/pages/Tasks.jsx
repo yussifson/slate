@@ -66,8 +66,11 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   const mutation = useMutation({
     mutationFn: (data) => {
+      const firstAssignee = data.assignees?.[0];
       const payload = {
          ...data,
+         assigned_to: firstAssignee?.id || null,
+         assigned_to_name: firstAssignee?.full_name || null,
          depends_on: data.depends_on ? JSON.stringify(data.depends_on) : null,
          custom_fields: data.custom_fields ? JSON.stringify(data.custom_fields) : null,
       };
@@ -130,7 +133,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100vw-2rem)] max-w-5xl h-[min(90vh,880px)] flex flex-col p-0 gap-0 overflow-hidden bg-background text-foreground border border-border/80 shadow-2xl rounded-2xl">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-6xl xl:max-w-7xl h-[min(92vh,940px)] flex flex-col p-0 gap-0 overflow-hidden bg-background text-foreground border border-border/80 shadow-2xl rounded-2xl">
         <DialogHeader className="px-6 py-4 border-b border-black/5 dark:border-white/5 bg-gradient-to-r from-background via-muted/20 to-background border-b border-border/70 shrink-0">
           <DialogTitle className="text-xl font-bold tracking-tight">{isEdit ? "Task Details" : "New Task"}</DialogTitle>
         </DialogHeader>

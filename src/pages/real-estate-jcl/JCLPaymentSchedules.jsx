@@ -1,135 +1,219 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Calendar, Plus, Edit, Trash2, Search, DollarSign, Clock, AlertCircle, CheckCircle2, Zap, RefreshCw, Building2
+  Calendar, Plus, Trash2, RefreshCw, DollarSign, CheckCircle2, Clock
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { useAuth } from '@/lib/AuthContext';
-import { Card, CardContent } from '@/components/ui/card';
+import { supabase } from '@/api/supabaseClient';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
 import { formatCurrency } from '@/lib/constants';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
 
-function generateUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
+const defaultForm = {
+  lease_id: '',
+  payment_amount: '2500',
+  payment_due_date: 1,
+  grace_period_days: 5,
+  late_fee_percentage: 5,
+  auto_debit_enabled: 1,
+  recurring_start_date: new Date().toISOString().slice(0, 10),
+  recurring_end_date: ''
+};
 
 export default function JCLPaymentSchedules() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
 
   const [schedules, setSchedules] = useState([]);
+  const [leases, setLeases] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
-
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    leaseId: '',
-    paymentAmount: 1800,
-    paymentDueDate: 1,
-    gracePeriodDays: 5,
-    lateFeePercentage: 5,
-    autoDebitEnabled: true,
-  });
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState(defaultForm);
+  const [saving, setSaving] = useState(false);
 
   const fetchData = async () => {
     if (!companyId) return;
     try {
       setIsLoading(true);
-      const res = await powerSync.execute(
-        'SELECT * FROM univ_re_rent_payment_schedules WHERE company_id = ? ORDER BY created_at DESC',
-        [companyId]
-      );
-      setSchedules(res.rows._array || Array.from(res.rows || []));
+      const [resSched, resLeases] = await Promise.all([
+        supabase
+          .from('univ_re_rent_payment_schedules')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('univ_re_leases')
+          .select('id, lease_number, tenant_name, monthly_rent')
+          .eq('company_id', companyId)
+      ]);
+
+      setSchedules(resSched.data || []);
+      setLeases(resLeases.data || []);
     } catch (_err) {
+      console.error('Fetch payment schedules error:', _err);
       toast.error('Failed to load payment schedules');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
     fetchData();
   }, [companyId]);
 
+  const handleOpenAdd = () => {
+    setFormData({
+      ...defaultForm,
+      lease_id: leases[0]?.lease_number || leases[0]?.id || ''
+    });
+    setShowModal(true);
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const payload = {
+        id: crypto.randomUUID(),
+        company_id: companyId,
+        lease_id: formData.lease_id || 'LS-DEFAULT',
+        payment_amount: Number(formData.payment_amount) || 0,
+        payment_due_date: Number(formData.payment_due_date) || 1,
+        grace_period_days: Number(formData.grace_period_days) || 5,
+        late_fee_percentage: Number(formData.late_fee_percentage) || 5,
+        auto_debit_enabled: Number(formData.auto_debit_enabled) ? 1 : 0,
+        recurring_start_date: formData.recurring_start_date || null,
+        recurring_end_date: formData.recurring_end_date || null,
+        created_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('univ_re_rent_payment_schedules')
+        .insert(payload);
+
+      if (error) throw error;
+      toast.success('Payment schedule rule added');
+      setShowModal(false);
+      fetchData();
+    } catch (err) {
+      console.error('Save schedule error:', err);
+      toast.error(err.message || 'Failed to save payment schedule');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this payment schedule rule?')) return;
+    try {
+      const { error } = await supabase
+        .from('univ_re_rent_payment_schedules')
+        .delete()
+        .eq('id', id)
+        .eq('company_id', companyId);
+      if (error) throw error;
+      toast.success('Schedule deleted');
+      fetchData();
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete');
+    }
+  };
+
+  const filtered = schedules.filter(s =>
+    `${s.lease_id || ''}`.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="space-y-6 pb-12 font-sans min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 relative bg-background w-full max-w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
+    <div className="flex flex-col h-full bg-background text-foreground p-6 space-y-6 overflow-y-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5 border-border">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <Calendar className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Payment Schedules & Auto-Debit Rules
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Automated monthly rent payment dates, grace period thresholds, and late penalty triggers
-              </p>
-            </div>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <Calendar className="w-6 h-6 text-primary" /> Payment Schedules & Auto-Debit Rules
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Automated monthly rent payment dates, grace period thresholds, and late penalty triggers.
+          </p>
         </div>
-
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3 text-xs gap-1.5 bg-card border-border shadow-sm rounded-xl hover:bg-muted font-bold">
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading}>
+            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} /> Refresh
           </Button>
-
-          <Button
-            onClick={() => setShowForm(true)}
-            size="sm"
-            className="h-9 px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm rounded-xl gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Add Schedule Rule
+          <Button size="sm" onClick={handleOpenAdd} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+            <Plus className="w-4 h-4 mr-2" /> Add Schedule Rule
           </Button>
         </div>
       </div>
 
-      <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)] w-full max-w-full">
-        <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-muted/60 uppercase tracking-wider text-muted-foreground font-extrabold border-b border-border/80 text-[10px]">
+      {/* Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active Rules</div>
+          <div className="text-2xl font-bold mt-1">{schedules.length}</div>
+        </div>
+        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Auto-Debit Enabled</div>
+          <div className="text-2xl font-bold mt-1 text-emerald-600">
+            {schedules.filter(s => s.auto_debit_enabled).length}
+          </div>
+        </div>
+        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Scheduled Monthly Volume</div>
+          <div className="text-2xl font-bold mt-1 text-primary font-mono">
+            ${schedules.reduce((sum, s) => sum + Number(s.payment_amount || 0), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="rounded-xl border bg-card overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b">
               <tr>
-                <th className="p-4 pl-5">Lease Reference</th>
-                <th className="p-4">Monthly Amount</th>
-                <th className="p-4">Due Day</th>
-                <th className="p-4">Grace Period</th>
-                <th className="p-4">Late Fee</th>
-                <th className="p-4 pr-5">Auto Debit</th>
+                <th className="p-4 font-semibold">Lease Reference</th>
+                <th className="p-4 font-semibold text-right">Monthly Amount</th>
+                <th className="p-4 font-semibold">Due Day</th>
+                <th className="p-4 font-semibold">Grace Period</th>
+                <th className="p-4 font-semibold">Late Fee</th>
+                <th className="p-4 font-semibold">Auto Debit</th>
+                <th className="p-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/60">
-              {schedules.length === 0 ? (
+            <tbody className="divide-y divide-border">
+              {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-muted-foreground">
-                    No active payment schedule rules configured.
+                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
+                    No active payment schedule rules configured. Click "Add Schedule Rule" to create one.
                   </td>
                 </tr>
               ) : (
-                schedules.map(item => (
-                  <tr key={item.id} className="hover:bg-muted/40 transition-colors group">
-                    <td className="p-4 pl-5 font-mono font-bold">{item.lease_id || 'LS-GENERAL'}</td>
-                    <td className="p-4 font-bold text-[#005A9C] dark:text-[#FF6B00] font-mono text-sm">{formatCurrency(item.payment_amount, 'USD')}</td>
-                    <td className="p-4 font-semibold">{item.payment_due_date || 1}st of Month</td>
+                filtered.map((item) => (
+                  <tr key={item.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="p-4 font-mono font-medium text-foreground">{item.lease_id || 'LS-GENERAL'}</td>
+                    <td className="p-4 font-mono font-semibold text-foreground text-right">
+                      ${Number(item.payment_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    </td>
+                    <td className="p-4 text-foreground">{item.payment_due_date || 1}st of Month</td>
                     <td className="p-4 text-muted-foreground">{item.grace_period_days || 5} Days</td>
-                    <td className="p-4 font-mono text-xs font-semibold">{item.late_fee_percentage || 5}%</td>
-                    <td className="p-4 pr-5">
-                      <Badge variant="outline" className={cn("text-[10px] uppercase font-bold py-0.5 px-2.5", item.auto_debit_enabled ? "bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] border-emerald-200" : "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300 border-slate-200")}>
+                    <td className="p-4 font-mono text-muted-foreground">{item.late_fee_percentage || 5}%</td>
+                    <td className="p-4">
+                      <Badge variant="outline" className={`font-semibold capitalize ${
+                        item.auto_debit_enabled ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' : 'border-slate-300 text-slate-600'
+                      }`}>
                         {item.auto_debit_enabled ? 'Active' : 'Disabled'}
                       </Badge>
+                    </td>
+                    <td className="p-4 text-right">
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)}>
+                        <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
+                      </Button>
                     </td>
                   </tr>
                 ))
@@ -138,6 +222,103 @@ export default function JCLPaymentSchedules() {
           </table>
         </div>
       </div>
+
+      {/* Add Modal */}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="max-w-md bg-card text-card-foreground">
+          <DialogHeader>
+            <DialogTitle>Add Payment Schedule Rule</DialogTitle>
+            <DialogDescription>
+              Configure recurring monthly rent billing dates, grace periods, and late penalty rules.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSave} className="space-y-4 py-2">
+            <div>
+              <Label className="text-xs font-semibold">Lease Reference *</Label>
+              <Input
+                required
+                placeholder="e.g. LS-2026-001"
+                value={formData.lease_id}
+                onChange={(e) => setFormData({ ...formData, lease_id: e.target.value })}
+                className="mt-1 font-mono"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs font-semibold">Monthly Amount ($) *</Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  required
+                  value={formData.payment_amount}
+                  onChange={(e) => setFormData({ ...formData, payment_amount: e.target.value })}
+                  className="mt-1 font-mono"
+                />
+              </div>
+              <div>
+                <Label className="text-xs font-semibold">Due Day of Month</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="31"
+                  required
+                  value={formData.payment_due_date}
+                  onChange={(e) => setFormData({ ...formData, payment_due_date: e.target.value })}
+                  className="mt-1 font-mono"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs font-semibold">Grace Period (Days)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={formData.grace_period_days}
+                  onChange={(e) => setFormData({ ...formData, grace_period_days: e.target.value })}
+                  className="mt-1 font-mono"
+                />
+              </div>
+              <div>
+                <Label className="text-xs font-semibold">Late Fee (%)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  value={formData.late_fee_percentage}
+                  onChange={(e) => setFormData({ ...formData, late_fee_percentage: e.target.value })}
+                  className="mt-1 font-mono"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-xs font-semibold">Auto-Debit Collection</Label>
+              <Select
+                value={String(formData.auto_debit_enabled)}
+                onValueChange={(val) => setFormData({ ...formData, auto_debit_enabled: Number(val) })}
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Enabled (Automated Payment Gate)</SelectItem>
+                  <SelectItem value="0">Disabled (Manual Invoicing)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <DialogFooter className="pt-2">
+              <Button type="button" variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button type="submit" disabled={saving} className="bg-primary text-primary-foreground">
+                {saving ? 'Saving...' : 'Create Schedule Rule'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

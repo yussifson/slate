@@ -70,12 +70,25 @@ export default function Team() {
   });
 
   const removeMutation = useMutation({
-    mutationFn: (id) => base44.entities.StaffRecord.delete(id),
+    mutationFn: async (id) => {
+      // 1. Attempt Supabase direct delete on staff_records
+      const { error: staffErr } = await supabase.from('staff_records').delete().eq('id', id).eq('company_id', companyId);
+      // 2. Also delete from univ_hr_employees if mirrored
+      await supabase.from('univ_hr_employees').delete().eq('id', id).eq('company_id', companyId);
+      // 3. Fallback to base44 entity delete
+      if (staffErr) {
+        return await base44.entities.StaffRecord.delete(id);
+      }
+      return true;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["staff"] });
-      toast({ title: "Staff member removed" });
+      toast({ title: "Staff member removed successfully" });
     },
-    onError: (err) => { console.error(err); toast({ title: "Error removing staff", description: err.message, variant: "destructive" }); }
+    onError: (err) => { 
+      console.error(err); 
+      toast({ title: "Error removing staff", description: err.message, variant: "destructive" }); 
+    }
   });
 
   const filtered = staff.filter(s => !search || s.full_name?.toLowerCase().includes(search.toLowerCase()) || s.user_email?.toLowerCase().includes(search.toLowerCase()));
@@ -350,8 +363,13 @@ function StaffDialog({ open, onClose, onSubmit, initialData, isNew, industryRole
               <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
                 <SelectTrigger className="mt-1"><SelectValue placeholder="Select Role..." /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="company_admin">Company Admin (System Role)</SelectItem>
-                  {roleRecords.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+                  <SelectItem value="company_admin">Company Admin (System Admin)</SelectItem>
+                  {industryRoles.filter(ir => ir.value !== 'company_admin').map(ir => (
+                    <SelectItem key={ir.value} value={ir.value}>{ir.label}</SelectItem>
+                  ))}
+                  {roleRecords.map(r => (
+                    <SelectItem key={r.id || r.name} value={r.name || r.id}>{r.name}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
