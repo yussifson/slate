@@ -1034,6 +1034,8 @@ function PlatformRoutes() {
       <Route path="/smart-docs" element={<HCMSmartDocs />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/personal-info" element={<AccountPersonalInfo />} />
+      <Route path="/profile" element={<AccountPersonalInfo />} />
       <Route path="/portal" element={<PortalManagement />} />
       <Route path="/settings/custom-fields" element={<CustomFieldsSettings />} />
       <Route path="/roles" element={<Roles />} />

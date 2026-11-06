@@ -228,7 +228,7 @@ export default function AccountPersonalInfo() {
   };
 
   return (
-    <div className="animate-in fade-in duration-300 max-w-4xl mx-auto space-y-8">
+    <div className="animate-in fade-in duration-300 w-full max-w-6xl mx-auto space-y-8">
       {/* Premium Header */}
       <div className="bg-white dark:bg-card border border-slate-200 dark:border-white/5 rounded-3xl p-8 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
         <div className="absolute -left-16 -bottom-16 w-36 h-36 rounded-full bg-blue-500/5 blur-3xl pointer-events-none" />
