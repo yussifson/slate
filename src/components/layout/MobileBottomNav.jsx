@@ -178,7 +178,7 @@ export default function MobileBottomNav() {
   return (
     <>
       {/* ── NATIVE MOBILE BOTTOM BAR (Deep Teal & JCL Brand Style) ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[60] bg-[#005A9C] dark:bg-[#0B1418] border-t border-white/10 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.2)]">
+      <nav style={{ backgroundColor: "#005A9C", color: "#ffffff" }} className="md:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-white/15 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_30px_rgba(0,0,0,0.25)]">
         <div className="flex items-center justify-around h-[54px] px-1 pt-1">
           {bottomNavItems.map((item) => {
             const isRootPath = ["/", "/admin"].includes(item.path);

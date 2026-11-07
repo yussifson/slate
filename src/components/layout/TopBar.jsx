@@ -185,7 +185,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   return (
   <>
   {/* ── NATIVE MOBILE TOP BAR ── */}
-  <div className="md:hidden sticky top-0 left-0 right-0 w-full bg-[#005A9C] dark:bg-[#0B1418] border-b border-white/10 text-white pt-[env(safe-area-inset-top)] shadow-md z-[60]">
+  <div style={{ backgroundColor: "#005A9C", color: "#ffffff" }} className="md:hidden sticky top-0 left-0 right-0 w-full border-b border-white/15 pt-[env(safe-area-inset-top)] shadow-md z-[60]">
     <div className="flex items-center justify-between px-3 h-[52px] gap-2.5">
       {/* Left: User Profile Avatar */}
       <button 

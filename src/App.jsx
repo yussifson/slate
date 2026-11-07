@@ -221,7 +221,7 @@ class ErrorBoundary extends React.Component {
                    try {
                       const host = window.location.hostname.toLowerCase();
                       if (host.includes('clipad')) logoSrc = '/clipad-logo-green.svg';
-                      else if (host.includes('slate') && !host.includes('optavel')) logoSrc = '/slate-favicon.svg';
+                      else if (host.includes('slate') && !host.includes('optavel')) logoSrc = '/jcl-logo.png';
                    } catch(e) {}
                    return <img src={logoSrc} alt="Logo" className="w-10 h-10 object-contain animate-pulse" />;
                  })()}
