@@ -1017,33 +1017,28 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   const renderNavContent = (collapsed) => (
     <div className="flex flex-col h-full bg-[#005A9C] dark:bg-[#091114] text-white overflow-x-hidden">
-      <div className={cn("h-[64px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-3 justify-center" : "px-3 gap-3")}>
+      <div className={cn("h-[72px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-2 justify-center" : "px-3 gap-2.5")}>
         <button
           type="button"
           onClick={() => setIsCollapsed(!collapsed)}
-          className="shrink-0 rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+          className="shrink-0 rounded-lg p-1.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <PanelLeft className="h-4 w-4" />
         </button>
- <div className="flex items-center justify-center bg-white rounded-xl p-1 shadow-sm shrink-0">
-  <img
-    src="/jcl-logo.png"
-    alt="JCL Real Estate"
-    className={cn("object-contain", collapsed ? "w-8 h-8" : "w-9 h-9")}
-  />
-</div>
- {!collapsed && (
- <div className="animate-in fade-in zoom-in duration-200">
- <div className="flex flex-col">
- <span className="font-semibold text-white leading-tight tracking-tight mt-0.5">{activeCompanyName}</span>
- <span className="text-[9px] font-extrabold text-white/50 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
-  {companyData?.tagline || (activeIndustry === 'orbit_build' ? 'WorkSlate' : industryData.name)}
- </span>
- </div>
- </div>
- )}
+
+        {/* Clean Rectangular Corporate Logo Card (Only logo, no redundant text) */}
+        <div className={cn(
+          "flex items-center justify-center bg-white rounded-xl shadow-md transition-all overflow-hidden",
+          collapsed ? "w-10 h-10 p-1" : "flex-1 h-12 px-2.5 py-1"
+        )}>
+          <img
+            src="/jcl-logo.png"
+            alt="JCL Real Estate"
+            className={cn("w-full h-full object-contain", collapsed ? "max-h-8" : "max-h-10")}
+          />
+        </div>
  </div>
 
  {/* AI Sort feature removed per request */}
