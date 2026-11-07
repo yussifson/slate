@@ -1495,6 +1495,7 @@ function PlatformRoutes() {
       <Route path="/pickups" element={<Pickups />} />
       <Route path="/training" element={<GenericModulePage />} />
         <Route path="/apk" element={<ApkDownload />} />
+                        <Route path="/download" element={<ApkDownload />} />
                         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/sso" element={<SSOGateway />} />
@@ -1888,6 +1889,7 @@ function App() {
                           <Route path="/legal" element={<LegalDocs />} />
                         </Route>
                         <Route path="/apk" element={<ApkDownload />} />
+                        <Route path="/download" element={<ApkDownload />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/sso" element={<SSOGateway />} />
@@ -1927,6 +1929,7 @@ function App() {
                       /* App Routes for Subdomains */
                       <Routes>
                         <Route path="/apk" element={<ApkDownload />} />
+                        <Route path="/download" element={<ApkDownload />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/sso" element={<SSOGateway />} />

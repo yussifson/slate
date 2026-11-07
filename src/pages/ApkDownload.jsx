@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Download, Smartphone, CheckCircle, Shield, ArrowRight, RefreshCw } from "lucide-react";
+import { Download, Smartphone, CheckCircle, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function ApkDownload() {
@@ -28,11 +28,16 @@ export default function ApkDownload() {
   return (
     <div className="min-h-screen bg-[#F8F9FA] dark:bg-[#0B1418] text-slate-900 dark:text-white flex flex-col items-center justify-center p-4 selection:bg-[#005A9C]/20">
       <div className="max-w-md w-full bg-white dark:bg-[#101D22] border border-black/10 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-6">
+        
         {/* App Icon Header */}
-        <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] text-white flex items-center justify-center shadow-lg shadow-[#005A9C]/30 relative">
-          <Smartphone className="w-10 h-10" />
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#FF6B00] flex items-center justify-center text-white shadow-md">
-            <Download className="w-3.5 h-3.5" />
+        <div className="mx-auto w-24 h-24 rounded-3xl bg-white dark:bg-card p-3 flex items-center justify-center shadow-lg border border-black/5 dark:border-white/10 relative">
+          <img 
+            src="/jcl-logo.png" 
+            alt="JCL Office" 
+            className="w-full h-full object-contain"
+          />
+          <div className="absolute -bottom-1.5 -right-1.5 w-7 h-7 rounded-full bg-[#005A9C] flex items-center justify-center text-white shadow-md">
+            <Download className="w-4 h-4" />
           </div>
         </div>
 
@@ -44,7 +49,7 @@ export default function ApkDownload() {
             Official Android Mobile App (Live-Sync)
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            Connected to <span className="font-mono font-semibold text-foreground">jcloffice.optavel.com</span>
+            Directly connected to <span className="font-mono font-semibold text-foreground">jcloffice.optavel.com</span>
           </p>
         </div>
 
@@ -55,7 +60,7 @@ export default function ApkDownload() {
             <span>Automatic Download {downloadStarted ? "Started" : "Starting..."}</span>
           </div>
           <p className="text-[11px] text-muted-foreground leading-relaxed">
-            If the download does not start automatically within a few seconds, click the button below.
+            If the download does not start automatically within a few seconds, click the download button below.
           </p>
         </div>
 
@@ -75,18 +80,18 @@ export default function ApkDownload() {
             Installation Guide:
           </p>
           <ol className="list-decimal list-inside space-y-1 text-[11px] leading-relaxed pl-1">
-            <li>Open the downloaded <strong className="text-foreground">JCLOffice.apk</strong> file.</li>
-            <li>If prompted, tap <strong className="text-foreground">Settings</strong> and toggle <strong className="text-foreground">Allow from this source</strong>.</li>
-            <li>Tap <strong className="text-foreground">Install</strong>, then open the app.</li>
+            <li>Open the downloaded <strong className="text-foreground">JCLOffice.apk</strong> file on your device.</li>
+            <li>If prompted, tap <strong className="text-foreground">Settings</strong> and enable <strong className="text-foreground">Allow from this source</strong>.</li>
+            <li>Tap <strong className="text-foreground">Install</strong>, and launch JCL Office.</li>
           </ol>
         </div>
 
         <div className="pt-2">
           <a
-            href="/"
+            href="/login"
             className="text-xs font-semibold text-muted-foreground hover:text-[#005A9C] dark:hover:text-[#FF6B00] transition-colors inline-flex items-center gap-1"
           >
-            Go to Web Portal <ArrowRight className="w-3 h-3" />
+            Go to Login <ArrowRight className="w-3 h-3" />
           </a>
         </div>
       </div>

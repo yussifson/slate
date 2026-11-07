@@ -31,7 +31,7 @@ export function SiteDomainResolver({ children }) {
 
         // Allow bypassing site renderer to access the app via URL parameters or specific paths
         const path = window.location.pathname;
-        const appPaths = ['/login', '/signup', '/admin', '/welcome', '/forgot-password', '/reset-password'];
+        const appPaths = ['/login', '/signup', '/admin', '/welcome', '/forgot-password', '/reset-password', '/apk', '/download'];
         if (appPaths.some(p => path.startsWith(p)) || window.location.search.includes('bypass_site=true')) {
           setLoading(false);
           return;
