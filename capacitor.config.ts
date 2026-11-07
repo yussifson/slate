@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.jclroyalgroup.office',
-  appName: 'JCL Royal Group',
+  appName: 'JCL Office',
   webDir: 'dist',
   server: {
     url: 'https://jcloffice.optavel.com',
@@ -18,9 +18,9 @@ const config: CapacitorConfig = {
       launchShowDuration: 1200,
       launchAutoHide: true,
       launchFadeOutDuration: 250,
-      backgroundColor: '#005A9C',
+      backgroundColor: '#FFFFFF',
       androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
+      androidScaleType: 'CENTER_INSIDE',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true

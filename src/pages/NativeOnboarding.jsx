@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Layers, ArrowRight, ChevronRight, Zap, Building2 } from 'lucide-react';
+import { ShieldCheck, Layers, ArrowRight, ChevronRight, Building2, KeyRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
-import { Logo } from '@/components/ui/Logo';
 import { fetchCompanyBrandingFromDomain, cleanLogo } from '@/lib/companyDomainResolver';
 
 export default function NativeOnboarding() {
@@ -23,31 +22,41 @@ export default function NativeOnboarding() {
     return () => { active = false; };
   }, []);
 
-  const companyName = companyBranding?.name || 'Slate';
-  const customLogoUrl = cleanLogo(companyBranding?.logo_url || companyBranding?.logo_light_url);
+  const companyName = companyBranding?.name || 'JCL Office';
+  const customLogoUrl = cleanLogo(companyBranding?.logo_url || companyBranding?.logo_light_url) || '/jcl-logo.png';
 
   const slides = [
     {
       id: 'welcome',
-      icon: customLogoUrl ? (
-        <img src={customLogoUrl} alt={companyName} className="w-16 h-16 object-contain drop-shadow-md rounded-xl" />
-      ) : (
-        <Logo className="w-16 h-16 text-primary drop-shadow-md" />
+      icon: (
+        <img 
+          src={customLogoUrl} 
+          alt={companyName} 
+          className="w-20 h-20 object-contain drop-shadow-sm select-none" 
+        />
       ),
-      title: `Welcome to ${companyName}`,
-      description: companyBranding?.tagline || (companyBranding?.name ? `Your unified digital operating workspace.` : 'The unified business operating system engineered for modern enterprises.'),
+      title: 'Welcome to JCL Office',
+      description: 'Your premier real estate operations, property management, and enterprise collaborative workspace.'
     },
     {
       id: 'features',
-      icon: <Layers className="w-16 h-16 text-primary drop-shadow-md" />,
-      title: companyBranding?.name ? `Tailored for ${companyBranding.name}` : 'Built for Scale',
-      description: 'Connect your entire workforce with powerful tools, seamless integrations, and real-time insights.',
+      icon: (
+        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+          <Layers className="w-9 h-9" strokeWidth={2.2} />
+        </div>
+      ),
+      title: 'Tailored for Real Estate',
+      description: 'Manage listings, clients, leases, maintenance, engineering, and finance in one synchronized system.'
     },
     {
       id: 'security',
-      icon: <ShieldCheck className="w-16 h-16 text-primary drop-shadow-md" />,
-      title: 'Enterprise Security',
-      description: 'Bank-grade encryption and granular access controls keep your data safe and compliant.',
+      icon: (
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+          <ShieldCheck className="w-9 h-9" strokeWidth={2.2} />
+        </div>
+      ),
+      title: 'Enterprise Trust & Security',
+      description: 'Granular role-based controls, audit security logs, and bank-grade data encryption at every step.'
     }
   ];
 
@@ -65,48 +74,51 @@ export default function NativeOnboarding() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col overflow-hidden font-sans selection:bg-primary/20">
-      {/* Dynamic Background Mesh Gradients */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[70vw] h-[70vw] rounded-full bg-primary/20 blur-[120px] mix-blend-multiply dark:mix-blend-screen opacity-70 animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute top-[40%] -right-[20%] w-[60vw] h-[60vw] rounded-full bg-blue-500/10 dark:bg-blue-500/20 blur-[100px] mix-blend-multiply dark:mix-blend-screen opacity-50" />
-        <div className="absolute -bottom-[20%] left-[20%] w-[80vw] h-[80vw] rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 blur-[120px] mix-blend-multiply dark:mix-blend-screen opacity-60" />
+    <div className="fixed inset-0 z-50 bg-[#F8F9FA] dark:bg-[#0B1418] flex flex-col justify-between overflow-hidden font-sans select-none">
+      
+      {/* Background Subtle Accent Gradients (No heavy blurs) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-[15%] -left-[10%] w-[80vw] h-[80vw] rounded-full bg-primary/[0.07] dark:bg-primary/[0.12] blur-[80px]" />
+        <div className="absolute -bottom-[15%] -right-[10%] w-[80vw] h-[80vw] rounded-full bg-blue-500/[0.06] dark:bg-blue-500/[0.10] blur-[80px]" />
       </div>
 
-      {/* Top Bar (Skip) */}
-      <div className="relative z-10 w-full p-6 flex justify-end">
-        {currentSlide < slides.length - 1 && (
+      {/* Top Bar: Skip Action */}
+      <div className="relative z-20 w-full px-6 pt-[calc(1rem+env(safe-area-inset-top))] flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <img src="/jcl-logo.png" alt="JCL Office" className="w-7 h-7 object-contain" />
+          <span className="font-extrabold text-sm tracking-tight text-foreground">JCL OFFICE</span>
+        </div>
+        {currentSlide < slides.length - 1 ? (
           <button 
             onClick={handleComplete}
-            className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors tracking-wide px-4 py-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5"
+            className="text-xs font-semibold text-muted-foreground hover:text-foreground tracking-wide px-3.5 py-1.5 rounded-full bg-black/5 dark:bg-white/10 active:scale-95 transition-all"
           >
             Skip
           </button>
-        )}
+        ) : <div />}
       </div>
 
       {/* Carousel Content */}
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-8 w-full max-w-[400px] mx-auto">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 w-full max-w-[380px] mx-auto text-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 1.05, y: -20 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.28, ease: 'easeOut' }}
             className="flex flex-col items-center text-center w-full"
           >
-            {/* Glassmorphism Icon Container */}
-            <div className="w-32 h-32 rounded-[2.5rem] flex items-center justify-center mb-10 shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(255,255,255,0.05)] border-[0.5px] border-black/5 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-2xl relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-white/60 to-white/10 dark:from-white/10 dark:to-transparent rounded-[2.5rem] pointer-events-none" />
+            {/* Crisp Native Container */}
+            <div className="w-28 h-28 rounded-3xl flex items-center justify-center mb-8 bg-white dark:bg-[#151E28] border border-black/5 dark:border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
               {slides[currentSlide].icon}
             </div>
             
-            <h1 className="text-3xl font-black text-foreground tracking-[-0.03em] mb-5 leading-tight">
+            <h1 className="text-2xl font-extrabold text-foreground tracking-tight mb-3 leading-snug">
               {slides[currentSlide].title}
             </h1>
             
-            <p className="text-[16px] font-medium text-muted-foreground leading-relaxed max-w-[300px]">
+            <p className="text-[15px] font-normal text-muted-foreground leading-relaxed max-w-[320px]">
               {slides[currentSlide].description}
             </p>
           </motion.div>
@@ -114,36 +126,51 @@ export default function NativeOnboarding() {
       </div>
 
       {/* Bottom Controls */}
-      <div className="relative z-10 w-full p-8 pb-[calc(2.5rem+env(safe-area-inset-bottom))] flex flex-col gap-10 max-w-[400px] mx-auto">
+      <div className="relative z-20 w-full px-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] flex flex-col gap-6 max-w-[380px] mx-auto">
+        
         {/* Pagination Dots */}
-        <div className="flex justify-center gap-2.5">
+        <div className="flex justify-center items-center gap-2">
           {slides.map((_, idx) => (
-            <div 
+            <button
               key={idx}
-              className={`h-2 rounded-full transition-all duration-500 ease-out ${
-                idx === currentSlide ? 'w-8 bg-primary shadow-sm shadow-primary/30' : 'w-2 bg-primary/20 dark:bg-primary/30'
+              onClick={() => setCurrentSlide(idx)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === currentSlide ? 'w-7 bg-primary' : 'w-2 bg-black/15 dark:bg-white/20'
               }`}
+              aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
         </div>
 
-        {/* Action Button */}
-        <Button 
-          onClick={handleNext}
-          className="w-full h-[60px] rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-[17px] shadow-[0_8px_20px_rgba(0,0,0,0.12)] dark:shadow-none hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
-        >
-          {currentSlide === slides.length - 1 ? (
-            <>
-              Get Started
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </>
-          ) : (
-            <>
-              Next
-              <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-            </>
+        {/* Buttons Stack */}
+        <div className="flex flex-col gap-2.5 w-full">
+          <Button 
+            onClick={handleNext}
+            className="w-full h-[52px] rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-[16px] shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+          >
+            {currentSlide === slides.length - 1 ? (
+              <>
+                Sign In to Workspace
+                <ArrowRight className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                Continue
+                <ChevronRight className="w-4 h-4" />
+              </>
+            )}
+          </Button>
+
+          {currentSlide < slides.length - 1 && (
+            <Button
+              variant="ghost"
+              onClick={handleComplete}
+              className="w-full h-[44px] rounded-xl text-muted-foreground font-semibold text-[14px] hover:bg-black/5 dark:hover:bg-white/5 active:scale-[0.98] transition-all"
+            >
+              Sign In
+            </Button>
           )}
-        </Button>
+        </div>
       </div>
     </div>
   );

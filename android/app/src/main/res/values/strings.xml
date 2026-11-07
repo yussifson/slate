@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">JCL Royal Group</string>
-    <string name="title_activity_main">JCL Royal Group</string>
+    <string name="app_name">JCL Office</string>
+    <string name="title_activity_main">JCL Office</string>
     <string name="package_name">com.jclroyalgroup.office</string>
     <string name="custom_url_scheme">com.jclroyalgroup.office</string>
 </resources>

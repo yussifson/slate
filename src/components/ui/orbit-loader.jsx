@@ -21,7 +21,7 @@ export function OrbitLoader({ size = 'md', className = '', label = 'Loading', co
     }
   } catch (e) {}
   
-  const logoSrc = isClipad ? "/clipad-logo-green.svg" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
+  const logoSrc = isClipad ? "/clipad-logo-green.svg" : (isRootAccount ? "/optavel-favicon.svg" : "/jcl-logo.png");
 
   return (
     <span
@@ -70,8 +70,8 @@ export function PageLoader({ label = 'Loading...' }) {
     }
   } catch (e) {}
   
-  const logoSrc = isClipad ? "/clipad-logo-green.svg" : (isRootAccount ? "/optavel-favicon.svg" : "/slate-favicon.svg");
-  const logoAlt = isClipad ? "CliPad Logo" : (isRootAccount ? "Optavel Logo" : "Slate Logo");
+  const logoSrc = isClipad ? "/clipad-logo-green.svg" : (isRootAccount ? "/optavel-favicon.svg" : "/jcl-logo.png");
+  const logoAlt = isClipad ? "CliPad Logo" : (isRootAccount ? "Optavel Logo" : "JCL Office");
 
   return (
     <div
@@ -94,8 +94,8 @@ export function PageLoader({ label = 'Loading...' }) {
       }}>
         {/* Exact Logo */}
         <div style={{
-          width: '64px', height: '64px',
-          marginBottom: '24px',
+          width: '72px', height: '72px',
+          marginBottom: '20px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <img 

@@ -217,7 +217,7 @@ class ErrorBoundary extends React.Component {
                  <div className="absolute inset-0 rounded-full border-4 border-white/10" />
                  <div className="absolute inset-0 rounded-full border-4 border-[#00beac] border-t-transparent animate-spin" />
                  {(() => {
-                   let logoSrc = '/optavel-favicon.svg';
+                   let logoSrc = '/jcl-logo.png';
                    try {
                       const host = window.location.hostname.toLowerCase();
                       if (host.includes('clipad')) logoSrc = '/clipad-logo-green.svg';

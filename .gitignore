@@ -36,3 +36,7 @@ dist_electron_output/
 dist_electron_output
 .vercel
 .env*
+
+*.apk
+public/apk/
+public/jcl-office.apk

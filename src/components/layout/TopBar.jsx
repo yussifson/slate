@@ -185,37 +185,43 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   return (
   <>
   {/* ── NATIVE MOBILE TOP BAR ── */}
-  <div className="md:hidden relative w-full bg-white/80 dark:bg-card/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/5 pt-[env(safe-area-inset-top)] shadow-sm z-[60]">
- <div className="flex items-center justify-between px-4 h-[44px]">
- {/* Left: Avatar */}
- <button onClick={() => navigate('/personal-info')} className="relative w-[30px] h-[30px] rounded-full bg-[#F2F2F7] dark:bg-[#2C2C2E] flex items-center justify-center overflow-hidden active:scale-95 transition-transform" aria-label="Open profile">
- {user?.avatar_url ? (
- <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
- ) : (
- <span className="text-[11px] font-semibold text-primary">{initials}</span>
- )}
- </button>
+  <div className="md:hidden sticky top-0 left-0 right-0 w-full bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border-b border-black/5 dark:border-white/10 pt-[env(safe-area-inset-top)] shadow-xs z-[60]">
+    <div className="flex items-center justify-between px-3 h-[52px] gap-2.5">
+      {/* Left: User Profile Avatar */}
+      <button 
+        onClick={() => navigate('/personal-info')} 
+        className="relative w-[34px] h-[34px] shrink-0 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform" 
+        aria-label="Open profile"
+      >
+        {user?.avatar_url ? (
+          <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-[12px] font-bold text-primary">{initials}</span>
+        )}
+      </button>
 
-  {/* Center: Page Title / Logo */}
-  <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 pointer-events-none max-w-[200px] justify-center">
-    <span className="font-bold text-[16px] tracking-tight text-foreground truncate max-w-[180px]">{title || 'Dashboard'}</span>
-  </div>
-  {/* Right: Search, AI & Notifications */}
-  <div className="flex items-center gap-1">
-  <div className="scale-90 text-foreground">
-    <ThemeToggle iconOnly={true} />
-  </div>
-  <button onClick={() => navigate('/search')} className="w-8 h-8 rounded-full flex items-center justify-center text-[#8E8E93] transition-colors active:scale-95" aria-label="Search">
-    <Search className="w-[18px] h-[18px]" strokeWidth={2.5} />
-  </button>
-  <button onClick={toggleAI} className={cn("w-8 h-8 rounded-full flex items-center justify-center transition-colors active:scale-95", isAIOpen ? "bg-primary/10 text-primary" : "text-[#8E8E93]")}>
-  <Sparkles className="w-[18px] h-[18px]" strokeWidth={2.5} />
-  </button>
-  <div className="scale-90 origin-right">
-    <UnivNotificationCenter />
-  </div>
-  </div>
-  </div>
+      {/* Center: Search Bar with Active Native Touch */}
+      <div className="flex-1 min-w-0 max-w-[280px]">
+        <button
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent('open-spotlight'));
+            navigate('/search');
+          }}
+          className="w-full h-[36px] px-3 rounded-full bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.07] dark:hover:bg-white/[0.12] border border-black/5 dark:border-white/5 flex items-center gap-2 text-muted-foreground transition-all active:scale-[0.98]"
+          aria-label="Search"
+        >
+          <Search className="w-4 h-4 text-muted-foreground shrink-0" strokeWidth={2.2} />
+          <span className="text-xs font-normal text-muted-foreground truncate">
+            {t('search_placeholder', 'Search...')}
+          </span>
+        </button>
+      </div>
+
+      {/* Right: Notifications Icon */}
+      <div className="shrink-0 flex items-center justify-center">
+        <UnivNotificationCenter />
+      </div>
+    </div>
   </div>
 
   {/* ── DESKTOP TOP BAR ── */}

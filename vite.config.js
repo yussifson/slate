@@ -8,7 +8,7 @@ import electron from 'vite-plugin-electron/simple'
 export default defineConfig(({ mode }) => {
   const isElectron = mode === 'electron' || process.env.ELECTRON === 'true';
   return {
-    logLevel: 'info',
+    logLevel: 'warn',
     server: {
       port: 3000,
       strictPort: true,
@@ -28,22 +28,22 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       sourcemap: false,
-      chunkSizeWarningLimit: 3000,
+      chunkSizeWarningLimit: 5000,
       reportCompressedSize: false,
-      minify: false,
+      minify: 'esbuild',
+      cssMinify: true,
       rollupOptions: {
+        maxParallelFileOps: 2,
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
               if (id.includes('@tldraw')) return 'vendor-tldraw';
               if (id.includes('three')) return 'vendor-three';
-              if (id.includes('pdfjs-dist') || id.includes('jspdf') || id.includes('html2pdf')) return 'vendor-pdf';
+              if (id.includes('pdfjs-dist') || id.includes('jspdf')) return 'vendor-pdf';
               if (id.includes('lucide-react')) return 'vendor-lucide';
               if (id.includes('@xyflow')) return 'vendor-xyflow';
-              if (id.includes('@ffmpeg')) return 'vendor-ffmpeg';
               if (id.includes('@daily-co')) return 'vendor-daily';
               if (id.includes('chart.js') || id.includes('recharts')) return 'vendor-charts';
-              if (id.includes('@tiptap')) return 'vendor-tiptap';
             }
           }
         }
@@ -67,85 +67,24 @@ export default defineConfig(({ mode }) => {
         },
         renderer: {},
       }),
-
-    VitePWA({
-      registerType: 'autoUpdate',
-      devOptions: {
-        enabled: false,
-        type: 'module'
+      VitePWA({
+        registerType: 'autoUpdate',
+        injectRegister: null,
+        selfDestroying: true,
+        manifest: false,
+        workbox: false
+      })
+    ].filter(Boolean),
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-      manifest: {
-        name: 'Optavel',
-        short_name: 'Optavel',
-        description: 'Multi-industry Operational OS',
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
-        display: 'standalone',
-        icons: [
-          {
-            src: '/optavel-favicon.svg',
-            sizes: '192x192',
-            type: 'image/svg+xml'
-          },
-          {
-            src: '/optavel-favicon.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml'
-          }
-        ]
-      },
-      workbox: {
-        maximumFileSizeToCacheInBytes: 50 * 1024 * 1024, // 50MB for ffmpeg-core.wasm
-        navigateFallback: '/index.html',
-        cleanupOutdatedCaches: true,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,wasm}'],
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/api\.cloudflare\.com\/.*/i,
-            handler: 'NetworkFirst',
-            method: 'GET',
-            options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
-              },
-              cacheableResponse: {
-                statuses: [200]
-              }
-            }
-          },
-          {
-            // Cache Supabase REST API responses (profiles, companies, etc.) for offline use
-            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
-            handler: 'NetworkFirst',
-            method: 'GET',
-            options: {
-              cacheName: 'supabase-data-cache',
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 // 1 day
-              },
-              cacheableResponse: {
-                statuses: [200]
-              }
-            }
-          }
-        ]
-      }
-    })
-  ],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
     },
-  },
-  worker: {
-    format: 'es',
-  },
-  optimizeDeps: {
-    exclude: ['@journeyapps/wa-sqlite', '@powersync/web']
-  },
- };
+    worker: {
+      format: 'es',
+    },
+    optimizeDeps: {
+      exclude: ['@journeyapps/wa-sqlite', '@powersync/web']
+    },
+  };
 });
