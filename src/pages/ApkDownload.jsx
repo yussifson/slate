@@ -38,7 +38,7 @@ export default function ApkDownload() {
 
         <div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-            JCL Royal Group
+            JCL Office
           </h1>
           <p className="text-sm font-semibold text-[#005A9C] dark:text-[#FF6B00] mt-1">
             Official Android Mobile App (Live-Sync)
