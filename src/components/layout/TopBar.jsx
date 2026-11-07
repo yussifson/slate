@@ -185,40 +185,40 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   return (
   <>
   {/* ── NATIVE MOBILE TOP BAR ── */}
-  <div className="md:hidden sticky top-0 left-0 right-0 w-full bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-xl border-b border-black/5 dark:border-white/10 pt-[env(safe-area-inset-top)] shadow-xs z-[60]">
+  <div className="md:hidden sticky top-0 left-0 right-0 w-full bg-[#005A9C] dark:bg-[#0B1418] border-b border-white/10 text-white pt-[env(safe-area-inset-top)] shadow-md z-[60]">
     <div className="flex items-center justify-between px-3 h-[52px] gap-2.5">
       {/* Left: User Profile Avatar */}
       <button 
         onClick={() => navigate('/personal-info')} 
-        className="relative w-[34px] h-[34px] shrink-0 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform" 
+        className="relative w-[34px] h-[34px] shrink-0 rounded-full bg-white/15 border border-white/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform" 
         aria-label="Open profile"
       >
         {user?.avatar_url ? (
           <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
         ) : (
-          <span className="text-[12px] font-bold text-primary">{initials}</span>
+          <span className="text-[12px] font-bold text-white">{initials}</span>
         )}
       </button>
 
-      {/* Center: Search Bar with Active Native Touch */}
+      {/* Center: Search Bar (Working with instant focus and spotlight) */}
       <div className="flex-1 min-w-0 max-w-[280px]">
         <button
           onClick={() => {
             window.dispatchEvent(new CustomEvent('open-spotlight'));
             navigate('/search');
           }}
-          className="w-full h-[36px] px-3 rounded-full bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.07] dark:hover:bg-white/[0.12] border border-black/5 dark:border-white/5 flex items-center gap-2 text-muted-foreground transition-all active:scale-[0.98]"
+          className="w-full h-[36px] px-3 rounded-full bg-white/15 hover:bg-white/20 border border-white/15 flex items-center gap-2 text-white/80 transition-all active:scale-[0.98]"
           aria-label="Search"
         >
-          <Search className="w-4 h-4 text-muted-foreground shrink-0" strokeWidth={2.2} />
-          <span className="text-xs font-normal text-muted-foreground truncate">
-            {t('search_placeholder', 'Search...')}
+          <Search className="w-4 h-4 text-white/80 shrink-0" strokeWidth={2.2} />
+          <span className="text-xs font-normal text-white/80 truncate">
+            {t('search_placeholder', 'Search people, docs, tasks...')}
           </span>
         </button>
       </div>
 
       {/* Right: Notifications Icon */}
-      <div className="shrink-0 flex items-center justify-center">
+      <div className="shrink-0 flex items-center justify-center text-white">
         <UnivNotificationCenter />
       </div>
     </div>
