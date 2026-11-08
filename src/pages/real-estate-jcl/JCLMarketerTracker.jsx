@@ -748,7 +748,7 @@ export default function JCLMarketerTracker() {
   const currentMode = hasAdminPrivileges ? activeTab : 'marketer';
 
   return (
-    <div className="space-y-6 pb-20 font-sans min-h-screen text-foreground p-4 md:p-6 lg:p-8 bg-background">
+    <div className="w-full max-w-full overflow-x-hidden space-y-4 sm:space-y-6 pb-24 sm:pb-12 font-sans min-h-screen text-foreground p-3.5 sm:p-6 lg:p-8 bg-background">
 
       {/* ── GPS PERMISSION ERROR DIALOG ── */}
       <Dialog open={showGeoErrorDialog} onOpenChange={setShowGeoErrorDialog}>
@@ -1314,17 +1314,17 @@ export default function JCLMarketerTracker() {
 
       {/* ── CONDITIONAL FEED: ADMIN MASTER FEED VS. FIELD MARKETER PERSONAL SUMMARY ── */}
       {currentMode === 'admin' ? (
-        <Card className="border-border rounded-3xl shadow-sm bg-card mt-6">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+        <Card className="w-full border-border rounded-3xl shadow-sm bg-card mt-6">
+          <CardContent className="p-4 sm:p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
               <div>
-                <h2 className="text-lg font-bold text-foreground">Master Field Check-in Feed</h2>
+                <h2 className="text-base sm:text-lg font-bold text-foreground">Master Field Check-in Feed</h2>
                 <p className="text-xs text-muted-foreground">Complete record of verified client meetings logged by field personnel</p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Select value={outcomeFilter} onValueChange={setOutcomeFilter}>
-                  <SelectTrigger className="w-40 h-9 text-xs rounded-xl border-border bg-background">
+                  <SelectTrigger className="w-full sm:w-44 h-9 text-xs rounded-xl border-border bg-background">
                     <SelectValue placeholder="Filter Outcome" />
                   </SelectTrigger>
                   <SelectContent>
@@ -1338,8 +1338,84 @@ export default function JCLMarketerTracker() {
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-border">
-              <table className="w-full text-left text-xs">
+            {/* Mobile Native Card View (< md) */}
+            <div className="md:hidden space-y-2.5">
+              {filteredMeetings.length === 0 ? (
+                <div className="p-8 text-center text-muted-foreground border border-dashed border-border rounded-2xl">
+                  <FileText className="h-8 w-8 mx-auto mb-2 opacity-40 text-muted-foreground" />
+                  <p className="font-bold text-xs">No client check-ins found</p>
+                  <p className="text-[11px] mt-0.5">Logged client meetings will appear here with verified GPS check-in data.</p>
+                </div>
+              ) : (
+                filteredMeetings.map((m) => (
+                  <div key={m.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <div className="h-8 w-8 rounded-full bg-[#005A9C]/15 text-[#005A9C] dark:text-[#FF6B00] font-bold flex items-center justify-center text-xs shrink-0">
+                          {m.marketer_name?.[0] || 'M'}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-xs text-foreground truncate">{m.marketer_name}</p>
+                          <p className="text-sm font-extrabold text-foreground truncate">{m.client_name}</p>
+                        </div>
+                      </div>
+                      <Badge className={cn(
+                        "text-[10px] font-bold px-2 py-0.5 shrink-0",
+                        m.meeting_outcome === 'Closed Sale' ? "bg-[#005A9C] text-white" :
+                        m.meeting_outcome === 'Successful' ? "bg-emerald-500/15 text-[#005A9C] dark:text-[#FF6B00] border border-[#005A9C]/30" :
+                        m.meeting_outcome === 'Follow-up Scheduled' ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30" :
+                        "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border border-zinc-500/30"
+                      )}>
+                        {m.meeting_outcome || 'Successful'}
+                      </Badge>
+                    </div>
+
+                    <div className="text-xs space-y-1 pt-1 border-t border-border/60">
+                      <div className="font-bold text-[#005A9C] dark:text-[#FF6B00] truncate">
+                        {m.property_interest || 'General Property Inquiry'} · <span className="font-normal text-muted-foreground">{m.meeting_purpose || 'Client Discussion'}</span>
+                      </div>
+                      {m.address_text && (
+                        <div className="flex items-center gap-1.5 text-muted-foreground text-[11px] truncate">
+                          <MapPin className="h-3 w-3 text-emerald-500 shrink-0" />
+                          <span className="truncate">{m.address_text}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-border/40">
+                      <span className="text-[10px] text-muted-foreground">
+                        {m.created_at ? format(new Date(m.created_at), 'MMM d, h:mm a') : 'Recently'}
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <Button
+                          onClick={() => setSelectedMeetingDetails(m)}
+                          size="sm"
+                          variant="outline"
+                          className="h-7 px-2 text-[11px] rounded-lg border-border font-bold text-foreground hover:bg-muted"
+                        >
+                          Details
+                        </Button>
+                        {m.latitude && m.longitude && (
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${m.latitude},${m.longitude}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="h-7 px-2 rounded-lg bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] hover:bg-[#005A9C]/20 inline-flex items-center justify-center font-bold text-xs"
+                            title="Open in Google Maps"
+                          >
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Desktop Table View (>= md) */}
+            <div className="hidden md:block overflow-x-auto rounded-2xl border border-border">
+              <table className="w-full text-left text-xs min-w-[700px]">
                 <thead className="bg-muted/80 text-muted-foreground font-bold border-b border-border">
                   <tr>
                     <th className="p-3.5">Field Personnel</th>

@@ -109,41 +109,41 @@ export default function JCLFrontDesk() {
       </div>
 
       {/* ── 2. Mobile 2x2 Dedicated Stats Grid (< md) ── */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:hidden">
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:hidden">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3.5 shadow-xs">
           <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
             <UsersRound className="w-3.5 h-3.5 text-blue-500 shrink-0" />
             <span className="text-[10px] font-bold uppercase tracking-wider truncate">In Office</span>
           </div>
-          <p className="text-lg font-black text-foreground truncate">{activeVisitors.length}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Live visitors</span>
+          <p className="text-xl font-black text-foreground truncate">{activeVisitors.length}</p>
+          <span className="text-[10px] text-muted-foreground font-semibold">Live visitors</span>
         </div>
 
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3.5 shadow-xs">
           <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
             <UserRound className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
             <span className="text-[10px] font-bold uppercase tracking-wider truncate">Staff Present</span>
           </div>
-          <p className="text-lg font-black text-emerald-600 truncate">{activeStaff.length}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Checked in today</span>
+          <p className="text-xl font-black text-emerald-600 truncate">{activeStaff.length}</p>
+          <span className="text-[10px] text-muted-foreground font-semibold">Checked in today</span>
         </div>
 
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3.5 shadow-xs">
           <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
             <CalendarDays className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <span className="text-[10px] font-bold uppercase tracking-wider truncate">Daily Events</span>
           </div>
-          <p className="text-lg font-black text-foreground truncate">{todayEvents.length}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Scheduled today</span>
+          <p className="text-xl font-black text-foreground truncate">{todayEvents.length}</p>
+          <span className="text-[10px] text-muted-foreground font-semibold">Scheduled today</span>
         </div>
 
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3.5 shadow-xs">
           <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
             <Clock3 className="w-3.5 h-3.5 text-[#005A9C] shrink-0" />
             <span className="text-[10px] font-bold uppercase tracking-wider truncate">All Logged</span>
           </div>
-          <p className="text-lg font-black text-[#005A9C] truncate">{visitors.length}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Total records</span>
+          <p className="text-xl font-black text-[#005A9C] truncate">{visitors.length}</p>
+          <span className="text-[10px] text-muted-foreground font-semibold">Total records</span>
         </div>
       </div>
 
@@ -154,28 +154,28 @@ export default function JCLFrontDesk() {
         <Metric icon={CalendarDays} label="Today’s Scheduled Events" value={todayEvents.length} detail="Company activities" />
       </section>
 
-      {/* ── 3. Scrollable Tabs Pill Bar ── */}
-      <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
-        <div className="flex items-center gap-1.5 min-w-max bg-card/90 border border-border/80 p-1.5 rounded-2xl shadow-xs">
+      {/* ── 3. Tabs Selection ── */}
+      <div className="w-full">
+        <div className="grid grid-cols-2 gap-2 bg-muted/50 p-1.5 rounded-2xl border border-border/80">
           <button
             onClick={() => setTab('visitors')}
             className={cn(
-              'inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all',
+              'flex items-center justify-center gap-2 rounded-xl py-2.5 px-3 text-xs font-bold transition-all',
               tab === 'visitors' ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
-            <UsersRound className="w-3.5 h-3.5" />
-            Visitor Logbook
+            <UsersRound className="w-4 h-4 shrink-0" />
+            <span>Visitor Logbook</span>
           </button>
           <button
             onClick={() => setTab('staff')}
             className={cn(
-              'inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all',
+              'flex items-center justify-center gap-2 rounded-xl py-2.5 px-3 text-xs font-bold transition-all',
               tab === 'staff' ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
-            <UserRound className="w-3.5 h-3.5" />
-            Staff Attendance
+            <UserRound className="w-4 h-4 shrink-0" />
+            <span>Staff Attendance</span>
           </button>
         </div>
       </div>

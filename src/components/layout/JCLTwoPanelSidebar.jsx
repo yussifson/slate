@@ -127,7 +127,7 @@ const JCL_DEPARTMENTS = [
     icon: ShieldCheck,
     color: "slate",
     items: [
-      { label: "Client Portal", path: "/client-portal", icon: Globe },
+      { label: "Client Portal", path: "/portal", icon: Globe },
       { label: "Audit Log", path: "/real-estate/audit-log", icon: ShieldCheck },
       { label: "HR & Team Roster", path: "/hr", icon: HeartHandshake },
       { label: "Custody Tracker", path: "/jcl/employee-assets", icon: ShieldCheck },

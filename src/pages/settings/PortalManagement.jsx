@@ -256,65 +256,122 @@ export default function PortalManagement() {
   const pendingInvites = invitations.filter(i => i.status === 'pending');
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="w-full max-w-full overflow-x-hidden min-h-screen p-3.5 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 pb-24 sm:pb-12 bg-background text-foreground">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Client Portal Management</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Invite clients, patients, and other stakeholders to access their dedicated portal.
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+            <Globe className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Client Portal</h1>
+          </div>
         </div>
-        <InviteDialog industry={industry} companyId={companyId} onSuccess={refetchInvites} />
+        <div className="flex items-center gap-2">
+          <InviteDialog industry={industry} companyId={companyId} onSuccess={refetchInvites} />
+        </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* 2x2 Mobile Native Stats Grid (< md) & Executive KPI (>= md) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
         {[
-          { icon: Users, label: 'Active Portal Users', value: activeUsers.length, color: 'bg-green-100 text-green-700' },
-          { icon: Clock, label: 'Pending Invitations', value: pendingInvites.length, color: 'bg-yellow-100 text-yellow-700' },
-          { icon: Mail, label: 'Total Invited', value: invitations.length, color: 'bg-blue-100 text-blue-700' },
-          { icon: Shield, label: 'Access Type', value: 'Role-Based', color: 'bg-primary/10 text-primary' },
+          { icon: Users, label: 'Active Users', value: activeUsers.length, color: 'text-emerald-600 bg-emerald-500/10' },
+          { icon: Clock, label: 'Pending Invites', value: pendingInvites.length, color: 'text-amber-600 bg-amber-500/10' },
+          { icon: Mail, label: 'Total Invited', value: invitations.length, color: 'text-blue-600 bg-blue-500/10' },
+          { icon: Shield, label: 'Access Type', value: 'Role-Based', color: 'text-[#005A9C] bg-[#005A9C]/10' },
         ].map(({ icon: Icon, label, value, color }) => (
-          <div key={label} className="bg-card rounded-xl border border-border/50 p-5 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
-              <Icon className="w-5 h-5" />
+          <div key={label} className="bg-card/90 backdrop-blur-xl rounded-[20px] border border-border/80 p-3.5 sm:p-4 shadow-xs">
+            <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+              <div className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 ${color}`}>
+                <Icon className="w-3 h-3" />
+              </div>
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{label}</span>
             </div>
-            <div>
-              <p className="text-xl font-bold">{value}</p>
-              <p className="text-xs text-muted-foreground">{label}</p>
-            </div>
+            <p className="text-xl sm:text-2xl font-black text-foreground truncate">{value}</p>
           </div>
         ))}
       </div>
 
-      {/* How it works banner */}
-      <div className="bg-primary/5 border border-primary/20 rounded-xl p-5 flex items-start gap-4">
-        <div className="w-10 h-10 bg-primary/10 text-primary rounded-lg flex items-center justify-center shrink-0">
-          <Link2 className="w-5 h-5" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-sm">How the portal works</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            Invited users receive an email and log in through your same <strong>{window.location.hostname}</strong> domain.
-            When they sign in, they are automatically redirected to their personal portal view — they can only see data
-            that belongs to them. No separate system, no separate login URL.
-          </p>
-        </div>
-      </div>
-
       {/* Tabs */}
-      <Tabs defaultValue="invitations">
-        <TabsList>
-          <TabsTrigger value="invitations">Invitations ({invitations.length})</TabsTrigger>
-          <TabsTrigger value="active">Active Users ({activeUsers.length})</TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue="invitations" className="w-full space-y-4">
+        <div className="w-full overflow-x-auto scrollbar-none pb-1">
+          <TabsList className="bg-muted/60 p-1 border border-border inline-flex w-auto min-w-full sm:min-w-0 justify-start sm:justify-center">
+            <TabsTrigger value="invitations" className="text-xs font-semibold shrink-0">Invitations ({invitations.length})</TabsTrigger>
+            <TabsTrigger value="active" className="text-xs font-semibold shrink-0">Active Users ({activeUsers.length})</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Invitations Tab */}
-        <TabsContent value="invitations" className="mt-4">
-          <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
-            <div className="px-5 py-4 border-b border-border/50 flex items-center justify-between">
-              <h2 className="font-semibold text-sm">All Invitations</h2>
+        <TabsContent value="invitations" className="m-0 space-y-3">
+          {/* Mobile Native Card View (< md) */}
+          <div className="md:hidden space-y-2.5">
+            {loadingInvites ? (
+              <div className="p-8 text-center text-muted-foreground text-xs">Loading invitations...</div>
+            ) : invitations.length === 0 ? (
+              <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+                <UserPlus className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
+                No invitations yet. Tap "Invite to Portal" to get started.
+              </div>
+            ) : (
+              invitations.map(inv => {
+                const StatusIcon = statusIcon[inv.status] || Clock;
+                return (
+                  <div key={inv.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <div className="w-9 h-9 bg-[#005A9C]/10 text-[#005A9C] dark:text-blue-400 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">
+                          {(inv.full_name || inv.email || '?')[0]?.toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-bold text-sm text-foreground truncate">{inv.full_name || inv.email}</h4>
+                          <p className="text-[11px] text-muted-foreground truncate">{inv.email}</p>
+                        </div>
+                      </div>
+                      <Badge className={`text-[10px] font-bold px-2 py-0.5 rounded-lg shrink-0 flex items-center gap-1 ${statusStyles[inv.status] || 'bg-gray-100 text-gray-600'}`}>
+                        <StatusIcon className="w-3 h-3" />
+                        {inv.status}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                      <Badge variant="outline" className="text-[10px] uppercase font-bold px-1.5 py-0">
+                        {inv.role}
+                      </Badge>
+                      <span className="text-[10px] text-muted-foreground">
+                        {inv.created_at ? format(new Date(inv.created_at), 'dd MMM yyyy') : ''}
+                      </span>
+                    </div>
+
+                    {inv.status === 'pending' && (
+                      <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/40">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2.5 text-xs font-bold text-[#005A9C] dark:text-blue-400 hover:bg-[#005A9C]/10 rounded-lg gap-1"
+                          onClick={() => copyDetails(inv)}
+                        >
+                          <Copy className="w-3.5 h-3.5" /> Copy Details
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2.5 text-xs font-bold text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-lg gap-1"
+                          onClick={() => revokeInvite.mutate(inv.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Revoke
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Desktop Table (>= md) */}
+          <div className="hidden md:block rounded-[22px] border border-border/80 bg-card shadow-xs overflow-hidden">
+            <div className="px-5 py-4 border-b border-border/60 flex items-center justify-between">
+              <h2 className="font-bold text-sm">All Invitations</h2>
               <Button variant="ghost" size="sm" onClick={() => refetchInvites()} className="gap-1 text-xs">
                 <RefreshCw className="w-3 h-3" /> Refresh
               </Button>
@@ -383,10 +440,48 @@ export default function PortalManagement() {
         </TabsContent>
 
         {/* Active Users Tab */}
-        <TabsContent value="active" className="mt-4">
-          <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
-            <div className="px-5 py-4 border-b border-border/50">
-              <h2 className="font-semibold text-sm">Active Portal Users</h2>
+        <TabsContent value="active" className="m-0 space-y-3">
+          {/* Mobile Native Card View (< md) */}
+          <div className="md:hidden space-y-2.5">
+            {loadingUsers ? (
+              <div className="p-8 text-center text-muted-foreground text-xs">Loading active users...</div>
+            ) : activeUsers.length === 0 ? (
+              <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+                <Users className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
+                No active portal users yet. Users appear once they accept their invite.
+              </div>
+            ) : (
+              activeUsers.map(u => (
+                <div key={u.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-9 h-9 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center font-bold text-xs shrink-0">
+                        {(u.full_name || u.email || '?')[0]?.toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-sm text-foreground truncate">{u.full_name || u.email}</h4>
+                        <p className="text-[11px] text-muted-foreground truncate">{u.email}</p>
+                      </div>
+                    </div>
+                    <Badge className="text-[10px] font-bold bg-green-100 text-green-700 shrink-0">Active</Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                    <Badge variant="outline" className="text-[10px] uppercase font-bold px-1.5 py-0">{u.role}</Badge>
+                    {u.last_login_at && (
+                      <span className="text-[10px] text-muted-foreground">
+                        Last login: {format(new Date(u.last_login_at), 'dd MMM yyyy')}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Desktop Table (>= md) */}
+          <div className="hidden md:block rounded-[22px] border border-border/80 bg-card shadow-xs overflow-hidden">
+            <div className="px-5 py-4 border-b border-border/60">
+              <h2 className="font-bold text-sm">Active Portal Users</h2>
             </div>
             {loadingUsers ? (
               <div className="p-8 text-center text-muted-foreground text-sm">Loading...</div>
