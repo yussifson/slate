@@ -54,16 +54,25 @@ export default function TaskAttachments({ taskId }) {
         setIsUploading(true);
         try {
             const fileExt = file.name.split('.').pop();
-            const fileName = `${companyId}/${taskId}/${Math.random()}.${fileExt}`;
+            const fileName = `${companyId}/${taskId}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${fileExt}`;
 
-            const { data, error } = await supabase.storage
+            // Try documents bucket first, then fallback to assets
+            let uploadRes = await supabase.storage
                 .from('documents')
                 .upload(fileName, file);
 
-            if (error) throw error;
+            let bucketName = 'documents';
+            if (uploadRes.error) {
+                console.warn('Upload to documents bucket failed, trying assets bucket:', uploadRes.error.message);
+                const assetRes = await supabase.storage
+                    .from('assets')
+                    .upload(fileName, file);
+                if (assetRes.error) throw uploadRes.error;
+                bucketName = 'assets';
+            }
 
             const { data: { publicUrl } } = supabase.storage
-                .from('documents')
+                .from(bucketName)
                 .getPublicUrl(fileName);
 
             addMutation.mutate({

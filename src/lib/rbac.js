@@ -46,6 +46,10 @@ export const ROLE_PERMISSIONS = {
     all: ["create", "read", "update", "delete"]
   },
   [ROLES.MANAGER]: {
+    tasks: ["create", "read", "update", "delete"],
+    univ_task_checklists: ["create", "read", "update", "delete"],
+    univ_task_comments: ["create", "read", "update", "delete"],
+    univ_task_attachments: ["create", "read", "update", "delete"],
     cases: ["create", "read", "update"],
     clients: ["create", "read", "update"],
     documents: ["create", "read", "update", "delete"],
@@ -61,6 +65,10 @@ export const ROLE_PERMISSIONS = {
     capabilities: ["read"]
   },
   [ROLES.LAWYER]: {
+    tasks: ["create", "read", "update", "delete"],
+    univ_task_checklists: ["create", "read", "update", "delete"],
+    univ_task_comments: ["create", "read", "update", "delete"],
+    univ_task_attachments: ["create", "read", "update", "delete"],
     cases: ["create", "read", "update"],
     clients: ["create", "read", "update"],
     documents: ["create", "read", "update", "delete"],
@@ -74,6 +82,10 @@ export const ROLE_PERMISSIONS = {
     settings: ["read"]
   },
   [ROLES.USER]: {
+    tasks: ["create", "read", "update", "delete"],
+    univ_task_checklists: ["create", "read", "update", "delete"],
+    univ_task_comments: ["create", "read", "update", "delete"],
+    univ_task_attachments: ["create", "read", "update", "delete"],
     case_pipelines: ["create", "read", "update", "delete"],
     hearings: ["create", "read", "update"],
     cases: ["read", "update"],
@@ -91,6 +103,10 @@ export const ROLE_PERMISSIONS = {
     capabilities: ["read"]
   },
   [ROLES.GUEST]: {
+    tasks: ["read"],
+    univ_task_checklists: ["read"],
+    univ_task_comments: ["read"],
+    univ_task_attachments: ["read"],
     cases: ["read"],
     clients: [],
     documents: ["read"],
@@ -104,6 +120,10 @@ export const ROLE_PERMISSIONS = {
     settings: []
   },
   [ROLES.EMPLOYEE]: {
+    tasks: ["create", "read", "update", "delete"],
+    univ_task_checklists: ["create", "read", "update", "delete"],
+    univ_task_comments: ["create", "read", "update", "delete"],
+    univ_task_attachments: ["create", "read", "update", "delete"],
     hearings: ["create", "read", "update"],
     cases: ["read", "update"],
     clients: ["read", "update"],

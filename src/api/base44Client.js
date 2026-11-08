@@ -76,6 +76,33 @@ const getValidCols = (tableName) => {
     return SCHEMA_COLUMNS[tableName];
 };
 
+const resolveUserRole = async () => {
+    try {
+        const cachedRaw = typeof localStorage !== 'undefined' ? localStorage.getItem('slate_cached_user') : null;
+        if (cachedRaw) {
+            const cached = JSON.parse(cachedRaw);
+            if (cached?.role) return cached.role;
+        }
+    } catch (e) {}
+
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const userRole = user.user_metadata?.role;
+            if (userRole) return userRole;
+            const res = await powerSync.getAll('SELECT role FROM profiles WHERE id = ? LIMIT 1', [user.id]);
+            if (res?.[0]?.role) return res[0].role;
+        }
+    } catch (e) {}
+
+    try {
+        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
+        return profs?.[0]?.role || 'user';
+    } catch (e) {
+        return 'user';
+    }
+};
+
 // --- E2EE Configuration ---
 const SENSITIVE_FIELDS = ['notes', 'description', 'details', 'outcome_summary', 'content', 'resolution_notes'];
 
@@ -447,8 +474,7 @@ export const base44 = {
                 },
                 create: async (payload) => {
                     try {
-                        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
-                        const role = profs[0]?.role || 'user';
+                        const role = await resolveUserRole();
                         enforcePermission(role, tableName, 'create');
 
                         const validCols = getValidCols(tableName);
@@ -523,8 +549,7 @@ export const base44 = {
                 },
                 update: async (id, payload) => {
                     try {
-                        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
-                        const role = profs[0]?.role || 'user';
+                        const role = await resolveUserRole();
                         enforcePermission(role, tableName, 'update');
 
                         const validCols = getValidCols(tableName);
@@ -579,8 +604,7 @@ export const base44 = {
                 },
                 delete: async (id) => {
                     try {
-                        const profs = await powerSync.getAll('SELECT role FROM profiles LIMIT 1');
-                        const role = profs[0]?.role || 'user';
+                        const role = await resolveUserRole();
                         enforcePermission(role, tableName, 'delete');
 
                         await powerSync.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);

@@ -26,7 +26,7 @@ export default function TaskComments({ taskId }) {
                 task_id: taskId,
                 company_id: companyId,
                 comment_text: text,
-                created_by: user?.email || 'Unknown',
+                created_by: user?.email || user?.full_name || 'Team Member',
                 created_at: new Date().toISOString(),
                 created_date: new Date().toISOString().split('T')[0]
             });
@@ -49,7 +49,7 @@ export default function TaskComments({ taskId }) {
         <div className="flex flex-col h-full font-dmsans">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Comments</h3>
             
-            <div className="flex-1 overflow-y-auto space-y-4 mb-4 min-h-[200px] max-h-[300px] pr-2">
+            <div className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 mb-3 sm:mb-4 min-h-[180px] max-h-[340px] pr-1 sm:pr-2">
                 {sortedComments.length === 0 ? (
                     <div className="text-sm text-slate-500 text-center py-8">No comments yet.</div>
                 ) : (
@@ -60,8 +60,8 @@ export default function TaskComments({ taskId }) {
                             </div>
                             <div className="flex-1">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-sm font-medium text-slate-900 dark:text-white">
-                                        {c.created_by.split('@')[0]}
+                                    <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">
+                                        {c.created_by?.includes('@') ? c.created_by.split('@')[0] : (c.created_by || 'Team Member')}
                                     </span>
                                     <span className="text-[10px] text-slate-500">
                                         {c.created_at ? formatDistanceToNow(new Date(c.created_at), { addSuffix: true }) : ''}
@@ -76,15 +76,16 @@ export default function TaskComments({ taskId }) {
                 )}
             </div>
 
-            <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-auto">
+            <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-auto pt-2 border-t border-border/60">
                 <Input 
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Write a comment..."
-                    className="text-sm bg-slate-50 dark:bg-card"
+                    className="h-9 text-xs sm:text-sm bg-muted/40 border-border/80 focus:bg-background"
                 />
-                <Button type="submit" disabled={addMutation.isPending || !comment.trim()} className="shrink-0 gap-2">
-                    <Send className="w-4 h-4" /> Send
+                <Button type="submit" disabled={addMutation.isPending || !comment.trim()} size="sm" className="h-9 px-3.5 shrink-0 gap-1.5 text-xs font-semibold">
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Send</span>
                 </Button>
             </form>
         </div>
