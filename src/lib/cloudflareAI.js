@@ -41,8 +41,8 @@ let currentAccountIndex = 0;
 
 const MODELS = {
   // Preferred model — the edge function cascades automatically:
-  //   moonshotai/kimi-k3 → moonshotai/kimi-k2.5 → @cf/qwen/qwq-32b → DeepSeek-R1 → GLM-4.7 → Llama
-  text: "moonshotai/kimi-k3",
+  //   @cf/openai/gpt-oss-120b → @cf/openai/gpt-oss-20b → moonshotai/kimi-k3 → @cf/qwen/qwq-32b → DeepSeek-R1 → GLM-4.7 → Llama
+  text: "@cf/openai/gpt-oss-120b",
   vision: "@cf/zai-org/glm-4.7-flash", // GLM-4.7 supports vision + 131k context
 };
 

@@ -16,20 +16,24 @@ const corsHeaders = {
 //    • …and so on until one succeeds.
 // ══════════════════════════════════════════════════════════════════════════════
 const MODEL_CASCADE = [
-  // ── Premium tier (requires Workers Paid plan on Cloudflare) ────────────────
-  { id: "moonshotai/kimi-k3",         endpoint: "chat",  label: "Kimi K3"          },
-  { id: "moonshotai/kimi-k2.5",       endpoint: "chat",  label: "Kimi K2.5"        },
-  // ── Free tier (10k neurons/day per account) ────────────────────────────────
-  { id: "@cf/qwen/qwq-32b",                             endpoint: "chat",  label: "QwQ-32B"          },
-  { id: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", endpoint: "chat",  label: "DeepSeek-R1-32B"  },
-  { id: "@cf/zai-org/glm-4.7-flash",                    endpoint: "chat",  label: "GLM-4.7-Flash"    },
-  { id: "@cf/qwen/qwen2.5-coder-32b-instruct",          endpoint: "chat",  label: "Qwen2.5-Coder-32B"},
-  { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",     endpoint: "chat",  label: "Llama-3.3-70B"   },
+  // ── OpenAI Thinking / Reasoning tier (120B & 20B parameters) ───────────────
+  { id: "@cf/openai/gpt-oss-120b",                      endpoint: "chat",  label: "OpenAI GPT-OSS-120B (Thinking)" },
+  { id: "@cf/openai/gpt-oss-20b",                       endpoint: "chat",  label: "OpenAI GPT-OSS-20B"             },
+  // ── Premium / Secondary tier ───────────────────────────────────────────────
+  { id: "moonshotai/kimi-k3",                           endpoint: "chat",  label: "Kimi K3"                        },
+  { id: "moonshotai/kimi-k2.5",                         endpoint: "chat",  label: "Kimi K2.5"                      },
+  // ── High-capability Reasoning & Free tier ──────────────────────────────────
+  { id: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", endpoint: "chat",  label: "DeepSeek-R1-32B (Reasoning)"    },
+  { id: "@cf/qwen/qwq-32b",                             endpoint: "chat",  label: "QwQ-32B"                        },
+  { id: "@cf/zai-org/glm-4.7-flash",                    endpoint: "chat",  label: "GLM-4.7-Flash"                  },
+  { id: "@cf/qwen/qwen2.5-coder-32b-instruct",          endpoint: "chat",  label: "Qwen2.5-Coder-32B"              },
+  { id: "@cf/meta/llama-3.3-70b-instruct-fp8-fast",     endpoint: "chat",  label: "Llama-3.3-70B"                  },
 ];
 
 // ── Determine whether this model uses the OpenAI-compatible chat endpoint ──
 function isChatModel(modelId: string): boolean {
   return (
+    modelId.includes("openai") ||
     modelId.includes("kimi") ||
     modelId.includes("llama") ||
     modelId.includes("mistral") ||
