@@ -207,15 +207,15 @@ export default function JCLEngagements() {
 
   return (
     <div className="flex flex-col h-full bg-background text-foreground p-3 sm:p-5 md:p-6 space-y-3.5 sm:space-y-5 overflow-y-auto font-sans pb-24">
-      {/* Clean Native Mobile Header */}
+      {/* Clean Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
             <FolderKanban className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Projects & Engagements</h1>
-            <p className="text-xs text-muted-foreground font-medium">Manage client intake, site execution & completions</p>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Projects</h1>
+            <p className="text-xs text-muted-foreground font-medium">Ongoing, drafts & delivered projects</p>
           </div>
         </div>
 
@@ -230,33 +230,35 @@ export default function JCLEngagements() {
         </div>
       </div>
 
-      {/* 2x2 Native Mobile Metric Hero Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
-        <div 
-          onClick={() => setTab('ongoing')}
-          className={`cursor-pointer bg-card/90 backdrop-blur-xl border rounded-[20px] p-3 sm:p-4 shadow-xs transition-all ${tab === 'ongoing' ? 'border-[#005A9C] ring-1 ring-[#005A9C]' : 'border-border/80'}`}
-        >
-          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Ongoing Projects</span>
-          <span className="text-xl sm:text-2xl font-black text-foreground">{ongoingProjects.length}</span>
-          <span className="text-[10px] text-muted-foreground mt-1 block">Active site builds</span>
-        </div>
+      {/* Horizontal Scrollable Stat Cards */}
+      <div className="w-full overflow-x-auto scrollbar-none pb-1">
+        <div className="flex items-stretch gap-2.5 sm:gap-3 min-w-max sm:min-w-0 sm:grid sm:grid-cols-3">
+          <div 
+            onClick={() => setTab('ongoing')}
+            className={`w-[170px] sm:w-auto shrink-0 cursor-pointer bg-card/90 backdrop-blur-xl border rounded-[20px] p-3 sm:p-4 shadow-xs transition-all ${tab === 'ongoing' ? 'border-[#005A9C] ring-1 ring-[#005A9C]' : 'border-border/80'}`}
+          >
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Ongoing Projects</span>
+            <span className="text-xl sm:text-2xl font-black text-foreground">{ongoingProjects.length}</span>
+            <span className="text-[10px] text-muted-foreground mt-0.5 block">Active site builds</span>
+          </div>
 
-        <div 
-          onClick={() => setTab('engagements')}
-          className={`cursor-pointer bg-card/90 backdrop-blur-xl border rounded-[20px] p-3 sm:p-4 shadow-xs transition-all ${tab === 'engagements' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-border/80'}`}
-        >
-          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Draft Briefs</span>
-          <span className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{draftEngagements.length}</span>
-          <span className="text-[10px] text-muted-foreground mt-1 block">Intake & review</span>
-        </div>
+          <div 
+            onClick={() => setTab('engagements')}
+            className={`w-[170px] sm:w-auto shrink-0 cursor-pointer bg-card/90 backdrop-blur-xl border rounded-[20px] p-3 sm:p-4 shadow-xs transition-all ${tab === 'engagements' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-border/80'}`}
+          >
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Draft Engagements</span>
+            <span className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{draftEngagements.length}</span>
+            <span className="text-[10px] text-muted-foreground mt-0.5 block">Intake & review</span>
+          </div>
 
-        <div 
-          onClick={() => setTab('delivered')}
-          className={`col-span-2 sm:col-span-1 cursor-pointer bg-card/90 backdrop-blur-xl border rounded-[20px] p-3 sm:p-4 shadow-xs transition-all ${tab === 'delivered' ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-border/80'}`}
-        >
-          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Delivered</span>
-          <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{deliveredProjects.length}</span>
-          <span className="text-[10px] text-muted-foreground mt-1 block">Completed handovers</span>
+          <div 
+            onClick={() => setTab('delivered')}
+            className={`w-[170px] sm:w-auto shrink-0 cursor-pointer bg-card/90 backdrop-blur-xl border rounded-[20px] p-3 sm:p-4 shadow-xs transition-all ${tab === 'delivered' ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-border/80'}`}
+          >
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Delivered Projects</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{deliveredProjects.length}</span>
+            <span className="text-[10px] text-muted-foreground mt-0.5 block">Completed handovers</span>
+          </div>
         </div>
       </div>
 
@@ -273,7 +275,7 @@ export default function JCLEngagements() {
             onClick={() => setTab('engagements')} 
             className={`rounded-xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all ${tab === 'engagements' ? 'bg-[#005A9C] text-white shadow-xs' : 'text-muted-foreground hover:bg-muted'}`}
           >
-            Draft Briefs ({draftEngagements.length})
+            Drafts ({draftEngagements.length})
           </button>
           <button 
             onClick={() => setTab('delivered')} 

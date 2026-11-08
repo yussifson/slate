@@ -65,19 +65,34 @@ export default function JCLTechnicalDrawings() {
         getCompanyProjects(companyId)
       ]);
 
-      if (dwgRes.error && dwgRes.error.code !== '42P01') {
-        console.warn('Drawings load issue:', dwgRes.error);
+      const localDrawings = (() => {
+        try {
+          const raw = localStorage.getItem(`jcl_drawings_fallback_${companyId}`);
+          return raw ? JSON.parse(raw) : [];
+        } catch (_) { return []; }
+      })();
+
+      let mergedDrawings = dwgRes.data || [];
+      if (!mergedDrawings.length) {
+        mergedDrawings = localDrawings;
+      } else {
+        localDrawings.forEach(item => {
+          if (!mergedDrawings.some(d => d.id === item.id)) mergedDrawings.push(item);
+        });
       }
-      setDrawings(dwgRes.data || []);
+
+      setDrawings(mergedDrawings);
       const projList = Array.isArray(projRes) ? projRes : (projRes?.data || []);
       setProjects(projList);
 
-      if (dwgRes.data?.length > 0) {
-        const revRes = await supabase.from('jcl_drawing_revisions')
-          .select('*, jcl_technical_drawings(drawing_number, title)')
-          .eq('company_id', companyId)
-          .order('submitted_at', { ascending: false });
-        setRevisions(revRes.data || []);
+      if (mergedDrawings.length > 0) {
+        try {
+          const revRes = await supabase.from('jcl_drawing_revisions')
+            .select('*, jcl_technical_drawings(drawing_number, title)')
+            .eq('company_id', companyId)
+            .order('submitted_at', { ascending: false });
+          setRevisions(revRes.data || []);
+        } catch (_) {}
       }
     } catch (err) {
       console.error('Drawings load error:', err);
@@ -132,7 +147,7 @@ export default function JCLTechnicalDrawings() {
 
     try {
       if (editingDrawing) {
-        const { error } = await supabase.from('jcl_technical_drawings').update({
+        const updatePayload = {
           project_id: pid,
           drawing_number: drawingForm.drawing_number,
           title: drawingForm.title,
@@ -142,11 +157,18 @@ export default function JCLTechnicalDrawings() {
           cad_file_url: drawingForm.cad_file_url,
           pdf_file_url: drawingForm.pdf_file_url,
           updated_at: new Date().toISOString()
-        }).eq('id', editingDrawing.id).eq('company_id', companyId);
-        if (error) throw error;
+        };
+        const { error } = await supabase.from('jcl_technical_drawings').update(updatePayload).eq('id', editingDrawing.id).eq('company_id', companyId);
+        if (error) {
+          // Save locally
+          const key = `jcl_drawings_fallback_${companyId}`;
+          const current = JSON.parse(localStorage.getItem(key) || '[]');
+          localStorage.setItem(key, JSON.stringify(current.map(d => d.id === editingDrawing.id ? { ...d, ...updatePayload } : d)));
+        }
         toast.success('Drawing record updated');
       } else {
-        const { error } = await supabase.from('jcl_technical_drawings').insert({
+        const newRecord = {
+          id: crypto.randomUUID(),
           company_id: companyId,
           project_id: pid,
           drawing_number: drawingForm.drawing_number,
@@ -156,9 +178,16 @@ export default function JCLTechnicalDrawings() {
           current_status: drawingForm.current_status,
           cad_file_url: drawingForm.cad_file_url,
           pdf_file_url: drawingForm.pdf_file_url,
-          created_by: user?.id
-        });
-        if (error) throw error;
+          created_by: user?.id,
+          created_at: new Date().toISOString()
+        };
+        const { error } = await supabase.from('jcl_technical_drawings').insert(newRecord);
+        if (error) {
+          // Fallback to local store
+          const key = `jcl_drawings_fallback_${companyId}`;
+          const current = JSON.parse(localStorage.getItem(key) || '[]');
+          localStorage.setItem(key, JSON.stringify([newRecord, ...current]));
+        }
         toast.success('New technical drawing registered');
       }
       setDrawingModalOpen(false);

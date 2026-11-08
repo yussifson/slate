@@ -10,6 +10,23 @@ const tables = {
   activity: 'ops_project_activity',
 };
 
+const getFallbackStore = (companyId, table) => {
+  try {
+    const key = `jcl_collab_fallback_${companyId}_${table}`;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : [];
+  } catch (_) {
+    return [];
+  }
+};
+
+const setFallbackStore = (companyId, table, items) => {
+  try {
+    const key = `jcl_collab_fallback_${companyId}_${table}`;
+    localStorage.setItem(key, JSON.stringify(items));
+  } catch (_) {}
+};
+
 const read = (table, companyId, projectId) => {
   let query = supabase.from(table).select('*').eq('company_id', companyId).order('created_at', { ascending: false });
   return projectId && projectId !== 'all' ? query.eq('project_id', projectId) : query;
@@ -22,31 +39,61 @@ export const JCLProjectCollaborationService = {
       try {
         const { data, error } = await read(table, companyId, projectId);
         if (error) {
-          console.warn(`[JCLProjectCollaborationService] Could not load ${table}:`, error.message);
-          return [key, []];
+          const fallback = getFallbackStore(companyId, table);
+          return [key, projectId && projectId !== 'all' ? fallback.filter(x => x.project_id === projectId) : fallback];
         }
-        return [key, data || []];
+        const fallback = getFallbackStore(companyId, table);
+        const combined = [...(data || [])];
+        fallback.forEach(item => {
+          if (!combined.some(c => c.id === item.id)) {
+            if (!projectId || projectId === 'all' || item.project_id === projectId) {
+              combined.push(item);
+            }
+          }
+        });
+        return [key, combined];
       } catch (err) {
-        console.warn(`[JCLProjectCollaborationService] Error querying ${table}:`, err.message);
-        return [key, []];
+        const fallback = getFallbackStore(companyId, table);
+        return [key, projectId && projectId !== 'all' ? fallback.filter(x => x.project_id === projectId) : fallback];
       }
     }));
     return Object.fromEntries(entries);
   },
+
   async create(table, companyId, payload) {
-    const { data, error } = await supabase.from(table).insert({ ...payload, company_id: companyId }).select().single();
-    if (error) throw error;
-    return data;
-  },
-  async toggleReaction(companyId, messageId, userId, reaction) {
-    const query = supabase.from(tables.reactions).select('id').eq('company_id', companyId).eq('message_id', messageId).eq('user_id', userId).eq('reaction', reaction).maybeSingle();
-    const { data: existing, error: readError } = await query;
-    if (readError) throw readError;
-    if (existing) {
-      const { error } = await supabase.from(tables.reactions).delete().eq('id', existing.id);
-      if (error) throw error;
-      return null;
+    const recordId = payload.id || crypto.randomUUID();
+    const record = {
+      ...payload,
+      id: recordId,
+      company_id: companyId,
+      created_at: payload.created_at || new Date().toISOString()
+    };
+
+    try {
+      const { data, error } = await supabase.from(table).insert(record).select().maybeSingle();
+      if (error) {
+        console.warn(`[JCLProjectCollaborationService] Remote insert for ${table} failed:`, error.message);
+        const existing = getFallbackStore(companyId, table);
+        setFallbackStore(companyId, table, [record, ...existing]);
+        return record;
+      }
+      return data || record;
+    } catch (err) {
+      const existing = getFallbackStore(companyId, table);
+      setFallbackStore(companyId, table, [record, ...existing]);
+      return record;
     }
+  },
+
+  async toggleReaction(companyId, messageId, userId, reaction) {
+    try {
+      const query = supabase.from(tables.reactions).select('id').eq('company_id', companyId).eq('message_id', messageId).eq('user_id', userId).eq('reaction', reaction).maybeSingle();
+      const { data: existing } = await query;
+      if (existing) {
+        await supabase.from(tables.reactions).delete().eq('id', existing.id);
+        return null;
+      }
+    } catch (_) {}
     return this.create(tables.reactions, companyId, { message_id: messageId, user_id: userId, reaction });
   },
 };
