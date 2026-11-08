@@ -303,32 +303,14 @@ export default function JCLDashboard() {
         )}
 
         {/* ── Dashboard Header ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h1 className="text-2xl sm:text-[28px] font-bold text-foreground tracking-tight flex items-center gap-2">
               Good morning, {user?.full_name?.split(' ')[0] || user?.name?.split(' ')[0] || "Executive"} {greetingEmoji}
             </h1>
-            <p className="text-[13px] font-medium text-muted-foreground mt-1">
+            <p className="text-xs sm:text-[13px] font-medium text-muted-foreground mt-0.5">
               {format(new Date(), "EEEE, do MMMM yyyy")} · <strong>{company?.name || 'JCL Royal Group Real Estate'}</strong>
             </p>
-          </div>
-
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Link to="/real-estate/land" className="flex-1 sm:flex-none">
-              <Button size="sm" className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold gap-1.5 shadow-sm h-9 px-4 justify-center">
-                <Compass className="w-3.5 h-3.5" /> Land Parcels
-              </Button>
-            </Link>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="flex-1 sm:flex-none justify-center rounded-xl border-border bg-card text-xs font-semibold gap-1.5 h-9 px-3"
-            >
-              <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
-              Refresh
-            </Button>
           </div>
         </div>
 
@@ -612,23 +594,26 @@ export default function JCLDashboard() {
           </div>
         </div>
 
-        {/* ── Row 4: Quick Action Launch Grid ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
+        {/* ── Row 4: Native Mobile Quick Action Launch Grid ── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pb-8">
           {[
-            { label: "Add Parcel", icon: Compass, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/40", link: "/real-estate/land" },
-            { label: "New CRM Lead", icon: UserPlus, color: "text-[#10B981]", bg: "bg-emerald-50 dark:bg-emerald-950/40", link: "/real-estate/crm-leads" },
-            { label: "Book Viewing", icon: Calendar, color: "text-[#8B5CF6]", bg: "bg-purple-50 dark:bg-purple-950/40", link: "/real-estate/viewings" },
-            { label: "New Offer / Deal", icon: DollarSign, color: "text-[#3B82F6]", bg: "bg-blue-50 dark:bg-blue-950/40", link: "/real-estate/offers" }
+            { label: "Add Parcel", sub: "New listing", icon: Compass, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20", link: "/real-estate/land" },
+            { label: "New CRM Lead", sub: "Client intake", icon: UserPlus, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", link: "/real-estate/crm-leads" },
+            { label: "Book Viewing", sub: "Schedule tour", icon: Calendar, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", link: "/real-estate/viewings" },
+            { label: "New Offer / Deal", sub: "Commercial terms", icon: DollarSign, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", link: "/real-estate/offers" }
           ].map((item, i) => (
             <Link
               key={i}
               to={item.link}
-              className="bg-card rounded-[24px] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-border/80 hover:border-border hover:shadow-[0_8px_16px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-4 group"
+              className="bg-card rounded-2xl p-3.5 sm:p-5 border border-border shadow-sm hover:border-primary/40 active:scale-[0.98] transition-all duration-200 flex flex-row sm:flex-col items-center sm:text-center gap-3 group"
             >
-              <div className={cn("w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:shadow-sm", item.bg, item.color)}>
-                <item.icon className="w-[22px] h-[22px]" strokeWidth={2.5} />
+              <div className={cn("w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105", item.bg, item.color, item.border)}>
+                <item.icon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.2} />
               </div>
-              <span className="text-[14px] font-extrabold text-foreground tracking-tight">{item.label}</span>
+              <div className="flex flex-col min-w-0 text-left sm:text-center">
+                <span className="text-xs sm:text-sm font-bold text-foreground tracking-tight truncate">{item.label}</span>
+                <span className="text-[10px] text-muted-foreground font-medium hidden sm:block">{item.sub}</span>
+              </div>
             </Link>
           ))}
         </div>

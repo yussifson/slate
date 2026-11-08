@@ -783,6 +783,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
     // Filter out old /documents nav item to maintain ONLY Smart Docs
     rawNavItems = rawNavItems.filter(n => n.path !== '/documents' && n.label?.toLowerCase() !== 'documents');
+    if (activeIndustry === 'real_estate_jcl' || activeIndustry === 'real_estate') {
+      rawNavItems = rawNavItems.filter(n => !['/marketplace', '/slate/BOLT', '/slate/create'].includes(n.path) && !['marketplace', 'orbitbolt ai builder', 'create slate'].includes(n.label?.toLowerCase()));
+    }
 
     // Inject Sites for all industries (Super Admins only)
     if (isSuperAdmin && !rawNavItems.some(n => n.path === '/sites')) {

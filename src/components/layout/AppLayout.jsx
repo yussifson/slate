@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import MobileBottomNav from "./MobileBottomNav";
+import PullToRefresh from "@/components/ui/PullToRefresh";
 import { useAuth} from "@/lib/AuthContext";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import { Building2, X, Clock, CreditCard, WifiOff} from "lucide-react";
@@ -374,13 +375,11 @@ export default function AppLayout() {
  />
     <div className="flex-1 relative flex overflow-hidden">
      <main className={cn(
-            "flex-1 w-full mx-auto flex flex-col",
-            ['/chat', '/email-inbox', '/search'].includes(location.pathname) 
-              ? "overflow-hidden p-0" 
-              : "overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-3 sm:px-4 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-8"
+            "flex-1 w-full mx-auto flex flex-col overflow-hidden",
+            ['/chat', '/email-inbox', '/search'].includes(location.pathname) ? "p-0" : ""
           )}>
-       <div className="flex-1 w-full flex flex-col">
-            {/* If Chat is docked, don't render it in the main outlet to avoid duplicate IDs/state */}
+        {['/chat', '/email-inbox', '/search'].includes(location.pathname) ? (
+          <div className="flex-1 w-full flex flex-col h-full overflow-hidden">
             {location.pathname === '/chat' && isChatDocked ? (
               <div className="flex items-center justify-center h-full text-slate-500 flex-col gap-3">
                 <MessageSquare className="w-8 h-8 opacity-50" />
@@ -390,7 +389,14 @@ export default function AppLayout() {
               <Outlet />
             )}
           </div>
-     </main>
+        ) : (
+          <PullToRefresh className="h-full w-full">
+            <div className="flex-1 w-full flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-3 sm:px-4 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-8">
+              <Outlet />
+            </div>
+          </PullToRefresh>
+        )}
+      </main>
        <GlobalVideoOverlay />
       </div>
       </div>

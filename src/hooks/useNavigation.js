@@ -126,12 +126,14 @@ export function useNavigation(user, impersonatedCompany) {
   }));
 
   const baseNav = user?.role === "client" ? clientNav : filteredCompanyNav;
+  const isJCL = activeIndustry === 'real_estate_jcl' || activeIndustry === 'real_estate';
   const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/slate/BOLT" };
   const marketplaceItem = { label: "Marketplace", icon: "ShoppingCart", path: "/marketplace" };
-  
-  let navItems = isAdmin
-    ? [...baseNav, ...dynamicNavItems, appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }]
-    : [...baseNav, ...dynamicNavItems, marketplaceItem];
+
+  // For JCL Real Estate within Slate, exclude Marketplace, OrbitBolt, and Firm Setup
+  const extraItems = isJCL ? [] : (isAdmin ? [appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }] : [marketplaceItem]);
+
+  let navItems = [...baseNav, ...dynamicNavItems, ...extraItems];
     
   if (user?.role === "super_admin") {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];

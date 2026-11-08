@@ -102,6 +102,11 @@ export default function MobileBottomNav() {
   const { navItems } = useNavigation(user, impersonatedCompany);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [savedAccounts, setSavedAccounts] = useState([]);
+  const [expandedSections, setExpandedSections] = useState({});
+
+  const toggleSection = (sec) => {
+    setExpandedSections(prev => ({ ...prev, [sec]: !prev[sec] }));
+  };
 
   useEffect(() => {
     setSavedAccounts(getSavedAccounts());
@@ -225,22 +230,22 @@ export default function MobileBottomNav() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300" onClick={() => setMobileMenuOpen(false)} />
 
           {/* Sheet */}
-          <div className="relative w-full rounded-t-[26px] max-h-[88vh] bg-[#0B1418] text-white transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border-t border-white/10">
+          <div className="relative w-full rounded-t-[26px] max-h-[88vh] bg-background text-foreground transition-transform animate-in slide-in-from-bottom-full overflow-hidden flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] border-t border-border">
 
             {/* Drag Handle & Header */}
-            <div className="flex flex-col items-center pt-3 pb-2.5 bg-[#091114] border-b border-white/10 shrink-0">
+            <div className="flex flex-col items-center pt-3 pb-2.5 bg-muted/40 border-b border-border/80 shrink-0">
               <div className="w-10 h-1.5 rounded-full bg-white/20 mb-3" />
               <div className="w-full flex items-center justify-between px-4 pb-0.5">
                 <div>
-                  <h2 className="text-[17px] font-bold text-white tracking-[-0.3px]">All Features & Departments</h2>
-                  <p className="text-[11px] text-white/60 font-medium">JCL Office Mobile Workspace</p>
+                  <h2 className="text-[17px] font-bold text-foreground tracking-[-0.3px]">All Features & Departments</h2>
+                  <p className="text-[11px] text-muted-foreground font-medium">JCL Office Mobile Workspace</p>
                 </div>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:opacity-80 active:scale-95 transition-all"
+                  className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:opacity-80 active:scale-95 transition-all"
                   aria-label="Close"
                 >
-                  <LucideIcons.X className="w-4 h-4 text-white" />
+                  <LucideIcons.X className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -248,69 +253,84 @@ export default function MobileBottomNav() {
             {/* Categorized Scrollable List */}
             <div className="flex-1 overflow-y-auto px-3.5 py-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] -webkit-overflow-scrolling-touch space-y-4">
               
-              {categorizedOverflow.map((group) => (
-                <div key={group.section} className="space-y-1.5">
-                  {/* Category Header */}
-                  <div className="px-2 pt-1 flex items-center gap-2">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF6B00]">
-                      {group.section}
-                    </span>
-                    <div className="flex-1 h-[0.5px] bg-white/10" />
-                  </div>
+              {categorizedOverflow.map((group) => {
+                const isExpanded = !!expandedSections[group.section];
+                const hasActive = group.items.some(i => location.pathname === i.path || (i.path !== "/" && location.pathname.startsWith(i.path)));
 
-                  {/* Category Items Card */}
-                  <div className="bg-[#101D22] rounded-2xl overflow-hidden divide-y divide-white/5 border border-white/10 shadow-md">
-                    {group.items.map((item) => {
-                      const isRootPath = ["/", "/admin"].includes(item.path);
-                      const isActive = location.pathname === item.path || (!isRootPath && item.path && location.pathname.startsWith(item.path));
-                      const IconComp = typeof item.icon === 'string' ? (LucideIcons[item.icon] || LucideIcons.LayoutDashboard) : (item.icon || LucideIcons.LayoutDashboard);
+                return (
+                  <div key={group.section} className="rounded-2xl border border-border bg-card overflow-hidden shadow-xs transition-all">
+                    {/* Expandable Category Header */}
+                    <button
+                      onClick={() => toggleSection(group.section)}
+                      className="w-full flex items-center justify-between px-4 py-3 active:bg-muted/50 transition-colors text-left select-none"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className={cn("text-xs font-bold uppercase tracking-wider", hasActive ? "text-primary" : "text-foreground")}>
+                          {group.section}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground font-medium">
+                          ({group.items.length})
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {hasActive && <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />}
+                        <LucideIcons.ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform duration-200", isExpanded && "rotate-180")} />
+                      </div>
+                    </button>
 
-                      return (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={cn(
-                            "flex items-center gap-3.5 px-4 py-3.5 transition-colors active:bg-white/5",
-                            isActive ? "bg-[#005A9C]/25 text-[#FF6B00]" : "bg-transparent text-white"
-                          )}
-                        >
-                          <div className={cn(
-                            "w-[34px] h-[34px] rounded-xl flex items-center justify-center shrink-0 transition-colors",
-                            isActive ? "bg-[#FF6B00] text-white shadow-md" : "bg-white/10 text-[#00A3FF]"
-                          )}>
-                            <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
-                          </div>
-                          <span className={cn(
-                            "flex-1 text-[15px] tracking-[-0.2px] truncate",
-                            isActive ? "text-[#FF6B00] font-bold" : "text-white font-medium"
-                          )}>
-                            {item.label}
-                          </span>
-                          <LucideIcons.ChevronRight className="w-4 h-4 text-white/40 shrink-0" strokeWidth={2.2} />
-                        </Link>
-                      );
-                    })}
+                    {/* Collapsible Child Links */}
+                    {isExpanded && (
+                      <div className="divide-y divide-border/60 border-t border-border/80 bg-muted/20 animate-in fade-in duration-150">
+                        {group.items.map((item) => {
+                          const isRootPath = ["/", "/admin"].includes(item.path);
+                          const isActive = location.pathname === item.path || (!isRootPath && item.path && location.pathname.startsWith(item.path));
+                          const IconComp = typeof item.icon === 'string' ? (LucideIcons[item.icon] || LucideIcons.LayoutDashboard) : (item.icon || LucideIcons.LayoutDashboard);
+
+                          return (
+                            <Link
+                              key={item.path}
+                              to={item.path}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className={cn(
+                                "flex items-center gap-3 px-4 py-3 text-xs transition-colors active:bg-muted/60 pl-6",
+                                isActive ? "bg-primary/10 text-primary font-bold" : "text-foreground hover:bg-muted/30"
+                              )}
+                            >
+                              <div className={cn(
+                                "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors",
+                                isActive ? "bg-primary text-white" : "bg-card border border-border text-primary"
+                              )}>
+                                <IconComp className="w-3.5 h-3.5" strokeWidth={isActive ? 2.5 : 2} />
+                              </div>
+                              <span className="flex-1 truncate text-xs font-medium">
+                                {item.label}
+                              </span>
+                              <LucideIcons.ChevronRight className={cn("w-3.5 h-3.5 shrink-0", isActive ? "text-primary" : "text-muted-foreground/40")} />
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Preferences & Quick Controls (Appearance, Workspace, Account) */}
               <div className="space-y-1.5 pt-2">
                 <div className="px-2 pt-1 flex items-center gap-2">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-white/60">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-muted-foreground">
                     Preferences & Accounts
                   </span>
-                  <div className="flex-1 h-[0.5px] bg-white/10" />
+                  <div className="flex-1 h-[0.5px] bg-muted" />
                 </div>
 
-                <div className="bg-[#101D22] rounded-2xl overflow-hidden divide-y divide-white/5 border border-white/10 shadow-md">
+                <div className="bg-card rounded-2xl overflow-hidden divide-y divide-border/60 border border-border shadow-xs">
                   <div className="flex items-center justify-between px-4 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-[34px] h-[34px] rounded-xl bg-white/10 flex items-center justify-center text-white">
+                      <div className="w-[34px] h-[34px] rounded-xl bg-muted flex items-center justify-center text-foreground">
                         <LucideIcons.Moon className="w-4 h-4" />
                       </div>
-                      <span className="text-[15px] font-medium text-white">Appearance</span>
+                      <span className="text-[15px] font-medium text-foreground">Appearance</span>
                     </div>
                     <ThemeToggle />
                   </div>
@@ -319,10 +339,10 @@ export default function MobileBottomNav() {
                   {user?.available_companies?.length > 1 && (
                     <div className="flex items-center justify-between px-4 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-[34px] h-[34px] rounded-xl bg-white/10 flex items-center justify-center text-white">
+                        <div className="w-[34px] h-[34px] rounded-xl bg-muted flex items-center justify-center text-foreground">
                           <LucideIcons.Layers className="w-4 h-4" />
                         </div>
-                        <span className="text-[15px] font-medium text-white">Workspace</span>
+                        <span className="text-[15px] font-medium text-foreground">Workspace</span>
                       </div>
                       <select
                         value={user.company_id}
@@ -337,7 +357,7 @@ export default function MobileBottomNav() {
                             window.location.href = '/';
                           }
                         }}
-                        className="bg-transparent border-0 text-white/80 text-[14px] font-medium outline-none max-w-[150px] truncate text-right cursor-pointer"
+                        className="bg-transparent border-0 text-foreground/80 text-[14px] font-medium outline-none max-w-[150px] truncate text-right cursor-pointer"
                       >
                         {user.available_companies.map(comp => (
                           <option key={comp.id} value={comp.id} className="bg-[#101D22] text-white">{comp.name}</option>
@@ -349,8 +369,8 @@ export default function MobileBottomNav() {
                   {/* Account Switcher */}
                   {savedAccounts.length > 1 && (
                     <div className="flex flex-col">
-                      <div className="px-4 py-2 bg-white/5">
-                        <span className="text-[11px] uppercase tracking-wider text-white/60 font-bold">Switch Account</span>
+                      <div className="px-4 py-2 bg-muted/50">
+                        <span className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">Switch Account</span>
                       </div>
                       {savedAccounts.filter(acc => acc.id !== user?.id).map(acc => (
                         <button
@@ -359,7 +379,7 @@ export default function MobileBottomNav() {
                             setMobileMenuOpen(false);
                             switchAccount(acc.id);
                           }}
-                          className="flex items-center gap-3 px-4 py-3 bg-transparent active:bg-white/5 transition-colors border-t border-white/5 w-full text-left"
+                          className="flex items-center gap-3 px-4 py-3 bg-transparent active:bg-muted/50 transition-colors border-t border-white/5 w-full text-left"
                         >
                           <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center overflow-hidden shrink-0">
                             {acc.avatar_url ? (
@@ -371,8 +391,8 @@ export default function MobileBottomNav() {
                             )}
                           </div>
                           <div className="flex flex-col min-w-0 flex-1">
-                            <span className="text-[14px] text-white font-medium truncate">{acc.full_name || 'User'}</span>
-                            <span className="text-[12px] text-white/60 truncate">{acc.email}</span>
+                            <span className="text-[14px] text-foreground font-medium truncate">{acc.full_name || 'User'}</span>
+                            <span className="text-[12px] text-muted-foreground truncate">{acc.email}</span>
                           </div>
                         </button>
                       ))}
@@ -381,12 +401,12 @@ export default function MobileBottomNav() {
                           setMobileMenuOpen(false);
                           navigate('/login?prompt=login');
                         }}
-                        className="flex items-center gap-3 px-4 py-3 bg-transparent active:bg-white/5 transition-colors w-full text-left border-t border-white/5"
+                        className="flex items-center gap-3 px-4 py-3 bg-transparent active:bg-muted/50 transition-colors w-full text-left border-t border-white/5"
                       >
                         <div className="w-8 h-8 rounded-full bg-[#005A9C] flex items-center justify-center shrink-0">
                           <LucideIcons.Plus className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-[14px] text-white font-medium flex-1">Add another account</span>
+                        <span className="text-[14px] text-foreground font-medium flex-1">Add another account</span>
                       </button>
                     </div>
                   )}
