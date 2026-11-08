@@ -18,6 +18,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
 const DISCIPLINES = [
   { value: 'architectural', label: 'Architectural Design' },

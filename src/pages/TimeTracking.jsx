@@ -11,6 +11,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { powerSync } from '@/api/PowerSyncConnector';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
 import { generateText } from '@/lib/cloudflareAI';
 import { OrbitLoader } from '@/components/ui/orbit-loader';
 import { Button } from '@/components/ui/button';
