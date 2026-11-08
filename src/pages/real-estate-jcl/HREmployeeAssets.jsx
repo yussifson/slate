@@ -273,61 +273,53 @@ export default function HREmployeeAssets() {
 
       {/* Mobile Card List (< md) */}
       <div className="md:hidden space-y-2.5">
-        {filteredAssignments.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="text-center py-10 bg-card rounded-2xl border border-dashed border-border p-6 text-muted-foreground text-xs">
-            No equipment or assets currently assigned.
+            No equipment or assets currently in custody.
           </div>
         ) : (
-          filteredAssignments.map((a) => {
-            const isOverdue = a.status === 'assigned' && a.expected_return_date && new Date(a.expected_return_date) < new Date();
-            return (
-              <div key={a.id} className="bg-card rounded-[20px] p-3.5 border border-border/80 shadow-xs space-y-2.5">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-xs text-foreground truncate">{a.item_name}</h3>
-                    <p className="text-[10px] text-muted-foreground font-mono">{a.serial_number || 'No Serial'}</p>
-                  </div>
-                  <Badge className={
-                    a.status === 'assigned' ? (isOverdue ? 'bg-red-500/10 text-red-500 border-red-500/20 text-[10px] font-bold' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px] font-bold') :
-                    a.status === 'returned' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20 text-[10px] font-bold' :
-                    'bg-slate-500/10 text-slate-500 border-slate-500/20 text-[10px] font-bold'
-                  }>
-                    {isOverdue ? 'Overdue' : a.status}
-                  </Badge>
+          filtered.map((item) => (
+            <div key={item.id} className="bg-card rounded-[20px] p-3.5 border border-border/80 shadow-xs space-y-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-xs text-foreground truncate">{item.item_name}</h3>
+                  <p className="text-[10px] text-muted-foreground truncate">{item.person_name || 'Staff'}</p>
                 </div>
+                <Badge variant="outline" className={`text-[10px] font-bold uppercase ${
+                  item.status === 'returned' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
+                  'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
+                }`}>
+                  {item.status === 'returned' ? 'Returned' : 'In Custody'}
+                </Badge>
+              </div>
 
-                <div className="grid grid-cols-2 gap-2 text-[11px] bg-muted/30 p-2.5 rounded-xl border border-border/40">
-                  <div>
-                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Employee</span>
-                    <span className="font-semibold text-foreground truncate block">{a.employee_name || a.employee_id}</span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Category</span>
-                    <span className="font-semibold text-foreground capitalize truncate block">{a.item_category}</span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Condition</span>
-                    <span className="font-semibold text-foreground capitalize truncate block">{a.condition_on_assignment || 'Good'}</span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Assigned Date</span>
-                    <span className="font-semibold text-foreground truncate block">{a.assigned_date}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-1 border-t border-border/60">
-                  {a.status === 'assigned' && (
-                    <Button size="sm" variant="outline" className="h-7 text-[11px] font-bold rounded-lg border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10" onClick={() => handleReturnClick(a)}>
-                      <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Mark Returned
-                    </Button>
-                  )}
-                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50" onClick={() => handleDeleteAssignment(a.id)}>
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
+              <div className="text-[11px] bg-muted/30 p-2.5 rounded-xl border border-border/40 space-y-1">
+                {item.description && (
+                  <p className="text-[10px] text-muted-foreground line-clamp-2">{item.description}</p>
+                )}
+                <div className="flex justify-between items-center text-[10px] text-muted-foreground pt-1">
+                  <span>Issued: {item.issued_at ? new Date(item.issued_at).toLocaleDateString() : '—'}</span>
+                  <span>Return: {item.expected_return_at ? new Date(item.expected_return_at).toLocaleDateString() : 'Permanent'}</span>
                 </div>
               </div>
-            );
-          })
+
+              <div className="flex items-center justify-end gap-2 pt-1 border-t border-border/60">
+                {item.status === 'issued' && (
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="h-7 text-xs font-bold rounded-lg border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                    onClick={() => { setReturnModal(item); setReturnForm({ condition: 'Good', notes: '' }); }}
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 mr-1" /> Mark Returned
+                  </Button>
+                )}
+                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50" onClick={() => handleDelete(item.id)}>
+                  <Trash2 className="w-3.5 h-3.5" />
+                </Button>
+              </div>
+            </div>
+          ))
         )}
       </div>
 
