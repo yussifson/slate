@@ -423,23 +423,23 @@ export default function SmartDocs() {
     <div className="space-y-5 sm:space-y-6 p-3 sm:p-6 pt-0 pb-[max(96px,env(safe-area-inset-bottom))] font-sans min-h-screen relative bg-background w-full max-w-full overflow-x-hidden">
       {/* Native Mobile Header & Stats */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
-              <Brain className="w-5 h-5 sm:w-6 sm:h-6" />
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+              <Brain className="w-4 h-4 sm:w-6 sm:h-6" />
             </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">Smart Docs</h1>
-              <p className="text-xs text-muted-foreground font-medium">{filteredDocs.length} documents indexed</p>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-black text-foreground tracking-tight truncate">Smart Docs</h1>
+              <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">{filteredDocs.length} documents indexed</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" className="h-9 px-3 text-xs font-bold border-border rounded-xl" onClick={() => setShowFolderForm(true)}>
-              <Folder className="w-3.5 h-3.5 mr-1" /><span className="hidden sm:inline">New Folder</span><span className="sm:hidden">Folder</span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Button size="sm" variant="outline" className="h-8 sm:h-9 px-2 sm:px-3 text-xs font-bold border-border rounded-xl shrink-0" onClick={() => setShowFolderForm(true)}>
+              <Folder className="w-3.5 h-3.5 sm:mr-1" /><span className="hidden sm:inline">New Folder</span><span className="sm:hidden">Folder</span>
             </Button>
-            <Button size="sm" className="h-9 px-3.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1.5" onClick={() => setShowUploadForm(true)}>
-              <Plus className="w-4 h-4" /><span className="hidden sm:inline">Add Document</span><span className="sm:hidden">Upload</span>
+            <Button size="sm" className="h-8 sm:h-9 px-2.5 sm:px-3.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1 shrink-0" onClick={() => setShowUploadForm(true)}>
+              <Plus className="w-4 h-4 shrink-0" /><span>Upload</span>
             </Button>
           </div>
         </div>
@@ -614,7 +614,7 @@ export default function SmartDocs() {
 
       {/* Add Document Dialog */}
       <Dialog open={showUploadForm} onOpenChange={setShowUploadForm}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <DialogHeader><DialogTitle>Add Document to Smart Docs</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-3">
