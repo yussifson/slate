@@ -279,16 +279,40 @@ export default function MobileBottomNav() {
       }
     }
 
-    // Ensure all 3 allowed Finance items exist in Finance if not already present
-    if (!grouped['Finance']) grouped['Finance'] = [];
-    if (!grouped['Finance'].some(i => i.path === '/real-estate/trust-accounting')) {
-      grouped['Finance'].unshift({ label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet', section: 'Finance' });
+    // Ensure Marketing always includes CRM Leads in More sheet
+    if (!grouped['Marketing']) grouped['Marketing'] = [];
+    if (!grouped['Marketing'].some(i => i.path === '/real-estate/crm-leads')) {
+      grouped['Marketing'].unshift({ label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Target', section: 'Marketing' });
     }
-    if (!grouped['Finance'].some(i => i.path === '/finance/accounting')) {
-      grouped['Finance'].push({ label: 'Firm Accounting', path: '/finance/accounting', icon: 'Landmark', section: 'Finance' });
+
+    // Ensure Engineering includes all core operational sub-modules
+    if (!grouped['Engineering']) grouped['Engineering'] = [];
+    if (!grouped['Engineering'].some(i => i.path === '/engineering/drawings')) {
+      grouped['Engineering'].push({ label: 'Drawings', path: '/engineering/drawings', icon: 'Layers', section: 'Engineering' });
     }
-    if (!grouped['Finance'].some(i => i.path === '/jcl/project-finance')) {
-      grouped['Finance'].push({ label: 'Project Finance', path: '/jcl/project-finance', icon: 'BarChart3', section: 'Finance' });
+    if (!grouped['Engineering'].some(i => i.path === '/jcl/projects')) {
+      grouped['Engineering'].push({ label: 'Projects', path: '/jcl/projects', icon: 'BriefcaseBusiness', section: 'Engineering' });
+    }
+    if (!grouped['Engineering'].some(i => i.path === '/jcl/project-operations')) {
+      grouped['Engineering'].push({ label: 'Project Operations', path: '/jcl/project-operations', icon: 'Briefcase', section: 'Engineering' });
+    }
+    if (!grouped['Engineering'].some(i => i.path === '/jcl/project-collaboration')) {
+      grouped['Engineering'].push({ label: 'Project Collaboration', path: '/jcl/project-collaboration', icon: 'MessageCircle', section: 'Engineering' });
+    }
+    if (!grouped['Engineering'].some(i => i.path === '/boq')) {
+      grouped['Engineering'].push({ label: 'Bill of Quantities', path: '/boq', icon: 'Calculator', section: 'Engineering' });
+    }
+
+    // Ensure Procurement includes Requisitions & Purchase Orders
+    if (!grouped['Procurement']) grouped['Procurement'] = [];
+    if (!grouped['Procurement'].some(i => i.path === '/jcl/requisitions')) {
+      grouped['Procurement'].unshift({ label: 'Requisitions', path: '/jcl/requisitions', icon: 'ClipboardList', section: 'Procurement' });
+    }
+    if (!grouped['Procurement'].some(i => i.path === '/jcl/purchase-orders')) {
+      grouped['Procurement'].push({ label: 'Purchase Orders', path: '/jcl/purchase-orders', icon: 'FileText', section: 'Procurement' });
+    }
+    if (!grouped['Procurement'].some(i => i.path === '/jcl/inventory')) {
+      grouped['Procurement'].push({ label: 'Materials & Inventory', path: '/jcl/inventory', icon: 'Package', section: 'Procurement' });
     }
 
     // Ensure Operations puts Notifications strictly last (after E-Signatures)

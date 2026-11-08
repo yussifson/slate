@@ -1,4 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
+import { getCompanyProjects } from '@/services/ProjectLookupService';
 
 const scoped = (table, companyId) =>
   supabase
@@ -56,6 +57,14 @@ export const JCLProjectOperationsService = {
 
     const results = await Promise.all(
       tables.map(async (table) => {
+        if (table === 'ops_projects') {
+          try {
+            const list = await getCompanyProjects(companyId);
+            return Array.isArray(list) ? list : [];
+          } catch (_) {
+            return [];
+          }
+        }
         try {
           const { data, error } = await scoped(table, companyId);
           if (error) {

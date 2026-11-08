@@ -11,8 +11,8 @@ export const JCLProcurementService = {
     const projectFilter = filters.projectId && filters.projectId !== 'all' ? filters.projectId : null;
     
     const [
-      { data: requisitions, error: reqError },
-      { data: purchaseOrders, error: poError },
+      reqResult,
+      poResult,
       { data: receipts, error: receiptError },
       { data: balances, error: balanceError },
       { data: materials, error: matError }
@@ -39,8 +39,27 @@ export const JCLProcurementService = {
         .order('name', { ascending: true })
     ]);
 
-    selectError(reqError, 'Unable to load requisitions');
-    selectError(poError, 'Unable to load purchase orders');
+    // Resilient fallback if foreign key relation ops_projects fails
+    let requisitions = reqResult.data;
+    if (reqResult.error) {
+      console.warn('Requisition join failed, retrying clean query:', reqResult.error.message);
+      const cleanReq = await supabase.from('jcl_purchase_requisitions')
+        .select('id, reference, status, priority, required_date, project_id, description, justification, department, created_at')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+      requisitions = cleanReq.data || [];
+    }
+
+    let purchaseOrders = poResult.data;
+    if (poResult.error) {
+      console.warn('Purchase orders join failed, retrying clean query:', poResult.error.message);
+      const cleanPo = await supabase.from('jcl_purchase_orders')
+        .select('id, reference, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+      purchaseOrders = cleanPo.data || [];
+    }
+
     selectError(receiptError, 'Unable to load goods receipts');
     selectError(balanceError, 'Unable to load inventory');
 
