@@ -112,7 +112,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
   ];
 
   return (
-    <div className="space-y-6 p-6 font-dmsans">
+    <div className="space-y-4 sm:space-y-6 w-full max-w-full overflow-x-hidden font-sans">
       {/* â”€â”€ Hero Header â”€â”€ */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
@@ -143,7 +143,7 @@ export default function HRTrainingPanel({ companyId, isAdmin, staff = [] }) {
       </div>
 
       {/* â”€â”€ KPI Cards â”€â”€ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {kpis.map((kpi, i) => (
           <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
             <div className="flex items-start justify-between mb-4">

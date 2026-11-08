@@ -366,7 +366,7 @@ export default function Employees() {
     </div>
 
     {/* ── Search ── */}
-    <div className="relative max-w-sm">
+    <div className="relative w-full sm:max-w-sm">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
       <Input placeholder="Search employees..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
     </div>

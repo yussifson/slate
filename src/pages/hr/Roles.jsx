@@ -18,7 +18,7 @@ const Roles = () => {
   });
 
   return (
-    <div className="min-h-screen w-full flex flex-col p-6">
+    <div className="w-full max-w-full overflow-x-hidden p-3 sm:p-6 font-sans">
       <UnivAccessControl staff={staff} />
     </div>
   );

@@ -13,27 +13,23 @@ const financeLinks = [
 
 export default function FinanceLayout({ children }) {
   return (
-    <div className="flex min-h-0 w-full flex-col gap-5 lg:flex-row">
-      <aside className="w-full shrink-0 rounded-2xl border border-border/60 bg-card/90 p-2 shadow-sm lg:sticky lg:top-4 lg:h-[calc(100vh-7rem)] lg:w-64 lg:self-start">
-        <div className="border-b border-border/60 px-3 py-3">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">Finance</p>
-          <p className="mt-1 text-xs text-muted-foreground">Accounts and payments</p>
-        </div>
-        <nav aria-label="Finance navigation" className="mt-2 flex gap-1 overflow-x-auto lg:h-[calc(100%-4.5rem)] lg:flex-col lg:overflow-y-auto">
+    <div className="flex min-h-0 w-full flex-col gap-4 lg:gap-5 lg:flex-row overflow-x-hidden">
+      <aside className="w-full shrink-0 rounded-2xl border border-border/60 bg-card/90 p-1.5 sm:p-2 shadow-xs lg:sticky lg:top-4 lg:h-[calc(100vh-7rem)] lg:w-60 lg:self-start">
+        <nav aria-label="Finance navigation" className="flex gap-1.5 overflow-x-auto scrollbar-none pb-1 sm:pb-0 lg:h-full lg:flex-col lg:overflow-y-auto">
           {financeLinks.map(({ label, path, icon: Icon }) => (
             <NavLink
               key={path}
               to={path}
-              className={({ isActive }) => `group flex shrink-0 items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition ${isActive ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:bg-primary/10 hover:text-primary'}`}
+              className={({ isActive }) => `group flex shrink-0 items-center gap-2 sm:gap-2.5 rounded-xl px-3 py-2 sm:py-2.5 text-xs font-bold transition-all ${isActive ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
               <span className="whitespace-nowrap">{label}</span>
-              <ChevronRight className="ml-auto hidden h-3.5 w-3.5 lg:block" />
+              <ChevronRight className="ml-auto hidden h-3.5 w-3.5 lg:block opacity-60 group-hover:opacity-100" />
             </NavLink>
           ))}
         </nav>
       </aside>
-      <section className="min-w-0 flex-1">{children}</section>
+      <section className="min-w-0 flex-1 overflow-x-hidden">{children}</section>
     </div>
   );
 }

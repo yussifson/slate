@@ -199,7 +199,7 @@ export default function HREmployeeAssets() {
   });
 
   return (
-    <div className="flex flex-col h-full bg-background text-foreground p-6 space-y-6 overflow-y-auto">
+    <div className="flex flex-col w-full max-w-full overflow-x-hidden bg-background text-foreground p-3 sm:p-6 space-y-4 sm:space-y-6 font-sans">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5 border-border">
         <div>
@@ -221,24 +221,24 @@ export default function HREmployeeAssets() {
       </div>
 
       {/* Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Items Issued</div>
           <div className="text-2xl font-bold mt-1">{assets.length}</div>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Employee Custody</div>
           <div className="text-2xl font-bold mt-1 text-amber-600">
             {assets.filter(a => a.status === 'issued').length}
           </div>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Successfully Returned</div>
           <div className="text-2xl font-bold mt-1 text-emerald-600">
             {assets.filter(a => a.status === 'returned').length}
           </div>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
           <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Staff with Custody</div>
           <div className="text-2xl font-bold mt-1 text-primary">
             {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
@@ -271,8 +271,68 @@ export default function HREmployeeAssets() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="rounded-xl border bg-card overflow-hidden shadow-sm">
+      {/* Mobile Card List (< md) */}
+      <div className="md:hidden space-y-2.5">
+        {filteredAssignments.length === 0 ? (
+          <div className="text-center py-10 bg-card rounded-2xl border border-dashed border-border p-6 text-muted-foreground text-xs">
+            No equipment or assets currently assigned.
+          </div>
+        ) : (
+          filteredAssignments.map((a) => {
+            const isOverdue = a.status === 'assigned' && a.expected_return_date && new Date(a.expected_return_date) < new Date();
+            return (
+              <div key={a.id} className="bg-card rounded-[20px] p-3.5 border border-border/80 shadow-xs space-y-2.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-xs text-foreground truncate">{a.item_name}</h3>
+                    <p className="text-[10px] text-muted-foreground font-mono">{a.serial_number || 'No Serial'}</p>
+                  </div>
+                  <Badge className={
+                    a.status === 'assigned' ? (isOverdue ? 'bg-red-500/10 text-red-500 border-red-500/20 text-[10px] font-bold' : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 text-[10px] font-bold') :
+                    a.status === 'returned' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20 text-[10px] font-bold' :
+                    'bg-slate-500/10 text-slate-500 border-slate-500/20 text-[10px] font-bold'
+                  }>
+                    {isOverdue ? 'Overdue' : a.status}
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] bg-muted/30 p-2.5 rounded-xl border border-border/40">
+                  <div>
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Employee</span>
+                    <span className="font-semibold text-foreground truncate block">{a.employee_name || a.employee_id}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Category</span>
+                    <span className="font-semibold text-foreground capitalize truncate block">{a.item_category}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Condition</span>
+                    <span className="font-semibold text-foreground capitalize truncate block">{a.condition_on_assignment || 'Good'}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase block">Assigned Date</span>
+                    <span className="font-semibold text-foreground truncate block">{a.assigned_date}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-1 border-t border-border/60">
+                  {a.status === 'assigned' && (
+                    <Button size="sm" variant="outline" className="h-7 text-[11px] font-bold rounded-lg border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10" onClick={() => handleReturnClick(a)}>
+                      <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Mark Returned
+                    </Button>
+                  )}
+                  <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50" onClick={() => handleDeleteAssignment(a.id)}>
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop Table (>= md) */}
+      <div className="hidden md:block rounded-xl border bg-card overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b">

@@ -236,7 +236,7 @@ export default function UnivAccessControl() {
 };
 
  return (
- <div className="h-full flex flex-col gap-6 p-6 bg-background overflow-hidden">
+ <div className="w-full max-w-full overflow-x-hidden flex flex-col gap-4 sm:gap-6 font-sans">
  {/* Header */}
  <div className="view-header flex items-center justify-between shrink-0">
  <div>
@@ -355,7 +355,7 @@ export default function UnivAccessControl() {
 
  <div className="flex-1 overflow-auto custom-scrollbar p-6">
  <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Shield className="w-4 h-4" /> Granular Permission Matrix</h3>
- <div className="border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl overflow-hidden ">
+ <div className="border-[0.5px] border-border rounded-xl overflow-x-auto w-full">
  <table className="w-full text-sm">
  <thead className="bg-muted/50 border-b border-primary/40">
  <tr>
