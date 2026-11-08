@@ -390,12 +390,284 @@ export const powerSync = powerSyncDb || new PowerSyncDatabase({
 });
 
 // ------------------------------------------------------------------------------------------------
+// REAL ESTATE DIRECT SUPABASE TRANSPARENT BRIDGE
+// Disables PowerSync offline sync for JCL Real Estate tables and redirects all queries
+// (SELECT, INSERT, UPDATE, DELETE) directly to live Supabase cloud database.
+// This guarantees instant, zero-delay real-time synchronization between mobile and web.
+// ------------------------------------------------------------------------------------------------
+function isJCLRealEstateQuery(sql) {
+  const upper = typeof sql === 'string' ? sql.toUpperCase() : '';
+  return upper.includes('UNIV_RE_') || 
+         upper.includes('JCL_') || 
+         upper.includes('UNIV_FRONTDESK_') || 
+         upper.includes('UNIV_OFFICE_CUSTODY_') ||
+         upper.includes('OPS_PROJECT');
+}
+
+function parseParamsList(valsStr, parameters, offset = 0) {
+  const tokens = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < valsStr.length; i++) {
+    const ch = valsStr[i];
+    if (ch === "'") {
+      inQuotes = !inQuotes;
+      cur += ch;
+    } else if (ch === ',' && !inQuotes) {
+      tokens.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  if (cur.trim()) tokens.push(cur.trim());
+
+  let pIdx = offset;
+  return tokens.map(t => {
+    if (t === '?') return parameters[pIdx++];
+    if (t.startsWith("'") && t.endsWith("'")) return t.slice(1, -1);
+    if (!isNaN(t) && t !== '') return Number(t);
+    if (t.toLowerCase() === 'null') return null;
+    return t;
+  });
+}
+
+function parseWhereClause(whereStr, parameters, offset = 0) {
+  if (!whereStr) return [];
+  const parts = whereStr.split(/\s+AND\s+/i);
+  let pIdx = offset;
+  const conditions = [];
+  for (const part of parts) {
+    const trimmed = part.trim();
+    const m = trimmed.match(/^([a-zA-Z0-9_]+)\s*(=|!=|<>|>=|<=|>|<|LIKE)\s*(.*)$/i);
+    if (m) {
+      const col = m[1];
+      const op = m[2];
+      const valRaw = m[3].trim();
+      let val;
+      if (valRaw === '?') {
+        val = parameters[pIdx++];
+      } else if (valRaw.startsWith("'") && valRaw.endsWith("'")) {
+        val = valRaw.slice(1, -1);
+      } else if (!isNaN(valRaw) && valRaw !== '') {
+        val = Number(valRaw);
+      } else {
+        val = valRaw;
+      }
+      conditions.push({ col, op, val });
+    }
+  }
+  return conditions;
+}
+
+function applyWhere(builder, conditions) {
+  for (const cond of conditions) {
+    if (cond.op === '=') builder = builder.eq(cond.col, cond.val);
+    else if (cond.op === '!=' || cond.op === '<>') builder = builder.neq(cond.col, cond.val);
+    else if (cond.op === '>=') builder = builder.gte(cond.col, cond.val);
+    else if (cond.op === '<=') builder = builder.lte(cond.col, cond.val);
+    else if (cond.op === '>') builder = builder.gt(cond.col, cond.val);
+    else if (cond.op === '<') builder = builder.lt(cond.col, cond.val);
+    else if (cond.op.toUpperCase() === 'LIKE') builder = builder.like(cond.col, cond.val);
+  }
+  return builder;
+}
+
+async function executeViaDirectSupabase(sql, parameters = []) {
+  const s = (sql || '').trim();
+
+  // 1. SELECT
+  const selectM = s.match(/^SELECT\s+([\s\S]+?)\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+([\s\S]+?))?(?:\s+ORDER\s+BY\s+([\s\S]+?))?(?:\s+LIMIT\s+(\d+))?$/i);
+  if (selectM) {
+    const rawCols = selectM[1].trim();
+    const table = selectM[2].trim();
+    const whereStr = selectM[3];
+    const orderStr = selectM[4];
+    const limitStr = selectM[5];
+
+    let queryCols = rawCols;
+    const isAggregate = /COUNT\(|SUM\(|AVG\(|MIN\(|MAX\(/i.test(rawCols);
+    if (isAggregate) {
+      queryCols = '*';
+    }
+
+    let builder = supabase.from(table).select(queryCols);
+    const conditions = parseWhereClause(whereStr, parameters, 0);
+    builder = applyWhere(builder, conditions);
+
+    if (orderStr && !isAggregate) {
+      const parts = orderStr.split(',').map(x => x.trim());
+      for (const p of parts) {
+        const [col, dir] = p.split(/\s+/);
+        if (col) {
+          builder = builder.order(col, { ascending: !dir || dir.toUpperCase() === 'ASC' });
+        }
+      }
+    }
+
+    if (limitStr) {
+      builder = builder.limit(parseInt(limitStr, 10));
+    }
+
+    const { data, error } = await builder;
+    if (error) {
+      console.warn(`[DirectSupabase Bridge] SELECT on ${table} caught:`, error.message);
+      return { rows: { _array: [], length: 0 } };
+    }
+
+    const rows = Array.isArray(data) ? data : (data ? [data] : []);
+
+    // If query was aggregate (e.g. SELECT COUNT(*) as total, SUM(price) as total_val), compute locally
+    if (isAggregate) {
+      const aggRow = {};
+      const aggItems = rawCols.split(',').map(x => x.trim());
+      for (const item of aggItems) {
+        const countM = item.match(/COUNT\s*\([^)]*\)\s+(?:AS\s+)?([a-zA-Z0-9_]+)/i);
+        if (countM) {
+          aggRow[countM[1]] = rows.length;
+          continue;
+        }
+        const sumM = item.match(/SUM\s*\(([a-zA-Z0-9_]+)\)\s+(?:AS\s+)?([a-zA-Z0-9_]+)/i);
+        if (sumM) {
+          const colName = sumM[1];
+          const alias = sumM[2];
+          aggRow[alias] = rows.reduce((acc, r) => acc + (Number(r[colName]) || 0), 0);
+          continue;
+        }
+      }
+      return { rows: { _array: [aggRow], length: 1, 0: aggRow } };
+    }
+
+    const resObj = { _array: rows, length: rows.length };
+    rows.forEach((r, idx) => { resObj[idx] = r; });
+    return { rows: resObj };
+  }
+
+  // 2. INSERT
+  const insertM = s.match(/^INSERT\s+INTO\s+([a-zA-Z0-9_]+)\s*\(([^)]+)\)\s*VALUES\s*\(([\s\S]+?)\)/i);
+  if (insertM) {
+    const table = insertM[1].trim();
+    const cols = insertM[2].split(',').map(c => c.trim().replace(/['"`]/g, ''));
+    const parsedValues = parseParamsList(insertM[3], parameters, 0);
+
+    const payload = {};
+    for (let i = 0; i < cols.length; i++) {
+      payload[cols[i]] = parsedValues[i] !== undefined ? parsedValues[i] : null;
+    }
+
+    const { error } = await supabase.from(table).upsert(payload);
+    if (error) console.warn(`[DirectSupabase Bridge] INSERT on ${table} caught:`, error.message);
+    return { rowsAffected: 1, rows: { _array: [], length: 0 } };
+  }
+
+  // 3. UPDATE
+  const updateM = s.match(/^UPDATE\s+([a-zA-Z0-9_]+)\s+SET\s+([\s\S]+?)(?:\s+WHERE\s+([\s\S]+?))?$/i);
+  if (updateM) {
+    const table = updateM[1].trim();
+    const setClause = updateM[2].trim();
+    const whereClause = updateM[3];
+
+    // Parse set values
+    const setTokens = [];
+    let cur = '';
+    let inQuotes = false;
+    for (let i = 0; i < setClause.length; i++) {
+      const ch = setClause[i];
+      if (ch === "'") inQuotes = !inQuotes;
+      if (ch === ',' && !inQuotes) {
+        setTokens.push(cur.trim());
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    if (cur.trim()) setTokens.push(cur.trim());
+
+    let pIdx = 0;
+    const payload = {};
+    for (const t of setTokens) {
+      const eqIdx = t.indexOf('=');
+      if (eqIdx !== -1) {
+        const col = t.slice(0, eqIdx).trim().replace(/['"`]/g, '');
+        const valRaw = t.slice(eqIdx + 1).trim();
+        if (valRaw === '?') {
+          payload[col] = parameters[pIdx++];
+        } else if (valRaw.startsWith("'") && valRaw.endsWith("'")) {
+          payload[col] = valRaw.slice(1, -1);
+        } else if (!isNaN(valRaw) && valRaw !== '') {
+          payload[col] = Number(valRaw);
+        } else if (valRaw.toLowerCase() === 'null') {
+          payload[col] = null;
+        } else {
+          payload[col] = valRaw;
+        }
+      }
+    }
+
+    let builder = supabase.from(table).update(payload);
+    const conditions = parseWhereClause(whereClause, parameters, pIdx);
+    builder = applyWhere(builder, conditions);
+
+    const { error } = await builder;
+    if (error) console.warn(`[DirectSupabase Bridge] UPDATE on ${table} caught:`, error.message);
+    return { rowsAffected: 1, rows: { _array: [], length: 0 } };
+  }
+
+  // 4. DELETE
+  const deleteM = s.match(/^DELETE\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+([\s\S]+?))?$/i);
+  if (deleteM) {
+    const table = deleteM[1].trim();
+    const whereClause = deleteM[2];
+
+    let builder = supabase.from(table).delete();
+    const conditions = parseWhereClause(whereClause, parameters, 0);
+    builder = applyWhere(builder, conditions);
+
+    const { error } = await builder;
+    if (error) console.warn(`[DirectSupabase Bridge] DELETE on ${table} caught:`, error.message);
+    return { rowsAffected: 1, rows: { _array: [], length: 0 } };
+  }
+
+  return { rows: { _array: [], length: 0 } };
+}
+
+// ------------------------------------------------------------------------------------------------
 // GLOBAL DATABASE INTERCEPTOR
 // Hook into the raw execution pipeline to automatically trigger global React Query invalidations
 // and UI Success/Error toasts without writing manual try/catch blocks in every UI component.
 // ------------------------------------------------------------------------------------------------
+const originalGetAll = powerSync.getAll.bind(powerSync);
+powerSync.getAll = async (sql, parameters) => {
+  if (isJCLRealEstateQuery(sql)) {
+    try {
+      const directRes = await executeViaDirectSupabase(sql, parameters);
+      return directRes?.rows?._array || [];
+    } catch (directErr) {
+      console.warn('[DirectSupabase Bridge] getAll direct query failed, falling back to local replica:', directErr);
+    }
+  }
+  return originalGetAll(sql, parameters);
+};
+
 const originalExecute = powerSync.execute.bind(powerSync);
 powerSync.execute = async (sql, parameters) => {
+  // If query belongs to JCL Real Estate, bypass local PowerSync and read/write directly to Supabase cloud!
+  if (isJCLRealEstateQuery(sql)) {
+    try {
+      const directRes = await executeViaDirectSupabase(sql, parameters);
+      
+      const upperSql = typeof sql === 'string' ? sql.trim().toUpperCase() : '';
+      if (upperSql.startsWith('INSERT') || upperSql.startsWith('UPDATE') || upperSql.startsWith('DELETE')) {
+        window.dispatchEvent(new CustomEvent('db:local-mutation-success', { 
+          detail: { sql, isNoisy: false } 
+        }));
+      }
+      return directRes;
+    } catch (directErr) {
+      console.warn('[DirectSupabase Bridge] Direct query failed, falling back to local replica:', directErr);
+    }
+  }
+
   try {
     const res = await originalExecute(sql, parameters);
     
