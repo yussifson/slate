@@ -28,12 +28,13 @@ import DockResizer from "./DockResizer";
 import { cn } from "@/lib/utils";
 
 export default function AppLayout() {
- const { t} = useTranslation();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { impersonatedCompany, stopImpersonation } = useImpersonation();
   const { isChatDocked, dockWidth } = useChatDock();
   const navigate = useNavigate();
   const location = useLocation();
+  const isNestedLayout = location.pathname.startsWith('/hr') || location.pathname.startsWith('/finance');
   const [hideTrialBanner, setHideTrialBanner] = useState(false);
  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
  const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -388,6 +389,10 @@ export default function AppLayout() {
             ) : (
               <Outlet />
             )}
+          </div>
+        ) : isNestedLayout ? (
+          <div className="flex-1 w-full flex flex-col h-full overflow-hidden p-0">
+            <Outlet />
           </div>
         ) : (
           <PullToRefresh className="h-full w-full">

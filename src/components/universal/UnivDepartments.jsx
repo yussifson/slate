@@ -19,8 +19,17 @@ export default function CustomDepartmentsSettings() {
 
   const fetchDepartments = async () => {
     try {
-      const res = await powerSync.execute('SELECT * FROM univ_hr_departments WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
-      const customDepts = res.rows._array || Array.from(res.rows);
+      const [res1, res2] = await Promise.all([
+        powerSync.execute('SELECT * FROM univ_hr_departments WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
+        powerSync.execute('SELECT * FROM platform_departments WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] }))
+      ]);
+      const list1 = res1.rows?._array || Array.from(res1.rows || []);
+      const list2 = res2.rows?._array || Array.from(res2.rows || []);
+      const deptMap = new Map();
+      [...list1, ...list2].forEach(d => {
+        if (d && (d.id || d.name)) deptMap.set(d.id || d.name, d);
+      });
+      const customDepts = Array.from(deptMap.values());
 
       // Get predefined departments for active industry
       let predefinedDepts = [];

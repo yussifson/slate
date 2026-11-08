@@ -424,10 +424,26 @@ function isJCLRealEstateQuery(sql) {
       upper.includes('UNIV_OFFICE_CUSTODY_') ||
       upper.includes('OPS_PROJECT') ||
       upper.includes('OPS_') ||
-      upper.includes('UNIV_BOQ')) {
+      upper.includes('UNIV_BOQ') ||
+      upper.includes('UNIV_HR_') ||
+      upper.includes('PLATFORM_DEPARTMENTS') ||
+      upper.includes('PLATFORM_ROLES') ||
+      upper.includes('PLATFORM_ROLE_PERMISSIONS') ||
+      upper.includes('HR_JOBS') ||
+      upper.includes('HR_APPLICANTS') ||
+      upper.includes('HR_ATTENDANCE') ||
+      upper.includes('HR_PERFORMANCE_REVIEWS') ||
+      upper.includes('HR_TRAINING_COURSES') ||
+      upper.includes('HR_TRAINING_RECORDS') ||
+      upper.includes('UNIV_ERP_PROMOTIONS') ||
+      upper.includes('H_R_COMPLAINTS') ||
+      upper.includes('LEAVE_REQUESTS') ||
+      upper.includes('UNIV_ERP_EXPENSES') ||
+      upper.includes('UNIV_ERP_ANNOUNCEMENTS') ||
+      upper.includes('UNIV_ERP_ONBOARDING')) {
     return true;
   }
-  return /\b(FROM|INTO|UPDATE|TABLE)\s+(DOCUMENTS|SMART_FOLDERS|SMART_DOC_LINKS|TASKS|TIME_ENTRIES|UNIV_TIME_TRACKING|UNIV_TIME_REMINDERS|ACTIVE_TIMERS|CASE_PIPELINES|CASE_PIPELINE_STATES|NOTIFICATIONS|UNIV_BOQS|OPS_PROJECTS|OPS_WORK_PACKAGES|OPS_SITE_DIARY|OPS_DAILY_REPORTS|OPS_RESOURCE_ALLOCATIONS|OPS_PROJECT_ISSUES|OPS_SITE_INSPECTIONS|OPS_PROJECT_ACTIVITY|OPS_PROJECT_MEMBERS|OPS_PROJECT_MESSAGES|OPS_PROJECT_RISKS|OPS_PROJECT_ATTACHMENTS)\b/i.test(sql);
+  return /\b(FROM|INTO|UPDATE|TABLE)\s+(DOCUMENTS|SMART_FOLDERS|SMART_DOC_LINKS|TASKS|TIME_ENTRIES|UNIV_TIME_TRACKING|UNIV_TIME_REMINDERS|ACTIVE_TIMERS|CASE_PIPELINES|CASE_PIPELINE_STATES|NOTIFICATIONS|UNIV_BOQS|OPS_PROJECTS|OPS_WORK_PACKAGES|OPS_SITE_DIARY|OPS_DAILY_REPORTS|OPS_RESOURCE_ALLOCATIONS|OPS_PROJECT_ISSUES|OPS_SITE_INSPECTIONS|OPS_PROJECT_ACTIVITY|OPS_PROJECT_MEMBERS|OPS_PROJECT_MESSAGES|OPS_PROJECT_RISKS|OPS_PROJECT_ATTACHMENTS|PROFILES)\b/i.test(sql);
 }
 
 function parseParamsList(valsStr, parameters, offset = 0) {
@@ -465,9 +481,10 @@ function parseWhereClause(whereStr, parameters, offset = 0) {
   const conditions = [];
   for (const part of parts) {
     const trimmed = part.trim();
-    const m = trimmed.match(/^([a-zA-Z0-9_]+)\s*(=|!=|<>|>=|<=|>|<|LIKE)\s*(.*)$/i);
+    const m = trimmed.match(/^([a-zA-Z0-9_.]+)\s*(=|!=|<>|>=|<=|>|<|LIKE)\s*(.*)$/i);
     if (m) {
-      const col = m[1];
+      // Strip table alias prefix (e.g. a.company_id -> company_id)
+      const col = m[1].replace(/^[a-zA-Z0-9_]+\./, '');
       const op = m[2];
       const valRaw = m[3].trim();
       let val;
@@ -502,20 +519,19 @@ function applyWhere(builder, conditions) {
 async function executeViaDirectSupabase(sql, parameters = []) {
   const s = (sql || '').trim();
 
-  // 1. SELECT
-  const selectM = s.match(/^SELECT\s+([\s\S]+?)\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+WHERE\s+([\s\S]+?))?(?:\s+ORDER\s+BY\s+([\s\S]+?))?(?:\s+LIMIT\s+(\d+))?$/i);
+  // 1. SELECT (with optional single JOIN support)
+  const selectM = s.match(/^SELECT\s+([\s\S]+?)\s+FROM\s+([a-zA-Z0-9_]+)(?:\s+(?:LEFT\s+)?JOIN\s+([a-zA-Z0-9_]+)\s+ON\s+([\s\S]+?))?(?:\s+WHERE\s+([\s\S]+?))?(?:\s+ORDER\s+BY\s+([\s\S]+?))?(?:\s+LIMIT\s+(\d+))?$/i);
   if (selectM) {
     const rawCols = selectM[1].trim();
     const table = selectM[2].trim();
-    const whereStr = selectM[3];
-    const orderStr = selectM[4];
-    const limitStr = selectM[5];
+    const joinTable = selectM[3]?.trim();
+    const joinOn = selectM[4]?.trim();
+    const whereStr = selectM[5];
+    const orderStr = selectM[6];
+    const limitStr = selectM[7];
 
-    let queryCols = rawCols;
+    let queryCols = '*';
     const isAggregate = /COUNT\(|SUM\(|AVG\(|MIN\(|MAX\(/i.test(rawCols);
-    if (isAggregate) {
-      queryCols = '*';
-    }
 
     let builder = supabase.from(table).select(queryCols);
     const conditions = parseWhereClause(whereStr, parameters, 0);
@@ -525,8 +541,10 @@ async function executeViaDirectSupabase(sql, parameters = []) {
       const parts = orderStr.split(',').map(x => x.trim());
       for (const p of parts) {
         const [col, dir] = p.split(/\s+/);
-        if (col) {
-          builder = builder.order(col, { ascending: !dir || dir.toUpperCase() === 'ASC' });
+        // Strip table alias prefix (e.g. a.date -> date)
+        const cleanCol = col ? col.replace(/^[a-zA-Z0-9_]+\./, '') : '';
+        if (cleanCol) {
+          builder = builder.order(cleanCol, { ascending: !dir || dir.toUpperCase() === 'ASC' });
         }
       }
     }
@@ -541,7 +559,39 @@ async function executeViaDirectSupabase(sql, parameters = []) {
       return { rows: { _array: [], length: 0 } };
     }
 
-    const rows = Array.isArray(data) ? data : (data ? [data] : []);
+    let rows = Array.isArray(data) ? data : (data ? [data] : []);
+
+    // If join was requested (e.g. hr_attendance LEFT JOIN univ_hr_employees s ON a.staff_id = s.id)
+    if (joinTable && joinOn && rows.length > 0) {
+      try {
+        const joinMatch = joinOn.match(/([a-zA-Z0-9_.]+)\s*=\s*([a-zA-Z0-9_.]+)/);
+        if (joinMatch) {
+          const leftKey = joinMatch[1].replace(/^[a-zA-Z0-9_]+\./, '');
+          const rightKey = joinMatch[2].replace(/^[a-zA-Z0-9_]+\./, '');
+          const fk = leftKey === 'id' ? rightKey : leftKey;
+          const ids = [...new Set(rows.map(r => r[fk]).filter(Boolean))];
+          if (ids.length > 0) {
+            const { data: joinRows } = await supabase.from(joinTable).select('*').in('id', ids);
+            const joinMap = new Map((joinRows || []).map(jr => [jr.id, jr]));
+            rows = rows.map(r => {
+              const matched = joinMap.get(r[fk]);
+              return {
+                ...r,
+                full_name: matched?.name || matched?.full_name || '',
+                author_name: matched?.name || matched?.full_name || '',
+                job_title: matched?.title || '',
+                course_title: matched?.title || '',
+                category: matched?.category || r.category || '',
+                is_mandatory: matched?.is_mandatory || false,
+                staff_department: matched?.department || ''
+              };
+            });
+          }
+        }
+      } catch (jErr) {
+        console.warn(`[DirectSupabase Bridge] In-memory join for ${table} + ${joinTable} caught:`, jErr);
+      }
+    }
 
     // If query was aggregate (e.g. SELECT COUNT(*) as total, SUM(price) as total_val), compute locally
     if (isAggregate) {
@@ -555,7 +605,7 @@ async function executeViaDirectSupabase(sql, parameters = []) {
         }
         const sumM = item.match(/SUM\s*\(([a-zA-Z0-9_]+)\)\s+(?:AS\s+)?([a-zA-Z0-9_]+)/i);
         if (sumM) {
-          const colName = sumM[1];
+          const colName = sumM[1].replace(/^[a-zA-Z0-9_]+\./, '');
           const alias = sumM[2];
           aggRow[alias] = rows.reduce((acc, r) => acc + (Number(r[colName]) || 0), 0);
           continue;

@@ -25,41 +25,49 @@ export default function UnivHRSystem() {
     enabled: !!companyId
   });
 
-  // 2. Fetch departments count
+  // 2. Fetch departments count (checking both univ_hr_departments and platform_departments)
   const { data: depts = [] } = useQuery({
     queryKey: ["univ_hr_departments", companyId],
     queryFn: async () => {
-      const res = await powerSync.execute(
-        "SELECT id, name FROM univ_hr_departments WHERE company_id = ?",
-        [companyId]
-      );
-      return res.rows?._array || [];
+      const [res1, res2] = await Promise.all([
+        powerSync.execute("SELECT id, name FROM univ_hr_departments WHERE company_id = ?", [companyId]).catch(() => ({ rows: [] })),
+        powerSync.execute("SELECT id, name FROM platform_departments WHERE company_id = ?", [companyId]).catch(() => ({ rows: [] }))
+      ]);
+      const list1 = res1.rows?._array || [];
+      const list2 = res2.rows?._array || [];
+      const map = new Map();
+      [...list1, ...list2].forEach(d => { if (d?.name) map.set(d.name, d); });
+      return Array.from(map.values());
     },
     enabled: !!companyId
   });
 
-  // 3. Fetch leaves
+  // 3. Fetch leaves (checking both univ_hr_leave and leave_requests)
   const { data: leaves = [] } = useQuery({
     queryKey: ["univ_hr_leave", companyId],
     queryFn: async () => {
-      const res = await powerSync.execute(
-        "SELECT id, status FROM univ_hr_leave WHERE company_id = ?",
-        [companyId]
-      );
-      return res.rows?._array || [];
+      const [res1, res2] = await Promise.all([
+        powerSync.execute("SELECT id, status FROM univ_hr_leave WHERE company_id = ?", [companyId]).catch(() => ({ rows: [] })),
+        powerSync.execute("SELECT id, status FROM leave_requests WHERE company_id = ?", [companyId]).catch(() => ({ rows: [] }))
+      ]);
+      const list1 = res1.rows?._array || [];
+      const list2 = res2.rows?._array || [];
+      return [...list1, ...list2];
     },
     enabled: !!companyId
   });
 
-  // 4. Fetch recruitment candidates
+  // 4. Fetch recruitment candidates (checking both univ_hr_candidates and hr_applicants)
   const { data: candidates = [] } = useQuery({
     queryKey: ["univ_hr_candidates", companyId],
     queryFn: async () => {
-      const res = await powerSync.execute(
-        "SELECT id, stage FROM univ_hr_candidates WHERE company_id = ?",
-        [companyId]
-      );
-      return res.rows?._array || [];
+      const [res1, res2] = await Promise.all([
+        powerSync.execute("SELECT id, stage FROM univ_hr_candidates WHERE company_id = ?", [companyId]).catch(() => ({ rows: [] })),
+        powerSync.execute("SELECT id, stage FROM hr_applicants WHERE company_id = ?", [companyId]).catch(() => ({ rows: [] }))
+      ]);
+      const list1 = res1.rows?._array || [];
+      const list2 = res2.rows?._array || [];
+      return [...list1, ...list2];
     },
     enabled: !!companyId
   });
