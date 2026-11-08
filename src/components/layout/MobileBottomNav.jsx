@@ -69,11 +69,11 @@ const ROLE_TABS = {
   accountant: ['/finance/accounting', '/invoices', '/real-estate/rent-payments'],
   finance: ['/finance/accounting', '/invoices', '/real-estate/rent-payments'],
   property_manager: ['/real-estate/properties', '/real-estate/leases', '/real-estate/maintenance'],
-  lead_engineer: ['/engineering', '/engineering/drawings', '/jcl/projects'],
-  site_supervisor: ['/engineering', '/jcl/project-operations', '/jcl/inventory'],
+  lead_engineer: ['/engineering/drawings', '/jcl/projects', '/jcl/project-operations'],
+  site_supervisor: ['/engineering/drawings', '/jcl/project-operations', '/jcl/inventory'],
   quantity_surveyor: ['/boq', '/jcl/projects', '/jcl/project-finance'],
-  procurement_officer: ['/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders'],
-  architect: ['/engineering/drawings', '/engineering', '/jcl/projects'],
+  procurement_officer: ['/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'],
+  architect: ['/engineering/drawings', '/jcl/projects', '/boq'],
   front_desk: ['/jcl/front-desk', '/jcl/item-register', '/real-estate/clients'],
   receptionist: ['/jcl/front-desk', '/jcl/item-register', '/real-estate/clients'],
   company_admin: ['/real-estate/properties', '/real-estate/crm-leads', '/finance/accounting'],
@@ -256,6 +256,24 @@ export default function MobileBottomNav() {
           p === '/jcl/project-finance' || l.includes('project finance');
         if (!isAllowedFinance) {
           continue; // skip commission, rent payment, payment schedules, etc.
+        }
+      }
+
+      // User requested: remove redundant "Procurement" button from the mobile More menu (keep Requisitions, Purchase Orders, Materials)
+      if (section === 'Procurement') {
+        const p = (item.path || '').toLowerCase();
+        const l = (item.label || '').toLowerCase().trim();
+        if (p === '/jcl/procurement' || l === 'procurement') {
+          continue;
+        }
+      }
+
+      // User requested: remove redundant "Engineering" button from the mobile More menu (keep Drawings, Projects, Operations, BOQ)
+      if (section === 'Engineering') {
+        const p = (item.path || '').toLowerCase();
+        const l = (item.label || '').toLowerCase().trim();
+        if (p === '/engineering' || l === 'engineering') {
+          continue;
         }
       }
 

@@ -1,8 +1,9 @@
 import { supabase } from '@/api/supabaseClient';
+import { powerSync } from '@/api/PowerSyncConnector';
 
 /**
  * Universal Project fetcher that safely looks up projects across tables
- * (ops_projects, univ_projects, and jcl_engagements)
+ * (local PowerSync ops_projects, supabase ops_projects, univ_projects, jcl_engagements, and univ_re_properties)
  * so any project or converted engagement appears in all dropdowns
  * (Engineering, BOQ, Procurement, Drawings, Budgets, etc.)
  */
@@ -11,7 +12,35 @@ export async function getCompanyProjects(companyId) {
 
   const projects = [];
 
-  // 1. Try ops_projects
+  // Helper to safely append deduplicated project
+  const addProject = (p) => {
+    if (!p || !p.id) return;
+    if (!projects.some(existing => existing.id === p.id || existing.name === p.name)) {
+      projects.push(p);
+    }
+  };
+
+  // 1. Try local PowerSync replica first for ops_projects
+  try {
+    const res = await powerSync.execute(
+      'SELECT id, name, project_code, status, budget_amount, created_at FROM ops_projects WHERE company_id = ? ORDER BY name ASC',
+      [String(companyId)]
+    );
+    const rows = res?.rows?._array || Array.from(res?.rows || []);
+    rows.forEach(p => {
+      addProject({
+        id: p.id,
+        name: p.name,
+        project_code: p.project_code || `PRJ-${p.id.slice(-4)}`,
+        status: p.status || 'active',
+        source: 'local_ops'
+      });
+    });
+  } catch (err) {
+    // Fall back to Supabase
+  }
+
+  // 2. Try Supabase ops_projects (if online / not yet synced locally)
   try {
     const { data, error } = await supabase
       .from('ops_projects')
@@ -21,7 +50,7 @@ export async function getCompanyProjects(companyId) {
 
     if (!error && Array.isArray(data)) {
       data.forEach(p => {
-        projects.push({
+        addProject({
           id: p.id,
           name: p.name,
           project_code: p.project_code || `PRJ-${p.id.slice(-4)}`,
@@ -34,7 +63,7 @@ export async function getCompanyProjects(companyId) {
     console.warn('[ProjectLookupService] ops_projects lookup caught:', err);
   }
 
-  // 2. Try jcl_engagements (converted or active delivery projects)
+  // 3. Try jcl_engagements (converted or active delivery projects)
   try {
     const { data, error } = await supabase
       .from('jcl_engagements')
@@ -44,22 +73,20 @@ export async function getCompanyProjects(companyId) {
 
     if (!error && Array.isArray(data)) {
       data.forEach(e => {
-        if (!projects.some(p => p.id === e.id || p.name === e.title)) {
-          projects.push({
-            id: e.id,
-            name: e.title,
-            project_code: e.engagement_number || `ENG-${e.id.slice(-4)}`,
-            status: e.status || 'active',
-            source: 'engagement'
-          });
-        }
+        addProject({
+          id: e.id,
+          name: e.title,
+          project_code: e.engagement_number || `ENG-${e.id.slice(-4)}`,
+          status: e.status || 'active',
+          source: 'engagement'
+        });
       });
     }
   } catch (err) {
     console.warn('[ProjectLookupService] jcl_engagements lookup caught:', err);
   }
 
-  // 3. Try univ_projects
+  // 4. Try univ_projects
   try {
     const { data, error } = await supabase
       .from('univ_projects')
@@ -69,22 +96,20 @@ export async function getCompanyProjects(companyId) {
 
     if (!error && Array.isArray(data)) {
       data.forEach(p => {
-        if (!projects.some(existing => existing.id === p.id || existing.name === p.name)) {
-          projects.push({
-            id: p.id,
-            name: p.name,
-            project_code: p.project_code || `PRJ-${p.id.slice(-4)}`,
-            status: p.status || 'active',
-            source: 'univ'
-          });
-        }
+        addProject({
+          id: p.id,
+          name: p.name,
+          project_code: p.project_code || `PRJ-${p.id.slice(-4)}`,
+          status: p.status || 'active',
+          source: 'univ'
+        });
       });
     }
   } catch (err) {
     console.warn('[ProjectLookupService] univ_projects lookup caught:', err);
   }
 
-  // 4. Try univ_re_properties (Properties as project contexts in Real Estate)
+  // 5. Try univ_re_properties (Properties as project contexts in Real Estate)
   try {
     const { data, error } = await supabase
       .from('univ_re_properties')
@@ -95,15 +120,13 @@ export async function getCompanyProjects(companyId) {
     if (!error && Array.isArray(data)) {
       data.forEach(prop => {
         const title = prop.address || prop.property_type || `Property ${prop.id.slice(-4)}`;
-        if (!projects.some(existing => existing.id === prop.id || existing.name === title)) {
-          projects.push({
-            id: prop.id,
-            name: title,
-            project_code: `PROP-${prop.id.slice(-4)}`,
-            status: prop.status || 'active',
-            source: 'property'
-          });
-        }
+        addProject({
+          id: prop.id,
+          name: title,
+          project_code: `PROP-${prop.id.slice(-4)}`,
+          status: prop.status || 'active',
+          source: 'property'
+        });
       });
     }
   } catch (err) {
