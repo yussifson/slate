@@ -447,6 +447,7 @@ const RealEstatePaymentSchedules = React.lazy(() => import('./pages/real-estate/
 const RealEstateRecommendations = React.lazy(() => import('./pages/real-estate/Recommendations'));
 const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/TeamManagement'));
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
+const FirmAccountingHub = React.lazy(() => import('./pages/finance/FirmAccountingHub'));
 const FinanceOverview = React.lazy(() => import('./pages/finance/FinanceOverview'));
 const FinanceLayout = React.lazy(() => import('./pages/finance/FinanceLayout'));
 const SmartFinanceOverviewRouter = () => {
