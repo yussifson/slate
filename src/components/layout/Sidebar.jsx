@@ -811,7 +811,6 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       '/snapshots',
       '/snapshot',
       '/real-estate/marketer-tracker',
-      '/real-estate/trust-accounting',
       '/engineering',
       '/jcl/procurement'
     ]);
@@ -825,7 +824,6 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       'snapshot',
       'snapshots',
       'field gps',
-      'trust accounting',
       'engineering',
       'procurement'
     ]);
@@ -859,8 +857,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return aOrder - bOrder;
   });
 
-  // Trust Accounting is available inside Finance and must not appear in the main sidebar.
-  navItems = navItems.filter(item => item.path !== '/real-estate/trust-accounting');
+  // Trust Accounting is a main button under Finance in JCL
 
   const getCategory = (item) => {
     const p = (item.path || '').split('?')[0];
@@ -886,7 +883,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/engineering', '/engineering/drawings', '/bom', '/boq', '/jcl/projects', '/jcl/project-operations', '/jcl/project-collaboration'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'drawings', 'projects', 'project operations', 'project collaboration'].includes(normalizedLabel)) {
         return "Engineering";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'project finance'].includes(normalizedLabel)) {
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions', '/real-estate/trust-accounting'].includes(p) || p.startsWith('/finance/') || p.startsWith('/jcl/project-finance') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'project finance', 'trust accounting', 'chart of accounts', 'bills', 'general ledger', 'fixed assets', 'bank reconciliation', 'income & expenses', 'payroll & tax', 'tonefo installments', 'petty cash', 'financial statements', 'project budgets', 'project variations', 'progress claims'].includes(normalizedLabel)) {
         return "Finance";
       }
     }
@@ -924,8 +921,8 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal', '/settings', '/integrations', '/admin', '/firm-setup'].includes(p)) {
         return "System Admin";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) ||
-          p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance', '/real-estate/trust-accounting'].includes(p) ||
+          p.startsWith('/finance/') || p.startsWith('/jcl/project-finance') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
           p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
         return "Finance";
       }

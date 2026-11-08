@@ -87,7 +87,6 @@ const UnivInventory = React.lazy(() => import('@/components/universal/UnivInvent
 const UnivHREmployee = React.lazy(() => import('@/components/universal/UnivHREmployee'));
 const UnivHRSystem = React.lazy(() => import('@/components/universal/UnivHRSystem'));
 const HRLayout = React.lazy(() => import('@/pages/hr/HRLayout'));
-import FinanceLayout from '@/components/finance/FinanceLayout';
 const UnivInvoice = React.lazy(() => import('@/components/universal/UnivInvoice'));
 const UnivPayroll = React.lazy(() => import('@/components/universal/UnivPayroll'));
 const UnivRecruitment = React.lazy(() => import('@/components/universal/UnivRecruitment'));
@@ -1046,7 +1045,7 @@ function PlatformRoutes() {
       <Route path="/jcl/purchase-orders" element={<JCLPurchaseOrdersPage />} />
       <Route path="/jcl/inventory" element={<JCLMaterialsPage />} />
       <Route path="/jcl/projects" element={<JCLEngagementsPage />} />
-      <Route path="/jcl/project-finance" element={<FinanceLayout><JCLProjectFinancePage /></FinanceLayout>} />
+      <Route path="/jcl/project-finance" element={<JCLProjectFinancePage />} />
       <Route path="/jcl/project-operations" element={<JCLProjectOperationsPage />} />
       <Route path="/jcl/project-collaboration" element={<JCLProjectCollaborationPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
@@ -1374,13 +1373,13 @@ function PlatformRoutes() {
       <Route path="/real-estate/viewings" element={<SmartViewingsRouter />} />
       <Route path="/real-estate/transactions" element={<SmartTransactionsRouter />} />
       <Route path="/real-estate/offers" element={<SmartOffersRouter />} />
-      <Route path="/real-estate/commissions" element={<FinanceLayout><SmartCommissionsRouter /></FinanceLayout>} />
-      <Route path="/real-estate/rent-payments" element={<FinanceLayout><SmartRentPaymentsRouter /></FinanceLayout>} />
+      <Route path="/real-estate/commissions" element={<SmartCommissionsRouter />} />
+      <Route path="/real-estate/rent-payments" element={<SmartRentPaymentsRouter />} />
       <Route path="/real-estate/maintenance" element={<SmartMaintenanceRouter />} />
       <Route path="/real-estate/crm-leads" element={<SmartLeadsRouter />} />
       <Route path="/real-estate/agent-metrics" element={<RealEstateAgentMetrics />} />
       <Route path="/real-estate/audit-log" element={<SmartAuditLogRouter />} />
-      <Route path="/real-estate/commission-rules" element={<FinanceLayout><SmartCommissionRulesRouter /></FinanceLayout>} />
+      <Route path="/real-estate/commission-rules" element={<SmartCommissionRulesRouter />} />
       <Route path="/real-estate/comparable-properties" element={<RealEstateComparableProperties />} />
       <Route path="/real-estate/contractor-reviews" element={<SmartContractorReviewsRouter />} />
       <Route path="/real-estate/contractors" element={<SmartContractorsRouter />} />
@@ -1388,15 +1387,29 @@ function PlatformRoutes() {
       <Route path="/real-estate/document-templates" element={<SmartDocumentTemplatesRouter />} />
       <Route path="/real-estate/e-signatures" element={<SmartESignaturesRouter />} />
       <Route path="/real-estate/escrow-accounts" element={<SmartEscrowAccountsRouter />} />
-      <Route path="/real-estate/escrow" element={<FinanceLayout><SmartEscrowAccountsRouter /></FinanceLayout>} />
+      <Route path="/real-estate/escrow" element={<SmartEscrowAccountsRouter />} />
       <Route path="/real-estate/lease-renewals" element={<SmartLeaseRenewalsRouter />} />
       <Route path="/real-estate/market-data" element={<RealEstateMarketData />} />
       <Route path="/real-estate/market-intelligence" element={<RealEstateMarketIntelligence />} />
-      <Route path="/real-estate/payment-schedules" element={<FinanceLayout><SmartPaymentSchedulesRouter /></FinanceLayout>} />
+      <Route path="/real-estate/payment-schedules" element={<SmartPaymentSchedulesRouter />} />
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
-      <Route path="/real-estate/trust-accounting" element={<FinanceLayout><SmartTrustAccountingRouter /></FinanceLayout>} />
-      <Route path="/finance/accounting" element={<FinanceLayout><SmartFirmAccountingRouter /></FinanceLayout>} />
+      <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
+      <Route path="/finance/accounting" element={<SmartFirmAccountingRouter />} />
+      <Route path="/finance/chart-of-accounts" element={<FirmAccountingHub defaultTab="coa" />} />
+      <Route path="/finance/invoices" element={<FirmAccountingHub defaultTab="invoices" />} />
+      <Route path="/finance/bills" element={<FirmAccountingHub defaultTab="bills" />} />
+      <Route path="/finance/general-ledger" element={<FirmAccountingHub defaultTab="jv" />} />
+      <Route path="/finance/fixed-assets" element={<FirmAccountingHub defaultTab="assets" />} />
+      <Route path="/finance/bank-reconciliation" element={<FirmAccountingHub defaultTab="bankrec" />} />
+      <Route path="/finance/income-expenses" element={<FirmAccountingHub defaultTab="income" />} />
+      <Route path="/finance/payroll" element={<FirmAccountingHub defaultTab="payroll" />} />
+      <Route path="/finance/tonefo" element={<FirmAccountingHub defaultTab="tonefo" />} />
+      <Route path="/finance/petty-cash" element={<FirmAccountingHub defaultTab="petty_cash" />} />
+      <Route path="/finance/financial-statements" element={<FirmAccountingHub defaultTab="statements" />} />
+      <Route path="/jcl/project-finance/budgets" element={<JCLProjectFinancePage defaultTab="budgets" />} />
+      <Route path="/jcl/project-finance/variations" element={<JCLProjectFinancePage defaultTab="variations" />} />
+      <Route path="/jcl/project-finance/claims" element={<JCLProjectFinancePage defaultTab="claims" />} />
       <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />\n  <Route path="/jcl/intelligence" element={<JCLPhase8IntelligencePage />} />
       <Route path="/real-estate/field-tracker" element={<JCLMarketerTrackerPage />} />
       <Route path="/real-estate/marketer-tracker" element={<JCLMarketerTrackerPage />} />

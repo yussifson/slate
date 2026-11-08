@@ -390,18 +390,22 @@ export const powerSync = powerSyncDb || new PowerSyncDatabase({
 });
 
 // ------------------------------------------------------------------------------------------------
-// REAL ESTATE DIRECT SUPABASE TRANSPARENT BRIDGE
-// Disables PowerSync offline sync for JCL Real Estate tables and redirects all queries
-// (SELECT, INSERT, UPDATE, DELETE) directly to live Supabase cloud database.
+// REAL ESTATE & CLOUD CORE DIRECT SUPABASE TRANSPARENT BRIDGE
+// Disables PowerSync offline sync for JCL Real Estate and essential cross-platform tables
+// (documents, smart folders, tasks, time tracking, active timers, pipelines, notifications)
+// and redirects queries directly to live Supabase cloud database.
 // This guarantees instant, zero-delay real-time synchronization between mobile and web.
 // ------------------------------------------------------------------------------------------------
 function isJCLRealEstateQuery(sql) {
   const upper = typeof sql === 'string' ? sql.toUpperCase() : '';
-  return upper.includes('UNIV_RE_') || 
-         upper.includes('JCL_') || 
-         upper.includes('UNIV_FRONTDESK_') || 
-         upper.includes('UNIV_OFFICE_CUSTODY_') ||
-         upper.includes('OPS_PROJECT');
+  if (upper.includes('UNIV_RE_') || 
+      upper.includes('JCL_') || 
+      upper.includes('UNIV_FRONTDESK_') || 
+      upper.includes('UNIV_OFFICE_CUSTODY_') ||
+      upper.includes('OPS_PROJECT')) {
+    return true;
+  }
+  return /\b(FROM|INTO|UPDATE|TABLE)\s+(DOCUMENTS|SMART_FOLDERS|SMART_DOC_LINKS|TASKS|TIME_ENTRIES|UNIV_TIME_TRACKING|UNIV_TIME_REMINDERS|ACTIVE_TIMERS|CASE_PIPELINES|CASE_PIPELINE_STATES|NOTIFICATIONS)\b/i.test(sql);
 }
 
 function parseParamsList(valsStr, parameters, offset = 0) {
@@ -647,6 +651,20 @@ powerSync.getAll = async (sql, parameters) => {
     }
   }
   return originalGetAll(sql, parameters);
+};
+
+const originalGetOptional = powerSync.getOptional ? powerSync.getOptional.bind(powerSync) : null;
+powerSync.getOptional = async (sql, parameters) => {
+  if (isJCLRealEstateQuery(sql)) {
+    try {
+      const directRes = await executeViaDirectSupabase(sql, parameters);
+      const rows = directRes?.rows?._array || [];
+      return rows[0] || null;
+    } catch (directErr) {
+      console.warn('[DirectSupabase Bridge] getOptional direct query failed, falling back to local replica:', directErr);
+    }
+  }
+  return originalGetOptional ? originalGetOptional(sql, parameters) : null;
 };
 
 const originalExecute = powerSync.execute.bind(powerSync);

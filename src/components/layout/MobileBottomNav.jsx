@@ -245,17 +245,12 @@ export default function MobileBottomNav() {
 
       const section = getJCLCategory(item);
 
-      // User requested: in the Finance section on the More pop-up, ONLY show Trust Accounting, Firm Accounting, and Project Finance.
-      // Filter out redundant items (commissions, payments, rent payment, invoices, etc. since they live inside Firm Accounting)
+      // In the Finance section on the mobile More menu, show Trust Accounting and all full Finance pages.
       if (section === 'Finance') {
         const p = (item.path || '').toLowerCase();
-        const l = (item.label || '').toLowerCase();
-        const isAllowedFinance = 
-          p === '/real-estate/trust-accounting' || l.includes('trust accounting') ||
-          p === '/finance/accounting' || l.includes('firm accounting') ||
-          p === '/jcl/project-finance' || l.includes('project finance');
-        if (!isAllowedFinance) {
-          continue; // skip commission, rent payment, payment schedules, etc.
+        // Skip redundant legacy standalone commission / rent payment routes
+        if (p === '/real-estate/commissions' || p === '/real-estate/rent-payments' || p === '/real-estate/payment-schedules' || p === '/real-estate/commission-rules') {
+          continue;
         }
       }
 
