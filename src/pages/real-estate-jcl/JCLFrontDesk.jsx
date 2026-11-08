@@ -8,8 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { X, CalendarDays, Clock3, LogIn, LogOut, Plus, Search, ShieldCheck, UserRound, UsersRound, Building2, Printer, Filter } from 'lucide-react';
+import { X, CalendarDays, Clock3, LogIn, LogOut, Plus, Search, ShieldCheck, UserRound, UsersRound, Printer } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { supabase } from '@/api/supabaseClient';
 import { cn } from '@/lib/utils';
 
 const emptyVisitor = { entryType: 'visitor', visitorName: '', visitorCompany: '', hostName: '', purpose: '', phone: '', notes: '', staffName: '', staffEmail: '' };
@@ -41,9 +42,36 @@ export default function JCLFrontDesk() {
       safe('SELECT * FROM jcl_staff_logbook WHERE company_id = ? ORDER BY logged_in_at DESC', [companyId]),
       safe('SELECT * FROM tasks WHERE company_id = ? ORDER BY created_at ASC', [companyId])
     ]);
-    setVisitors(rowsOf(visitorResult));
-    setStaff(rowsOf(staffResult));
-    setEvents(rowsOf(eventResult));
+    let visitorRows = rowsOf(visitorResult);
+    let staffRows = rowsOf(staffResult);
+    const eventRows = rowsOf(eventResult);
+
+    // Fallback to direct Supabase queries if local PowerSync is empty
+    if (visitorRows.length === 0) {
+      try {
+        const { data: supaVisitors } = await supabase
+          .from('jcl_visitor_logbook')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('checked_in_at', { ascending: false });
+        if (supaVisitors && supaVisitors.length > 0) visitorRows = supaVisitors;
+      } catch (_) {}
+    }
+
+    if (staffRows.length === 0) {
+      try {
+        const { data: supaStaff } = await supabase
+          .from('jcl_staff_logbook')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('logged_in_at', { ascending: false });
+        if (supaStaff && supaStaff.length > 0) staffRows = supaStaff;
+      } catch (_) {}
+    }
+
+    setVisitors(visitorRows);
+    setStaff(staffRows);
+    setEvents(eventRows);
     setLoading(false);
   };
 
@@ -75,12 +103,49 @@ export default function JCLFrontDesk() {
     event.preventDefault();
     if (visitorForm.entryType === 'staff' && !visitorForm.staffName.trim()) return toast.error('Staff name is required');
     if (visitorForm.entryType === 'visitor' && (!visitorForm.visitorName.trim() || !visitorForm.hostName.trim() || !visitorForm.purpose.trim())) return toast.error('Visitor name, host, and purpose are required');
+    const recordId = newId();
+    const nowIso = new Date().toISOString();
+
     try {
       if (visitorForm.entryType === 'staff') {
-        await powerSync.execute(`INSERT INTO jcl_staff_logbook (id, company_id, staff_user_id, staff_name, staff_email, status, logged_in_at) VALUES (?, ?, ?, ?, ?, 'checked_in', ?)`, [newId(), companyId, user?.id || null, visitorForm.staffName.trim(), visitorForm.staffEmail.trim() || user?.email || null, new Date().toISOString()]);
+        const staffPayload = {
+          id: recordId,
+          company_id: companyId,
+          staff_user_id: user?.id || null,
+          staff_name: visitorForm.staffName.trim(),
+          staff_email: visitorForm.staffEmail.trim() || user?.email || null,
+          status: 'checked_in',
+          logged_in_at: nowIso,
+          created_at: nowIso
+        };
+        try {
+          await powerSync.execute(`INSERT INTO jcl_staff_logbook (id, company_id, staff_user_id, staff_name, staff_email, status, logged_in_at) VALUES (?, ?, ?, ?, ?, 'checked_in', ?)`, [staffPayload.id, companyId, staffPayload.staff_user_id, staffPayload.staff_name, staffPayload.staff_email, nowIso]);
+        } catch (_) {}
+        try {
+          await supabase.from('jcl_staff_logbook').insert(staffPayload);
+        } catch (_) {}
         toast.success('Staff member checked in');
       } else {
-        await powerSync.execute(`INSERT INTO jcl_visitor_logbook (id, company_id, visitor_name, visitor_company, host_name, purpose, phone, notes, status, checked_in_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'checked_in', ?, ?)`, [newId(), companyId, visitorForm.visitorName.trim(), visitorForm.visitorCompany.trim() || null, visitorForm.hostName.trim(), visitorForm.purpose.trim(), visitorForm.phone.trim() || null, visitorForm.notes.trim() || null, new Date().toISOString(), user?.id || null]);
+        const visitorPayload = {
+          id: recordId,
+          company_id: companyId,
+          visitor_name: visitorForm.visitorName.trim(),
+          visitor_company: visitorForm.visitorCompany.trim() || null,
+          host_name: visitorForm.hostName.trim(),
+          purpose: visitorForm.purpose.trim(),
+          phone: visitorForm.phone.trim() || null,
+          notes: visitorForm.notes.trim() || null,
+          status: 'checked_in',
+          checked_in_at: nowIso,
+          created_by: user?.id || null,
+          created_at: nowIso
+        };
+        try {
+          await powerSync.execute(`INSERT INTO jcl_visitor_logbook (id, company_id, visitor_name, visitor_company, host_name, purpose, phone, notes, status, checked_in_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'checked_in', ?, ?)`, [visitorPayload.id, companyId, visitorPayload.visitor_name, visitorPayload.visitor_company, visitorPayload.host_name, visitorPayload.purpose, visitorPayload.phone, visitorPayload.notes, nowIso, user?.id || null]);
+        } catch (_) {}
+        try {
+          await supabase.from('jcl_visitor_logbook').insert(visitorPayload);
+        } catch (_) {}
         toast.success('Visitor checked in');
       }
       setVisitorForm(emptyVisitor);
@@ -93,17 +158,45 @@ export default function JCLFrontDesk() {
   };
 
   const checkOutVisitor = async (id) => {
-    await powerSync.execute(`UPDATE jcl_visitor_logbook SET status = 'checked_out', checked_out_at = ? WHERE id = ? AND company_id = ?`, [new Date().toISOString(), id, companyId]);
+    const nowIso = new Date().toISOString();
+    try {
+      await powerSync.execute(`UPDATE jcl_visitor_logbook SET status = 'checked_out', checked_out_at = ? WHERE id = ? AND company_id = ?`, [nowIso, id, companyId]);
+    } catch (_) {}
+    try {
+      await supabase.from('jcl_visitor_logbook').update({ status: 'checked_out', checked_out_at: nowIso }).eq('id', id);
+    } catch (_) {}
     toast.success('Visitor checked out');
     load();
   };
 
   const toggleStaff = async (record) => {
+    const nowIso = new Date().toISOString();
     if (record.status === 'checked_in') {
-      await powerSync.execute(`UPDATE jcl_staff_logbook SET status = 'checked_out', logged_out_at = ? WHERE id = ? AND company_id = ?`, [new Date().toISOString(), record.id, companyId]);
+      try {
+        await powerSync.execute(`UPDATE jcl_staff_logbook SET status = 'checked_out', logged_out_at = ? WHERE id = ? AND company_id = ?`, [nowIso, record.id, companyId]);
+      } catch (_) {}
+      try {
+        await supabase.from('jcl_staff_logbook').update({ status: 'checked_out', logged_out_at: nowIso }).eq('id', record.id);
+      } catch (_) {}
       toast.success('Staff member logged out');
     } else {
-      await powerSync.execute(`INSERT INTO jcl_staff_logbook (id, company_id, staff_user_id, staff_name, staff_email, status, logged_in_at) VALUES (?, ?, ?, ?, ?, 'checked_in', ?)`, [newId(), companyId, user?.id || null, record.staff_name || user?.full_name || user?.email || 'Staff member', record.staff_email || user?.email || null, new Date().toISOString()]);
+      const recordId = newId();
+      const staffPayload = {
+        id: recordId,
+        company_id: companyId,
+        staff_user_id: user?.id || null,
+        staff_name: record.staff_name || user?.full_name || user?.email || 'Staff member',
+        staff_email: record.staff_email || user?.email || null,
+        status: 'checked_in',
+        logged_in_at: nowIso,
+        created_at: nowIso
+      };
+      try {
+        await powerSync.execute(`INSERT INTO jcl_staff_logbook (id, company_id, staff_user_id, staff_name, staff_email, status, logged_in_at) VALUES (?, ?, ?, ?, ?, 'checked_in', ?)`, [recordId, companyId, user?.id || null, staffPayload.staff_name, staffPayload.staff_email, nowIso]);
+      } catch (_) {}
+      try {
+        await supabase.from('jcl_staff_logbook').insert(staffPayload);
+      } catch (_) {}
       toast.success('Staff member logged in');
     }
     load();

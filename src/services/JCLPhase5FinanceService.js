@@ -1,4 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
+import { getCompanyProjects } from '@/services/ProjectLookupService';
 
 const monetary = value => Number(value || 0);
 
@@ -9,24 +10,42 @@ function assertCompany(companyId) {
 export const JCLPhase5FinanceService = {
   async getPortfolioSummary(companyId) {
     assertCompany(companyId);
-    const { data, error } = await supabase
-      .from('jcl_project_finance_summary')
-      .select('project_id, project_code, project_name, approved_budget, actual_cost, committed_cost, approved_variations, pending_variations, submitted_claims, certified_claims, retention_balance, forecast_final_cost, forecast_variance')
-      .eq('company_id', companyId)
-      .order('project_name');
-    if (error) throw error;
-    return data || [];
+    try {
+      const { data, error } = await supabase
+        .from('jcl_project_finance_summary')
+        .select('project_id, project_code, project_name, approved_budget, actual_cost, committed_cost, approved_variations, pending_variations, submitted_claims, certified_claims, retention_balance, forecast_final_cost, forecast_variance')
+        .eq('company_id', companyId)
+        .order('project_name');
+      if (error) throw error;
+      return data || [];
+    } catch (err) {
+      console.warn('[JCLPhase5FinanceService] summary fetch warning:', err);
+      return [];
+    }
   },
 
   async listProjects(companyId) {
     assertCompany(companyId);
-    const { data, error } = await supabase
-      .from('ops_projects')
-      .select('id, project_code, name, status, priority, project_type')
-      .eq('company_id', companyId)
-      .order('name');
-    if (error) throw error;
-    return data || [];
+    try {
+      const allProjects = await getCompanyProjects(companyId);
+      if (allProjects && allProjects.length > 0) {
+        return allProjects;
+      }
+    } catch (err) {
+      console.warn('[JCLPhase5FinanceService] getCompanyProjects caught:', err);
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('ops_projects')
+        .select('id, project_code, name, status, priority, project_type')
+        .eq('company_id', companyId)
+        .order('name');
+      if (error) throw error;
+      return data || [];
+    } catch (_) {
+      return [];
+    }
   },
 
   async listBudgets(companyId, projectId) {

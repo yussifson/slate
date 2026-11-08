@@ -11,7 +11,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ClipboardCheck, History, Plus, RotateCcw, Search, X, Package, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { createNotificationEvent } from '@/utils/notificationDispatcher';
 import { cn } from '@/lib/utils';
 
 const emptyForm = { personId: '', personName: '', itemName: '', description: '', issuedAt: new Date().toISOString().slice(0, 16), expectedReturn: '', notes: '' };
@@ -68,8 +67,20 @@ export default function JCLItemRegister() {
       } catch (_) {}
     }
 
+    let peopleList = rowsOf(peopleResult);
+    if (peopleList.length === 0) {
+      try {
+        const { data: supaEmps } = await supabase
+          .from('univ_hr_employees')
+          .select('id, name, first_name, last_name, email, status')
+          .eq('company_id', companyId)
+          .order('name');
+        if (supaEmps && supaEmps.length > 0) peopleList = supaEmps;
+      } catch (_) {}
+    }
+
     setItems(itemRows);
-    setPeople(rowsOf(peopleResult).map(person => ({
+    setPeople(peopleList.map(person => ({
       ...person,
       name: person.name || [person.first_name, person.last_name].filter(Boolean).join(' ') || person.email || 'Unnamed employee'
     })).filter(person => !person.status || String(person.status).toLowerCase() === 'active'));
@@ -367,9 +378,8 @@ export default function JCLItemRegister() {
         <Modal title="Issue Item Record" onClose={() => setShowForm(false)}>
           <form onSubmit={saveItem} className="space-y-3.5">
             <Field label="Employee">
-              <Input placeholder="Search employee..." value={personSearch} onChange={e => setPersonSearch(e.target.value)} className="h-9 text-xs mb-1.5" />
               <select
-                className="h-9 w-full rounded-xl border border-input bg-background px-3 text-xs"
+                className="h-9 w-full rounded-xl border border-input bg-background px-3 text-xs font-semibold shadow-xs"
                 value={form.personId}
                 onChange={e => {
                   const person = people.find(p => p.id === e.target.value);
@@ -378,7 +388,7 @@ export default function JCLItemRegister() {
                 required
               >
                 <option value="">Select an employee</option>
-                {visiblePeople.map(person => (
+                {people.map(person => (
                   <option key={person.id} value={person.id}>{person.name}{person.email ? ` · ${person.email}` : ''}</option>
                 ))}
               </select>

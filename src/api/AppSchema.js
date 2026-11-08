@@ -7845,5 +7845,35 @@ export const AppSchema = new Schema({
         logged_in_at: column.text,
         logged_out_at: column.text,
         created_at: column.text
+    }),
+    jcl_item_register: new Table({
+        id: column.text,
+        company_id: column.text,
+        person_id: column.text,
+        person_name: column.text,
+        item_name: column.text,
+        description: column.text,
+        issued_at: column.text,
+        expected_return_at: column.text,
+        actual_return_at: column.text,
+        status: column.text,
+        issued_by_id: column.text,
+        issued_by_name: column.text,
+        returned_to_name: column.text,
+        return_condition: column.text,
+        return_notes: column.text,
+        notes: column.text,
+        created_at: column.text,
+        updated_at: column.text
+    }),
+    jcl_item_register_history: new Table({
+        id: column.text,
+        company_id: column.text,
+        item_id: column.text,
+        status: column.text,
+        changed_at: column.text,
+        changed_by_id: column.text,
+        changed_by_name: column.text,
+        notes: column.text
     })
 });

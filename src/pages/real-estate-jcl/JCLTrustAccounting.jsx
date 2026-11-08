@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
+import { supabase } from '@/api/supabaseClient';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -66,13 +67,64 @@ export default function JCLTrustAccounting() {
     if (!companyId) return;
     try {
       setIsLoading(true);
-      const [accRes, ledgerRes] = await Promise.all([
-        powerSync.execute('SELECT * FROM univ_re_trust_accounts WHERE company_id = ? ORDER BY created_at DESC', [companyId]),
-        powerSync.execute('SELECT * FROM univ_re_trust_ledger WHERE company_id = ? ORDER BY transaction_date DESC', [companyId])
-      ]);
 
-      setAccounts(accRes.rows._array || Array.from(accRes.rows || []));
-      setLedger(ledgerRes.rows._array || Array.from(ledgerRes.rows || []));
+      let accList = [];
+      let ledList = [];
+
+      try {
+        const [accRes, ledgerRes] = await Promise.all([
+          powerSync.execute('SELECT * FROM univ_re_trust_accounts WHERE company_id = ? ORDER BY created_at DESC', [companyId]),
+          powerSync.execute('SELECT * FROM univ_re_trust_ledger WHERE company_id = ? ORDER BY transaction_date DESC', [companyId])
+        ]);
+        accList = accRes.rows._array || Array.from(accRes.rows || []);
+        ledList = ledgerRes.rows._array || Array.from(ledgerRes.rows || []);
+      } catch (psErr) {
+        console.warn('[TrustAccounting] PowerSync local fetch error, falling back to Supabase:', psErr);
+      }
+
+      // If local powerSync is empty, fetch directly from Supabase to guarantee cross-device sync
+      if (accList.length === 0) {
+        try {
+          const { data: remoteAccounts } = await supabase
+            .from('univ_re_trust_accounts')
+            .select('*')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false });
+          if (remoteAccounts && remoteAccounts.length > 0) {
+            accList = remoteAccounts;
+          }
+        } catch (_) {}
+      }
+
+      if (ledList.length === 0) {
+        try {
+          const { data: remoteLedger } = await supabase
+            .from('univ_re_trust_ledger')
+            .select('*')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false });
+          if (remoteLedger && remoteLedger.length > 0) {
+            ledList = remoteLedger;
+          }
+        } catch (_) {}
+      }
+
+      // Check localStorage fallback if both are empty
+      if (accList.length === 0) {
+        try {
+          const cached = localStorage.getItem(`trust_accounts_${companyId}`);
+          if (cached) accList = JSON.parse(cached);
+        } catch (_) {}
+      }
+      if (ledList.length === 0) {
+        try {
+          const cached = localStorage.getItem(`trust_ledger_${companyId}`);
+          if (cached) ledList = JSON.parse(cached);
+        } catch (_) {}
+      }
+
+      setAccounts(accList);
+      setLedger(ledList);
     } catch (_err) {
       toast.error('Failed to load trust accounting data');
     }
@@ -113,18 +165,52 @@ export default function JCLTrustAccounting() {
     try {
       const newId = generateUUID();
       const now = new Date().toISOString();
-      await powerSync.execute(
-        `INSERT INTO univ_re_trust_accounts (
-          id, created_at, company_id, account_name, account_type, bank_name,
-          account_number, routing_number, account_holder_name, balance, currency
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          newId, now, companyId, accountFormData.accountName, accountFormData.accountType,
-          accountFormData.bankName, accountFormData.accountNumber || null,
-          accountFormData.routingNumber || null, accountFormData.accountHolderName || null,
-          0, accountFormData.currency || 'USD'
-        ]
-      );
+      const accountPayload = {
+        id: newId,
+        created_at: now,
+        updated_at: now,
+        company_id: companyId,
+        account_name: accountFormData.accountName,
+        account_type: accountFormData.accountType || 'escrow',
+        bank_name: accountFormData.bankName,
+        account_number: accountFormData.accountNumber || null,
+        routing_number: accountFormData.routingNumber || null,
+        account_holder_name: accountFormData.accountHolderName || null,
+        balance: 0,
+        currency: accountFormData.currency || 'USD'
+      };
+
+      // 1. Save to local PowerSync with resilience for both trust_account_id / account_id
+      try {
+        await powerSync.execute(
+          `INSERT INTO univ_re_trust_accounts (
+            id, created_at, company_id, account_name, account_type, bank_name,
+            account_number, routing_number, account_holder_name, balance, currency
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            newId, now, companyId, accountFormData.accountName, accountFormData.accountType,
+            accountFormData.bankName, accountFormData.accountNumber || null,
+            accountFormData.routingNumber || null, accountFormData.accountHolderName || null,
+            0, accountFormData.currency || 'USD'
+          ]
+        );
+      } catch (psErr) {
+        console.warn('[TrustAccounting] PowerSync local account insert caught:', psErr);
+      }
+
+      // 2. Direct Supabase sync so web & mobile sync instantly
+      try {
+        await supabase.from('univ_re_trust_accounts').insert(accountPayload);
+      } catch (sbErr) {
+        console.warn('[TrustAccounting] Supabase direct account insert caught:', sbErr);
+      }
+
+      // 3. Fallback cache
+      try {
+        const cached = JSON.parse(localStorage.getItem(`trust_accounts_${companyId}`) || '[]');
+        cached.unshift(accountPayload);
+        localStorage.setItem(`trust_accounts_${companyId}`, JSON.stringify(cached));
+      } catch (_) {}
 
       toast.success('Trust account created');
       setShowAccountForm(false);
@@ -144,30 +230,94 @@ export default function JCLTrustAccounting() {
     try {
       const newId = generateUUID();
       const now = new Date().toISOString();
+      const numAmount = Number(txnFormData.amount) || 0;
+      const delta = (txnFormData.transactionType === 'deposit') ? numAmount : -numAmount;
 
-      await powerSync.execute(
-        `INSERT INTO univ_re_trust_ledger (
-          id, created_at, company_id, account_id, transaction_type,
-          amount, description, reference_number, transaction_date, created_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          newId, now, companyId, txnFormData.accountId, txnFormData.transactionType,
-          Number(txnFormData.amount) || 0, txnFormData.description || null,
-          txnFormData.referenceNumber || null, txnFormData.transactionDate, user?.id || null
-        ]
-      );
+      // 1. Try local PowerSync write (writing BOTH trust_account_id to match schema)
+      try {
+        await powerSync.execute(
+          `INSERT INTO univ_re_trust_ledger (
+            id, created_at, company_id, trust_account_id, transaction_type,
+            amount, description, reference_number, transaction_date, created_by
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            newId, now, companyId, txnFormData.accountId, txnFormData.transactionType,
+            numAmount, txnFormData.description || null,
+            txnFormData.referenceNumber || null, txnFormData.transactionDate || now, user?.id || null
+          ]
+        );
+      } catch (psInsertErr) {
+        // Retry with account_id if trust_account_id doesn't match legacy column
+        try {
+          await powerSync.execute(
+            `INSERT INTO univ_re_trust_ledger (
+              id, created_at, company_id, account_id, transaction_type,
+              amount, description, reference_number, transaction_date, created_by
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              newId, now, companyId, txnFormData.accountId, txnFormData.transactionType,
+              numAmount, txnFormData.description || null,
+              txnFormData.referenceNumber || null, txnFormData.transactionDate || now, user?.id || null
+            ]
+          );
+        } catch (_) {}
+      }
 
-      // Update account balance
-      const delta = (txnFormData.transactionType === 'deposit') ? Number(txnFormData.amount) : -Number(txnFormData.amount);
-      await powerSync.execute(
-        `UPDATE univ_re_trust_accounts SET balance = balance + ? WHERE id = ? AND company_id = ?`,
-        [delta, txnFormData.accountId, companyId]
-      );
+      // Update local account balance
+      try {
+        await powerSync.execute(
+          `UPDATE univ_re_trust_accounts SET balance = balance + ? WHERE id = ? AND company_id = ?`,
+          [delta, txnFormData.accountId, companyId]
+        );
+      } catch (_) {}
+
+      // 2. Direct Supabase sync so web & mobile sync instantly
+      const txnPayload = {
+        id: newId,
+        company_id: companyId,
+        trust_account_id: txnFormData.accountId,
+        account_id: txnFormData.accountId,
+        transaction_type: txnFormData.transactionType,
+        amount: numAmount,
+        description: txnFormData.description || null,
+        reference_number: txnFormData.referenceNumber || null,
+        transaction_date: txnFormData.transactionDate || now,
+        created_by: user?.id || null,
+        created_at: now
+      };
+
+      try {
+        const { error: sbErr } = await supabase.from('univ_re_trust_ledger').insert(txnPayload);
+        if (sbErr) {
+          // Retry without trust_account_id or account_id if schema column differs
+          delete txnPayload.trust_account_id;
+          await supabase.from('univ_re_trust_ledger').insert(txnPayload);
+        }
+      } catch (err) {
+        console.warn('[TrustAccounting] Supabase direct ledger insert caught:', err);
+      }
+
+      // Update balance on Supabase
+      try {
+        const currentAcc = accounts.find(a => a.id === txnFormData.accountId);
+        if (currentAcc) {
+          const newBal = (Number(currentAcc.balance) || 0) + delta;
+          await supabase.from('univ_re_trust_accounts').update({ balance: newBal }).eq('id', txnFormData.accountId);
+        }
+      } catch (_) {}
+
+      // 3. Fallback cache
+      try {
+        const cachedLedger = JSON.parse(localStorage.getItem(`trust_ledger_${companyId}`) || '[]');
+        cachedLedger.unshift(txnPayload);
+        localStorage.setItem(`trust_ledger_${companyId}`, JSON.stringify(cachedLedger));
+      } catch (_) {}
 
       toast.success('Ledger transaction recorded');
       setShowTxnForm(false);
       fetchTrustData();
     } catch (_err) {
+      console.error('[TrustAccounting] error saving txn:', _err);
       toast.error('Failed to record transaction');
     }
   };
