@@ -1,14 +1,10 @@
 import { NavLink } from 'react-router-dom';
-import { ArrowLeftRight, BadgeDollarSign, Banknote, CalendarClock, ChevronRight, FileText, Landmark, LockKeyhole, WalletCards } from 'lucide-react';
+import { BarChart3, ChevronRight, Landmark, WalletCards } from 'lucide-react';
 
 const financeLinks = [
   { label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: WalletCards },
   { label: 'Firm Accounting', path: '/finance/accounting', icon: Landmark },
-  { label: 'Escrow', path: '/real-estate/escrow', icon: LockKeyhole },
-  { label: 'Rent Payments', path: '/real-estate/rent-payments', icon: Banknote },
-  { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: CalendarClock },
-  { label: 'Commissions', path: '/real-estate/commissions', icon: BadgeDollarSign },
-  { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: FileText },
+  { label: 'Project Finance', path: '/jcl/project-finance', icon: BarChart3 },
 ];
 
 export default function FinanceLayout({ children }) {

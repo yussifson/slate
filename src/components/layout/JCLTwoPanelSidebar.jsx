@@ -9,7 +9,7 @@ import {
   Calendar, TrendingUp, Receipt, HeartHandshake, PenTool, Globe,
   LineChart, ClipboardList, Blocks, Zap, ChevronDown, Plus,
   MessageSquare, LifeBuoy, RefreshCw, LogOut, ShieldCheck, UserCheck, Landmark,
-  BookOpen, CheckCircle2, Building2, MapPin, Package, Warehouse
+  BookOpen, CheckCircle2, Building2, MapPin, Package, Warehouse, BarChart3
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -117,10 +117,7 @@ const JCL_DEPARTMENTS = [
     items: [
       { label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: Wallet },
       { label: "Firm Accounting", path: "/finance/accounting", icon: Landmark },
-      { label: "Invoices & AR", path: "/finance/accounting?tab=invoices", icon: Receipt },
-      { label: "Bills & AP", path: "/finance/accounting?tab=bills", icon: FileText },
-      { label: "Rent Payments", path: "/real-estate/rent-payments", icon: CreditCard },
-      { label: "Commissions", path: "/real-estate/commissions", icon: TrendingUp }
+      { label: "Project Finance", path: "/jcl/project-finance", icon: BarChart3 }
     ]
   },
   {

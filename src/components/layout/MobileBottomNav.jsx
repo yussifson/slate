@@ -234,8 +234,35 @@ export default function MobileBottomNav() {
       if (item.path === '/marketplace' || item.path === '/slate/BOLT') continue;
 
       const section = getJCLCategory(item);
+
+      // User requested: in the Finance section on the More pop-up, ONLY show Trust Accounting, Firm Accounting, and Project Finance.
+      // Filter out redundant items (commissions, payments, rent payment, invoices, etc. since they live inside Firm Accounting)
+      if (section === 'Finance') {
+        const p = (item.path || '').toLowerCase();
+        const l = (item.label || '').toLowerCase();
+        const isAllowedFinance = 
+          p === '/real-estate/trust-accounting' || l.includes('trust accounting') ||
+          p === '/finance/accounting' || l.includes('firm accounting') ||
+          p === '/jcl/project-finance' || l.includes('project finance');
+        if (!isAllowedFinance) {
+          continue; // skip commission, rent payment, payment schedules, etc.
+        }
+      }
+
       if (!grouped[section]) grouped[section] = [];
       grouped[section].push(item);
+    }
+
+    // Ensure all 3 allowed Finance items exist in Finance if not already present
+    if (!grouped['Finance']) grouped['Finance'] = [];
+    if (!grouped['Finance'].some(i => i.path === '/real-estate/trust-accounting')) {
+      grouped['Finance'].unshift({ label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet', section: 'Finance' });
+    }
+    if (!grouped['Finance'].some(i => i.path === '/finance/accounting')) {
+      grouped['Finance'].push({ label: 'Firm Accounting', path: '/finance/accounting', icon: 'Landmark', section: 'Finance' });
+    }
+    if (!grouped['Finance'].some(i => i.path === '/jcl/project-finance')) {
+      grouped['Finance'].push({ label: 'Project Finance', path: '/jcl/project-finance', icon: 'BarChart3', section: 'Finance' });
     }
 
     // Sort categories according to CATEGORY_ORDER

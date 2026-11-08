@@ -1046,7 +1046,7 @@ function PlatformRoutes() {
       <Route path="/jcl/purchase-orders" element={<JCLPurchaseOrdersPage />} />
       <Route path="/jcl/inventory" element={<JCLMaterialsPage />} />
       <Route path="/jcl/projects" element={<JCLEngagementsPage />} />
-      <Route path="/jcl/project-finance" element={<JCLProjectFinancePage />} />
+      <Route path="/jcl/project-finance" element={<FinanceLayout><JCLProjectFinancePage /></FinanceLayout>} />
       <Route path="/jcl/project-operations" element={<JCLProjectOperationsPage />} />
       <Route path="/jcl/project-collaboration" element={<JCLProjectCollaborationPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
