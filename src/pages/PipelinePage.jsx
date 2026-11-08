@@ -682,123 +682,150 @@ export default function PipelinePage() {
   const pipelineItems = pipelineStates.filter(s => s.pipeline_id === activePipeline?.id);
 
   return (
-    <div className="flex h-[calc(100vh-100px)] overflow-hidden">
-      {/* Main content */}
-      <div className="flex-1 min-w-0 overflow-y-auto">
-        <div className="p-3 md:p-6 space-y-4">
-          <PageHeader
-            title="Pipelines"
-            subtitle="Track your deals, projects, candidates and workflows across stages"
-            actions={
-              <div className="flex items-center gap-2">
-                {activePipeline && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="gap-2 border-primary/30 text-primary hover:bg-primary/5"
-                    onClick={() => setShowAI(!showAI)}
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">AI Insights</span>
-                  </Button>
-                )}
-                {isAdmin && (
-                  <Button size="sm" onClick={() => setShowNew(true)} className="gap-2">
-                    <Plus className="w-4 h-4" /> New Pipeline
-                  </Button>
-                )}
-              </div>
-            }
-          />
+    <div className="space-y-5 sm:space-y-6 pb-[max(96px,env(safe-area-inset-bottom))] font-sans min-h-screen p-3 sm:p-6 lg:p-8 relative bg-background w-full max-w-full overflow-x-hidden">
+      
+      {/* ── Top Native Header ── */}
+      <div className="flex items-center justify-between gap-3 py-1">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
+            Universal Pipelines
+          </h1>
+          <p className="text-[11px] text-muted-foreground font-medium mt-0.5">
+            {pipelineStates.length} deals & workflows across {pipelines.length} business stages
+          </p>
+        </div>
 
-          {/* Pipeline tabs */}
-          {pipelines.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              {pipelines.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => setActivePipelineId(p.id)}
-                  className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    activePipeline?.id === p.id
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "bg-muted/60 text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
+        <div className="flex items-center gap-2">
+          {activePipeline && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAI(!showAI)}
+              className="h-9 gap-1.5 bg-card border-border text-foreground shadow-xs rounded-xl font-bold text-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <span className="hidden sm:inline">AI Insights</span>
+            </Button>
           )}
-
-          {/* Kanban Board */}
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
-          ) : pipelines.length === 0 ? (
-            <div className="text-center py-16 bg-card rounded-2xl border border-border">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <GitBranch className="w-7 h-7 text-primary" />
-              </div>
-              <p className="text-base font-semibold mb-1">No pipelines yet</p>
-              <p className="text-sm text-muted-foreground mb-5 max-w-xs mx-auto">
-                Create your first pipeline to track your workflow — sales, recruitment, projects and more.
-              </p>
-              {isAdmin && (
-                <Button onClick={() => setShowNew(true)} className="gap-2">
-                  <Plus className="w-4 h-4" /> Create Pipeline
-                </Button>
-              )}
-            </div>
-          ) : (
-            <UniversalPipelineKanban
-              pipeline={activePipeline}
-              pipelineStates={pipelineStates}
-              companyId={user?.company_id}
-            />
-          )}
-
-          {/* Admin pipeline list */}
-          {isAdmin && pipelines.length > 0 && (
-            <div className="pt-2">
-              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Pipeline Templates
-              </h2>
-              <div className="space-y-2">
-                {pipelines.map(p => (
-                  <PipelineCard
-                    key={p.id}
-                    pipeline={p}
-                    onEdit={setEditing}
-                    onDelete={(id) => deleteMutation.mutate(id)}
-                    itemCount={pipelineStates.filter(s => s.pipeline_id === p.id).length}
-                  />
-                ))}
-              </div>
-            </div>
+          {isAdmin && (
+            <Button
+              onClick={() => setShowNew(true)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl h-9 px-3.5 sm:px-4 gap-1.5 shadow-md shadow-emerald-600/20 active:scale-95 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Pipeline</span>
+            </Button>
           )}
         </div>
       </div>
 
-      {/* AI Sidebar */}
-      <AnimatePresence>
-        {showAI && activePipeline && (
-          <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 320, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="border-l border-border bg-card shrink-0 overflow-hidden hidden md:flex flex-col"
-            style={{ width: 320 }}
-          >
-            <AIPipelineAssistant
-              pipeline={activePipeline}
-              items={pipelineItems}
-              onClose={() => setShowAI(false)}
+      {/* ── Pipeline Selector Tabs ── */}
+      {pipelines.length > 1 && (
+        <div className="overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+          <div className="flex gap-2 min-w-max">
+            {pipelines.map(p => (
+              <button
+                key={p.id}
+                onClick={() => setActivePipelineId(p.id)}
+                className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                  activePipeline?.id === p.id
+                    ? "bg-[#005A9C] text-white border-[#005A9C] shadow-sm"
+                    : "bg-card border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Search, Filters & View Mode Bar (Matching CRM Leads) ── */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-card/90 backdrop-blur-xl p-3 sm:p-4 rounded-[20px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto flex-1">
+          <div className="relative w-full sm:w-80">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search deals, titles, assignees..."
+              className="pl-9 h-10 rounded-xl bg-background text-xs border-border/80 w-full"
             />
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+          <span className="text-[11px] font-bold text-primary bg-primary/10 border border-primary/20 rounded-xl px-3 py-2">
+            {pipelineItems.length} {activePipeline?.item_label || "Items"}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end shrink-0">
+          <div className="flex items-center bg-muted/60 p-1 rounded-xl h-10 border border-border/60 shrink-0">
+            <button
+              onClick={() => setViewMode("board")}
+              className={`rounded-lg text-xs font-bold gap-1.5 px-3 py-1.5 flex items-center transition-all ${viewMode === "board" ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" /> Board
+            </button>
+            <button
+              onClick={() => setViewMode("list")}
+              className={`rounded-lg text-xs font-bold gap-1.5 px-3 py-1.5 flex items-center transition-all ${viewMode === "list" ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              <List className="w-3.5 h-3.5" /> List
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main Pipeline Board / Content ── */}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        </div>
+      ) : pipelines.length === 0 ? (
+        <div className="text-center py-16 bg-card rounded-2xl border border-border p-8">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+            <GitBranch className="w-7 h-7 text-primary" />
+          </div>
+          <p className="text-base font-bold mb-1">No pipelines configured</p>
+          <p className="text-sm text-muted-foreground mb-5 max-w-xs mx-auto">
+            Create your first workflow pipeline to manage stages seamlessly.
+          </p>
+          {isAdmin && (
+            <Button onClick={() => setShowNew(true)} className="bg-emerald-600 text-white font-bold text-xs rounded-xl h-9">
+              <Plus className="w-4 h-4 mr-1" /> Create Pipeline
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="w-full max-w-full overflow-hidden">
+          <UniversalPipelineKanban
+            pipeline={activePipeline}
+            pipelineStates={pipelineStates}
+            companyId={user?.company_id}
+            searchQuery={search}
+            viewMode={viewMode}
+          />
+        </div>
+      )}
+
+      {/* Admin pipeline management list */}
+      {isAdmin && pipelines.length > 0 && (
+        <div className="pt-4 border-t border-border">
+          <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
+            Pipeline Templates
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {pipelines.map(p => (
+              <PipelineCard
+                key={p.id}
+                pipeline={p}
+                onEdit={setEditing}
+                onDelete={(id) => deleteMutation.mutate(id)}
+                itemCount={pipelineStates.filter(s => s.pipeline_id === p.id).length}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Modals */}
       {(showNew || editing) && (
