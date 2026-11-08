@@ -1,0 +1,161 @@
+import React, { useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard, WalletCards, BookOpen, Receipt, FileText,
+  LineChart, ShieldCheck, CheckCircle2, TrendingUp, Users,
+  ShoppingBag, Wallet, BookCheck, BarChart3, Calculator,
+  ClipboardCheck, PanelLeftClose, PanelLeftOpen
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+// Structured categorization as specified by the user
+export const FINANCE_SECTIONS = [
+  {
+    category: 'OVERVIEW',
+    items: [
+      { label: 'Finance Overview', path: '/finance', icon: LayoutDashboard, exact: true },
+      { label: 'Trust Accounting', path: '/finance/trust-accounting', icon: WalletCards },
+    ]
+  },
+  {
+    category: 'FIRM ACCOUNTING',
+    items: [
+      { label: 'Chart of Accounts', path: '/finance/chart-of-accounts', icon: BookOpen },
+      { label: 'Invoices', path: '/finance/invoices', icon: Receipt },
+      { label: 'Bills', path: '/finance/bills', icon: FileText },
+      { label: 'General Ledger', path: '/finance/general-ledger', icon: LineChart },
+      { label: 'Fixed Assets', path: '/finance/fixed-assets', icon: ShieldCheck },
+      { label: 'Bank Reconciliation', path: '/finance/bank-reconciliation', icon: CheckCircle2 },
+      { label: 'Income & Expenses', path: '/finance/income-expenses', icon: TrendingUp },
+      { label: 'Payroll & Tax', path: '/finance/payroll', icon: Users },
+      { label: 'TONEFO Installments', path: '/finance/tonefo', icon: ShoppingBag },
+      { label: 'Petty Cash', path: '/finance/petty-cash', icon: Wallet },
+      { label: 'Financial Statements', path: '/finance/financial-statements', icon: BookCheck },
+    ]
+  },
+  {
+    category: 'PROJECT FINANCE',
+    items: [
+      { label: 'Project Finance', path: '/finance/project-finance', icon: BarChart3, exact: true },
+      { label: 'Project Budgets', path: '/finance/project-budgets', icon: Calculator },
+      { label: 'Project Variations', path: '/finance/project-variations', icon: TrendingUp },
+      { label: 'Progress Claims', path: '/finance/progress-claims', icon: ClipboardCheck },
+    ]
+  }
+];
+
+export default function FinanceLayout() {
+  const location = useLocation();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Flatten all items for mobile horizontal bar matching
+  const allItems = FINANCE_SECTIONS.flatMap(sec => sec.items);
+
+  return (
+    <div className="w-full flex-1 flex flex-col md:flex-row min-h-[calc(100vh-120px)] w-full max-w-full overflow-x-hidden bg-background">
+      
+      {/* ── Native Mobile Horizontal Tab Bar (< md) matching HRLayout ── */}
+      <div className="md:hidden sticky top-0 z-30 bg-card/95 backdrop-blur-md border-b border-border/80 px-3 py-2.5 shadow-xs overflow-x-auto scrollbar-hide -mx-1">
+        <div className="flex items-center gap-2 min-w-max px-1">
+          {allItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.exact 
+              ? location.pathname === item.path 
+              : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
+
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shrink-0 active:scale-95",
+                  isActive
+                    ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
+                    : "bg-background text-muted-foreground border-border/80 hover:text-foreground hover:bg-muted"
+                )}
+              >
+                <Icon className={cn("w-3.5 h-3.5 shrink-0", isActive ? "text-white" : "text-muted-foreground")} />
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Desktop Secondary Left Inner Sidebar (>= md) matching HRLayout ── */}
+      <aside className={cn(
+        "hidden md:flex bg-card border-r border-border/70 flex-col shrink-0 overflow-hidden transition-all duration-300 z-20",
+        sidebarCollapsed ? "w-[76px]" : "w-56 lg:w-64",
+        "h-full min-h-0 self-start sticky top-16 max-h-[calc(100vh-4rem)]"
+      )}>
+        <div className={cn("shrink-0 min-h-[76px] p-3 border-b border-border/60 bg-gradient-to-br from-primary/10 via-transparent to-transparent", sidebarCollapsed && "px-2")}>
+          <div className={cn("flex items-center gap-3", sidebarCollapsed && "justify-center")}>
+            <div className="w-9 h-9 rounded-xl bg-[#005A9C] text-white flex items-center justify-center shadow-sm shrink-0">
+              <LayoutDashboard className="w-5 h-5 text-white" />
+            </div>
+            <div className={cn(sidebarCollapsed && "hidden", "min-w-0")}>
+              <h2 className="text-sm font-bold text-foreground tracking-tight truncate">Finance & Treasury</h2>
+              <p className="text-[11px] text-muted-foreground truncate">Corporate & Commercial Hub</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed(prev => !prev)}
+              className="hidden md:inline-flex ml-auto h-8 w-8 items-center justify-center rounded-xl border border-border/70 bg-background/70 text-muted-foreground shadow-sm transition hover:border-primary/40 hover:bg-primary/10 hover:text-primary shrink-0"
+              aria-label={sidebarCollapsed ? "Expand Finance sidebar" : "Collapse Finance sidebar"}
+              title={sidebarCollapsed ? "Expand Finance sidebar" : "Collapse Finance sidebar"}
+            >
+              {sidebarCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+
+        <nav className="min-h-0 flex-1 overflow-y-auto p-2 space-y-3 scrollbar-thin">
+          {FINANCE_SECTIONS.map((sectionGroup) => (
+            <div key={sectionGroup.category} className="space-y-1">
+              <div className={cn("px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground", sidebarCollapsed && "hidden")}>
+                {sectionGroup.category}
+              </div>
+              {sectionGroup.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = item.exact 
+                  ? location.pathname === item.path 
+                  : (location.pathname === item.path || location.pathname.startsWith(item.path + '/'));
+
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={item.path}
+                    className={cn(
+                      "flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group",
+                      isActive
+                        ? "bg-[#005A9C] text-white shadow-sm font-semibold dark:bg-[#005A9C] dark:text-white"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
+                    )}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={cn(
+                        "w-4 h-4 shrink-0 transition-colors",
+                        isActive ? "text-white" : "text-muted-foreground group-hover:text-foreground"
+                      )} />
+                      <span className={cn("truncate", sidebarCollapsed && "hidden")}>{item.label}</span>
+                    </div>
+                    {isActive && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#FF6B00] shadow-[0_0_6px_rgba(255,107,0,0.8)] shrink-0" />
+                    )}
+                  </NavLink>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+      </aside>
+
+      {/* ── Finance Content Outlet ── */}
+      <main className="flex-1 min-w-0 min-h-0 overflow-y-auto p-2.5 sm:p-5 lg:p-6 pb-24 md:pb-8">
+        <div className="w-full min-w-0 max-w-full overflow-x-hidden">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  );
+}

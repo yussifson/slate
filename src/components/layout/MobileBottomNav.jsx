@@ -245,11 +245,11 @@ export default function MobileBottomNav() {
 
       const section = getJCLCategory(item);
 
-      // In the Finance section on the mobile More menu, show Trust Accounting and all full Finance pages.
+      // In the Finance section on the mobile More menu, only show Finance (opens the full Finance Suite)
       if (section === 'Finance') {
         const p = (item.path || '').toLowerCase();
-        // Skip redundant legacy standalone commission / rent payment routes
-        if (p === '/real-estate/commissions' || p === '/real-estate/rent-payments' || p === '/real-estate/payment-schedules' || p === '/real-estate/commission-rules') {
+        const l = (item.label || '').toLowerCase();
+        if (p !== '/finance' && l !== 'finance') {
           continue;
         }
       }

@@ -17,10 +17,16 @@ const tabs = [
   { id: 'claims', label: 'Progress Claims', icon: ClipboardCheck },
 ];
 
-export default function JCLProjectFinance() {
+export default function JCLProjectFinance({ defaultTab, isStandalonePage = false }) {
   const companyId = useCompanyId();
   const { toast } = useToast();
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState(defaultTab || 'overview');
+
+  useEffect(() => {
+    if (defaultTab) {
+      setTab(defaultTab);
+    }
+  }, [defaultTab]);
   const [projects, setProjects] = useState([]);
   const [summary, setSummary] = useState([]);
   const [budgets, setBudgets] = useState([]);
@@ -186,29 +192,31 @@ export default function JCLProjectFinance() {
         ))}
       </div>
 
-      {/* ── Horizontally Scrollable Sub-tabs Pill Bar ── */}
-      <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
-        <div className="flex items-center gap-1.5 min-w-max bg-card/90 border border-border/80 p-1.5 rounded-2xl shadow-xs">
-          {tabs.map(({ id, label, icon: Icon }) => {
-            const isActive = tab === id;
-            return (
-              <button
-                key={id}
-                onClick={() => setTab(id)}
-                className={cn(
-                  'inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all',
-                  isActive
-                    ? 'bg-[#005A9C] text-white shadow-sm'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                )}
-              >
-                <Icon className="h-3.5 w-3.5 shrink-0" />
-                <span>{label}</span>
-              </button>
-            );
-          })}
+      {/* ── Horizontally Scrollable Sub-tabs Pill Bar (Hidden when standalone page) ── */}
+      {!isStandalonePage && (
+        <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
+          <div className="flex items-center gap-1.5 min-w-max bg-card/90 border border-border/80 p-1.5 rounded-2xl shadow-xs">
+            {tabs.map(({ id, label, icon: Icon }) => {
+              const isActive = tab === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setTab(id)}
+                  className={cn(
+                    'inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all',
+                    isActive
+                      ? 'bg-[#005A9C] text-white shadow-sm'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── TAB CONTENT ── */}
 

@@ -447,11 +447,12 @@ const RealEstatePaymentSchedules = React.lazy(() => import('./pages/real-estate/
 const RealEstateRecommendations = React.lazy(() => import('./pages/real-estate/Recommendations'));
 const RealEstateTeamManagement = React.lazy(() => import('./pages/real-estate/TeamManagement'));
 const RealEstateTrustAccounting = React.lazy(() => import('./pages/real-estate/TrustAccounting'));
-const FirmAccountingHub = React.lazy(() => import('./pages/finance/FirmAccountingHub'));
-const SmartFirmAccountingRouter = () => {
+const FinanceOverview = React.lazy(() => import('./pages/finance/FinanceOverview'));
+const FinanceLayout = React.lazy(() => import('./pages/finance/FinanceLayout'));
+const SmartFinanceOverviewRouter = () => {
   const { user } = useAuth();
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
-  if (ind === 'real_estate_jcl') return <FirmAccountingHub />;
+  if (ind === 'real_estate_jcl') return <FinanceOverview />;
   return <Navigate to="/" replace />;
 };
 const RealEstateAnalytics = React.lazy(() => import('./pages/real-estate/Analytics'));
@@ -1394,22 +1395,33 @@ function PlatformRoutes() {
       <Route path="/real-estate/payment-schedules" element={<SmartPaymentSchedulesRouter />} />
       <Route path="/real-estate/recommendations" element={<RealEstateRecommendations />} />
       <Route path="/real-estate/team-management" element={<RealEstateTeamManagement />} />
-      <Route path="/real-estate/trust-accounting" element={<SmartTrustAccountingRouter />} />
-      <Route path="/finance/accounting" element={<SmartFirmAccountingRouter />} />
-      <Route path="/finance/chart-of-accounts" element={<FirmAccountingHub defaultTab="coa" />} />
-      <Route path="/finance/invoices" element={<FirmAccountingHub defaultTab="invoices" />} />
-      <Route path="/finance/bills" element={<FirmAccountingHub defaultTab="bills" />} />
-      <Route path="/finance/general-ledger" element={<FirmAccountingHub defaultTab="jv" />} />
-      <Route path="/finance/fixed-assets" element={<FirmAccountingHub defaultTab="assets" />} />
-      <Route path="/finance/bank-reconciliation" element={<FirmAccountingHub defaultTab="bankrec" />} />
-      <Route path="/finance/income-expenses" element={<FirmAccountingHub defaultTab="income" />} />
-      <Route path="/finance/payroll" element={<FirmAccountingHub defaultTab="payroll" />} />
-      <Route path="/finance/tonefo" element={<FirmAccountingHub defaultTab="tonefo" />} />
-      <Route path="/finance/petty-cash" element={<FirmAccountingHub defaultTab="petty_cash" />} />
-      <Route path="/finance/financial-statements" element={<FirmAccountingHub defaultTab="statements" />} />
-      <Route path="/jcl/project-finance/budgets" element={<JCLProjectFinancePage defaultTab="budgets" />} />
-      <Route path="/jcl/project-finance/variations" element={<JCLProjectFinancePage defaultTab="variations" />} />
-      <Route path="/jcl/project-finance/claims" element={<JCLProjectFinancePage defaultTab="claims" />} />
+      {/* Dedicated Finance Suite wrapped in FinanceLayout (structured identically to HRLayout) */}
+      <Route element={<FinanceLayout />}>
+        <Route path="/finance" element={<SmartFinanceOverviewRouter />} />
+        <Route path="/finance/trust-accounting" element={<SmartTrustAccountingRouter />} />
+        {/* Firm Accounting full standalone pages */}
+        <Route path="/finance/chart-of-accounts" element={<FirmAccountingHub defaultTab="coa" isStandalonePage={true} />} />
+        <Route path="/finance/invoices" element={<FirmAccountingHub defaultTab="invoices" isStandalonePage={true} />} />
+        <Route path="/finance/bills" element={<FirmAccountingHub defaultTab="bills" isStandalonePage={true} />} />
+        <Route path="/finance/general-ledger" element={<FirmAccountingHub defaultTab="jv" isStandalonePage={true} />} />
+        <Route path="/finance/fixed-assets" element={<FirmAccountingHub defaultTab="assets" isStandalonePage={true} />} />
+        <Route path="/finance/bank-reconciliation" element={<FirmAccountingHub defaultTab="bankrec" isStandalonePage={true} />} />
+        <Route path="/finance/income-expenses" element={<FirmAccountingHub defaultTab="income" isStandalonePage={true} />} />
+        <Route path="/finance/payroll" element={<FirmAccountingHub defaultTab="payroll" isStandalonePage={true} />} />
+        <Route path="/finance/tonefo" element={<FirmAccountingHub defaultTab="tonefo" isStandalonePage={true} />} />
+        <Route path="/finance/petty-cash" element={<FirmAccountingHub defaultTab="petty_cash" isStandalonePage={true} />} />
+        <Route path="/finance/financial-statements" element={<FirmAccountingHub defaultTab="statements" isStandalonePage={true} />} />
+        {/* Project Finance full standalone pages */}
+        <Route path="/finance/project-finance" element={<JCLProjectFinancePage defaultTab="overview" isStandalonePage={true} />} />
+        <Route path="/finance/project-budgets" element={<JCLProjectFinancePage defaultTab="budgets" isStandalonePage={true} />} />
+        <Route path="/finance/project-variations" element={<JCLProjectFinancePage defaultTab="variations" isStandalonePage={true} />} />
+        <Route path="/finance/progress-claims" element={<JCLProjectFinancePage defaultTab="claims" isStandalonePage={true} />} />
+      </Route>
+
+      {/* Legacy Finance Aliases for seamless backwards compatibility */}
+      <Route path="/real-estate/trust-accounting" element={<Navigate to="/finance/trust-accounting" replace />} />
+      <Route path="/jcl/project-finance" element={<Navigate to="/finance/project-finance" replace />} />
+      <Route path="/finance/accounting" element={<Navigate to="/finance" replace />} />
       <Route path="/real-estate/analytics" element={<SmartAnalyticsRouter />} />\n  <Route path="/jcl/intelligence" element={<JCLPhase8IntelligencePage />} />
       <Route path="/real-estate/field-tracker" element={<JCLMarketerTrackerPage />} />
       <Route path="/real-estate/marketer-tracker" element={<JCLMarketerTrackerPage />} />

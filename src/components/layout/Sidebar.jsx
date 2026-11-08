@@ -749,9 +749,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   // Trust Accounting is now accessed via Finance inner tabs — removed from main sidebar
 
-    // Inject Firm Accounting system — JCL only
-    if (activeIndustry === 'real_estate_jcl' && !rawNavItems.some(n => n.path === '/finance/accounting')) {
-      rawNavItems.push({ label: "Firm Accounting", path: "/finance/accounting", icon: "Landmark" });
+    // Inject Finance overview — JCL only (single unified button on main sidebar)
+    if (activeIndustry === 'real_estate_jcl' && !rawNavItems.some(n => n.path === '/finance')) {
+      rawNavItems.push({ label: "Finance", path: "/finance", icon: "Landmark" });
     }
 
     // Inject JCL-only navigation that must remain visible in the rendered sidebar.
@@ -857,7 +857,17 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return aOrder - bOrder;
   });
 
-  // Trust Accounting is a main button under Finance in JCL
+  // In JCL, all finance sub-features live inside the Finance module.
+  // The only button on the main sidebar under Finance is Finance itself.
+  if (activeIndustry === 'real_estate_jcl') {
+    navItems = navItems.filter(item => {
+      const p = (item.path || '').toLowerCase();
+      const l = (item.label || '').toLowerCase();
+      if (['/real-estate/trust-accounting', '/jcl/project-finance', '/invoices', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions', '/real-estate/commission-rules', '/finance/accounting', '/finance/chart-of-accounts', '/finance/invoices', '/finance/bills', '/finance/general-ledger', '/finance/fixed-assets', '/finance/bank-reconciliation', '/finance/income-expenses', '/finance/payroll', '/finance/tonefo', '/finance/petty-cash', '/finance/financial-statements', '/jcl/project-finance/budgets', '/jcl/project-finance/variations', '/jcl/project-finance/claims'].includes(p)) return false;
+      if (['trust accounting', 'project finance', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'commission rules', 'chart of accounts', 'bills', 'general ledger', 'fixed assets', 'bank reconciliation', 'income & expenses', 'payroll & tax', 'tonefo installments', 'petty cash', 'financial statements', 'project budgets', 'project variations', 'progress claims', 'firm accounting'].includes(l)) return false;
+      return true;
+    });
+  }
 
   const getCategory = (item) => {
     const p = (item.path || '').split('?')[0];
@@ -883,7 +893,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/engineering', '/engineering/drawings', '/bom', '/boq', '/jcl/projects', '/jcl/project-operations', '/jcl/project-collaboration'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'drawings', 'projects', 'project operations', 'project collaboration'].includes(normalizedLabel)) {
         return "Engineering";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions', '/real-estate/trust-accounting'].includes(p) || p.startsWith('/finance/') || p.startsWith('/jcl/project-finance') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'project finance', 'trust accounting', 'chart of accounts', 'bills', 'general ledger', 'fixed assets', 'bank reconciliation', 'income & expenses', 'payroll & tax', 'tonefo installments', 'petty cash', 'financial statements', 'project budgets', 'project variations', 'progress claims'].includes(normalizedLabel)) {
+      if (['/finance', '/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions', '/real-estate/trust-accounting'].includes(p) || p.startsWith('/finance') || p.startsWith('/jcl/project-finance') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'project finance', 'trust accounting', 'chart of accounts', 'bills', 'general ledger', 'fixed assets', 'bank reconciliation', 'income & expenses', 'payroll & tax', 'tonefo installments', 'petty cash', 'financial statements', 'project budgets', 'project variations', 'progress claims'].includes(normalizedLabel)) {
         return "Finance";
       }
     }

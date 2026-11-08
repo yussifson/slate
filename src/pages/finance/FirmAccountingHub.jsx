@@ -244,20 +244,24 @@ function StatusBadge({ status, onStatusChange, allowedStatuses = [] }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-export default function FirmAccountingHub() {
+export default function FirmAccountingHub({ defaultTab, isStandalonePage = false }) {
   const companyId = useCompanyId();
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get('tab');
 
-  const [activeTab, setActiveTab] = useState(tabFromUrl || 'coa');
+  const [activeTab, setActiveTab] = useState(defaultTab || tabFromUrl || 'coa');
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [financeNavCollapsed, setFinanceNavCollapsed] = useState(false);
 
   useEffect(() => {
-    if (tabFromUrl && tabFromUrl !== activeTab) setActiveTab(tabFromUrl);
-  }, [tabFromUrl]);
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+    } else if (tabFromUrl && tabFromUrl !== activeTab) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [defaultTab, tabFromUrl, activeTab]);
 
   const handleTabChange = (val) => {
     setActiveTab(val);
@@ -686,30 +690,32 @@ export default function FirmAccountingHub() {
         <KpiCard label="TONEFO Outstanding" value={fmt(totalOutstanding)} sub={`${tonefoCases.length} customers`} icon={ShoppingBag} color="orange" />
       </div>
 
-      {/* ── 3. Horizontally Scrollable Sub-pages Pill Bar ── */}
-      <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
-        <div className="flex items-center gap-1.5 min-w-max bg-card/90 border border-border/80 p-1.5 rounded-2xl shadow-xs">
-          {TABS.map(tab => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                className={cn(
-                  'inline-flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all',
-                  isActive
-                    ? 'bg-[#005A9C] text-white shadow-sm'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                )}
-              >
-                <Icon className="h-3.5 w-3.5 shrink-0" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
+      {/* ── 3. Horizontally Scrollable Sub-pages Pill Bar (Hidden when standalone page) ── */}
+      {!isStandalonePage && (
+        <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
+          <div className="flex items-center gap-1.5 min-w-max bg-card/90 border border-border/80 p-1.5 rounded-2xl shadow-xs">
+            {TABS.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={cn(
+                    'inline-flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all',
+                    isActive
+                      ? 'bg-[#005A9C] text-white shadow-sm'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════ */}
       {/* TAB: CHART OF ACCOUNTS                                */}
