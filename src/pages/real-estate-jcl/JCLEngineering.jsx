@@ -265,8 +265,8 @@ export default function JCLEngineering() {
   );
 
   return (
-    <main className="min-h-full bg-background p-4 sm:p-6 lg:p-8 font-sans">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6">
+    <main className="w-full max-w-full overflow-x-hidden min-h-screen bg-background p-3.5 sm:p-6 lg:p-8 font-sans pb-24 sm:pb-12">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
         {/* Native Mobile Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -275,7 +275,6 @@ export default function JCLEngineering() {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Engineering</h1>
-              <p className="text-xs text-muted-foreground font-medium">Drawing registers, technical revisions & approvals</p>
             </div>
           </div>
 
@@ -335,10 +334,12 @@ export default function JCLEngineering() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
-          <TabsList className="bg-muted/60 p-1 border border-border">
-            <TabsTrigger value="drawings" className="text-xs font-semibold">Drawing Register ({drawings.length})</TabsTrigger>
-            <TabsTrigger value="revisions" className="text-xs font-semibold">Revision History ({revisions.length})</TabsTrigger>
-          </TabsList>
+          <div className="w-full overflow-x-auto scrollbar-none pb-1">
+            <TabsList className="bg-muted/60 p-1 border border-border inline-flex w-auto min-w-full sm:min-w-0 justify-start sm:justify-center">
+              <TabsTrigger value="drawings" className="text-xs font-semibold shrink-0">Drawing Register ({drawings.length})</TabsTrigger>
+              <TabsTrigger value="revisions" className="text-xs font-semibold shrink-0">Revision History ({revisions.length})</TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* TAB 1: DRAWING REGISTER */}
           <TabsContent value="drawings" className="m-0">

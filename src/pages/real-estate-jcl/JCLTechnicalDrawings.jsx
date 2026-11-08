@@ -236,7 +236,7 @@ export default function JCLTechnicalDrawings() {
   });
 
   return (
-    <div className="flex flex-col h-full bg-background text-foreground p-6 space-y-6 overflow-y-auto">
+    <div className="w-full max-w-full overflow-x-hidden min-h-screen flex flex-col bg-background text-foreground p-3.5 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 pb-24 sm:pb-12">
       {/* Native Mobile Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -245,7 +245,6 @@ export default function JCLTechnicalDrawings() {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Drawings Register</h1>
-            <p className="text-xs text-muted-foreground font-medium">{filtered.length} technical blueprints & revisions</p>
           </div>
         </div>
 

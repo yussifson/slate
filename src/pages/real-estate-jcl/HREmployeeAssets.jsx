@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   Laptop, Smartphone, ShieldCheck, Key, Plus, RefreshCw, 
-  Trash2, Search, CheckCircle2, AlertCircle, RotateCcw, User 
+  Trash2, Search, CheckCircle2, AlertCircle, RotateCcw, User, Package, Users
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
 const ITEM_CATEGORIES = [
   'Laptop / Computer',
@@ -86,12 +87,14 @@ export default function HREmployeeAssets() {
     }
   };
 
-  useEffect(() => { loadData(); }, [companyId]);
+  useEffect(() => {
+    loadData();
+  }, [companyId]);
 
   const handleOpenCreate = () => {
     setForm({
-      person_id: employees[0]?.id || '',
-      person_name: employees[0]?.name || '',
+      person_id: '',
+      person_name: '',
       item_name: '',
       item_category: 'Laptop / Computer',
       serial_number: '',
@@ -105,52 +108,54 @@ export default function HREmployeeAssets() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.item_name || !form.person_name) {
-      toast.error('Item name and employee are required');
+    if (!companyId || !form.person_id || !form.item_name) {
+      toast.error('Please select an employee and specify the item');
       return;
     }
+
     setSaving(true);
     try {
-      const desc = [
-        form.item_category ? `[${form.item_category}]` : '',
-        form.serial_number ? `S/N: ${form.serial_number}` : '',
-        form.description
-      ].filter(Boolean).join(' ');
-
       const payload = {
-        id: crypto.randomUUID(),
         company_id: companyId,
-        person_id: form.person_id || null,
+        person_id: form.person_id,
         person_name: form.person_name,
-        item_name: form.item_name.trim(),
-        description: desc || null,
+        item_name: form.item_name,
+        description: [
+          form.item_category ? `[${form.item_category}]` : '',
+          form.serial_number ? `S/N: ${form.serial_number}` : '',
+          form.description
+        ].filter(Boolean).join(' - '),
         issued_at: new Date(form.issued_at).toISOString(),
         expected_return_at: form.expected_return_at ? new Date(form.expected_return_at).toISOString() : null,
         status: 'issued',
-        issued_by_id: user?.id || null,
-        issued_by_name: user?.user_metadata?.full_name || user?.email || 'HR Department',
-        notes: form.notes.trim() || null,
+        notes: form.notes || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase.from('jcl_item_register').insert(payload);
+      const { data, error } = await supabase
+        .from('jcl_item_register')
+        .insert([payload])
+        .select()
+        .single();
+
       if (error) throw error;
 
-      toast.success('Company item assigned to employee');
+      toast.success('Company item successfully assigned to employee');
       setShowModal(false);
       loadData();
     } catch (err) {
-      console.error('Save asset error:', err);
-      toast.error(err.message || 'Failed to record asset assignment');
+      console.error('Assign error:', err);
+      toast.error(err.message || 'Failed to issue item');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleReturnItem = async (e) => {
+  const handleReturn = async (e) => {
     e.preventDefault();
     if (!returnModal) return;
+
     setSaving(true);
     try {
       const now = new Date().toISOString();
@@ -159,34 +164,24 @@ export default function HREmployeeAssets() {
         .update({
           status: 'returned',
           actual_return_at: now,
-          returned_to_name: user?.user_metadata?.full_name || user?.email || 'HR Department',
           return_condition: returnForm.condition,
-          return_notes: returnForm.notes || null,
+          return_notes: returnForm.notes,
+          returned_to_name: user?.full_name || user?.email || 'HR Department',
           updated_at: now
         })
         .eq('id', returnModal.id)
         .eq('company_id', companyId);
 
       if (error) throw error;
-      toast.success('Item marked as returned');
+
+      toast.success('Item custody released and returned to inventory');
       setReturnModal(null);
       loadData();
     } catch (err) {
-      toast.error(err.message || 'Failed to process return');
+      console.error('Return error:', err);
+      toast.error(err.message || 'Failed to record return');
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this custody record?')) return;
-    try {
-      const { error } = await supabase.from('jcl_item_register').delete().eq('id', id).eq('company_id', companyId);
-      if (error) throw error;
-      toast.success('Record deleted');
-      loadData();
-    } catch (err) {
-      toast.error(err.message || 'Failed to delete');
     }
   };
 
@@ -199,355 +194,342 @@ export default function HREmployeeAssets() {
   });
 
   return (
-    <div className="flex flex-col w-full max-w-full overflow-x-hidden bg-background text-foreground p-3 sm:p-6 space-y-4 sm:space-y-6 font-sans">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5 border-border">
+    <div className="flex flex-col w-full max-w-full overflow-x-hidden bg-background text-foreground p-3 sm:p-6 lg:p-8 space-y-4 sm:space-y-6 font-sans pb-24">
+      {/* ── 1. Clean Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-primary" /> Employee Custody & Company Assets
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
+            Custody Tracker & Company Assets
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Track all corporate property issued to employees (laptops, phones, access keys, PPE, and vehicles).
-          </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadData} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} /> Refresh
-          </Button>
-          <Button size="sm" onClick={handleOpenCreate} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Plus className="w-4 h-4 mr-2" /> Issue Company Item
-          </Button>
-        </div>
+        <Button
+          onClick={handleOpenCreate}
+          className="w-full sm:w-auto h-9 px-4 gap-1.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-xs rounded-xl justify-center shrink-0"
+        >
+          <Plus className="w-3.5 h-3.5" /> Issue Company Item
+        </Button>
       </div>
 
-      {/* Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Items Issued</div>
-          <div className="text-2xl font-bold mt-1">{assets.length}</div>
+      {/* ── 2. Mobile 2x2 Dedicated Stats Grid (< md) ── */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:hidden">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <Package className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Total Issued</span>
+          </div>
+          <p className="text-lg font-black text-foreground truncate">{assets.length}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Tracked items</span>
         </div>
-        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Employee Custody</div>
-          <div className="text-2xl font-bold mt-1 text-amber-600">
+
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="text-[10px] font-bold uppercase tracking-wider truncate">In Custody</span>
+          </div>
+          <p className="text-lg font-black text-amber-600 truncate">
             {assets.filter(a => a.status === 'issued').length}
-          </div>
+          </p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Active staff custody</span>
         </div>
-        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Successfully Returned</div>
-          <div className="text-2xl font-bold mt-1 text-emerald-600">
+
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <RotateCcw className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Returned</span>
+          </div>
+          <p className="text-lg font-black text-emerald-600 truncate">
             {assets.filter(a => a.status === 'returned').length}
-          </div>
+          </p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Successfully restored</span>
         </div>
-        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs flex flex-col justify-between">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Staff with Custody</div>
-          <div className="text-2xl font-bold mt-1 text-primary">
-            {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
+
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <Users className="w-3.5 h-3.5 text-[#005A9C] shrink-0" />
+            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Staff Holders</span>
           </div>
+          <p className="text-lg font-black text-[#005A9C] truncate">
+            {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
+          </p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Unique employees</span>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+      {/* ── Desktop Executive KPI Cards (>= md) ── */}
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Items Issued</span>
+          <span className="text-2xl font-black mt-1 text-foreground">{assets.length}</span>
+        </div>
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Employee Custody</span>
+          <span className="text-2xl font-black mt-1 text-amber-600">
+            {assets.filter(a => a.status === 'issued').length}
+          </span>
+        </div>
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Returned Safely</span>
+          <span className="text-2xl font-black mt-1 text-emerald-600">
+            {assets.filter(a => a.status === 'returned').length}
+          </span>
+        </div>
+        <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Employees With Custody</span>
+          <span className="text-2xl font-black mt-1 text-[#005A9C]">
+            {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
+          </span>
+        </div>
+      </div>
+
+      {/* ── Filter Bar ── */}
+      <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between bg-card/90 p-2.5 sm:p-3 rounded-2xl border border-border/80 shadow-xs">
+        <div className="relative flex-1">
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input 
-            placeholder="Search item, employee, serial #..." 
-            value={search} 
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            placeholder="Search items, serial numbers, or employees..." 
+            className="pl-9 h-9 text-xs bg-background rounded-xl"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-44">
-              <SelectValue placeholder="All Statuses" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="issued">In Custody</SelectItem>
-              <SelectItem value="returned">Returned</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-44 h-9 text-xs bg-background rounded-xl">
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
+            <SelectItem value="issued" className="text-xs">Active in Custody</SelectItem>
+            <SelectItem value="returned" className="text-xs">Returned</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      {/* Mobile Card List (< md) */}
+      {/* ── Mobile Native Cards (< md) ── */}
       <div className="md:hidden space-y-2.5">
-        {filtered.length === 0 ? (
-          <div className="text-center py-10 bg-card rounded-2xl border border-dashed border-border p-6 text-muted-foreground text-xs">
-            No equipment or assets currently in custody.
-          </div>
-        ) : (
-          filtered.map((item) => (
-            <div key={item.id} className="bg-card rounded-[20px] p-3.5 border border-border/80 shadow-xs space-y-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <h3 className="font-bold text-xs text-foreground truncate">{item.item_name}</h3>
-                  <p className="text-[10px] text-muted-foreground truncate">{item.person_name || 'Staff'}</p>
-                </div>
-                <Badge variant="outline" className={`text-[10px] font-bold uppercase ${
-                  item.status === 'returned' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
-                  'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
-                }`}>
-                  {item.status === 'returned' ? 'Returned' : 'In Custody'}
-                </Badge>
+        {filtered.map(item => (
+          <div key={item.id} className="p-3.5 bg-card border border-border/80 rounded-2xl shadow-xs space-y-2">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="font-bold text-sm text-foreground">{item.item_name}</p>
+                <p className="text-xs text-muted-foreground">{item.description || 'Company Equipment'}</p>
               </div>
-
-              <div className="text-[11px] bg-muted/30 p-2.5 rounded-xl border border-border/40 space-y-1">
-                {item.description && (
-                  <p className="text-[10px] text-muted-foreground line-clamp-2">{item.description}</p>
-                )}
-                <div className="flex justify-between items-center text-[10px] text-muted-foreground pt-1">
-                  <span>Issued: {item.issued_at ? new Date(item.issued_at).toLocaleDateString() : '—'}</span>
-                  <span>Return: {item.expected_return_at ? new Date(item.expected_return_at).toLocaleDateString() : 'Permanent'}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-1 border-t border-border/60">
-                {item.status === 'issued' && (
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-7 text-xs font-bold rounded-lg border-emerald-500 text-emerald-600 hover:bg-emerald-50"
-                    onClick={() => { setReturnModal(item); setReturnForm({ condition: 'Good', notes: '' }); }}
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 mr-1" /> Mark Returned
-                  </Button>
-                )}
-                <Button size="sm" variant="ghost" className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50" onClick={() => handleDelete(item.id)}>
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
+              <Badge variant="outline" className={cn("text-[10px] font-bold capitalize", item.status === 'issued' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20')}>
+                {item.status === 'issued' ? 'In Custody' : 'Returned'}
+              </Badge>
             </div>
-          ))
+            <div className="text-xs text-muted-foreground pt-1 border-t border-border/40 space-y-1">
+              <div>Employee: <strong className="text-foreground">{item.person_name}</strong></div>
+              <div className="text-[11px] font-mono">Issued: {item.issued_at ? new Date(item.issued_at).toLocaleDateString() : '—'}</div>
+            </div>
+            {item.status === 'issued' && (
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={() => {
+                  setReturnModal(item);
+                  setReturnForm({ condition: 'Good', notes: '' });
+                }}
+                className="w-full h-8 text-xs font-bold gap-1 rounded-xl"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Return to Office
+              </Button>
+            )}
+          </div>
+        ))}
+        {!loading && filtered.length === 0 && (
+          <div className="p-12 text-center text-xs text-muted-foreground bg-card rounded-2xl border border-border/80">
+            No custody asset records found.
+          </div>
         )}
       </div>
 
-      {/* Desktop Table (>= md) */}
-      <div className="hidden md:block rounded-xl border bg-card overflow-hidden shadow-sm">
+      {/* ── Desktop Table (>= md) ── */}
+      <div className="hidden md:block rounded-2xl border border-border/80 bg-card overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b">
-              <tr>
-                <th className="p-4 font-semibold">Employee</th>
-                <th className="p-4 font-semibold">Item Name</th>
-                <th className="p-4 font-semibold">Details / S/N</th>
-                <th className="p-4 font-semibold">Issued Date</th>
-                <th className="p-4 font-semibold">Expected Return</th>
-                <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="border-b border-border bg-muted/40 text-muted-foreground font-semibold">
+                <th className="p-3.5">Asset / Equipment</th>
+                <th className="p-3.5">Assigned Employee</th>
+                <th className="p-3.5">Issued Date</th>
+                <th className="p-3.5">Status</th>
+                <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
-                    No custody items recorded. Click "Issue Company Item" to record corporate assets handed over to staff.
+              {filtered.map(item => (
+                <tr key={item.id} className="hover:bg-muted/30 transition-colors">
+                  <td className="p-3.5 font-bold text-foreground">
+                    <div>{item.item_name}</div>
+                    <div className="text-xs text-muted-foreground font-normal">{item.description || '—'}</div>
+                  </td>
+                  <td className="p-3.5 font-semibold text-foreground">
+                    {item.person_name}
+                  </td>
+                  <td className="p-3.5 text-muted-foreground font-mono">
+                    {item.issued_at ? new Date(item.issued_at).toLocaleDateString() : '—'}
+                  </td>
+                  <td className="p-3.5">
+                    <Badge variant="outline" className={item.status === 'issued' ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'}>
+                      {item.status === 'issued' ? 'In Custody' : 'Returned'}
+                    </Badge>
+                  </td>
+                  <td className="p-3.5 text-right">
+                    {item.status === 'issued' && (
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => {
+                          setReturnModal(item);
+                          setReturnForm({ condition: 'Good', notes: '' });
+                        }}
+                        className="h-8 text-xs font-bold gap-1 rounded-xl"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" /> Return
+                      </Button>
+                    )}
                   </td>
                 </tr>
-              ) : (
-                filtered.map((item) => (
-                  <tr key={item.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-4 font-semibold text-foreground flex items-center gap-2">
-                      <User className="w-4 h-4 text-muted-foreground" /> {item.person_name}
-                    </td>
-                    <td className="p-4 text-foreground font-medium">{item.item_name}</td>
-                    <td className="p-4 text-muted-foreground max-w-xs truncate" title={item.description}>
-                      {item.description || '—'}
-                    </td>
-                    <td className="p-4 text-muted-foreground">
-                      {item.issued_at ? new Date(item.issued_at).toLocaleDateString() : '—'}
-                    </td>
-                    <td className="p-4 text-muted-foreground">
-                      {item.expected_return_at ? new Date(item.expected_return_at).toLocaleDateString() : 'Permanent / Ongoing'}
-                    </td>
-                    <td className="p-4">
-                      <Badge variant="outline" className={`font-semibold capitalize ${
-                        item.status === 'returned' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
-                        'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
-                      }`}>
-                        {item.status === 'returned' ? 'Returned' : 'In Custody'}
-                      </Badge>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {item.status === 'issued' && (
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="h-8 text-xs gap-1 border-emerald-500 text-emerald-600 hover:bg-emerald-50"
-                            onClick={() => { setReturnModal(item); setReturnForm({ condition: 'Good', notes: '' }); }}
-                          >
-                            <RotateCcw className="w-3.5 h-3.5" /> Return
-                          </Button>
-                        )}
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)}>
-                          <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
           </table>
+          {!loading && filtered.length === 0 && (
+            <div className="p-12 text-center text-xs text-muted-foreground">
+              No custody asset records found.
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Issue Item Dialog */}
+      {/* Modal: Issue Item */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="max-w-md bg-card text-card-foreground">
+        <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Issue Company Item to Employee</DialogTitle>
-            <DialogDescription>
-              Record company property handed over to new or existing staff members with full inventory tracking.
-            </DialogDescription>
+            <DialogTitle className="text-base font-bold">Issue Company Asset</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSave} className="space-y-4 py-2">
-            <div>
-              <Label className="text-xs font-semibold">Assign to Employee *</Label>
-              <Select 
-                value={form.person_id} 
+          <form onSubmit={handleSave} className="space-y-3.5 pt-2">
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Employee</Label>
+              <Select
+                value={form.person_id}
                 onValueChange={(val) => {
                   const emp = employees.find(e => e.id === val);
-                  setForm({ ...form, person_id: val, person_name: emp ? emp.name : form.person_name });
+                  setForm({ ...form, person_id: val, person_name: emp?.name || '' });
                 }}
               >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select Staff Member" />
+                <SelectTrigger className="h-9 text-xs rounded-xl">
+                  <SelectValue placeholder="Select employee" />
                 </SelectTrigger>
-                <SelectContent>
-                  {employees.map((emp) => (
-                    <SelectItem key={emp.id} value={emp.id}>
-                      {emp.name} {emp.role ? `(${emp.role})` : ''}
+                <SelectContent className="max-h-56">
+                  {employees.map(e => (
+                    <SelectItem key={e.id} value={e.id} className="text-xs">
+                      {e.name} {e.department ? `(${e.department})` : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs font-semibold">Item Category</Label>
-                <Select 
-                  value={form.item_category} 
-                  onValueChange={(val) => setForm({ ...form, item_category: val })}
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ITEM_CATEGORIES.map(c => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-xs font-semibold">Serial Number / Asset Tag</Label>
-                <Input 
-                  placeholder="e.g. SN-892301"
-                  value={form.serial_number}
-                  onChange={(e) => setForm({ ...form, serial_number: e.target.value })}
-                  className="mt-1 font-mono"
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-xs font-semibold">Item Name & Model *</Label>
-              <Input 
-                required
-                placeholder="e.g. Dell Latitude 5430 (16GB RAM) or Site Helmet"
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Item Name</Label>
+              <Input
+                placeholder="e.g. MacBook Pro 14, Total Station 3000..."
                 value={form.item_name}
-                onChange={(e) => setForm({ ...form, item_name: e.target.value })}
-                className="mt-1"
+                onChange={e => setForm({ ...form, item_name: e.target.value })}
+                className="h-9 text-xs rounded-xl"
+                required
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs font-semibold">Date Handed Over</Label>
-                <Input 
-                  type="date"
-                  value={form.issued_at}
-                  onChange={(e) => setForm({ ...form, issued_at: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label className="text-xs font-semibold">Expected Return Date</Label>
-                <Input 
-                  type="date"
-                  value={form.expected_return_at}
-                  onChange={(e) => setForm({ ...form, expected_return_at: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Category</Label>
+              <Select
+                value={form.item_category}
+                onValueChange={(val) => setForm({ ...form, item_category: val })}
+              >
+                <SelectTrigger className="h-9 text-xs rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ITEM_CATEGORIES.map(c => (
+                    <SelectItem key={c} value={c} className="text-xs">{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div>
-              <Label className="text-xs font-semibold">Specification & Condition Notes</Label>
-              <Textarea 
-                rows={2}
-                placeholder="Note down item condition, accessories included (chargers, dongles)..."
-                value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="mt-1"
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Serial Number</Label>
+              <Input
+                placeholder="Optional serial number or tag ID"
+                value={form.serial_number}
+                onChange={e => setForm({ ...form, serial_number: e.target.value })}
+                className="h-9 text-xs rounded-xl"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Notes</Label>
+              <Textarea
+                placeholder="Accessories, condition at handover..."
+                value={form.notes}
+                onChange={e => setForm({ ...form, notes: e.target.value })}
+                className="text-xs rounded-xl"
               />
             </div>
 
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
-              <Button type="submit" disabled={saving} className="bg-primary text-primary-foreground">
-                {saving ? 'Saving...' : 'Record Item Issue'}
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowModal(false)} className="rounded-xl text-xs">
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={saving} className="bg-[#005A9C] text-white rounded-xl text-xs font-bold">
+                {saving ? 'Assigning...' : 'Confirm Issuance'}
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
-      {/* Return Item Dialog */}
-      <Dialog open={!!returnModal} onOpenChange={() => setReturnModal(null)}>
-        <DialogContent className="max-w-md bg-card text-card-foreground">
+      {/* Modal: Return Item */}
+      <Dialog open={!!returnModal} onOpenChange={(open) => !open && setReturnModal(null)}>
+        <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Return Company Property</DialogTitle>
-            <DialogDescription>
-              Confirm return of {returnModal?.item_name} from {returnModal?.person_name}.
+            <DialogTitle className="text-base font-bold">Return Asset to Company</DialogTitle>
+            <DialogDescription className="text-xs">
+              Confirm handover from <strong>{returnModal?.person_name}</strong> for <strong>{returnModal?.item_name}</strong>.
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleReturnItem} className="space-y-4 py-2">
-            <div>
-              <Label className="text-xs font-semibold">Condition on Return</Label>
-              <Select 
-                value={returnForm.condition} 
+          <form onSubmit={handleReturn} className="space-y-3 pt-2">
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Condition on Return</Label>
+              <Select
+                value={returnForm.condition}
                 onValueChange={(val) => setReturnForm({ ...returnForm, condition: val })}
               >
-                <SelectTrigger className="mt-1">
+                <SelectTrigger className="h-9 text-xs rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Excellent">Excellent</SelectItem>
-                  <SelectItem value="Good">Good</SelectItem>
-                  <SelectItem value="Fair">Fair (Normal Wear)</SelectItem>
-                  <SelectItem value="Damaged">Damaged / Requires Repair</SelectItem>
-                  <SelectItem value="Incomplete">Incomplete (Missing Accessories)</SelectItem>
+                  <SelectItem value="Good" className="text-xs">Good / Working</SelectItem>
+                  <SelectItem value="Damaged" className="text-xs">Damaged / Faulty</SelectItem>
+                  <SelectItem value="Lost" className="text-xs">Lost / Missing</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label className="text-xs font-semibold">Handover Notes</Label>
-              <Textarea 
-                rows={3}
-                placeholder="Details of item condition, inspection notes..."
+            <div className="space-y-1">
+              <Label className="text-xs font-bold">Notes</Label>
+              <Textarea
+                placeholder="Return inspection comments..."
                 value={returnForm.notes}
-                onChange={(e) => setReturnForm({ ...returnForm, notes: e.target.value })}
-                className="mt-1"
+                onChange={e => setReturnForm({ ...returnForm, notes: e.target.value })}
+                className="text-xs rounded-xl"
               />
             </div>
             <DialogFooter className="pt-2">
-              <Button type="button" variant="outline" onClick={() => setReturnModal(null)}>Cancel</Button>
-              <Button type="submit" disabled={saving} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button type="button" variant="outline" size="sm" onClick={() => setReturnModal(null)} className="rounded-xl text-xs">
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={saving} className="bg-[#005A9C] text-white rounded-xl text-xs font-bold">
                 {saving ? 'Processing...' : 'Confirm Return'}
               </Button>
             </DialogFooter>

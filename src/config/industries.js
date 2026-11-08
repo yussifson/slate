@@ -913,7 +913,8 @@ export const INDUSTRIES = {
       { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-      { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' }
+      { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' },
+      { label: 'Custody Tracker', path: '/jcl/employee-assets', icon: 'ShieldCheck' }
     ]
   },
 

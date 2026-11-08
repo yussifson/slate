@@ -98,8 +98,16 @@ const getJCLCategory = (item) => {
   const normalizedLabel = (item.label || '').trim().toLowerCase();
 
   // Secretary
-  if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p) ||
-      ['front desk', 'item register', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
+  if (['/jcl/front-desk', '/jcl/item-register'].includes(p) ||
+      ['front desk', 'item register'].includes(normalizedLabel)) {
+    return 'Secretary';
+  }
+
+  // Custody Tracker is shared between Secretary and Human Resources
+  if (p === '/jcl/employee-assets' || ['custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
+    if (item.section === 'Human Resources' || normalizedLabel.includes('(hr)')) {
+      return 'Human Resources';
+    }
     return 'Secretary';
   }
 

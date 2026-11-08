@@ -280,8 +280,8 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
   const stat = data.stats;
 
   return (
-    <main className="min-h-full bg-background p-4 sm:p-6 lg:p-8 font-sans">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6">
+    <main className="w-full max-w-full overflow-x-hidden min-h-screen bg-background p-3.5 sm:p-6 lg:p-8 font-sans pb-24 sm:pb-12">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:gap-6">
         {/* Native Mobile Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -290,7 +290,6 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Procurement</h1>
-              <p className="text-xs text-muted-foreground font-medium">Requisitions, purchase orders & inventory supply</p>
             </div>
           </div>
 
@@ -353,11 +352,13 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
 
         {/* Tabs Content */}
         <Tabs value={activeTab} onValueChange={v => setSearchParams({ tab: v })} className="w-full space-y-4">
-          <TabsList className="bg-muted/60 p-1 border border-border">
-            <TabsTrigger value="requisitions" className="text-xs font-semibold">Requisitions ({data.requisitions.length})</TabsTrigger>
-            <TabsTrigger value="orders" className="text-xs font-semibold">Purchase Orders ({data.purchaseOrders.length})</TabsTrigger>
-            <TabsTrigger value="inventory" className="text-xs font-semibold">Materials & Inventory ({data.balances.length + data.materials.length})</TabsTrigger>
-          </TabsList>
+          <div className="w-full overflow-x-auto scrollbar-none pb-1">
+            <TabsList className="bg-muted/60 p-1 border border-border inline-flex w-auto min-w-full sm:min-w-0 justify-start sm:justify-center">
+              <TabsTrigger value="requisitions" className="text-xs font-semibold shrink-0">Requisitions ({data.requisitions.length})</TabsTrigger>
+              <TabsTrigger value="orders" className="text-xs font-semibold shrink-0">Purchase Orders ({data.purchaseOrders.length})</TabsTrigger>
+              <TabsTrigger value="inventory" className="text-xs font-semibold shrink-0">Materials & Inventory ({data.balances.length + data.materials.length})</TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* TAB 1: REQUISITIONS */}
           <TabsContent value="requisitions" className="m-0">
