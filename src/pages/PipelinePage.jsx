@@ -822,7 +822,7 @@ export default function PipelinePage() {
 
       {/* ── Slide-over Inspector Drawer ── */}
       <Sheet open={!!inspectorItem} onOpenChange={open => !open && setInspectorItem(null)}>
-        <SheetContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
+        <SheetContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           {inspectorItem && (
             <div className="space-y-4">
               <SheetHeader>
@@ -927,7 +927,7 @@ export default function PipelinePage() {
 
       {/* ── Add / Edit Item Sheet ── */}
       <Sheet open={showItemForm} onOpenChange={setShowItemForm}>
-        <SheetContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
+        <SheetContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <SheetHeader className="mb-3">
             <SheetTitle>{editingItemId ? 'Edit Deal' : `New ${activePipeline?.item_label || 'Deal'}`}</SheetTitle>
             <SheetDescription>Configure deal parameters and track workflow status</SheetDescription>
@@ -1024,7 +1024,7 @@ export default function PipelinePage() {
 
       {/* ── New Pipeline Dialog ── */}
       <Dialog open={showPipelineModal} onOpenChange={setShowPipelineModal}>
-        <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6 bg-card text-card-foreground">
+        <DialogContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6 bg-card text-card-foreground">
           <DialogHeader>
             <DialogTitle>Create Workflow Pipeline</DialogTitle>
             <DialogDescription>Define a dedicated pipeline category and label</DialogDescription>

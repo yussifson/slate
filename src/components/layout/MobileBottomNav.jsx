@@ -162,9 +162,9 @@ const getJCLCategory = (item) => {
     return 'System Admin';
   }
 
-  // Operations (Dashboard, Intelligence, Calendar, Tasks, Time Tracker, Pipeline, Notifications, Smart Docs)
-  if (['/', '/intelligence', '/calendar', '/tasks', '/time-tracking', '/pipeline', '/notifications', '/smart-docs'].includes(p) ||
-      ['dashboard', 'home', 'intelligence', 'calendar', 'tasks', 'time tracking', 'time tracker', 'pipeline', 'notifications', 'smart docs', 'docs'].includes(normalizedLabel)) {
+  // Operations (Dashboard, Intelligence, Calendar, Tasks, Time Tracker, Pipeline, Smart Docs, E-Signatures, Notifications)
+  if (['/', '/intelligence', '/calendar', '/tasks', '/time-tracking', '/pipeline', '/smart-docs', '/real-estate/e-signatures', '/notifications'].includes(p) ||
+      ['dashboard', 'home', 'intelligence', 'calendar', 'tasks', 'time tracking', 'time tracker', 'pipeline', 'smart docs', 'docs', 'e-signatures', 'signatures', 'notifications'].includes(normalizedLabel)) {
     return 'Operations';
   }
 
@@ -275,6 +275,32 @@ export default function MobileBottomNav() {
     }
     if (!grouped['Finance'].some(i => i.path === '/jcl/project-finance')) {
       grouped['Finance'].push({ label: 'Project Finance', path: '/jcl/project-finance', icon: 'BarChart3', section: 'Finance' });
+    }
+
+    // Ensure Operations puts Notifications strictly last (after E-Signatures)
+    if (grouped['Operations']) {
+      const opsOrder = [
+        '/',
+        '/intelligence',
+        '/calendar',
+        '/tasks',
+        '/time-tracking',
+        '/pipeline',
+        '/smart-docs',
+        '/real-estate/e-signatures',
+        '/notifications'
+      ];
+      grouped['Operations'].sort((a, b) => {
+        const idxA = opsOrder.indexOf(a.path);
+        const idxB = opsOrder.indexOf(b.path);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        // If not matched, notifications must always be last
+        if (a.path === '/notifications' || a.label?.toLowerCase() === 'notifications') return 1;
+        if (b.path === '/notifications' || b.label?.toLowerCase() === 'notifications') return -1;
+        return 0;
+      });
     }
 
     // Sort categories according to CATEGORY_ORDER

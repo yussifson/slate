@@ -495,7 +495,7 @@ export default function JCLTrustAccounting() {
 
       {/* ── Add Account Sheet ── */}
       <Sheet open={showAccountForm} onOpenChange={setShowAccountForm}>
-        <SheetContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
+        <SheetContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <SheetHeader className="mb-4">
             <SheetTitle>Establish Trust Account</SheetTitle>
             <SheetDescription>Configure FDIC insured escrow or client trust account</SheetDescription>
@@ -550,7 +550,7 @@ export default function JCLTrustAccounting() {
 
       {/* ── Record Txn Sheet ── */}
       <Sheet open={showTxnForm} onOpenChange={setShowTxnForm}>
-        <SheetContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
+        <SheetContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <SheetHeader className="mb-4">
             <SheetTitle>Record Ledger Movement</SheetTitle>
             <SheetDescription>Log client deposit, earnest money inflow, or payout release</SheetDescription>

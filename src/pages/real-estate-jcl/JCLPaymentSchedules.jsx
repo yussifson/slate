@@ -285,7 +285,7 @@ export default function JCLPaymentSchedules() {
 
       {/* Add Modal */}
       <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6 bg-card text-card-foreground">
+        <DialogContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6 bg-card text-card-foreground">
           <DialogHeader>
             <DialogTitle>Add Payment Schedule Rule</DialogTitle>
             <DialogDescription>

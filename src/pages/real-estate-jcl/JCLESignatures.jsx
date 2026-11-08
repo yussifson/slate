@@ -454,17 +454,17 @@ export default function JCLESignatures() {
                     {item.audit_hash ? `${item.audit_hash.slice(0, 8)}...` : '0xa4f892c9...'}
                   </code>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     {item.status !== 'signed' && (
-                      <Button size="xs" onClick={() => setSigningItem(item)} className="text-xs h-7.5 px-3 font-extrabold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-lg gap-1">
-                        <PenTool className="w-3 h-3" /> Sign
+                      <Button size="sm" onClick={() => setSigningItem(item)} className="text-xs h-8 px-3.5 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl gap-1.5 shadow-xs shrink-0">
+                        <PenTool className="w-3.5 h-3.5" /> Sign
                       </Button>
                     )}
-                    <Button size="xs" variant="outline" onClick={() => setCertificateItem(item)} className="text-xs h-7.5 px-2.5 font-bold rounded-lg border-border">
-                      <Key className="w-3 h-3 text-emerald-600 mr-1" /> Cert
+                    <Button size="sm" variant="outline" onClick={() => setCertificateItem(item)} className="text-xs h-8 px-3 font-semibold rounded-xl border-border/80 bg-background hover:bg-muted gap-1.5 shrink-0">
+                      <Key className="w-3.5 h-3.5 text-emerald-600" /> Cert
                     </Button>
-                    <Button size="xs" variant="ghost" onClick={() => handleDelete(item.id)} className="h-7.5 w-7.5 p-0 text-rose-600 rounded-lg">
-                      <Trash2 className="w-3.5 h-3.5" />
+                    <Button size="sm" variant="ghost" onClick={() => handleDelete(item.id)} className="h-8 w-8 p-0 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 rounded-xl shrink-0">
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>

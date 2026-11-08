@@ -133,7 +133,7 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100vw-2rem)] max-w-6xl xl:max-w-7xl h-[min(92vh,940px)] flex flex-col p-0 gap-0 overflow-hidden bg-background text-foreground border border-border/80 shadow-2xl rounded-2xl">
+      <DialogContent className="w-full sm:max-w-6xl xl:max-w-7xl h-[min(92vh,940px)] flex flex-col p-0 gap-0 overflow-hidden bg-background text-foreground border border-border/80 shadow-2xl rounded-2xl">
         <DialogHeader className="px-6 py-4 border-b border-black/5 dark:border-white/5 bg-gradient-to-r from-background via-muted/20 to-background border-b border-border/70 shrink-0">
           <DialogTitle className="text-xl font-bold tracking-tight">{isEdit ? "Task Details" : "New Task"}</DialogTitle>
         </DialogHeader>

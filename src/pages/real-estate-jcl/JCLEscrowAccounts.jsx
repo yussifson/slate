@@ -453,7 +453,7 @@ export default function JCLEscrowAccounts() {
 
       {/* ── Form Sheet ── */}
       <Sheet open={showForm} onOpenChange={setShowForm}>
-        <SheetContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
+        <SheetContent className="w-full sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <SheetHeader className="mb-4">
             <SheetTitle>Register Earnest Escrow</SheetTitle>
             <SheetDescription>Log earnest deposit and third-party escrow parameters</SheetDescription>

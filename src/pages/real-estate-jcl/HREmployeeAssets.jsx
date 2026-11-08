@@ -211,47 +211,51 @@ export default function HREmployeeAssets() {
       </div>
 
       {/* ── 2. Mobile 2x2 Dedicated Stats Grid (< md) ── */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:hidden">
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Package className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Total Issued</span>
+      <div className="grid grid-cols-2 gap-2.5 md:hidden">
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <Package className="h-4 w-4" />
           </div>
-          <p className="text-lg font-black text-foreground truncate">{assets.length}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Tracked items</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Total Issued</span>
+            <span className="text-lg font-black text-foreground">{assets.length}</span>
+          </div>
         </div>
 
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">In Custody</span>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <ShieldCheck className="h-4 w-4" />
           </div>
-          <p className="text-lg font-black text-amber-600 truncate">
-            {assets.filter(a => a.status === 'issued').length}
-          </p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Active staff custody</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">In Custody</span>
+            <span className="text-lg font-black text-amber-600 dark:text-amber-400">
+              {assets.filter(a => a.status === 'issued').length}
+            </span>
+          </div>
         </div>
 
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <RotateCcw className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Returned</span>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <RotateCcw className="h-4 w-4" />
           </div>
-          <p className="text-lg font-black text-emerald-600 truncate">
-            {assets.filter(a => a.status === 'returned').length}
-          </p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Successfully restored</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Returned</span>
+            <span className="text-lg font-black text-emerald-600 dark:text-emerald-400">
+              {assets.filter(a => a.status === 'returned').length}
+            </span>
+          </div>
         </div>
 
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Users className="w-3.5 h-3.5 text-[#005A9C] shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Staff Holders</span>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center shrink-0">
+            <Users className="h-4 w-4" />
           </div>
-          <p className="text-lg font-black text-[#005A9C] truncate">
-            {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
-          </p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Unique employees</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Staff Holders</span>
+            <span className="text-lg font-black text-[#005A9C] dark:text-[#FF6B00]">
+              {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
+            </span>
+          </div>
         </div>
       </div>
 

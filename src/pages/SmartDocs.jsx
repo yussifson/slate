@@ -614,7 +614,7 @@ export default function SmartDocs() {
 
       {/* Add Document Dialog */}
       <Dialog open={showUploadForm} onOpenChange={setShowUploadForm}>
-        <DialogContent className="w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
+        <DialogContent className="w-full sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <DialogHeader><DialogTitle>Add Document to Smart Docs</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-3">

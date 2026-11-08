@@ -957,6 +957,31 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return acc;
   }, {});
 
+  // For JCL, ensure Operations has Notifications placed last (after Smart Docs and E-Signatures)
+  if (activeIndustry === 'real_estate_jcl' && groupedNav['Operations']) {
+    const opsOrder = [
+      '/',
+      '/intelligence',
+      '/calendar',
+      '/tasks',
+      '/time-tracking',
+      '/pipeline',
+      '/smart-docs',
+      '/real-estate/e-signatures',
+      '/notifications'
+    ];
+    groupedNav['Operations'].sort((a, b) => {
+      const idxA = opsOrder.indexOf(a.path);
+      const idxB = opsOrder.indexOf(b.path);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      if (a.path === '/notifications' || a.label?.toLowerCase() === 'notifications') return 1;
+      if (b.path === '/notifications' || b.label?.toLowerCase() === 'notifications') return -1;
+      return 0;
+    });
+  }
+
   const categoryOrder = activeIndustry === 'real_estate_jcl'
     ? ["Operations", "Secretary", "Marketing", "Procurement", "Engineering", "Properties", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
