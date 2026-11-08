@@ -7,7 +7,7 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
-import { getCompanyProjects } from '@/services/ProjectLookupService';
+import { getCompanyProjects, ensureValidProjectId } from '@/services/ProjectLookupService';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -81,13 +81,20 @@ export default function JCLEngineering() {
     if (!companyId) return;
     setLoading(true);
     try {
-      const [dwgRes, projRes] = await Promise.all([
-        supabase.from('jcl_technical_drawings')
-          .select('*, ops_projects(id,name,project_code)')
+      let dwgRes = await supabase.from('jcl_technical_drawings')
+        .select('*, ops_projects(id,name,project_code)')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+
+      if (dwgRes.error) {
+        console.warn('Drawings relation join failed, retrying clean query:', dwgRes.error.message);
+        dwgRes = await supabase.from('jcl_technical_drawings')
+          .select('*')
           .eq('company_id', companyId)
-          .order('created_at', { ascending: false }),
-        getCompanyProjects(companyId)
-      ]);
+          .order('created_at', { ascending: false });
+      }
+
+      const projRes = await getCompanyProjects(companyId).catch(() => []);
 
       if (dwgRes.error && dwgRes.error.code !== '42P01') {
         console.warn('Drawings load issue:', dwgRes.error);
@@ -146,15 +153,16 @@ export default function JCLEngineering() {
 
   const saveDrawing = async (e) => {
     e.preventDefault();
-    if (!drawingForm.project_id || !drawingForm.title.trim()) {
-      toast.error('Project and drawing title are required');
+    if (!drawingForm.title.trim()) {
+      toast.error('Drawing title is required');
       return;
     }
     try {
+      const pid = await ensureValidProjectId(companyId, drawingForm.project_id || projects[0]?.id);
       if (editingDrawing) {
         const { error } = await supabase.from('jcl_technical_drawings')
           .update({
-            project_id: drawingForm.project_id,
+            project_id: pid,
             drawing_number: drawingForm.drawing_number,
             title: drawingForm.title,
             discipline: drawingForm.discipline,
@@ -172,7 +180,7 @@ export default function JCLEngineering() {
         const { error } = await supabase.from('jcl_technical_drawings')
           .insert({
             company_id: companyId,
-            project_id: drawingForm.project_id,
+            project_id: pid,
             drawing_number: drawingForm.drawing_number,
             title: drawingForm.title,
             discipline: drawingForm.discipline,

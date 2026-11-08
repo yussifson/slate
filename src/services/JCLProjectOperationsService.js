@@ -1,5 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
-import { getCompanyProjects } from '@/services/ProjectLookupService';
+import { getCompanyProjects, ensureValidProjectId } from '@/services/ProjectLookupService';
 
 const scoped = (table, companyId) =>
   supabase
@@ -95,10 +95,18 @@ export const JCLProjectOperationsService = {
 
   async create(table, companyId, payload) {
     const recordId = payload.id || crypto.randomUUID();
+    let validatedProjectId = payload.project_id;
+    if (validatedProjectId) {
+      try {
+        validatedProjectId = await ensureValidProjectId(companyId, validatedProjectId);
+      } catch (_) {}
+    }
+
     const record = {
       ...payload,
       id: recordId,
       company_id: companyId,
+      ...(validatedProjectId ? { project_id: validatedProjectId } : {}),
       created_at: payload.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString()
     };

@@ -6,7 +6,7 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
-import { getCompanyProjects } from '@/services/ProjectLookupService';
+import { getCompanyProjects, ensureValidProjectId } from '@/services/ProjectLookupService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -57,13 +57,20 @@ export default function JCLTechnicalDrawings() {
     if (!companyId) return;
     setLoading(true);
     try {
-      const [dwgRes, projRes] = await Promise.all([
-        supabase.from('jcl_technical_drawings')
-          .select('*, ops_projects(id,name,project_code)')
+      let dwgRes = await supabase.from('jcl_technical_drawings')
+        .select('*, ops_projects(id,name,project_code)')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+
+      if (dwgRes.error) {
+        console.warn('Drawings relation join failed, retrying clean query:', dwgRes.error.message);
+        dwgRes = await supabase.from('jcl_technical_drawings')
+          .select('*')
           .eq('company_id', companyId)
-          .order('created_at', { ascending: false }),
-        getCompanyProjects(companyId)
-      ]);
+          .order('created_at', { ascending: false });
+      }
+
+      const projRes = await getCompanyProjects(companyId).catch(() => []);
 
       const localDrawings = (() => {
         try {
@@ -139,11 +146,8 @@ export default function JCLTechnicalDrawings() {
       toast.error('Title is required');
       return;
     }
-    const pid = drawingForm.project_id || projects[0]?.id;
-    if (!pid) {
-      toast.error('Please associate with a project');
-      return;
-    }
+    const rawPid = drawingForm.project_id || projects[0]?.id;
+    const pid = await ensureValidProjectId(companyId, rawPid);
 
     try {
       if (editingDrawing) {

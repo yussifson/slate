@@ -9,6 +9,7 @@ import {
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { supabase } from '@/api/supabaseClient';
+import { powerSync } from '@/api/PowerSyncConnector';
 import { getCompanyProjects } from '@/services/ProjectLookupService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -159,13 +160,15 @@ export default function JCLBillOfQuantities() {
     setLoading(true);
     try {
       let fetchedBoqs = [];
+
+      // 1. Try Live Supabase Query
       try {
         const boqRes = await supabase.from('univ_boqs')
           .select('*')
           .eq('company_id', companyId)
           .order('created_at', { ascending: false });
 
-        if (!boqRes.error && Array.isArray(boqRes.data)) {
+        if (!boqRes.error && Array.isArray(boqRes.data) && boqRes.data.length > 0) {
           fetchedBoqs = boqRes.data;
         } else if (boqRes.error) {
           console.warn('univ_boqs supabase query issue:', boqRes.error.message);
@@ -174,7 +177,22 @@ export default function JCLBillOfQuantities() {
         console.warn('univ_boqs query exception:', be);
       }
 
-      // Read local cache if database returned empty
+      // 2. Try PowerSync local SQLite query if Supabase was empty
+      if (fetchedBoqs.length === 0) {
+        try {
+          const psRes = await powerSync.getAll(
+            'SELECT * FROM univ_boqs WHERE company_id = ? ORDER BY created_at DESC',
+            [companyId]
+          );
+          if (Array.isArray(psRes) && psRes.length > 0) {
+            fetchedBoqs = psRes;
+          }
+        } catch (pe) {
+          console.warn('PowerSync univ_boqs fallback catch:', pe);
+        }
+      }
+
+      // 3. Read local cache if database returned empty
       if (fetchedBoqs.length === 0) {
         try {
           const cached = localStorage.getItem(`jcl_boqs_${companyId}`);
@@ -271,6 +289,14 @@ export default function JCLBillOfQuantities() {
       } catch (insertErr) {
         console.warn('Direct univ_boqs insert fell back to local cache:', insertErr);
       }
+
+      // Also mirror to PowerSync local db for instant offline access
+      try {
+        await powerSync.execute(
+          'INSERT OR REPLACE INTO univ_boqs (id, company_id, project_name, item_description, unit, quantity, unit_rate, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [newRow.id, companyId, newPayload.project_name, newPayload.item_description, newPayload.unit, 1, 0, 'Draft', newRow.created_at]
+        );
+      } catch (_) {}
 
       setBoqs(prev => {
         const updated = [newRow, ...prev];

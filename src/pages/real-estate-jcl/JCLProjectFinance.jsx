@@ -41,6 +41,14 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
 
   const selectedProject = useMemo(() => projects.find(project => project.id === projectId), [projects, projectId]);
 
+  const totals = useMemo(() => summary.reduce((acc, row) => ({
+    budget: acc.budget + Number(row.approved_budget || 0),
+    actual: acc.actual + Number(row.actual_cost || 0),
+    committed: acc.committed + Number(row.committed_cost || 0),
+    claims: acc.claims + Number(row.certified_claims || 0),
+    forecast: acc.forecast + Number(row.forecast_final_cost || 0),
+  }), { budget: 0, actual: 0, committed: 0, claims: 0, forecast: 0 }), [summary]);
+
   // ── Contextual KPI stats per sub-page ────────────────────────
   const contextualKpi = useMemo(() => {
     switch (tab) {
