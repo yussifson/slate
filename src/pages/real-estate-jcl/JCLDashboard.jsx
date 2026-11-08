@@ -51,16 +51,16 @@ export default function JCLDashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [dateRangeView, setDateRangeView] = useState('Monthly');
 
-  const [greetingEmoji] = useState(() => {
-    const currentHour = new Date().getHours();
-    let emojis = ["🌙", "✨", "🌟", "🌌"];
-    if (currentHour < 12) {
-      emojis = ["☀️", "🌅", "☕", "🌤️"];
-    } else if (currentHour < 18) {
-      emojis = ["🌞", "😎", "🚀", "💼"];
+  const greetingData = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      return { salutation: "Good morning", emoji: "🌅" };
+    } else if (hour < 17) {
+      return { salutation: "Good afternoon", emoji: "☀️" };
+    } else {
+      return { salutation: "Good evening", emoji: "🌙" };
     }
-    return emojis[Math.floor(Math.random() * emojis.length)];
-  });
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -320,7 +320,7 @@ export default function JCLDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-foreground tracking-tight flex items-center gap-2">
-              Good morning, {user?.full_name?.split(' ')[0] || user?.name?.split(' ')[0] || "Executive"} {greetingEmoji}
+              {greetingData.salutation}, {user?.full_name?.split(' ')[0] || user?.name?.split(' ')[0] || "Executive"} {greetingData.emoji}
             </h1>
             <p className="text-xs sm:text-[13px] font-medium text-muted-foreground mt-0.5">
               {format(new Date(), "EEEE, do MMMM yyyy")} · <strong>{company?.name || 'JCL Royal Group Real Estate'}</strong>

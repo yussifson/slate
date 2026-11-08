@@ -1,169 +1,143 @@
-import React, { useState, Suspense } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { useAuth } from '@/lib/AuthContext';
-import { isSuperAdmin } from '@/lib/constants';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Users, Building2, Shield, CalendarHeart, UserPlus, Clock, BadgeDollarSign, Target, GraduationCap, AlertCircle, ArrowUpCircle, Wallet } from 'lucide-react';
-import PageHeader from '../shared/PageHeader';
-
 import { powerSync } from '@/api/PowerSyncConnector';
-const UnivHREmployee = React.lazy(() => import('./UnivHREmployee'));
-import UnivDepartments from './UnivDepartments';
-import UnivAccessControl from './UnivAccessControl';
-import UnivLeaveManagement from './UnivLeaveManagement';
-
-const HRRecruitmentPanel = React.lazy(() => import('../hr/HRRecruitmentPanel'));
-const HRAttendancePanel = React.lazy(() => import('../hr/HRAttendancePanel'));
-const HRPayrollPanel = React.lazy(() => import('../hr/HRPayrollPanel'));
-const HRPerformancePanel = React.lazy(() => import('../hr/HRPerformancePanel'));
-const HRTrainingPanel = React.lazy(() => import('../hr/HRTrainingPanel'));
-const HRComplaintsPanel = React.lazy(() => import('../hr/HRComplaintsPanel'));
-const HRPromotionsPanel = React.lazy(() => import('../hr/HRPromotionsPanel'));
-const HRSalaryPanel = React.lazy(() => import('../hr/HRSalaryPanel'));
+import { useAuth } from '@/lib/AuthContext';
+import { 
+  Users, Building2, Shield, CalendarHeart, BadgeDollarSign, 
+  Target, GraduationCap, UserPlus, AlertCircle, Wallet, ArrowUpRight, ShieldCheck
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function UnivHRSystem() {
-  const [activeTab, setActiveTab] = useState("overview");
   const { user } = useAuth();
   const companyId = user?.company_id;
-  const isAdmin = user?.role === "company_admin" || user?.role === "hr" || isSuperAdmin(user);
-  const currency = "USD"; // Fallback for components that expect it
 
-  // Fetch all necessary data for the HR modules
+  // 1. Fetch live staff count & roles
   const { data: staff = [] } = useQuery({
     queryKey: ["staff", companyId],
     queryFn: async () => {
-      const res = await powerSync.execute("SELECT id, name as full_name, email, role, department, status, salary, start_date as hire_date, phone, company_id FROM univ_hr_employees WHERE company_id = ?", [companyId]);
+      const res = await powerSync.execute(
+        "SELECT id, name as full_name, email, role, department, status, salary FROM univ_hr_employees WHERE company_id = ?",
+        [companyId]
+      );
       return res.rows?._array || [];
     },
     enabled: !!companyId
   });
 
+  // 2. Fetch departments count
+  const { data: depts = [] } = useQuery({
+    queryKey: ["univ_hr_departments", companyId],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        "SELECT id, name FROM univ_hr_departments WHERE company_id = ?",
+        [companyId]
+      );
+      return res.rows?._array || [];
+    },
+    enabled: !!companyId
+  });
+
+  // 3. Fetch leaves
   const { data: leaves = [] } = useQuery({
-    queryKey: ["leaves", companyId],
-    queryFn: () => base44.entities.LeaveRequest.filter({ company_id: companyId }, "-created_at", 200),
+    queryKey: ["univ_hr_leave", companyId],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        "SELECT id, status FROM univ_hr_leave WHERE company_id = ?",
+        [companyId]
+      );
+      return res.rows?._array || [];
+    },
     enabled: !!companyId
   });
 
-  const { data: complaints = [] } = useQuery({
-    queryKey: ["complaints", companyId],
-    queryFn: () => base44.entities.HRComplaint.filter({ company_id: companyId }, "-created_at", 100),
+  // 4. Fetch recruitment candidates
+  const { data: candidates = [] } = useQuery({
+    queryKey: ["univ_hr_candidates", companyId],
+    queryFn: async () => {
+      const res = await powerSync.execute(
+        "SELECT id, stage FROM univ_hr_candidates WHERE company_id = ?",
+        [companyId]
+      );
+      return res.rows?._array || [];
+    },
     enabled: !!companyId
   });
 
-  const { data: promotions = [] } = useQuery({
-    queryKey: ["promotions", companyId],
-    queryFn: () => base44.entities.Promotion.filter({ company_id: companyId }, "-created_at", 100),
-    enabled: !!companyId
-  });
+  const activeStaffCount = staff.filter(s => s.status === 'Active' || s.status === 'active').length;
+  const pendingLeaves = leaves.filter(l => l.status === 'Pending' || l.status === 'pending').length;
+  const openCandidates = candidates.filter(c => c.stage !== 'Hired' && c.stage !== 'Rejected').length;
+  const totalPayroll = staff.reduce((acc, s) => acc + (Number(s.salary) || 0), 0);
+
+  const modules = [
+    { label: 'Employees & Staff', value: staff.length, sub: `${activeStaffCount} active staff`, path: '/hr/employees', icon: Users, color: 'text-blue-500' },
+    { label: 'Departments', value: depts.length || 'Manage', sub: 'Org structure', path: '/hr/departments', icon: Building2, color: 'text-purple-500' },
+    { label: 'Roles & Permissions', value: 'RBAC', sub: 'Access control matrix', path: '/hr/roles', icon: Shield, color: 'text-emerald-500' },
+    { label: 'Company Items Issued', value: 'Custody', sub: 'Assets & trackers', path: '/hr/assets', icon: ShieldCheck, color: 'text-cyan-500' },
+    { label: 'Leave Requests', value: leaves.length, sub: `${pendingLeaves} pending approval`, path: '/hr/leave', icon: CalendarHeart, color: 'text-amber-500' },
+    { label: 'Payroll & Salaries', value: totalPayroll > 0 ? `$${totalPayroll.toLocaleString()}` : 'Review', sub: 'Monthly payroll', path: '/hr/payroll', icon: BadgeDollarSign, color: 'text-emerald-500' },
+    { label: 'Performance & KPIs', value: 'Reviews', sub: 'Quarterly appraisals', path: '/hr/performance', icon: Target, color: 'text-rose-500' },
+    { label: 'Recruitment & ATS', value: candidates.length, sub: `${openCandidates} in pipeline`, path: '/hr/recruitment', icon: UserPlus, color: 'text-indigo-500' },
+    { label: 'Training & Development', value: 'Programs', sub: 'Courses & progress', path: '/hr/training', icon: GraduationCap, color: 'text-teal-500' },
+    { label: 'Complaints & Grievances', value: 'Tickets', sub: 'Resolution desk', path: '/hr/complaints', icon: AlertCircle, color: 'text-orange-500' },
+    { label: 'Salary Benchmarks', value: 'Market', sub: 'Compensation levels', path: '/hr/salary', icon: Wallet, color: 'text-violet-500' },
+  ];
 
   return (
-    <div className="w-full flex flex-col h-full">
-      <div className="pb-4 shrink-0">
-        <PageHeader title="HR & Leave" subtitle="Manage your staff, departments, roles, and leave policies in one place." />
-        
-        {/* Enterprise-style horizontal scrolling tabs */}
-        <div className="mt-6 border-b border-border/60">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="hidden">
-              
-              <TabsTrigger value="employees" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <Users className="w-4 h-4 opacity-70" />Employees
-              </TabsTrigger>
-              
-              <TabsTrigger value="departments" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <Building2 className="w-4 h-4 opacity-70" />Departments
-              </TabsTrigger>
-              
-              <TabsTrigger value="roles" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <Shield className="w-4 h-4 opacity-70" />Roles
-              </TabsTrigger>
-              
-              <TabsTrigger value="leave" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <CalendarHeart className="w-4 h-4 opacity-70" />Leave
-              </TabsTrigger>
-              
-              <TabsTrigger value="attendance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <Clock className="w-4 h-4 opacity-70" />Attendance
-              </TabsTrigger>
-              
-              <TabsTrigger value="payroll" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <BadgeDollarSign className="w-4 h-4 opacity-70" />Payroll
-              </TabsTrigger>
-              
-              <TabsTrigger value="performance" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <Target className="w-4 h-4 opacity-70" />Performance
-              </TabsTrigger>
-              
-              <TabsTrigger value="training" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <GraduationCap className="w-4 h-4 opacity-70" />Training
-              </TabsTrigger>
-              
-              <TabsTrigger value="recruitment" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <UserPlus className="w-4 h-4 opacity-70" />Recruitment
-              </TabsTrigger>
-              
-              <TabsTrigger value="complaints" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <AlertCircle className="w-4 h-4 opacity-70" />Complaints
-              </TabsTrigger>
-              
-              <TabsTrigger value="promotions" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <ArrowUpCircle className="w-4 h-4 opacity-70" />Promotions
-              </TabsTrigger>
-              
-              <TabsTrigger value="salary" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:shadow-none data-[state=active]:bg-transparent px-3 py-3 text-sm font-medium transition-all flex items-center gap-2 hover:bg-muted/50">
-                <Wallet className="w-4 h-4 opacity-70" />Salary
-              </TabsTrigger>
-
-            </TabsList>
-          </Tabs>
+    <div className="w-full max-w-full overflow-x-hidden p-3 sm:p-6 pb-24 font-sans space-y-4 sm:space-y-6">
+      {/* ── Native Header ── */}
+      <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">Human Resources</h1>
+          <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">Workforce operations, directory, and administration</p>
         </div>
       </div>
 
-      <div className="flex-1 w-full pb-8 pt-4">
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-primary/10 via-card to-card p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">HR workspace</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground">People operations at a glance</h2>
-              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Use the dedicated HR sidebar to move between your workforce modules. This overview keeps the main dashboard focused on status and quick access.</p>
+      {/* ── 2x2 Modern Mobile Stats Grid ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Staff</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-foreground">{staff.length}</div>
+        </div>
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Active Staff</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-emerald-600">{activeStaffCount}</div>
+        </div>
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pending Leaves</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-amber-600">{pendingLeaves}</div>
+        </div>
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Active Pipeline</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-indigo-600">{openCandidates}</div>
+        </div>
+      </div>
+
+      {/* ── Direct Module Navigation Cards (Responsive Grid) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
+        {modules.map(({ label, value, sub, path, icon: Icon, color }) => (
+          <Link
+            key={path}
+            to={path}
+            className="group rounded-[20px] border border-border/80 bg-card p-4 transition-all duration-200 hover:border-primary/50 hover:shadow-sm active:scale-[0.99] flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-muted/60 flex items-center justify-center shrink-0 border border-border/50">
+                <Icon className={`w-5 h-5 ${color}`} />
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-bold text-xs sm:text-sm text-foreground truncate group-hover:text-primary transition-colors">
+                  {label}
+                </h3>
+                <p className="text-[10px] text-muted-foreground font-medium truncate">{sub}</p>
+              </div>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                ['Employees', staff.length, '/hr/employees', Users],
-                ['Departments', 'Manage', '/hr/departments', Building2],
-                ['Attendance', 'Today', '/hr/attendance', Clock],
-                ['Leave requests', leaves.length, '/hr/leave', CalendarHeart],
-                ['Recruitment', 'Open', '/hr/recruitment', UserPlus],
-                ['Payroll', 'Review', '/hr/payroll', BadgeDollarSign],
-              ].map(([label, value, href, Icon]) => (
-                <a key={href} href={href} className="group rounded-2xl border border-border/60 bg-card p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
-                  <div className="flex items-center justify-between"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="h-5 w-5" /></div><ArrowUpCircle className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" /></div>
-                  <p className="mt-4 text-sm font-semibold text-foreground">{label}</p><p className="mt-1 text-2xl font-bold tracking-tight text-foreground">{value}</p>
-                </a>
-              ))}
+            <div className="flex items-center gap-2 shrink-0 pl-2">
+              <span className="text-xs font-bold text-foreground">{value}</span>
+              <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </div>
-          </div>
-        )}
-        {activeTab === 'employees' && (
-          <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm">Loading Employees...</div>}>
-            <UnivHREmployee />
-          </Suspense>
-        )}
-        {activeTab === 'departments' && <UnivDepartments />}
-        {activeTab === 'roles' && <UnivAccessControl />}
-        {activeTab === 'leave' && <UnivLeaveManagement />}
-        
-        <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm">Loading Panel...</div>}>
-          {activeTab === 'attendance' && <HRAttendancePanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
-          {activeTab === 'payroll' && <HRPayrollPanel companyId={companyId} staff={staff} currency={currency} isAdmin={isAdmin} leaves={leaves} user={user} />}
-          {activeTab === 'performance' && <HRPerformancePanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
-          {activeTab === 'training' && <HRTrainingPanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
-          {activeTab === 'recruitment' && <HRRecruitmentPanel companyId={companyId} staff={staff} isAdmin={isAdmin} user={user} />}
-          {activeTab === 'complaints' && <HRComplaintsPanel companyId={companyId} complaints={complaints} staff={staff} isAdmin={isAdmin} user={user} />}
-          {activeTab === 'promotions' && <HRPromotionsPanel companyId={companyId} promotions={promotions} staff={staff} currency={currency} isAdmin={isAdmin} user={user} />}
-          {activeTab === 'salary' && <HRSalaryPanel companyId={companyId} staff={staff} currency={currency} isAdmin={isAdmin} user={user} />}
-        </Suspense>
+          </Link>
+        ))}
       </div>
     </div>
   );

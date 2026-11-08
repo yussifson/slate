@@ -157,50 +157,49 @@ export default function Payroll() {
  const totalDeductions = payrolls.reduce((sum, p) => sum + (Number(p.deductions) || 0), 0);
 
  return (
- <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8 font-dmsans">
-  <div className="max-w-[1600px] mx-auto space-y-6">
+  <div className="w-full max-w-full overflow-x-hidden p-3 sm:p-6 pb-24 font-sans space-y-4 sm:space-y-6">
+    <div className="w-full space-y-4 sm:space-y-6">
 
-    {/* ── Header ── */}
-    <div className="flex items-center justify-between flex-wrap gap-4">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("payroll", "Payroll")}</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">{t("manage_employee_salaries_and_c", "Manage employee salaries and compensation")}</p>
-      </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" className="gap-2 rounded-xl">
-          <Download className="w-4 h-4" /> Export
-        </Button>
-        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm">
-          <Plus className="w-4 h-4" /> {t("add_payslip", "Add Payslip")}
-        </Button>
-      </div>
-    </div>
+     {/* ── Native Header ── */}
+     <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+       <div className="min-w-0">
+         <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">{t("payroll", "Payroll & Salaries")}</h1>
+         <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">{t("manage_employee_salaries_and_c", "Staff payroll records and compensation cycles")}</p>
+       </div>
+       <div className="flex items-center gap-2 shrink-0">
+         <Button onClick={openAdd} size="sm" className="h-9 px-3 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1.5 shrink-0 active:scale-95 transition-all">
+           <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{t("add_payslip", "Add Payslip")}</span><span className="sm:hidden">Add</span>
+         </Button>
+       </div>
+     </div>
 
-    {/* ── Metric Cards ── */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {[
-        { label: 'Total Payroll', value: `$${totalPayroll.toLocaleString()}`, icon: DollarSign, gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-        { label: 'Processed', value: processed, icon: CheckCircle2, gradient: 'from-emerald-500 to-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-        { label: 'Pending', value: pending, icon: Clock, gradient: 'from-amber-500 to-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
-        { label: 'Total Deductions', value: `$${totalDeductions.toLocaleString()}`, icon: TrendingDown, gradient: 'from-red-500 to-red-600', bg: 'bg-red-50 dark:bg-red-900/20' },
-      ].map(({ label, value, icon: Icon, gradient, bg }) => (
-        <div key={label} className={`${bg} rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 p-5 flex items-center gap-4 hover:shadow-md transition-all duration-200`}>
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-sm`}>
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
-            <p className="text-xs text-muted-foreground font-medium mt-0.5">{label}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+     {/* ── 2x2 Modern Mobile Stats Grid ── */}
+     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Payroll</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-foreground">${totalPayroll.toLocaleString()}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Processed</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-emerald-600">{processed}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pending</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-amber-600">{pending}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Deductions</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-rose-600">${totalDeductions.toLocaleString()}</div>
+       </div>
+     </div>
 
-    {/* ── Search ── */}
-    <div className="relative max-w-sm">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <Input placeholder="Search employee..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
-    </div>
+     {/* ── Search Bar ── */}
+     <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex items-center gap-2.5">
+       <div className="relative flex-1">
+         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+         <Input placeholder="Search employee name or payroll..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-9.5 bg-background rounded-xl border-border/80 text-xs w-full" />
+       </div>
+     </div>
 
     {/* ── Payslip Cards ── */}
     {isDbLoading ? (

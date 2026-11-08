@@ -61,55 +61,38 @@ export default function HRPerformancePanel({ companyId, isAdmin, staff = [], use
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-6 w-full max-w-full overflow-x-hidden font-sans">
-      {/* â”€â”€ Hero Header â”€â”€ */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 p-8 text-white">
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute -top-6 -right-6 w-40 h-40 bg-white/10 rounded-full" />
-        <div className="absolute -bottom-10 -right-16 w-56 h-56 bg-white/5 rounded-full" />
-        <div className="absolute top-4 right-40 w-24 h-24 bg-white/5 rounded-full" />
-        <div className="relative z-10 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <Target className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight">{t("performance_reviews", "Performance Reviews")}</h1>
-                <p className="text-green-100 text-sm">Manage staff evaluations and goals.</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {isAdmin && (
-              <Button onClick={() => setShowForm(true)} className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur gap-2 text-xs font-bold">
-                <Plus className="w-4 h-4" /> Create Review
-              </Button>
-            )}
-          </div>
+    <div className="space-y-4 sm:space-y-6 w-full max-w-full overflow-x-hidden font-sans pb-24">
+      {/* ── Native Header ── */}
+      <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">{t("performance_reviews", "Performance & KPIs")}</h1>
+          <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">Staff evaluations, review cycles, and team appraisal scoring</p>
         </div>
+        {isAdmin && (
+          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-3 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1.5 shrink-0 active:scale-95 transition-all">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Create Review</span><span className="sm:hidden">New</span>
+          </Button>
+        )}
       </div>
 
-      {/* â”€â”€ KPI Cards â”€â”€ */}
+      {/* ── 2x2 Modern Mobile Stats Grid ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-        {kpis.map((kpi, i) => (
-          <div key={i} className="bg-card rounded-2xl border border-border/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-            <div className="flex items-start justify-between mb-4">
-              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shadow-md ${kpi.alt ? 'bg-gradient-to-br from-orange-500 to-orange-600' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}>
-                <kpi.icon className="w-5 h-5 text-white" />
-              </div>
-              {kpi.trend && (
-                <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1 ${kpi.trendUp ? 'text-green-700 bg-green-50 dark:bg-green-900/40' : 'text-orange-700 bg-orange-50 dark:bg-orange-900/40'}`}>
-                  {kpi.trendUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                  {kpi.trend}
-                </span>
-              )}
-            </div>
-            <p className="text-2xl font-bold text-foreground mb-1 tabular-nums">{kpi.value}</p>
-            <p className="text-sm font-medium text-foreground mb-0.5">{kpi.label}</p>
-            <p className="text-xs text-muted-foreground">{kpi.sub}</p>
-          </div>
-        ))}
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Reviews</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-foreground">{reviews.length}</div>
+        </div>
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Avg Score</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-emerald-600">{teamAvg}/10</div>
+        </div>
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Top Performers</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-amber-600">{topPerformers.length}</div>
+        </div>
+        <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+          <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Completion</div>
+          <div className="text-lg sm:text-2xl font-black mt-0.5 text-blue-600">92%</div>
+        </div>
       </div>
 
       <Tabs defaultValue={isAdmin ? "all_reviews" : "my_reviews"} className="w-full pt-4">

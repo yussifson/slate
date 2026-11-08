@@ -307,69 +307,57 @@ export default function Employees() {
  const departmentsCount = new Set(employees.map(e => e.departmentId).filter(Boolean)).size;
 
  return (
- <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8 font-dmsans">
-   <div className="max-w-[1600px] mx-auto space-y-6">
+  <div className="w-full max-w-full overflow-x-hidden p-3 sm:p-6 pb-24 font-sans space-y-4 sm:space-y-6">
+    <div className="w-full space-y-4 sm:space-y-6">
 
-    {/* ── Header ── */}
-    <div className="flex items-center justify-between flex-wrap gap-4">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("employees", "Employees")}</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">{t("manage_staff_profiles_and_dire", "Manage staff profiles and directories")}</p>
-      </div>
-      <div className="flex items-center gap-3">
-        <div className="bg-muted p-1 rounded-xl flex">
-          <button onClick={() => setActiveTab('list')} className={`px-4 py-1.5 text-sm font-semibold rounded-lg transition-all ${activeTab === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-            <Users className="w-4 h-4 inline-block mr-1.5" /> List
-          </button>
-          <button onClick={() => setActiveTab('org')} className={`px-4 py-1.5 text-sm font-semibold rounded-lg transition-all ${activeTab === 'org' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
-            <Network className="w-4 h-4 inline-block mr-1.5" /> Org Chart
-          </button>
-        </div>
-        <ExportButton
-          data={filtered.map(e => ({
-            name: e.name,
-            position: e.position,
-            department: departments.find(d => d.id === e.departmentId)?.name || 'General',
-            email: e.email,
-            phone: e.phone,
-            status: e.status,
-            join_date: e.joinDate
-          }))}
-          filename="jcl_staff_directory"
-          title="Corporate Staff Directory"
-          subtitle="Official Employee Register"
-        />
-        <Button onClick={openAdd} className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-xl shadow-sm">
-          <Plus className="w-4 h-4" /> {t("add_employee", "Add Employee")}
-        </Button>
-      </div>
-    </div>
+     {/* ── Native Header ── */}
+     <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+       <div className="min-w-0">
+         <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">{t("employees", "Employees & Staff")}</h1>
+         <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">{t("manage_staff_profiles_and_dire", "Workforce directory and employee records")}</p>
+       </div>
+       <div className="flex items-center gap-2 shrink-0">
+         <div className="bg-muted p-1 rounded-xl flex shrink-0">
+           <button onClick={() => setActiveTab('list')} className={`px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'list' ? 'bg-background shadow-xs text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+             <Users className="w-3.5 h-3.5 inline-block sm:mr-1" /> <span className="hidden sm:inline">List</span>
+           </button>
+           <button onClick={() => setActiveTab('org')} className={`px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${activeTab === 'org' ? 'bg-background shadow-xs text-foreground' : 'text-muted-foreground hover:text-foreground'}`}>
+             <Network className="w-3.5 h-3.5 inline-block sm:mr-1" /> <span className="hidden sm:inline">Org Chart</span>
+           </button>
+         </div>
+         <Button onClick={openAdd} size="sm" className="h-9 px-3 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1.5 shrink-0 active:scale-95 transition-all">
+           <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{t("add_employee", "Add Employee")}</span><span className="sm:hidden">Add</span>
+         </Button>
+       </div>
+     </div>
 
-    {/* ── Metric Cards ── */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {[
-        { label: 'Total Staff', value: totalStaff, icon: Users, gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-        { label: 'Active Staff', value: activeStaff, icon: BadgeCheck, gradient: 'from-emerald-500 to-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-        { label: 'On Leave', value: onLeave, icon: CalendarDays, gradient: 'from-amber-500 to-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
-        { label: 'Departments', value: departmentsCount, icon: Building2, gradient: 'from-purple-500 to-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
-      ].map(({ label, value, icon: Icon, gradient, bg }) => (
-        <div key={label} className={`${bg} rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 p-5 flex items-center gap-4 hover:shadow-md transition-all duration-200`}>
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-sm`}>
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
-            <p className="text-xs text-muted-foreground font-medium mt-0.5">{label}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+     {/* ── 2x2 Modern Mobile Stats Grid ── */}
+     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Staff</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-foreground">{totalStaff}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Active Staff</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-emerald-600">{activeStaff}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">On Leave</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-amber-600">{onLeave}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Departments</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-purple-600">{departmentsCount}</div>
+       </div>
+     </div>
 
-    {/* ── Search ── */}
-    <div className="relative w-full sm:max-w-sm">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <Input placeholder="Search employees..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-white dark:bg-card rounded-xl border-[0.5px] border-black/9 dark:border-white/8" />
-    </div>
+     {/* ── Search Bar ── */}
+     <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex items-center gap-2.5">
+       <div className="relative flex-1">
+         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+         <Input placeholder="Search employee name, role, department..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-9.5 bg-background rounded-xl border-border/80 text-xs w-full" />
+       </div>
+     </div>
 
     {/* ── Content ── */}
     {isDbLoading ? (

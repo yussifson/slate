@@ -166,39 +166,39 @@ export default function Leave() {
  const rejected = requests.filter(r => r.status === 'Rejected').length;
 
  return (
- <div className="flex-1 overflow-auto bg-slate-50/50 dark:bg-card/50 h-full p-4 lg:p-8 font-dmsans">
-  <div className="max-w-[1600px] mx-auto space-y-6">
+  <div className="w-full max-w-full overflow-x-hidden p-3 sm:p-6 pb-24 font-sans space-y-4 sm:space-y-6">
+    <div className="w-full space-y-4 sm:space-y-6">
 
-    {/* ── Header ── */}
-    <div className="flex items-center justify-between flex-wrap gap-4">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("leave", "Leave Management")}</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">{t("review_and_approve_employee_ti", "Review and approve employee time-off requests")}</p>
-      </div>
-      <Button onClick={openAdd} className="gap-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-sm">
-        <Plus className="w-4 h-4" /> {t("new_request", "New Request")}
-      </Button>
-    </div>
+     {/* ── Native Header ── */}
+     <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+       <div className="min-w-0">
+         <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate">{t("leave", "Leave Management")}</h1>
+         <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">{t("review_and_approve_employee_ti", "Employee absence tracking and leave requests")}</p>
+       </div>
+       <Button onClick={openAdd} size="sm" className="h-9 px-3 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1.5 shrink-0 active:scale-95 transition-all">
+         <Plus className="w-4 h-4" /> <span className="hidden sm:inline">{t("new_request", "New Request")}</span><span className="sm:hidden">New</span>
+       </Button>
+     </div>
 
-    {/* ── Metric Cards ── */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {[
-        { label: 'Total Requests', value: requests.length, icon: CalendarDays, gradient: 'from-blue-500 to-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-        { label: 'Pending Review', value: pending, icon: Clock, gradient: 'from-amber-500 to-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20' },
-        { label: 'Approved', value: approved, icon: CheckCircle2, gradient: 'from-emerald-500 to-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
-        { label: 'Rejected', value: rejected, icon: XCircle, gradient: 'from-red-500 to-red-600', bg: 'bg-red-50 dark:bg-red-900/20' },
-      ].map(({ label, value, icon: Icon, gradient, bg }) => (
-        <div key={label} className={`${bg} rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 p-5 flex items-center gap-4 hover:shadow-md transition-all duration-200`}>
-          <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shadow-sm`}>
-            <Icon className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-foreground tracking-tight">{value}</p>
-            <p className="text-xs text-muted-foreground font-medium mt-0.5">{label}</p>
-          </div>
-        </div>
-      ))}
-    </div>
+     {/* ── 2x2 Modern Mobile Stats Grid ── */}
+     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Requests</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-foreground">{requests.length}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pending</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-amber-600">{pending}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Approved</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-emerald-600">{approved}</div>
+       </div>
+       <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+         <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Rejected</div>
+         <div className="text-lg sm:text-2xl font-black mt-0.5 text-rose-600">{rejected}</div>
+       </div>
+     </div>
 
     {/* ── Cards Grid ── */}
     {isDbLoading ? (
