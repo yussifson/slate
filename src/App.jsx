@@ -471,6 +471,7 @@ const JCLRequisitionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCL
 const JCLPurchaseOrdersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLPurchaseOrders'));
 const JCLMaterialsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLMaterials'));
 const JCLTechnicalDrawingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLTechnicalDrawings'));
+const JCLSalesTargetsPage = React.lazy(() => import("./pages/real-estate-jcl/JCLSalesTargets"));
 const JCLBillOfQuantitiesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLBillOfQuantities'));
 const HREmployeeAssetsPage = React.lazy(() => import('./pages/real-estate-jcl/HREmployeeAssets'));
 const JCLProjectOperationsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLProjectOperations'));
@@ -1098,6 +1099,7 @@ function PlatformRoutes() {
       <Route path="/procurement" element={<UnivProcurement />} />
       <Route path="/analytics" element={<UnivAnalytics />} />
       <Route path="/bom" element={<UnivBOM />} />
+      <Route path="/real-estate/sales-targets" element={<JCLSalesTargetsPage />} />
       <Route path="/boq" element={<JCLBillOfQuantitiesPage />} />
       <Route path="/bookings" element={<UnivBooking />} />
       <Route path="/univ-calendar" element={<UnivCalendar />} />

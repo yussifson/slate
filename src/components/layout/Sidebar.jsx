@@ -868,7 +868,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p) || ['item register', 'front desk', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
         return "Secretary";
       }
-      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || ['engagement', 'engagements & projects', 'clients', 'crm leads', 'viewings', 'offers', 'counter offers', 'timeline', 'market analytics'].includes(normalizedLabel)) {
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/sales-targets', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || ['engagement', 'engagements & projects', 'clients', 'crm leads', 'sales targets', 'viewings', 'offers', 'counter offers', 'timeline', 'market analytics'].includes(normalizedLabel)) {
         return "Marketing";
       }
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land') || ['properties', 'land parcels', 'leases', 'renewals', 'maintenance', 'contractors', 'reviews', 'contractor reviews'].includes(normalizedLabel)) {
@@ -912,7 +912,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/engineering', '/engineering/drawings', '/bom', '/boq', '/jcl/projects', '/jcl/project-operations', '/jcl/project-collaboration'].includes(p)) {
         return "Engineering";
       }
-      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/sales-targets', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
         return "Marketing";
       }
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land')) {

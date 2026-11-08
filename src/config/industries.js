@@ -871,6 +871,7 @@ export const INDUSTRIES = {
       { label: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
       { label: 'Notifications', path: '/notifications', icon: 'Bell' },
       { section: 'Marketing', label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Target' },
+      { label: 'Sales Targets', path: '/real-estate/sales-targets', icon: 'Award' },
       { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
       { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
       { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },

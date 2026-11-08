@@ -67,6 +67,7 @@ export const JCL_MARKETING_PATHS = [
   '/real-estate/offers',
   '/real-estate/counter-offers',
   '/real-estate/crm-leads',
+  '/real-estate/sales-targets',
   '/real-estate/customer-timeline',
   '/real-estate/field-tracker',
   '/real-estate/marketer-tracker'
