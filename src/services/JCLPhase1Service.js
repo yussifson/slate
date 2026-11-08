@@ -217,4 +217,45 @@ export const JCLPhase1Service = {
 
     return attachClients(records, clients);
   },
+
+  async updateProject(companyId, projectId, payload) {
+    if (!companyId || !projectId) return null;
+    let updated = null;
+
+    // Try ops_projects first
+    try {
+      const { data, error } = await supabase
+        .from('ops_projects')
+        .update({
+          status: payload.status,
+          progress_percentage: payload.progress_percentage !== undefined ? Number(payload.progress_percentage) : undefined,
+          target_end_date: payload.target_end_date || undefined,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', projectId)
+        .eq('company_id', companyId)
+        .select()
+        .maybeSingle();
+
+      if (!error && data) updated = data;
+    } catch (_) {}
+
+    // Also update in jcl_engagements if it originated from an engagement
+    try {
+      const { data: engData } = await supabase
+        .from('jcl_engagements')
+        .update({
+          internal_notes: payload.internal_notes || undefined,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', projectId)
+        .eq('company_id', companyId)
+        .select()
+        .maybeSingle();
+
+      if (engData && !updated) updated = engData;
+    } catch (_) {}
+
+    return updated;
+  },
 };

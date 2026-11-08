@@ -760,14 +760,13 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         { label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" },
         { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
         { label: "Client Portal", path: "/portal", icon: "Globe" },
-        { label: "Procurement", path: "/jcl/procurement", icon: "Package" },
         { label: "Requisitions", path: "/jcl/requisitions", icon: "ClipboardList" },
         { label: "Purchase Orders", path: "/jcl/purchase-orders", icon: "FileCheck" },
         { label: "Materials", path: "/jcl/inventory", icon: "Warehouse" },
-        { label: "Engineering", path: "/engineering", icon: "Layers" },
+        { label: "Drawings", path: "/engineering/drawings", icon: "Layers" },
         { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
         { label: "Bill of Quantities", path: "/boq", icon: "Calculator" },
-        { label: "Company Items Issued", path: "/jcl/employee-assets", icon: "ShieldCheck" }
+        { label: "Asset Taking", path: "/jcl/employee-assets", icon: "ShieldCheck" }
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -812,7 +811,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       '/snapshots',
       '/snapshot',
       '/real-estate/marketer-tracker',
-      '/real-estate/trust-accounting'
+      '/real-estate/trust-accounting',
+      '/engineering',
+      '/jcl/procurement'
     ]);
     const JCL_BLOCKED_LABELS = new Set([
       'enterprise admin',
@@ -824,7 +825,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       'snapshot',
       'snapshots',
       'field gps',
-      'trust accounting'
+      'trust accounting',
+      'engineering',
+      'procurement'
     ]);
     rawNavItems = rawNavItems.filter(item => {
       if (item.path && JCL_BLOCKED_PATHS.has(item.path)) return false;

@@ -46,10 +46,11 @@ const JCL_DEPARTMENTS = [
     icon: Package,
     color: "teal",
     actionLabel: "New requisition",
-    actionPath: "/jcl/procurement",
+    actionPath: "/jcl/requisitions",
     items: [
-      { label: "Procurement dashboard", path: "/jcl/procurement", icon: Package },
-      { label: "Materials & inventory", path: "/jcl/procurement?tab=inventory", icon: Warehouse }
+      { label: "Requisitions", path: "/jcl/requisitions", icon: ClipboardList },
+      { label: "Purchase Orders", path: "/jcl/purchase-orders", icon: FileCheck },
+      { label: "Materials & Inventory", path: "/jcl/inventory", icon: Warehouse }
     ]
   },
   {
