@@ -141,8 +141,8 @@ const getJCLCategory = (item) => {
   }
 
   // Human Resources
-  if (['/hr', '/team', '/employees'].includes(p) ||
-      ['human resources', 'hr', 'hr & leave', 'team', 'employees', 'staff'].includes(normalizedLabel)) {
+  if (['/hr', '/team', '/employees', '/hr/assets'].includes(p) ||
+      ['human resources', 'hr', 'hr & leave', 'team', 'employees', 'staff', 'custody tracker (hr)', 'assets (hr)'].includes(normalizedLabel)) {
     return 'Human Resources';
   }
 

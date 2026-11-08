@@ -152,12 +152,12 @@ function EmptyState({ icon: Icon, title, desc, color = 'indigo' }) {
 // ── Section header ─────────────────────────────────────────────
 function SectionHeader({ icon: Icon, title, color = 'indigo', action }) {
   return (
-    <div className="flex items-center justify-between">
-      <h2 className="text-[13px] font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2">
-        <Icon className={cn('h-4 w-4', `text-${color}-600 dark:text-${color}-400`)} />
-        {title}
+    <div className="flex items-center justify-between gap-3 min-w-0">
+      <h2 className="text-xs sm:text-[13px] font-extrabold text-foreground uppercase tracking-wider flex items-center gap-2 min-w-0 truncate">
+        <Icon className={cn('h-4 w-4 shrink-0', `text-${color}-600 dark:text-${color}-400`)} />
+        <span className="truncate">{title}</span>
       </h2>
-      {action}
+      {action && <div className="shrink-0">{action}</div>}
     </div>
   );
 }
@@ -717,7 +717,7 @@ export default function FirmAccountingHub() {
       {activeTab === 'coa' && (
         <div className="space-y-4">
           <SectionHeader icon={BookOpen} title="Corporate Chart of Accounts" color="indigo"
-            action={<Button size="sm" onClick={() => setShowAccountModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.indigo.btn)}><Plus className="w-3.5 h-3.5" /> Add Account</Button>} />
+            action={<Button size="sm" onClick={() => setShowAccountModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.indigo.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Add Account</span><span className="sm:hidden">Add</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search accounts by code or name..." />
           <TableShell headers={[{ label: 'Code' }, { label: 'Account Name' }, { label: 'Type' }, { label: 'Status' }]}>
             {filteredAccounts.length === 0 ? (
@@ -740,7 +740,7 @@ export default function FirmAccountingHub() {
       {activeTab === 'invoices' && (
         <div className="space-y-4">
           <SectionHeader icon={Receipt} title="Accounts Receivable — Customer Invoices" color="emerald"
-            action={<Button size="sm" onClick={() => setShowInvoiceModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.emerald.btn)}><Plus className="w-3.5 h-3.5" /> Create Invoice</Button>} />
+            action={<Button size="sm" onClick={() => setShowInvoiceModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.emerald.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Create Invoice</span><span className="sm:hidden">Create</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by customer or invoice number..." />
           <div className="flex items-center justify-between pb-1">
             <span className="text-xs text-muted-foreground">{filteredInvoices.length} invoices found</span>
@@ -790,7 +790,7 @@ export default function FirmAccountingHub() {
       {activeTab === 'bills' && (
         <div className="space-y-4">
           <SectionHeader icon={FileText} title="Accounts Payable — Vendor Bills" color="rose"
-            action={<Button size="sm" onClick={() => setShowBillModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.rose.btn)}><Plus className="w-3.5 h-3.5" /> Record Bill</Button>} />
+            action={<Button size="sm" onClick={() => setShowBillModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.rose.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Record Bill</span><span className="sm:hidden">Record</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by vendor or bill number..." />
           <div className="flex items-center justify-between pb-1">
             <span className="text-xs text-muted-foreground">{filteredBills.length} vendor bills found</span>
@@ -839,7 +839,7 @@ export default function FirmAccountingHub() {
       {activeTab === 'jv' && (
         <div className="space-y-4">
           <SectionHeader icon={LineChart} title="General Ledger — Journal Vouchers (Double-Entry)" color="purple"
-            action={<Button size="sm" onClick={() => setShowJVModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.purple.btn)}><Plus className="w-3.5 h-3.5" /> Post JV Entry</Button>} />
+            action={<Button size="sm" onClick={() => setShowJVModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.purple.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Post JV Entry</span><span className="sm:hidden">Post JV</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search journal entries..." />
           <TableShell headers={[{ label: 'JV #' }, { label: 'Date' }, { label: 'Description' }, { label: 'Reference' }, { label: 'Status', center: true }]}>
             {filteredJVs.length === 0 ? (
@@ -863,7 +863,7 @@ export default function FirmAccountingHub() {
       {activeTab === 'assets' && (
         <div className="space-y-4">
           <SectionHeader icon={Landmark} title="Fixed Assets & Depreciation Schedule" color="amber"
-            action={<Button size="sm" onClick={() => setShowAssetModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.amber.btn)}><Plus className="w-3.5 h-3.5" /> Add Asset</Button>} />
+            action={<Button size="sm" onClick={() => setShowAssetModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.amber.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Add Asset</span><span className="sm:hidden">Add</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search assets by name or code..." />
 
           {filteredAssets.length === 0 ? (
@@ -926,7 +926,7 @@ export default function FirmAccountingHub() {
       {activeTab === 'bankrec' && (
         <div className="space-y-4">
           <SectionHeader icon={CheckCircle2} title="Bank Statement Reconciliation" color="teal"
-            action={<Button size="sm" onClick={() => setShowBankRecModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.teal.btn)}><Plus className="w-3.5 h-3.5" /> Start Reconciliation</Button>} />
+            action={<Button size="sm" onClick={() => setShowBankRecModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.teal.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Start Reconciliation</span><span className="sm:hidden">Reconcile</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search reconciliations..." />
           <TableShell headers={[{ label: 'Statement Date' }, { label: 'Bank Balance', right: true }, { label: 'GL Balance', right: true }, { label: 'Difference', right: true }, { label: 'Status', center: true }]}>
             {filteredBankRecs.length === 0 ? (
@@ -952,33 +952,58 @@ export default function FirmAccountingHub() {
       {/* ══════════════════════════════════════════════════════ */}
       {activeTab === 'income' && (
         <div className="space-y-5">
-          {/* Sub-tabs */}
-          <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl border border-border/50 w-fit">
-            {[
-              { id: 'income', label: 'Office Income', icon: ArrowUpRight },
-              { id: 'expenses', label: 'Office Expenses', icon: ArrowDownLeft },
-              { id: 'project', label: 'Project Expenses', icon: Building2 },
-            ].map(sub => {
-              const SubIcon = sub.icon;
-              return (
-                <button key={sub.id} onClick={() => setIncomeSubTab(sub.id)}
-                  className={cn('flex items-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all',
-                    incomeSubTab === sub.id ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}>
-                  <SubIcon className="w-3.5 h-3.5" />{sub.label}
-                </button>
-              );
-            })}
+          {/* Sub-tabs (Horizontally scrollable on mobile) */}
+          <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
+            <div className="flex items-center gap-1.5 min-w-max bg-muted/40 p-1 rounded-xl border border-border/50">
+              {[
+                { id: 'income', label: 'Office Income', icon: ArrowUpRight },
+                { id: 'expenses', label: 'Office Expenses', icon: ArrowDownLeft },
+                { id: 'project', label: 'Project Expenses', icon: Building2 },
+              ].map(sub => {
+                const SubIcon = sub.icon;
+                return (
+                  <button key={sub.id} onClick={() => setIncomeSubTab(sub.id)}
+                    className={cn('flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all shrink-0',
+                      incomeSubTab === sub.id ? 'bg-card shadow-xs text-foreground border border-border/80' : 'text-muted-foreground hover:text-foreground')}>
+                    <SubIcon className="w-3.5 h-3.5" />{sub.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Office Income */}
           {incomeSubTab === 'income' && (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                <KpiCard label="Total Income Recorded" value={fmt(totalIncomeRecorded)} sub={`${officeIncome.length} entries`} icon={ArrowUpRight} color="blue" />
-                <KpiCard label="Net P&L (Income - Expenses)" value={fmt(totalIncomeRecorded - totalExpensesRecorded)} sub="Office level" icon={TrendingUp} color={totalIncomeRecorded >= totalExpensesRecorded ? 'emerald' : 'rose'} />
+              {/* 2x2 Mobile Stats Grid (< md) & Desktop Cards (>= md) */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+                <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+                  <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Income</div>
+                  <div className="text-base sm:text-2xl font-black mt-0.5 text-blue-600 truncate">{fmt(totalIncomeRecorded)}</div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5">{officeIncome.length} entries</div>
+                </div>
+                <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+                  <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Office Expenses</div>
+                  <div className="text-base sm:text-2xl font-black mt-0.5 text-rose-600 truncate">{fmt(totalExpensesRecorded)}</div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5">{officeExpenses.length} entries</div>
+                </div>
+                <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+                  <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Net Operating</div>
+                  <div className={cn("text-base sm:text-2xl font-black mt-0.5 truncate", totalIncomeRecorded >= totalExpensesRecorded ? "text-emerald-600" : "text-rose-600")}>
+                    {fmt(totalIncomeRecorded - totalExpensesRecorded)}
+                  </div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5">Office Level P&L</div>
+                </div>
+                <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+                  <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Avg Per Month</div>
+                  <div className="text-base sm:text-2xl font-black mt-0.5 text-foreground truncate">
+                    {fmt(officeIncome.length > 0 ? totalIncomeRecorded / Math.max(1, new Set(officeIncome.map(i => (i.date || '').slice(0, 7))).size) : 0)}
+                  </div>
+                  <div className="text-[9px] text-muted-foreground mt-0.5">Monthly Average</div>
+                </div>
               </div>
               <SectionHeader icon={ArrowUpRight} title="Office Income Records" color="blue"
-                action={<Button size="sm" onClick={() => setShowIncomeModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.blue.btn)}><Plus className="w-3.5 h-3.5" /> Record Income</Button>} />
+                action={<Button size="sm" onClick={() => setShowIncomeModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.blue.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Record Income</span><span className="sm:hidden">Record</span></Button>} />
               <FilterBar search={search} onSearch={setSearch} placeholder="Search income records..." />
               <TableShell headers={[{ label: 'Date' }, { label: 'Source' }, { label: 'Category' }, { label: 'Description' }, { label: 'Amount', right: true }]}>
                 {filteredIncome.length === 0 ? (
@@ -1001,7 +1026,7 @@ export default function FirmAccountingHub() {
             <div className="space-y-4">
               <KpiCard label="Total Office Expenses" value={fmt(totalExpensesRecorded)} sub={`${officeExpenses.length} entries`} icon={ArrowDownLeft} color="rose" />
               <SectionHeader icon={ArrowDownLeft} title="Office Expenses" color="rose"
-                action={<Button size="sm" onClick={() => setShowExpenseModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.rose.btn)}><Plus className="w-3.5 h-3.5" /> Record Expense</Button>} />
+                action={<Button size="sm" onClick={() => setShowExpenseModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.rose.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Record Expense</span><span className="sm:hidden">Record</span></Button>} />
               <FilterBar search={search} onSearch={setSearch} placeholder="Search expenses..." />
               <TableShell headers={[{ label: 'Date' }, { label: 'Description' }, { label: 'Category' }, { label: 'Vendor / Payee' }, { label: 'Amount', right: true }]}>
                 {filteredExpenses.length === 0 ? (
@@ -1024,7 +1049,7 @@ export default function FirmAccountingHub() {
             <div className="space-y-4">
               <KpiCard label="Total Project Costs" value={fmt(totalProjExp)} sub={`${projectExpenses.length} entries`} icon={Building2} color="amber" />
               <SectionHeader icon={Building2} title="Project-Linked Expenses" color="amber"
-                action={<Button size="sm" onClick={() => setShowProjectExpenseModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.amber.btn)}><Plus className="w-3.5 h-3.5" /> Add Project Cost</Button>} />
+                action={<Button size="sm" onClick={() => setShowProjectExpenseModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.amber.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Add Project Cost</span><span className="sm:hidden">Add Cost</span></Button>} />
               <FilterBar search={search} onSearch={setSearch} placeholder="Search by project name or description..." />
               <TableShell headers={[{ label: 'Date' }, { label: 'Project' }, { label: 'Description' }, { label: 'Category' }, { label: 'Amount', right: true }]}>
                 {filteredProjExp.length === 0 ? (
@@ -1049,11 +1074,32 @@ export default function FirmAccountingHub() {
       {/* ══════════════════════════════════════════════════════ */}
       {activeTab === 'payroll' && (
         <div className="space-y-5">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard label="Active Employees" value={activeEmployees} sub="On payroll roster" icon={Users} color="violet" />
-            <KpiCard label="Total Payroll Runs" value={fmt(totalPayroll)} sub={`${payrollRuns.length} runs`} icon={Banknote} color="indigo" />
-            <KpiCard label="Monthly Gross (Active)" value={fmt(payrollEmployees.filter(e => e.status === 'active').reduce((s, e) => s + (e.basic_salary || 0), 0))} sub="Total gross salaries" icon={DollarSign} color="emerald" />
-            <KpiCard label="Monthly Net (Active)" value={fmt(payrollEmployees.filter(e => e.status === 'active').reduce((s, e) => s + (e.net_pay || 0), 0))} sub="After PAYE & SSNIT" icon={Shield} color="teal" />
+          {/* 2x2 Mobile Stats Grid (< md) & Desktop Cards (>= md) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Active Staff</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-violet-600">{activeEmployees}</div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">On payroll roster</div>
+            </div>
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Runs</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-indigo-600 truncate">{fmt(totalPayroll)}</div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">{payrollRuns.length} cycles run</div>
+            </div>
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Monthly Gross</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-emerald-600 truncate">
+                {fmt(payrollEmployees.filter(e => e.status === 'active').reduce((s, e) => s + (e.basic_salary || 0), 0))}
+              </div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">Total Basic Salary</div>
+            </div>
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Monthly Net</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-teal-600 truncate">
+                {fmt(payrollEmployees.filter(e => e.status === 'active').reduce((s, e) => s + (e.net_pay || 0), 0))}
+              </div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">Take-home post PAYE</div>
+            </div>
           </div>
 
           <div className="p-4 rounded-xl bg-violet-500/5 border border-violet-500/20 text-xs">
@@ -1063,7 +1109,7 @@ export default function FirmAccountingHub() {
 
           {/* Employees */}
           <SectionHeader icon={Users} title="Employee Payroll Roster" color="violet"
-            action={<Button size="sm" onClick={() => setShowPayrollEmployeeModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.violet.btn)}><Plus className="w-3.5 h-3.5" /> Add Employee</Button>} />
+            action={<Button size="sm" onClick={() => setShowPayrollEmployeeModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.violet.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Add Employee</span><span className="sm:hidden">Add</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search employees by name or position..." />
 
           {filteredEmployees.length === 0 ? (
@@ -1103,7 +1149,7 @@ export default function FirmAccountingHub() {
 
           {/* Payroll Runs */}
           <SectionHeader icon={ClipboardList} title="Payroll Run History" color="violet"
-            action={<Button size="sm" onClick={() => setShowPayrollRunModal(true)} disabled={activeEmployees === 0} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.violet.btn)}><Banknote className="w-3.5 h-3.5" /> Run Payroll</Button>} />
+            action={<Button size="sm" onClick={() => setShowPayrollRunModal(true)} disabled={activeEmployees === 0} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.violet.btn)}><Banknote className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Run Payroll</span><span className="sm:hidden">Run</span></Button>} />
           <TableShell headers={[{ label: 'Period' }, { label: 'Employees', center: true }, { label: 'Total Gross', right: true }, { label: 'Total PAYE', right: true }, { label: 'Total SSNIT', right: true }, { label: 'Total Net', right: true }, { label: 'Status', center: true }]}>
             {payrollRuns.length === 0 ? (
               <tr><td colSpan={7}><EmptyState icon={Banknote} title="No Payroll Runs" desc="Add employees above then click Run Payroll to generate a payroll record." color="violet" /></td></tr>
@@ -1127,11 +1173,30 @@ export default function FirmAccountingHub() {
       {/* ══════════════════════════════════════════════════════ */}
       {activeTab === 'tonefo' && (
         <div className="space-y-5">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard label="Total Customers" value={tonefoCases.length} sub="Electronics sales" icon={ShoppingBag} color="orange" />
-            <KpiCard label="Total Collected" value={fmt(totalCollected)} sub="Payments received" icon={ArrowUpRight} color="emerald" />
-            <KpiCard label="Outstanding Balance" value={fmt(totalOutstanding)} sub="Still owed" icon={ArrowDownLeft} color="rose" />
-            <KpiCard label="Active Installments" value={tonefoCases.filter(t => t.status === 'installment').length} sub="Ongoing payments" icon={Phone} color="orange" />
+          {/* 2x2 Mobile Stats Grid (< md) & Desktop Cards (>= md) */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Sales</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-orange-600">{tonefoCases.length}</div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">Electronics clients</div>
+            </div>
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Total Collected</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-emerald-600 truncate">{fmt(totalCollected)}</div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">Payments cleared</div>
+            </div>
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Outstanding</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-rose-600 truncate">{fmt(totalOutstanding)}</div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">Remaining balance</div>
+            </div>
+            <div className="p-3 sm:p-4 rounded-[20px] border border-border/80 bg-card text-card-foreground shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Active Plans</div>
+              <div className="text-base sm:text-2xl font-black mt-0.5 text-amber-600">
+                {tonefoCases.filter(t => t.status === 'installment').length}
+              </div>
+              <div className="text-[9px] text-muted-foreground mt-0.5">Ongoing installments</div>
+            </div>
           </div>
 
           <div className="p-4 rounded-xl bg-orange-500/5 border border-orange-500/20 text-xs">
@@ -1140,7 +1205,7 @@ export default function FirmAccountingHub() {
           </div>
 
           <SectionHeader icon={ShoppingBag} title="TONEFO Customer Sales" color="orange"
-            action={<Button size="sm" onClick={() => setShowTonefoSaleModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.orange.btn)}><Plus className="w-3.5 h-3.5" /> New Sale</Button>} />
+            action={<Button size="sm" onClick={() => setShowTonefoSaleModal(true)} className={cn('gap-1.5 h-8 px-2.5 sm:px-3 text-xs font-bold text-white shadow-md rounded-xl shrink-0', TAB_COLORS.orange.btn)}><Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">New Sale</span><span className="sm:hidden">New</span></Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by customer name or item..." />
 
           {filteredTonefo.length === 0 ? (
@@ -1246,7 +1311,45 @@ export default function FirmAccountingHub() {
 
       {activeTab === 'reports' && (
         <div className="space-y-5">
-          <SectionHeader icon={BarChart2} title="Financial Reports Dashboard" color="pink" />
+          <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight text-foreground flex items-center gap-2 truncate">
+                <BarChart2 className="w-5 h-5 text-pink-600 shrink-0" />
+                <span className="truncate">Financial Reports & Performance</span>
+              </h2>
+              <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">
+                Consolidated P&L, expense category allocations, and payroll summaries
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <ExportButton
+                data={[
+                  { metric: 'Total Income (Office + AR)', value: totalIncomeRecorded + totalAR },
+                  { metric: 'Total Expenses (Office + AP + Project + Payroll)', value: totalExpensesRecorded + totalAP + totalProjExp + totalPayroll },
+                  { metric: 'Net Profit / Loss', value: (totalIncomeRecorded + totalAR) - (totalExpensesRecorded + totalAP + totalProjExp + totalPayroll) },
+                  { metric: 'Office Expenses', value: totalExpensesRecorded },
+                  { metric: 'Vendor Bills (AP)', value: totalAP },
+                  { metric: 'Project Expenses', value: totalProjExp },
+                  { metric: 'Total Payroll (Net)', value: totalPayroll },
+                  { metric: 'TONEFO Total Sales', value: tonefoCases.reduce((s, t) => s + (t.total_price || 0), 0) },
+                  { metric: 'TONEFO Collected', value: totalCollected },
+                  { metric: 'TONEFO Outstanding', value: totalOutstanding }
+                ]}
+                filename="firm_accounting_executive_report"
+                title="Firm Accounting Financial Report"
+                subtitle="Consolidated Financial Performance Breakdown"
+              />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => window.print()} 
+                className="text-xs h-9 px-3.5 font-bold rounded-xl gap-1.5 shrink-0 active:scale-95 transition-all"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Print Report</span><span className="sm:hidden">Print</span>
+              </Button>
+            </div>
+          </div>
 
           {/* P&L Summary */}
           <div className="bg-card/95 backdrop-blur-xl rounded-[26px] border border-border/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-6 space-y-4">

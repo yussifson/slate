@@ -200,33 +200,29 @@ export default function PettyCash() {
   return (
     <div className="space-y-6">
       {/* ── 1. Top Section Header ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-indigo-600" />
-            <span>Petty Cash Float & Ledger</span>
+      <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+        <div className="min-w-0">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-foreground flex items-center gap-2 truncate">
+            <Wallet className="w-5 h-5 text-indigo-600 shrink-0" />
+            <span className="truncate">Petty Cash Float & Ledger</span>
           </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Record office disbursements, imprest replenishments, receipts, and maintain a live audit trail.
+          <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">
+            Imprest disbursements, office expense vouchers, and safe replenishments
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleExportCSV} className="text-xs h-9 gap-1.5">
+        <div className="flex items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="text-xs h-9 px-3 font-bold rounded-xl gap-1 shrink-0">
             <Download className="w-3.5 h-3.5" />
-            Export CSV
-          </Button>
-          <Button variant="outline" size="sm" onClick={loadData} className="text-xs h-9 gap-1.5">
-            <RefreshCw className={cn("w-3.5 h-3.5", isLoading && "animate-spin")} />
-            Refresh
+            <span className="hidden sm:inline">Export CSV</span><span className="sm:hidden">Export</span>
           </Button>
           <Button 
             onClick={() => setShowModal(true)} 
             size="sm" 
-            className="text-xs h-9 font-semibold bg-primary hover:bg-primary/90 text-white gap-1.5 shadow-sm"
+            className="text-xs h-9 px-3 sm:px-4 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white gap-1.5 shadow-sm rounded-xl shrink-0 active:scale-95 transition-all"
           >
             <Plus className="w-4 h-4" />
-            New Entry
+            <span>New Entry</span>
           </Button>
         </div>
       </div>

@@ -208,44 +208,47 @@ export default function FinancialStatements() {
   return (
     <div className="space-y-6">
       {/* ── 1. Top Section Header ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <FileText className="w-5 h-5 text-indigo-600" />
-            <span>Financial Statements & Statement of Account</span>
+      <div className="flex items-center justify-between gap-3 min-w-0 border-b pb-4 border-border/80">
+        <div className="min-w-0">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-foreground flex items-center gap-2 truncate">
+            <FileText className="w-5 h-5 text-indigo-600 shrink-0" />
+            <span className="truncate">Financial Statements</span>
           </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            JCL Real Estate statutory financial disclosures, profit & loss, balance sheet, and customer account ledgers.
+          <p className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate">
+            Profit & loss, balance sheet, and customer account ledgers
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handlePrint} className="text-xs h-9 gap-1.5">
+        <div className="flex items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" onClick={handlePrint} className="text-xs h-9 px-3.5 font-bold rounded-xl gap-1.5 shrink-0 active:scale-95 transition-all">
             <Printer className="w-3.5 h-3.5" />
-            Print Statement
-          </Button>
-          <Button variant="outline" size="sm" onClick={loadData} className="text-xs h-9 gap-1.5">
-            <RefreshCw className={cn("w-3.5 h-3.5", isLoading && "animate-spin")} />
-            Refresh
+            <span className="hidden sm:inline">Print Statement</span><span className="sm:hidden">Print</span>
           </Button>
         </div>
       </div>
 
-      {/* ── 2. Statement Selector Tabs ── */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-border pb-2">
-        <Tabs value={statementType} onValueChange={setStatementType} className="w-full sm:w-auto">
-          <TabsList className="bg-muted/60 p-1 rounded-xl">
-            <TabsTrigger value="pl" className="text-xs font-semibold px-3 py-1.5">
-              Income Statement (P&L)
-            </TabsTrigger>
-            <TabsTrigger value="balance_sheet" className="text-xs font-semibold px-3 py-1.5">
-              Balance Sheet
-            </TabsTrigger>
-            <TabsTrigger value="statement_of_account" className="text-xs font-semibold px-3 py-1.5">
-              Statement of Account (Customer Ledger)
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+      {/* ── 2. Statement Selector Tabs (Horizontally Scrollable on Mobile) ── */}
+      <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
+        <div className="flex items-center gap-2 min-w-max p-1 bg-muted/60 rounded-2xl border border-border/60">
+          {[
+            { id: 'pl', label: 'Income Statement (P&L)' },
+            { id: 'balance_sheet', label: 'Balance Sheet' },
+            { id: 'statement_of_account', label: 'Statement of Account (Customer Ledger)' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setStatementType(tab.id)}
+              className={cn(
+                "px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0",
+                statementType === tab.id
+                  ? "bg-card text-foreground shadow-xs border border-border/80"
+                  : "text-muted-foreground hover:text-foreground hover:bg-card/50"
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── 3. VIEW 1: PROFIT & LOSS ── */}
