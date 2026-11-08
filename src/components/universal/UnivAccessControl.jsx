@@ -236,82 +236,135 @@ export default function UnivAccessControl() {
 };
 
  return (
- <div className="w-full max-w-full overflow-x-hidden flex flex-col gap-4 sm:gap-6 font-sans">
- {/* Header */}
- <div className="view-header flex items-center justify-between shrink-0">
- <div>
- <h1 className="text-2xl font-black text-foreground flex items-center gap-2 tracking-[-0.02em]">
- <Shield className="w-7 h-7 text-primary" /> RBAC Security
- </h1>
- <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage users and granular role permissions.</p>
- </div>
- 
-  <div className="flex items-center gap-3">
-    <Link 
-      to="/employees" 
-      className="h-9 px-4 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors border border-border"
-    >
-      <Users className="w-4 h-4 text-primary" /> Manage Employees & Staff
-    </Link>
-    <button 
-      onClick={() => openRoleModal()} 
-      className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-xs"
-    >
-      <Plus className="w-4 h-4" /> Create Custom Role
-    </button>
-  </div>
-  </div>
+  <div className="w-full max-w-full overflow-x-hidden flex flex-col gap-4 font-sans">
+    {/* Header */}
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-black text-foreground flex items-center gap-2 tracking-[-0.02em]">
+          <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-primary shrink-0" /> Roles & Permissions
+        </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 hidden sm:block">Configure role definitions and access permissions.</p>
+      </div>
 
-  <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
-    <h2 className="font-semibold text-foreground flex items-center gap-2">
-      <Key className="w-4 h-4 text-primary" /> System Roles & Permissions
-    </h2>
-    <span className="text-xs text-muted-foreground font-medium">To add staff and assign roles, visit the centralized <strong>Employees & Staff</strong> directory.</span>
-  </div>
+      <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+        <Link 
+          to="/employees" 
+          className="flex-1 sm:flex-initial h-9 px-3 sm:px-4 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors border border-border shrink-0"
+        >
+          <Users className="w-4 h-4 text-primary shrink-0" />
+          <span className="hidden sm:inline">Manage Employees</span>
+          <span className="sm:hidden">Employees</span>
+        </Link>
+        <button 
+          onClick={() => openRoleModal()} 
+          className="flex-1 sm:flex-initial h-9 px-3 sm:px-4 bg-primary text-white rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 hover:bg-primary/90 transition-colors shadow-xs shrink-0 whitespace-nowrap"
+        >
+          <Plus className="w-4 h-4 shrink-0" />
+          <span className="hidden sm:inline">Create Custom Role</span>
+          <span className="sm:hidden">Add Role</span>
+        </button>
+      </div>
+    </div>
 
-  {loading ? (
-    <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
-  ) : (
-    <div className="flex-1 overflow-auto custom-scrollbar p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {roles.map(r => (
- <div key={r.id} className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 relative group hover:border-primary/50 transition-colors">
- <div className="flex justify-between items-start mb-4">
- <div className="flex items-center gap-2">
- <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white ">
- <Shield className="w-5 h-5" />
- </div>
- <div className="flex items-center gap-2">
-   <h3 className="font-black text-lg text-foreground">{r.role_name}</h3>
-   {r.is_predefined && <span className="px-2 py-0.5 text-[10px] font-semibold bg-primary/10 text-primary rounded-full uppercase tracking-wider">Default</span>}
- </div>
- </div>
- {!r.is_predefined && (
- <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => openRoleModal(r)} className="p-1.5 bg-muted rounded-xl text-[#71717a] dark:text-gray-400 hover:text-primary"><Edit2 className="w-4 h-4" /></button>
- <button onClick={() => deleteRole(r.id)} className="p-1.5 bg-red-50 rounded-xl text-red-400 hover:text-red-600"><Trash2 className="w-4 h-4" /></button>
- </div>
- )}
- </div>
- <div className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">
- <p className="font-semibold uppercase tracking-wider mb-2 tracking-[0.04em]">Enabled Access:</p>
- <div className="flex flex-wrap gap-2.5">
- {Object.keys(r.permissions || {}).filter(k => r.permissions[k].read || r.permissions[k].write).slice(0, 5).map(feat => (
- <span key={feat} className="px-2 py-1 bg-muted rounded-lg">{feat}</span>
- ))}
- {Object.keys(r.permissions || {}).filter(k => r.permissions[k].read).length > 5 && <span className="px-2 py-1 bg-muted rounded-lg">+{Object.keys(r.permissions).length - 5} more</span>}
- </div>
- </div>
- </div>
- ))}
- {roles.length === 0 && <div className="col-span-full py-12 text-center text-[#71717a] dark:text-gray-400 border-2 border-dashed border-primary/40 rounded-2xl">No roles defined. Create your first Role!</div>}
- </div>
- </div>
- )}
- </div>
+    <div className="w-full max-w-full flex-1 bg-card border-[0.5px] border-border rounded-2xl overflow-hidden flex flex-col shadow-xs">
+      <div className="p-3 sm:p-4 border-b border-border flex justify-between items-center bg-muted/20">
+        <h2 className="text-sm sm:text-base font-semibold text-foreground flex items-center gap-2">
+          <Key className="w-4 h-4 text-primary shrink-0" /> System Roles & Permissions
+        </h2>
+        <span className="text-xs text-muted-foreground font-medium hidden md:inline">
+          To assign roles to staff, visit the <strong>Employees</strong> directory.
+        </span>
+      </div>
 
- {/* User Modal */}
+      {loading ? (
+        <div className="flex-1 flex items-center justify-center p-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : (
+        <div className="w-full max-w-full flex-1 overflow-x-hidden p-3 sm:p-6">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-6">
+            {roles.map(r => (
+              <div 
+                key={r.id} 
+                className="w-full max-w-full bg-background border-[0.5px] border-border rounded-2xl p-4 sm:p-5 relative group hover:border-primary/50 transition-colors shadow-xs flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-xs">
+                        <Shield className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <h3 className="font-bold text-sm sm:text-base text-foreground truncate">{r.role_name}</h3>
+                          {r.is_predefined && (
+                            <span className="px-2 py-0.5 text-[9px] font-bold bg-primary/10 text-primary rounded-full uppercase tracking-wider shrink-0">
+                              Default
+                            </span>
+                          )}
+                        </div>
+                        {r.department && (
+                          <p className="text-[11px] text-muted-foreground truncate">{r.department}</p>
+                        )}
+                      </div>
+                    </div>
+                    {!r.is_predefined && (
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button 
+                          onClick={() => openRoleModal(r)} 
+                          className="p-1.5 bg-muted rounded-xl text-muted-foreground hover:text-primary transition-colors"
+                          title="Edit Role"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => deleteRole(r.id)} 
+                          className="p-1.5 bg-red-500/10 text-destructive rounded-xl hover:bg-red-500/20 transition-colors"
+                          title="Delete Role"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {r.description && (
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2 leading-relaxed">
+                      {r.description}
+                    </p>
+                  )}
+                </div>
+
+                <div className="text-xs text-muted-foreground pt-3 border-t border-border/60">
+                  <p className="font-semibold uppercase text-[10px] tracking-wider mb-2 text-foreground/80">
+                    Enabled Access
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {Object.keys(r.permissions || {}).filter(k => r.permissions[k]?.read || r.permissions[k]?.write).slice(0, 6).map(feat => (
+                      <span key={feat} className="px-2 py-0.5 bg-muted rounded-md text-[11px] font-medium text-foreground">
+                        {feat}
+                      </span>
+                    ))}
+                    {Object.keys(r.permissions || {}).filter(k => r.permissions[k]?.read || r.permissions[k]?.write).length > 6 && (
+                      <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-md text-[11px] font-semibold">
+                        +{Object.keys(r.permissions || {}).filter(k => r.permissions[k]?.read || r.permissions[k]?.write).length - 6} more
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            {roles.length === 0 && (
+              <div className="col-span-full py-12 text-center text-muted-foreground border-2 border-dashed border-border rounded-2xl">
+                No roles defined. Create your first Role!
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+
+  {/* User Modal */}
  {userModal && (
  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/20 backdrop-blur-sm">
  <div className="bg-card w-full max-w-md rounded-2xl flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
