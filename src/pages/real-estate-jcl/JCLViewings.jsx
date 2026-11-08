@@ -96,21 +96,30 @@ export default function JCLViewings() {
   useEffect(() => {
     fetchViewingsData();
   }, [companyId]);
-
   // Statistics
   const stats = useMemo(() => {
-    const total = viewings.length;
-    const scheduled = viewings.filter(v => v.status === 'scheduled').length;
-    const completed = viewings.filter(v => v.status === 'completed').length;
+    const list = filteredViewings;
+    const total = list.length;
+    const scheduled = list.filter(v => v.status === 'scheduled').length;
+    const completed = list.filter(v => v.status === 'completed').length;
     const todayStr = format(new Date(), 'yyyy-MM-dd');
-    const todayCount = viewings.filter(v => v.viewing_date === todayStr).length;
+    const todayCount = list.filter(v => v.viewing_date === todayStr).length;
 
     return { total, scheduled, completed, todayCount };
-  }, [viewings]);
+  }, [filteredViewings]);
 
-  // Filtered viewings
+  const isAdmin = ['company_admin', 'super_admin', 'admin', 'managing_partner', 'owner'].includes((user?.role || '').toLowerCase());
+
+  // Filtered viewings (Enforce Department Isolation: Non-admin staff only see their own assigned viewings)
   const filteredViewings = useMemo(() => {
     return viewings.filter(v => {
+      // Access isolation: if not admin, view must belong to user
+      if (!isAdmin && user?.id) {
+        const isOwner = v.agent_id === user.id || 
+                        v.agent_name?.toLowerCase() === (user.email || '').toLowerCase() ||
+                        v.agent_name?.toLowerCase() === (user.user_metadata?.full_name || '').toLowerCase();
+        if (!isOwner) return false;
+      }
       const matchSearch = !search ||
         v.property_address?.toLowerCase().includes(search.toLowerCase()) ||
         v.client_name?.toLowerCase().includes(search.toLowerCase()) ||

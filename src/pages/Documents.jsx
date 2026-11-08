@@ -98,7 +98,13 @@ export default function SmartDocs() {
     queryFn: async () => {
       const list = await base44.entities.Document.filter({ company_id: companyId });
       if (isAdmin) return list;
-      return list.filter(d => d.uploaded_by === user?.email || d.created_by === user?.id || d.assigned_to === user?.id || d.assigned_email === user?.email);
+      return list.filter(d => {
+        const isOwner = d.uploaded_by === user?.email || d.created_by === user?.id || d.assigned_to === user?.id || d.assigned_email === user?.email;
+        if (isOwner) return true;
+        if (d.visibility === "public") return true;
+        if (!d.is_confidential && d.visibility !== "private" && (!d.share_type || d.share_type === "public")) return true;
+        return false;
+      });
     },
     enabled: !!companyId,
     retry: 2,
@@ -350,7 +356,14 @@ export default function SmartDocs() {
                             <div className="flex items-center gap-3">
                               <div className="shrink-0">{getFileIcon(doc.name)}</div>
                               <div className="min-w-0">
-                                <p className="font-semibold truncate max-w-[180px] text-foreground">{doc.name}</p>
+                                <div className="flex items-center gap-2">
+                                  <p className="font-semibold truncate max-w-[180px] text-foreground">{doc.name}</p>
+                                  {doc.visibility === "private" || doc.is_confidential ? (
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-rose-500/10 text-rose-600 border border-rose-500/20">Private</span>
+                                  ) : (
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Public</span>
+                                  )}
+                                </div>
                                 <p className="text-xs text-muted-foreground truncate">{doc.case_title || "General"}</p>
                               </div>
                             </div>
@@ -528,7 +541,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
   const [form, setForm] = useState({
     name: "", category: "other", case_id: "", case_title: "", notes: "",
     assigned_to: "", assigned_name: "", assigned_email: "",
-    signature_status: "None", is_confidential: false,
+    signature_status: "None", is_confidential: false, visibility: "public",
   });
   const [shareType, setShareType] = useState("none");
   const [uploading, setUploading] = useState(false);
@@ -579,7 +592,7 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit({ ...form, file_url: fileUrl, share_type: shareType });
-    setForm({ name: "", category: "other", case_id: "", case_title: "", notes: "", assigned_to: "", assigned_name: "", assigned_email: "", signature_status: "None", is_confidential: false });
+    setForm({ name: "", category: "other", case_id: "", case_title: "", notes: "", assigned_to: "", assigned_name: "", assigned_email: "", signature_status: "None", is_confidential: false, visibility: "public" });
     setShareType("none");
     setFileUrl("");
   };
@@ -724,8 +737,36 @@ function DocumentUploadDialog({ open, onClose, onSubmit, cases, docCategories, a
               <Label className="text-xs uppercase tracking-wider text-muted-foreground">Notes</Label>
               <Input className="mt-1.5" value={form.notes} onChange={e => handleChange("notes", e.target.value)} placeholder="Optional notes or description..." />
             </div>
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Access Rights & Visibility</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => { handleChange("visibility", "public"); handleChange("is_confidential", false); }}
+                  className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${form.visibility === "public" ? "border-primary bg-primary/10 text-primary" : "border-border bg-muted/20 text-muted-foreground hover:border-primary/40"}`}
+                >
+                  <span className="text-2xl">🌐</span>
+                  <div>
+                    <p className="text-xs font-bold leading-tight">Public Document</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Visible across the organization</p>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { handleChange("visibility", "private"); handleChange("is_confidential", true); }}
+                  className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${form.visibility === "private" ? "border-primary bg-primary/10 text-primary" : "border-border bg-muted/20 text-muted-foreground hover:border-primary/40"}`}
+                >
+                  <span className="text-2xl">🔒</span>
+                  <div>
+                    <p className="text-xs font-bold leading-tight">Private Document</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Only visible to you & Admins</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-xl border border-border">
-              <Switch checked={form.is_confidential} onCheckedChange={c => handleChange("is_confidential", c)} id="confidential" />
+              <Switch checked={form.is_confidential} onCheckedChange={c => { handleChange("is_confidential", c); if (c) handleChange("visibility", "private"); }} id="confidential" />
               <div>
                 <Label htmlFor="confidential" className="font-medium text-sm flex items-center gap-1.5 cursor-pointer"><FileLock2 className="w-4 h-4 text-muted-foreground" /> Mark as Confidential</Label>
                 <p className="text-xs text-muted-foreground">Restricted visibility to admins only</p>

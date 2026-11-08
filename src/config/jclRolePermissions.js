@@ -192,3 +192,19 @@ export function getJCLRolePermissions(roleName) {
   // Default fallback: Always grant Operations paths to any valid authenticated employee
   return JCL_OPERATIONS_PATHS;
 }
+
+/**
+ * Standard Default Roles available to all companies and selectable across HR & Staffing
+ */
+export const DEFAULT_PLATFORM_ROLES = [
+  { id: 'admin', label: 'Company Admin / Executive', department: 'Administration', description: 'Full access to all system modules, settings and departments' },
+  { id: 'finance', label: 'Finance & Accounting', department: 'Finance', description: 'Access to accounting, project finance, billing, invoices, payroll & expenses' },
+  { id: 'hr', label: 'Human Resources', department: 'Human Resources', description: 'Access to employee directory, attendance, performance, assets & HR management' },
+  { id: 'marketing', label: 'Marketing & Sales', department: 'Marketing', description: 'Access to CRM leads, client directory, property viewings, offers & campaigns' },
+  { id: 'engineering', label: 'Engineering & Construction', department: 'Engineering', description: 'Access to engineering drawings, BOQ, projects & procurement' },
+  { id: 'procurement', label: 'Procurement & Logistics', department: 'Procurement', description: 'Access to requisitions, purchase orders, inventory & suppliers' },
+  { id: 'secretary', label: 'Secretary / Front Desk', department: 'Administration', description: 'Access to visitor logs, front desk reception & office custody items' },
+  { id: 'it', label: 'IT & Support / Systems', department: 'IT & Support', description: 'Technical infrastructure, system settings, integrations & audit logs' },
+  { id: 'property_manager', label: 'Property Manager', department: 'Operations', description: 'Management of properties, tenant leases, inspections & maintenance' }
+];
+

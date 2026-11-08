@@ -12,6 +12,7 @@ import { PortalAwareItem } from '@/lib/kanbanPortal.jsx';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -263,7 +264,7 @@ function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, 
 export default function JCLCrmLeads() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
-
+  const { user } = useAuth();
   const [leads, setLeads] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -363,8 +364,18 @@ export default function JCLCrmLeads() {
     toast.success('Leads exported to CSV');
   };
 
+  const isAdmin = ['company_admin', 'super_admin', 'admin', 'managing_partner', 'owner'].includes((user?.role || '').toLowerCase());
+
+  // Access-Base Isolation: Non-admin staff only see leads assigned to them or created by them
   const filteredLeads = useMemo(() => {
     return leads.filter(l => {
+      if (!isAdmin && user?.id) {
+        const isAssigned = l.assigned_agent_id === user.id ||
+                           l.assigned_agent_id === user.email ||
+                           l.notes?.includes(user.email);
+        // If lead was created before assigned_agent_id tracking, allow creator or unassigned if none
+        if (l.assigned_agent_id && !isAssigned) return false;
+      }
       const matchSearch = !search ||
         l.first_name?.toLowerCase().includes(search.toLowerCase()) ||
         l.last_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -373,7 +384,7 @@ export default function JCLCrmLeads() {
       const matchStatus = statusFilter === 'all' || l.status === statusFilter;
       return matchSearch && matchStatus;
     });
-  }, [leads, search, statusFilter]);
+  }, [leads, search, statusFilter, isAdmin, user]);
 
   // Update Status in PowerSync
   const handleUpdateStatus = async (leadId, newStatus) => {
@@ -419,14 +430,14 @@ export default function JCLCrmLeads() {
         await powerSync.execute(
           `INSERT INTO univ_re_leads (
             id, created_at, company_id, first_name, last_name, email, phone,
-            lead_type, source, status, budget_min, budget_max, lead_score, notes
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            lead_type, source, status, budget_min, budget_max, lead_score, notes, assigned_agent_id
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             newId, now, companyId,
             formData.firstName, formData.lastName, formData.email, formData.phone,
             formData.leadType, formData.source, formData.status,
             Number(formData.budgetMin) || 0, Number(formData.budgetMax) || 0,
-            75, formData.notes
+            75, formData.notes, user?.id || null
           ]
         );
         toast.success('New lead captured successfully');

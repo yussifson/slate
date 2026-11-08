@@ -8,7 +8,8 @@ import { toast} from 'react-hot-toast';
 import { motion, AnimatePresence} from 'framer-motion';
 
 import { getIndustryNav } from '@/config/industries';
-
+import { DEFAULT_PLATFORM_ROLES } from '@/config/jclRolePermissions';
+import { Link } from 'react-router-dom';
 // We will build features dynamically based on the industry
 const DEFAULT_GLOBAL_FEATURES = [
   'Dashboard', 'Access Control', 'Documents', 'Projects', 'CRM Leads',
@@ -18,7 +19,7 @@ const DEFAULT_GLOBAL_FEATURES = [
 
 export default function UnivAccessControl() {
  const companyId = useCompanyId();
- const [activeTab, setActiveTab] = useState('users'); // 'users' or 'roles'
+ const [activeTab, setActiveTab] = useState('roles'); // 'users' or 'roles'
  const [loading, setLoading] = useState(true);
 
  // Users State
@@ -84,20 +85,18 @@ export default function UnivAccessControl() {
   // Fetch roles
   const __resR = await powerSync.execute(`SELECT * FROM univ_roles WHERE company_id = ?`, [companyId]); 
   const rData = __resR.rows ? (__resR.rows._array || Array.from(__resR.rows)) : [];
-  
-  // Get predefined roles for active industry
-  let predefinedRoles = [];
-  try {
-    const ind = await import('@/config/industries');
-    const defaultRoles = ind.INDUSTRIES[industry]?.roles || ind.INDUSTRIES.law.roles || [];
-    predefinedRoles = defaultRoles.map(r => ({
-      id: r.id || r.label,
-      role_name: r.label,
-      description: 'Predefined industry role',
-      permissions: JSON.stringify(ind.getIndustryNav(industry).map(n => n.path)),
-      is_predefined: true
-    }));
-  } catch(e) {}
+  // Get all default platform roles
+  const predefinedRoles = DEFAULT_PLATFORM_ROLES.map(r => ({
+    id: r.id,
+    role_name: r.label,
+    description: r.description + ' (' + r.department + ')',
+    department: r.department,
+    permissions: availableFeatures.reduce((acc, feat) => {
+      acc[feat] = { read: true, write: true, delete: false };
+      return acc;
+    }, {}),
+    is_predefined: true
+  }));
 
   setRoles([...predefinedRoles, ...rData]);
 } catch (e) {
@@ -270,12 +269,21 @@ export default function UnivAccessControl() {
  <h2 className="font-semibold text-foreground flex items-center gap-2">
  {activeTab === 'users' ? 'User Directory' : 'Defined Roles'}
  </h2>
- <button 
- onClick={() => activeTab === 'users' ? openUserModal() : openRoleModal()} 
- className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"
- >
- <Plus className="w-4 h-4" /> {activeTab === 'users' ? 'Add User' : 'Create Role'}
- </button>
+ {activeTab === 'users' ? (
+    <Link 
+      to="/employees" 
+      className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"
+    >
+      <Plus className="w-4 h-4" /> Add Employee & Staff
+    </Link>
+  ) : (
+    <button 
+      onClick={() => openRoleModal()} 
+      className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"
+    >
+      <Plus className="w-4 h-4" /> Create Custom Role
+    </button>
+  )}
  </div>
 
  {loading ? (

@@ -8,6 +8,7 @@ import {
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
+import { useAuth } from '@/lib/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -127,7 +128,7 @@ function ClientDistributionDonut({ buyers, investors, tenants, sellers, total })
 export default function JCLClients() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
-
+  const { user } = useAuth();
   const [clients, setClients] = useState([]);
   const [parcels, setParcels] = useState([]);
   const [leases, setLeases] = useState([]);

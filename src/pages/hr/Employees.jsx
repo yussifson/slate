@@ -16,7 +16,7 @@ import { useAuth} from '@/lib/AuthContext';
 import { base44 } from "@/api/base44Client";
 import { supabase } from "@/api/supabaseClient";
 import { usePowerSync } from '@powersync/react';
-
+import { DEFAULT_PLATFORM_ROLES } from '@/config/jclRolePermissions';
 // ─── Department color map ─────────────────────────────────────────────────────
 const DEPT_COLORS = {
   'Human Resources': { bg: 'from-indigo-500 to-indigo-600', light: 'bg-indigo-50 text-indigo-700' },
@@ -113,7 +113,7 @@ export default function Employees() {
   name: r.name,
   departmentId: r.department_id,
   role: r.role,
-  roleName: roleRecords.find(ro => ro.id === r.role)?.name || r.role,
+  roleName: DEFAULT_PLATFORM_ROLES.find(d => d.id === r.role || d.label.toLowerCase() === (r.role||'').toLowerCase())?.label || roleRecords.find(ro => ro.id === r.role || ro.name === r.role)?.name || r.role,
   email: r.email,
   phone: r.phone,
   salary: r.salary,
@@ -560,8 +560,16 @@ export default function Employees() {
       className="mt-1 w-full rounded-lg border-[0.5px] border-black/9 dark:border-white/8 border-input bg-background px-3 py-2 text-sm text-foreground"
       >
       <option value="">Select Role...</option>
-      <option value="company_admin">Company Admin (System Role)</option>
-         {roleRecords.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+      <optgroup label="Default Roles">
+        {DEFAULT_PLATFORM_ROLES.map(r => (
+          <option key={r.id} value={r.id}>{r.label} ({r.department})</option>
+        ))}
+      </optgroup>
+      {roleRecords.length > 0 && (
+        <optgroup label="Custom Roles">
+          {roleRecords.map(r => <option key={r.id} value={r.name || r.id}>{r.name}</option>)}
+        </optgroup>
+      )}
       </select>
   </div>
   </div>

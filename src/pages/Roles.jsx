@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import { useCompanyId, useCompany } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 import { INDUSTRIES } from '@/config/industries';
+import { DEFAULT_PLATFORM_ROLES } from '@/config/jclRolePermissions';
 import { generateText } from '@/lib/cloudflareAI';
 
 
@@ -37,10 +38,11 @@ export default function RoleManagementSettings() {
         const defaultRoles = INDUSTRIES[activeInd]?.roles || [];
         if (defaultRoles.length > 0) {
           // Check again just to be safe
-          powerSync.execute('SELECT count(*) as c FROM platform_roles WHERE company_id = ?', [companyId]).then(res => {
+                    powerSync.execute('SELECT count(*) as c FROM platform_roles WHERE company_id = ?', [companyId]).then(res => {
             if (res.rows.item(0).c === 0) {
-              const promises = defaultRoles.map(r => 
-                powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [companyId, r.label, 'Predefined industry role'])
+              const rolesToSeed = DEFAULT_PLATFORM_ROLES.map(r => ({ name: r.label, desc: r.description }));
+              const promises = rolesToSeed.map(r => 
+                powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [companyId, r.name, r.desc])
               );
               Promise.all(promises).then(() => fetchRoles());
             }
