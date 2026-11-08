@@ -309,7 +309,7 @@ export default function CalendarPage() {
   const venueTerm = getTerm(activeIndustry, "venue");
 
   return (
-    <div className="space-y-4 font-sans max-w-7xl mx-auto">
+    <div className="space-y-4 font-sans w-full max-w-full">
       <PageHeader
         title={getTerm(activeIndustry, "hearing", true) + " Calendar"}
         subtitle={`${hearingTermPlural} and important dates`}

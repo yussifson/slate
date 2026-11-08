@@ -96,17 +96,7 @@ export default function JCLViewings() {
   useEffect(() => {
     fetchViewingsData();
   }, [companyId]);
-  // Statistics
-  const stats = useMemo(() => {
-    const list = filteredViewings;
-    const total = list.length;
-    const scheduled = list.filter(v => v.status === 'scheduled').length;
-    const completed = list.filter(v => v.status === 'completed').length;
-    const todayStr = format(new Date(), 'yyyy-MM-dd');
-    const todayCount = list.filter(v => v.viewing_date === todayStr).length;
 
-    return { total, scheduled, completed, todayCount };
-  }, [filteredViewings]);
 
   const isAdmin = ['company_admin', 'super_admin', 'admin', 'managing_partner', 'owner'].includes((user?.role || '').toLowerCase());
 
@@ -130,6 +120,18 @@ export default function JCLViewings() {
       return matchSearch && matchStatus;
     });
   }, [viewings, search, statusFilter]);
+
+  // Statistics
+  const stats = useMemo(() => {
+    const list = filteredViewings;
+    const total = list.length;
+    const scheduled = list.filter(v => v.status === 'scheduled').length;
+    const completed = list.filter(v => v.status === 'completed').length;
+    const todayStr = format(new Date(), 'yyyy-MM-dd');
+    const todayCount = list.filter(v => v.viewing_date === todayStr).length;
+
+    return { total, scheduled, completed, todayCount };
+  }, [filteredViewings]);
 
   const handleOpenCreate = () => {
     setEditingId(null);

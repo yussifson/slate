@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  DollarSign, Plus, Search, Edit, Trash2, TrendingUp, Clock, CheckCircle2, AlertCircle, MessageSquare, RefreshCw
+  DollarSign, Plus, Search, Edit, Trash2, TrendingUp, Clock, CheckCircle2, 
+  AlertCircle, MessageSquare, RefreshCw, Eye, List, ArrowRight
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -100,29 +101,38 @@ export default function JCLCounterOffers() {
     });
   }, [counterOffers, search, statusFilter]);
 
+  const handleStatusChange = async (id, status) => {
+    try {
+      await powerSync.execute(
+        'UPDATE univ_re_counter_offers SET status = ? WHERE id = ? AND company_id = ?',
+        [status, id, companyId]
+      );
+      toast.success('Counter offer status updated');
+      fetchData();
+    } catch (_err) {
+      toast.error('Failed to update counter offer');
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!formData.counterPrice || !formData.propertyAddress) {
-      toast.error('Counter price and property address are required');
-      return;
-    }
-
     try {
       const now = new Date().toISOString();
       if (editingId) {
         await powerSync.execute(
           `UPDATE univ_re_counter_offers SET
+            property_address = ?, buyer_name = ?, original_price = ?,
             counter_price = ?, earnest_money = ?, contingencies = ?,
             expiration_date = ?, notes = ?, status = ?
           WHERE id = ? AND company_id = ?`,
           [
-            Number(formData.counterPrice) || 0, Number(formData.earnestMoney) || 0,
-            formData.contingencies || null, formData.expirationDate || null,
-            formData.notes || null, formData.status || 'pending',
+            formData.propertyAddress, formData.buyerName, Number(formData.originalPrice) || 0,
+            Number(formData.counterPrice) || 0, Number(formData.earnestMoney) || 0, formData.contingencies,
+            formData.expirationDate, formData.notes, formData.status,
             editingId, companyId
           ]
         );
-        toast.success('Counter offer updated');
+        toast.success('Counter offer revised');
       } else {
         const newId = generateUUID();
         await powerSync.execute(
@@ -133,57 +143,61 @@ export default function JCLCounterOffers() {
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             newId, now, companyId, formData.originalOfferId || null,
-            formData.propertyAddress, formData.buyerName || null,
-            Number(formData.originalPrice) || 0, Number(formData.counterPrice) || 0,
-            Number(formData.earnestMoney) || 0, formData.contingencies || null,
-            formData.expirationDate || null, formData.notes || null, formData.status || 'pending'
+            formData.propertyAddress, formData.buyerName, Number(formData.originalPrice) || 0,
+            Number(formData.counterPrice) || 0, Number(formData.earnestMoney) || 0,
+            formData.contingencies, formData.expirationDate, formData.notes, formData.status
           ]
         );
-        toast.success('Counter offer sent');
+        toast.success('Counter offer generated');
       }
-
       setShowForm(false);
+      setEditingId(null);
       fetchData();
     } catch (_err) {
-      toast.error('Failed to save counter offer');
+      toast.error('Failed to submit counter offer');
     }
   };
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleDelete = async (id) => {
     try {
       await powerSync.execute(
-        `UPDATE univ_re_counter_offers SET status = ? WHERE id = ? AND company_id = ?`,
-        [newStatus, id, companyId]
+        'DELETE FROM univ_re_counter_offers WHERE id = ? AND company_id = ?',
+        [id, companyId]
       );
-      toast.success(`Counter offer marked as ${newStatus}`);
+      toast.success('Counter offer removed');
       fetchData();
     } catch (_err) {
-      toast.error('Failed to update status');
+      toast.error('Failed to delete counter offer');
     }
   };
 
   return (
     <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
-      {/* ── Header ── */}
+      {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <MessageSquare className="h-5 w-5" />
+              <DollarSign className="h-5 w-5" />
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Counter Offers & Price Negotiation Matrix
+                Counter Offers & Negotiations
               </h1>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Side-by-side offer diffing, counter-price adjustments, and seller response workflow
+                Seller counter proposals, buyer price revisions, and contingency adjustments
               </p>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3 text-xs gap-1.5 border-border">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchData}
+            className="h-9 px-3 text-xs gap-1.5 border-border"
+          >
             <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
             Refresh
           </Button>
@@ -192,11 +206,16 @@ export default function JCLCounterOffers() {
             onClick={() => {
               setEditingId(null);
               setFormData({
-                originalOfferId: offers[0]?.id || '', propertyAddress: offers[0]?.property_address || '',
-                buyerName: offers[0]?.buyer_name || '', originalPrice: offers[0]?.offer_amount || 450000,
-                counterPrice: (offers[0]?.offer_amount || 450000) + 15000, earnestMoney: 15000,
+                originalOfferId: '',
+                propertyAddress: '',
+                buyerName: '',
+                originalPrice: 450000,
+                counterPrice: 475000,
+                earnestMoney: 15000,
                 contingencies: '7-day inspection waiver, pre-approval letter attached',
-                expirationDate: format(new Date(Date.now() + 5 * 86400000), 'yyyy-MM-dd'), notes: '', status: 'pending'
+                expirationDate: format(new Date(Date.now() + 5 * 86400000), 'yyyy-MM-dd'),
+                notes: '',
+                status: 'pending',
               });
               setShowForm(true);
             }}
@@ -209,14 +228,14 @@ export default function JCLCounterOffers() {
         </div>
       </div>
 
-      {/* ── KPI Hero Strip ── */}
+      {/* ── 2. KPI Hero Row ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Negotiations</p>
-              <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{stats.pending}</p>
-              <p className="text-[11px] text-muted-foreground">Awaiting buyer response</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pending Response</p>
+              <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
+              <p className="text-[11px] text-muted-foreground">Awaiting buyer decision</p>
             </div>
             <div className="h-11 w-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Clock className="h-5 w-5" />
@@ -264,7 +283,7 @@ export default function JCLCounterOffers() {
         </Card>
       </div>
 
-      {/* ── Filters ── */}
+      {/* ── 3. Filters ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
         <div className="flex flex-1 items-center gap-2">
           <div className="relative flex-1 min-w-[220px]">
@@ -292,103 +311,132 @@ export default function JCLCounterOffers() {
         </div>
       </div>
 
-      {/* ── Counter Offers Cards ── */}
-      <div className="space-y-3">
-        {filteredCounterOffers.map(item => {
-          const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
-          const delta = (item.counter_price || 0) - (item.original_price || 0);
-          const bannerColor = 'from-emerald-800 via-emerald-700 to-emerald-600';
+      {/* ── 4. Main Body: Clean Data Table List View ── */}
+      {filteredCounterOffers.length === 0 ? (
+        <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/40">
+          <DollarSign className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
+          <h3 className="text-sm font-semibold text-foreground">No counter offers found</h3>
+          <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+            No counter proposals match your search filters.
+          </p>
+        </div>
+      ) : (
+        <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
+                  <th className="py-3 px-4">Property Address</th>
+                  <th className="py-3 px-4">Buyer / Prospect</th>
+                  <th className="py-3 px-4">Original Offer</th>
+                  <th className="py-3 px-4">Counter Price</th>
+                  <th className="py-3 px-4">Delta (Difference)</th>
+                  <th className="py-3 px-4">Earnest Deposit</th>
+                  <th className="py-3 px-4">Expires</th>
+                  <th className="py-3 px-4">Status</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filteredCounterOffers.map(item => {
+                  const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+                  const delta = (item.counter_price || 0) - (item.original_price || 0);
 
-          const buyerInitials = (item.buyer_name || 'B').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-          return (
-            <div
-              key={item.id}
-              className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
-            >
-              {/* Gradient Banner Header */}
-              <div className={cn("relative h-28 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br", bannerColor)}>
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-                <div className="flex items-start justify-between relative z-10">
-                  <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                    Counter Proposal
-                  </span>
-                  <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                    {st.label}
-                  </span>
-                </div>
-
-                <div className="relative z-10">
-                  <p className="text-white/70 text-[9px] font-semibold uppercase tracking-widest mb-0.5">Counter Price</p>
-                  <p className="text-2xl font-extrabold text-white tracking-tight">
-                    {formatCurrency(item.counter_price, 'USD')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-4 flex flex-col gap-3 flex-1 justify-between">
-                <div>
-                  <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-                    {item.property_address || 'Property Counter Proposal'}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Buyer: <strong className="text-foreground">{item.buyer_name || 'Prospect'}</strong></p>
-                </div>
-
-                {/* Side-by-Side Comparison Box */}
-                <div className="grid grid-cols-2 gap-2 p-3 rounded-xl bg-muted/30 border border-border/60 text-center font-mono">
-                  <div>
-                    <span className="text-[9px] uppercase text-muted-foreground block mb-0.5">Original Offer</span>
-                    <span className="text-xs font-bold text-muted-foreground line-through">{formatCurrency(item.original_price, 'USD')}</span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] uppercase text-[#005A9C] dark:text-[#FF6B00] block mb-0.5">Counter Price</span>
-                    <span className="text-sm font-extrabold text-[#005A9C] dark:text-[#FF6B00]">{formatCurrency(item.counter_price, 'USD')}</span>
-                  </div>
-                </div>
-
-                {delta !== 0 && (
-                  <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-[#005A9C]/10 border border-[#005A9C]/20">
-                    <span className="text-muted-foreground font-medium">Price Delta</span>
-                    <span className="font-bold font-mono text-[#005A9C] dark:text-[#FF6B00]">
-                      {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
-                    </span>
-                  </div>
-                )}
-
-                {/* Footer Strip */}
-                <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
-                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground min-w-0">
-                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-[9px] font-extrabold shrink-0">
-                      {buyerInitials}
-                    </div>
-                    <span className="truncate font-mono text-[10px]">Exp: {item.expiration_date || 'N/A'}</span>
-                  </div>
-
-                  <Select value={item.status} onValueChange={v => handleStatusChange(item.id, v)}>
-                    <SelectTrigger className="h-7 text-[10px] w-[120px] bg-background">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pending" className="text-xs">Pending</SelectItem>
-                      <SelectItem value="accepted" className="text-xs">Accepted</SelectItem>
-                      <SelectItem value="rejected" className="text-xs">Declined</SelectItem>
-                      <SelectItem value="expired" className="text-xs">Expired</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+                  return (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                      onClick={() => setInspectorOffer(item)}
+                    >
+                      <td className="py-3.5 px-4 font-semibold text-foreground group-hover:text-emerald-600 transition-colors">
+                        {item.property_address || 'Property Counter Proposal'}
+                      </td>
+                      <td className="py-3.5 px-4 text-foreground font-medium">
+                        {item.buyer_name || 'Prospect'}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-muted-foreground line-through">
+                        {formatCurrency(item.original_price, 'USD')}
+                      </td>
+                      <td className="py-3.5 px-4 font-bold text-[#005A9C] dark:text-[#FF6B00]">
+                        {formatCurrency(item.counter_price, 'USD')}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono">
+                        {delta !== 0 ? (
+                          <span className={cn("text-[11px] font-bold px-1.5 py-0.5 rounded", delta > 0 ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40" : "text-rose-700 bg-rose-50")}>
+                            {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
+                          </span>
+                        ) : '—'}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-muted-foreground">
+                        {formatCurrency(item.earnest_money, 'USD')}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-muted-foreground">
+                        {item.expiration_date || 'N/A'}
+                      </td>
+                      <td className="py-3.5 px-4" onClick={e => e.stopPropagation()}>
+                        <Select value={item.status} onValueChange={v => handleStatusChange(item.id, v)}>
+                          <SelectTrigger className={cn("h-7 text-[10px] w-[125px] font-medium border", st.badge)}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                            <SelectItem value="accepted" className="text-xs">Accepted</SelectItem>
+                            <SelectItem value="rejected" className="text-xs">Declined</SelectItem>
+                            <SelectItem value="expired" className="text-xs">Expired</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </td>
+                      <td className="py-3.5 px-4 text-right" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                            onClick={() => {
+                              setEditingId(item.id);
+                              setFormData({
+                                originalOfferId: item.original_offer_id || '',
+                                propertyAddress: item.property_address || '',
+                                buyerName: item.buyer_name || '',
+                                originalPrice: item.original_price || 0,
+                                counterPrice: item.counter_price || 0,
+                                earnestMoney: item.earnest_money || 0,
+                                contingencies: item.contingencies || '',
+                                expirationDate: item.expiration_date || '',
+                                notes: item.notes || '',
+                                status: item.status || 'pending',
+                              });
+                              setShowForm(true);
+                            }}
+                            title="Edit Counter"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                            onClick={() => handleDelete(item.id)}
+                            title="Delete"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* ── Form Sheet ── */}
       <Sheet open={showForm} onOpenChange={setShowForm}>
         <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4">
-            <SheetTitle>Generate Counter Offer</SheetTitle>
+            <SheetTitle>{editingId ? 'Edit Counter Offer' : 'Generate Counter Offer'}</SheetTitle>
             <SheetDescription>Adjust seller counter price and contingency conditions</SheetDescription>
           </SheetHeader>
           <form onSubmit={handleSave} className="space-y-4 text-xs">
@@ -399,6 +447,14 @@ export default function JCLCounterOffers() {
                 onChange={e => setFormData({ ...formData, propertyAddress: e.target.value })}
                 className="h-9 text-xs mt-1"
                 required
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Buyer Name</Label>
+              <Input
+                value={formData.buyerName}
+                onChange={e => setFormData({ ...formData, buyerName: e.target.value })}
+                className="h-9 text-xs mt-1"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -430,8 +486,42 @@ export default function JCLCounterOffers() {
                 className="h-9 text-xs mt-1"
               />
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
-              Send Counter Offer
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-xs">Earnest Money ($)</Label>
+                <Input
+                  type="number"
+                  value={formData.earnestMoney}
+                  onChange={e => setFormData({ ...formData, earnestMoney: e.target.value })}
+                  className="h-9 text-xs mt-1"
+                />
+              </div>
+              <div>
+                <Label className="text-xs">Expiration Date</Label>
+                <Input
+                  type="date"
+                  value={formData.expirationDate}
+                  onChange={e => setFormData({ ...formData, expirationDate: e.target.value })}
+                  className="h-9 text-xs mt-1"
+                />
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs">Status</Label>
+              <Select value={formData.status} onValueChange={v => setFormData({ ...formData, status: v })}>
+                <SelectTrigger className="h-9 text-xs mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                  <SelectItem value="accepted" className="text-xs">Accepted</SelectItem>
+                  <SelectItem value="rejected" className="text-xs">Declined</SelectItem>
+                  <SelectItem value="expired" className="text-xs">Expired</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white">
+              {editingId ? 'Update Counter Offer' : 'Save Counter Offer'}
             </Button>
           </form>
         </SheetContent>
