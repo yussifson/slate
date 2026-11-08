@@ -41,7 +41,7 @@ const PROPERTY_TYPES = [
 const STATUS_CONFIG = {
   active: {
     label: 'Active Listing',
-    badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30',
+    badge: 'bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30',
     dot: 'bg-emerald-500',
   },
   pending: {
@@ -69,7 +69,7 @@ export default function JCLProperties() {
   const [properties, setProperties] = useState([]);
   const [viewings, setViewings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState('list'); // 'grid' | 'list'
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -278,12 +278,12 @@ export default function JCLProperties() {
   };
 
   return (
-    <div className="p-3 sm:p-6 pb-[max(96px,env(safe-area-inset-bottom))] max-w-[1600px] mx-auto space-y-5 sm:space-y-6 font-sans overflow-x-hidden">
+    <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <Building2 className="h-5 w-5" />
             </div>
             <div>
@@ -311,7 +311,7 @@ export default function JCLProperties() {
           <Button
             onClick={handleOpenCreate}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Add Property
@@ -338,10 +338,10 @@ export default function JCLProperties() {
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Listings</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.active}</p>
+              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">{stats.active}</p>
               <p className="text-[11px] text-emerald-600/80">Available for sale / lease</p>
             </div>
-            <div className="h-11 w-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
               <Sparkles className="h-5 w-5" />
             </div>
           </CardContent>
@@ -376,60 +376,46 @@ export default function JCLProperties() {
         </Card>
       </div>
 
-      {/*  3. Filters & View Controls (Mobile Native Full Width Stack)  */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-3 bg-card border border-border/80 p-2.5 sm:p-3 rounded-2xl shadow-xs">
-        <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2">
-          <div className="relative flex-1 w-full min-w-0">
+      {/* ── 3. Filters & View Controls ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
+        <div className="flex flex-1 items-center gap-2 flex-wrap">
+          <div className="relative flex-1 min-w-[220px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by address, city, agent..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-9 h-10 sm:h-9 text-xs bg-background rounded-xl"
+              className="pl-9 h-9 text-xs bg-background"
             />
           </div>
 
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-10 sm:h-9 text-xs w-full sm:w-[160px] bg-background rounded-xl">
-                <SelectValue placeholder="Property Type" />
-              </SelectTrigger>
-              <SelectContent>
-                {PROPERTY_TYPES.map(t => (
-                  <SelectItem key={t.value} value={t.value} className="text-xs">{t.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="h-9 text-xs w-[170px] bg-background">
+              <SelectValue placeholder="Property Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {PROPERTY_TYPES.map(t => (
+                <SelectItem key={t.value} value={t.value} className="text-xs">{t.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="h-10 sm:h-9 text-xs w-full sm:w-[140px] bg-background rounded-xl">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
-                <SelectItem value="active" className="text-xs">Active</SelectItem>
-                <SelectItem value="pending" className="text-xs">Pending</SelectItem>
-                <SelectItem value="sold" className="text-xs">Sold</SelectItem>
-                <SelectItem value="off_market" className="text-xs">Off Market</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="h-9 text-xs w-[150px] bg-background">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
+              <SelectItem value="active" className="text-xs">Active</SelectItem>
+              <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+              <SelectItem value="sold" className="text-xs">Sold</SelectItem>
+              <SelectItem value="off_market" className="text-xs">Off Market</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-
 
         {/* View Mode Switcher */}
         <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50 self-end md:self-auto">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={cn(
-              "p-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5",
-              viewMode === 'grid' ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-            )}
-            title="Grid View"
-          >
-            <Grid className="h-3.5 w-3.5" />
-            <span className="text-[11px] hidden sm:inline">Grid</span>
-          </button>
           <button
             onClick={() => setViewMode('list')}
             className={cn(
@@ -454,11 +440,11 @@ export default function JCLProperties() {
               ? 'No property records match your search filters.'
               : 'Add your first property listing to begin tracking units and viewings.'}
           </p>
-          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button onClick={handleOpenCreate} size="sm" className="mt-4 text-xs bg-[#005A9C] hover:bg-[#00477D] text-white">
             <Plus className="h-3.5 w-3.5 mr-1" /> Add Property
           </Button>
         </div>
-      ) : viewMode === 'grid' ? (
+      ) : false ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredProperties.map(property => {
             const st = STATUS_CONFIG[property.status] || STATUS_CONFIG.active;
@@ -522,7 +508,7 @@ export default function JCLProperties() {
                     </div>
 
                     {priceSqft && (
-                      <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <div className="flex items-center justify-between text-[11px] px-3 py-1.5 rounded-lg bg-[#005A9C]/10 border border-[#005A9C]/20">
                         <span className="text-muted-foreground font-medium">Price / sq ft</span>
                         <span className="font-bold text-emerald-700 dark:text-emerald-400">${priceSqft}</span>
                       </div>
@@ -670,10 +656,10 @@ export default function JCLProperties() {
 
               <div className="p-6 space-y-6 flex-1">
                 {/* Price & Valuations Strip */}
-                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/20 flex items-center justify-between">
+                <div className="p-4 rounded-xl bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent border border-[#005A9C]/20 flex items-center justify-between">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Listed Price</p>
-                    <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+                    <p className="text-2xl font-black text-[#005A9C] dark:text-[#FF6B00]">
                       {formatCurrency(inspectorProperty.price, 'USD')}
                     </p>
                   </div>
@@ -771,7 +757,7 @@ export default function JCLProperties() {
                 <Button
                   size="sm"
                   onClick={() => setInspectorProperty(null)}
-                  className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white"
                 >
                   Close Inspector
                 </Button>
@@ -956,7 +942,7 @@ export default function JCLProperties() {
               <Button
                 type="submit"
                 size="sm"
-                className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-md shadow-emerald-600/20"
+                className="text-xs bg-[#005A9C] hover:bg-[#00477D] text-white font-semibold shadow-md shadow-[#005A9C]/20"
               >
                 {editingId ? 'Save Changes' : 'Create Listing'}
               </Button>

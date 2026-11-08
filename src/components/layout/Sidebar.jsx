@@ -16,7 +16,8 @@ import {
  LayoutDashboard, Briefcase, Users, Calendar,
  Receipt, CheckSquare, FolderOpen, Settings,
  Scale, UserCog, LogOut, CreditCard, UserCircle, UserPlus, GitBranch,
- BookOpen, Shield, TrendingUp, Trophy, Search, Mail, BarChart2, Download, MessageCircle, HeartHandshake, ChevronRight,
+ BookOpen, Shield, TrendingUp, Trophy, Search, Mail, BarChart2, Download, MessageCircle, HeartHandshake,
+ PanelLeft,
  GraduationCap, BookMarked, ClipboardList, Bus, FileText,
  Stethoscope, Bed, Pill, FlaskConical, Activity,
  Sparkles, UtensilsCrossed, Star,
@@ -30,6 +31,7 @@ import {
 import { base44} from "@/api/base44Client";
 import { useImpersonation} from "@/lib/ImpersonationContext";
 import { INDUSTRIES, getIndustryNav} from "@/config/industries";
+import { getJCLRolePermissions } from "@/config/jclRolePermissions";
 
 const clientNav = [
  { label: "My Portal", icon: "LayoutDashboard", path: "/client-portal"},
@@ -83,7 +85,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   const toggleCat = (cat) => {
     setExpandedCats(prev => {
-      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : (cat === 'Platform' || cat === 'Operations');
+const isDefaultOpen = activeIndustry === 'real_estate_jcl'
+        ? ['Operations', 'Secretary', 'Marketing', 'Properties', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
+        : (cat === 'Platform' || cat === 'Operations');
+      const isCurrentlyExpanded = prev[cat] !== undefined ? prev[cat] : isDefaultOpen;
       const next = { ...prev, [cat]: !isCurrentlyExpanded };
       localStorage.setItem('sidebar_expanded_cats', JSON.stringify(next));
       return next;
@@ -202,8 +207,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     return finalUrl;
   };
 
- const activeCompanyLogoDark = cleanLogo(companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url);
- const activeCompanyLogoLight = cleanLogo(companyData?.logo_light_url || impersonatedCompany?.logo_light_url || activeCompanyLogoDark);
+ const isJCL = activeIndustry === 'real_estate_jcl' || companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl');
+ const rawLogo = isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png');
+ const activeCompanyLogoDark = cleanLogo(rawLogo);
+ const activeCompanyLogoLight = cleanLogo(rawLogo);
  const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || "Slate";
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
@@ -328,7 +335,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   law: ["/", "/my-dashboard", "/cases", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board", "/calendar"],
   software: ["/", "/my-dashboard", "/sprints", "/bugs", "/product-tasks", "/product-docs", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   real_estate: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
-  real_estate_jcl: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
+  real_estate_jcl: ["/", "/my-dashboard", "/properties", "/viewings", "/deals", "/clients", "/smart-docs", "/tasks", "/calendar", "/jcl/front-desk", "/real-estate/analytics", "/real-estate/field-tracker", "/real-estate/marketer-tracker", "/jcl/procurement", "/email-inbox", "/chat", "/board"],
   hospital: ["/", "/my-dashboard", "/patients", "/appointments", "/wards", "/prescriptions", "/lab-results", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   school: ["/", "/my-dashboard", "/classes", "/students", "/attendance", "/grades", "/assignments", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
   accounting: ["/", "/my-dashboard", "/invoices", "/billing", "/clients", "/reports", "/smart-docs", "/tasks", "/email-inbox", "/chat", "/board"],
@@ -387,7 +394,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return paths;
 }, [univAccessData, industryNavRaw]);
 
- const allowedPaths = isAdmin ? null : (customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
+ const jclCalculatedPaths = activeIndustry === 'real_estate_jcl' ? getJCLRolePermissions(activeRoleName) : null;
+ const allowedPaths = isAdmin ? null : (jclCalculatedPaths || customRolePermissions || univAllowedPaths || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
  { label: "Search", icon: "Search", path: "/search"},
@@ -422,7 +430,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 
   let filteredCompanyNav = (isSuiteAdmin && location.pathname.startsWith('/admin')) ? adminNav : (isOrbitMode ? coreOrbitNav : industryNav.filter(item => {
  // Core features everyone gets
- const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking', '/integrations'];
+ const corePaths = ['/', '/my-dashboard', '/email-inbox', '/chat', '/board', '/settings', '/time-tracking', '/integrations', '/hr'];
  
  // If activeModules is explicitly set (Custom Selection mode)
  if (activeModules && !['/', '/settings', '/integrations', '/admin', '/email-inbox', '/chat', '/board', '/hr', '/roles', '/departments'].includes(item.path)) {
@@ -438,8 +446,8 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  return allowedPaths.includes(item.path);
 }));
 
-  // Inject Branch Manager
-  if (isAdmin) {
+  // Inject Branch Manager (Excluded for JCL Real Estate)
+  if (isAdmin && activeIndustry !== 'real_estate_jcl') {
     filteredCompanyNav = [...filteredCompanyNav, { label: "Branch Manager", path: "/branch-manager", icon: "Network" }];
   }
 
@@ -739,24 +747,31 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       rawNavItems.push({ label: "Tasks", path: "/tasks", icon: "CheckSquare" });
     }
 
-    // Inject Trust Accounting system for all industries
-    if (!rawNavItems.some(n => n.path === '/real-estate/trust-accounting')) {
-      rawNavItems.push({ label: "Trust Accounting", path: "/real-estate/trust-accounting", icon: "Wallet" });
-    }
+  // Trust Accounting is now accessed via Finance inner tabs — removed from main sidebar
 
     // Inject Firm Accounting system — JCL only
     if (activeIndustry === 'real_estate_jcl' && !rawNavItems.some(n => n.path === '/finance/accounting')) {
       rawNavItems.push({ label: "Firm Accounting", path: "/finance/accounting", icon: "Landmark" });
     }
 
-    // Inject GPS Operations (Executive) & GPS Field Tracker (Marketers) — JCL only
+    // Inject JCL-only navigation that must remain visible in the rendered sidebar.
     if (activeIndustry === 'real_estate_jcl') {
-      if (!rawNavItems.some(n => n.path === '/real-estate/field-tracker')) {
-        rawNavItems.push({ label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" });
-      }
-      if (!rawNavItems.some(n => n.path === '/real-estate/marketer-tracker')) {
-        rawNavItems.push({ label: "Field GPS", path: "/real-estate/marketer-tracker", icon: "MapPin" });
-      }
+      const jclItems = [
+        { label: "Live GPS", path: "/real-estate/field-tracker", icon: "Radio" },
+        { label: "Audit Log", path: "/real-estate/audit-log", icon: "ClipboardList" },
+        { label: "Client Portal", path: "/portal", icon: "Globe" },
+        { label: "Procurement", path: "/jcl/procurement", icon: "Package" },
+        { label: "Requisitions", path: "/jcl/requisitions", icon: "ClipboardList" },
+        { label: "Purchase Orders", path: "/jcl/purchase-orders", icon: "FileCheck" },
+        { label: "Materials", path: "/jcl/inventory", icon: "Warehouse" },
+        { label: "Engineering", path: "/engineering", icon: "Layers" },
+        { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
+        { label: "Bill of Quantities", path: "/boq", icon: "Calculator" },
+        { label: "Company Items Issued", path: "/jcl/employee-assets", icon: "ShieldCheck" }
+      ];
+      jclItems.forEach(item => {
+        if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
+      });
     }
 
     // Inject SmartDocs
@@ -776,6 +791,46 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     if (isSuperAdmin && !rawNavItems.some(n => n.path === '/sites')) {
       rawNavItems.push({ label: "Sites", path: "/sites", icon: "Globe" });
     }
+  }
+
+  // Strictly filter out non-essential JCL features requested by user
+  if (activeIndustry === 'real_estate_jcl') {
+    if (!isAdmin && allowedPaths) {
+      rawNavItems = rawNavItems.filter(item => {
+        if (!item.path) return true;
+        const p = item.path.split('?')[0];
+        return allowedPaths.includes(p) || allowedPaths.includes(item.path);
+      });
+    }
+    const JCL_BLOCKED_PATHS = new Set([
+      '/enterprise-admin',
+      '/feature-insider',
+      '/feature-vault',
+      '/marketplace',
+      '/branch-manager',
+      '/automations',
+      '/snapshots',
+      '/snapshot',
+      '/real-estate/marketer-tracker',
+      '/real-estate/trust-accounting'
+    ]);
+    const JCL_BLOCKED_LABELS = new Set([
+      'enterprise admin',
+      'feature insider',
+      'feature vault',
+      'marketplace',
+      'branch manager',
+      'automations',
+      'snapshot',
+      'snapshots',
+      'field gps',
+      'trust accounting'
+    ]);
+    rawNavItems = rawNavItems.filter(item => {
+      if (item.path && JCL_BLOCKED_PATHS.has(item.path)) return false;
+      if (item.label && JCL_BLOCKED_LABELS.has(item.label.toLowerCase())) return false;
+      return true;
+    });
   }
 
   // Deduplicate by label to prevent double Dashboards, and apply static nav overrides
@@ -801,8 +856,38 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
     return aOrder - bOrder;
   });
 
+  // Trust Accounting is available inside Finance and must not appear in the main sidebar.
+  navItems = navItems.filter(item => item.path !== '/real-estate/trust-accounting');
+
   const getCategory = (item) => {
-    const p = item.path || '';
+    const p = (item.path || '').split('?')[0];
+    const normalizedLabel = (item.label || '').trim().toLowerCase();
+
+    // JCL department rules must run before dynamic-module fallback so legacy entries cannot fall back to Operations.
+    if (activeIndustry === 'real_estate_jcl') {
+      if (['/jcl/front-desk', '/jcl/item-register'].includes(p) || normalizedLabel === 'item register') {
+        return "Secretary";
+      }
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || normalizedLabel === 'engagement' || normalizedLabel === 'engagements & projects' || normalizedLabel === 'clients') {
+        return "Marketing";
+      }
+      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land') || ['leases', 'renewals', 'maintenance', 'contractors', 'reviews'].includes(normalizedLabel)) {
+        return "Properties";
+      }
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p) || ['live gps', 'audit log', 'client portal'].includes(normalizedLabel)) {
+        return "System Admin";
+      }
+      if (['/procurement', '/purchase-orders', '/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) || p.startsWith('/procurement') || ['procurement', 'purchase orders', 'suppliers', 'goods receipts'].includes(normalizedLabel)) {
+        return "Procurement";
+      }
+      if (['/engineering', '/bom', '/boq', '/jcl/projects'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'projects'].includes(normalizedLabel)) {
+        return "Engineering";
+      }
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
+        return "Finance";
+      }
+    }
+
     if (item.isDynamic) return activeIndustry === 'real_estate_jcl' ? "Projects & Smart Docs" : "Workspace";
 
     // Administrative & Management Features (Admin Section)
@@ -816,38 +901,33 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
       return activeIndustry === 'real_estate_jcl' ? "System Admin" : "System Administration";
     }
 
-    // Dedicated Department Grouping for JCL Royal Group
+    // JCL Royal Group is organized by department, not by nested feature groups.
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/', '/my-dashboard', '/intelligence', '/real-estate/field-tracker'].includes(p) || ['Dashboard', 'My Dashboard', 'Executive Dashboard', 'Overview', 'Live GPS', 'Live GPS Operations'].includes(item.label)) {
-        return "Executive Overview";
+      if (['/jcl/front-desk', '/jcl/item-register'].includes(p)) {
+        return "Secretary";
       }
-      if (['/real-estate/crm-leads', '/real-estate/clients', '/real-estate/customer-timeline', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/marketer-tracker'].includes(p) || p.startsWith('/real-estate/crm') || ['Field GPS', 'GPS Field Tracker', 'Marketer GPS Tracker'].includes(item.label)) {
-        return "Sales & CRM";
+      if (p === '/jcl/procurement') {
+        return "Procurement";
       }
-      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data'].includes(p) || p.startsWith('/real-estate/land')) {
-        return "Land & Property";
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
+        return "Marketing";
       }
-      if (['/real-estate/transactions', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p)) {
-        return "Tenancy & Operations";
+      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land')) {
+        return "Properties";
+      }
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p)) {
+        return "System Admin";
       }
       if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||
           p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
           p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
-        return "Finance & Accounting";
-      }
-      if (['/tasks', '/smart-docs', '/real-estate/document-templates', '/real-estate/e-signatures'].includes(p)) {
-        return "Projects & Smart Docs";
+        return "Finance";
       }
       if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
         return "Human Resources";
       }
-      if (['/real-estate/agent-metrics', '/real-estate/analytics'].includes(p)) {
-        return "Executive Overview";
-      }
-      if (['/chat', '/email-inbox', '/board', '/whatsapp', '/messages', '/notifications', '/unified-inbox'].includes(p)) {
-        return "Communications";
-      }
-      return "Tenancy & Operations";
+      if (['/settings', '/integrations'].includes(p)) return "System Admin";
+      return "Operations";
     }
 
     // Default Grouping for all other industries
@@ -876,7 +956,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
   }, {});
 
   const categoryOrder = activeIndustry === 'real_estate_jcl'
-    ? ["Executive Overview", "Sales & CRM", "Land & Property", "Tenancy & Operations", "Finance & Accounting", "Projects & Smart Docs", "Human Resources", "System Admin", "Communications"]
+    ? ["Operations", "Secretary", "Marketing", "Procurement", "Engineering", "Properties", "Finance", "Human Resources", "System Admin"]
     : ["Platform", "Operations", "Communications", "Finance & Accounting", "Team & HR", "Workspace", "System Administration"];
 
  const handleDeleteModule = (id, name) => {
@@ -939,28 +1019,29 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-white dark:bg-[#0c1a13] text-slate-800 dark:text-emerald-50 overflow-x-hidden">
-      <div className={cn("py-4 border-b border-black/5 dark:border-white/10 flex items-center transition-all", collapsed ? "px-3 justify-center" : "px-4 gap-3")}>
- {activeCompanyLogoDark || activeCompanyLogoLight ? (
-   <>
-     <img src={activeCompanyLogoDark || activeCompanyLogoLight} alt="Logo" className={cn("object-contain hidden dark:block", collapsed ? "w-8 h-8" : "w-9 h-9")} />
-     <img src={activeCompanyLogoLight || activeCompanyLogoDark} alt="Logo" className={cn("object-contain block dark:hidden", collapsed ? "w-8 h-8" : "w-9 h-9")} />
-   </>
- ) : (
- <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 text-lg">
- {industryData.icon}
- </div>
- )}
- {!collapsed && (
- <div className="animate-in fade-in zoom-in duration-200">
- <div className="flex flex-col">
- <span className="font-semibold text-foreground leading-tight tracking-tight mt-0.5">{activeCompanyName}</span>
- <span className="text-[9px] font-extrabold text-[#71717a] dark:text-gray-400 uppercase tracking-widest leading-none mt-1 tracking-[0.04em]">
-  {companyData?.tagline || (activeIndustry === 'orbit_build' ? 'WorkSlate' : industryData.name)}
- </span>
- </div>
- </div>
- )}
+    <div className="flex flex-col h-full bg-[#005A9C] dark:bg-[#091114] text-white overflow-x-hidden">
+      <div className={cn("h-[72px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-2 justify-center" : "px-3 gap-2.5")}>
+        <button
+          type="button"
+          onClick={() => setIsCollapsed(!collapsed)}
+          className="shrink-0 rounded-lg p-1.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <PanelLeft className="h-4 w-4" />
+        </button>
+
+        {/* Clean Rectangular Corporate Logo Card (Only logo, no redundant text) */}
+        <div className={cn(
+          "flex items-center justify-center bg-white rounded-xl shadow-md transition-all overflow-hidden",
+          collapsed ? "w-10 h-10 p-1" : "flex-1 h-12 px-2.5 py-1"
+        )}>
+          <img
+            src="/jcl-logo.png"
+            alt="JCL Real Estate"
+            className={cn("w-full h-full object-contain", collapsed ? "max-h-8" : "max-h-10")}
+          />
+        </div>
  </div>
 
  {/* AI Sort feature removed per request */}
@@ -990,16 +1071,16 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
               "flex items-center rounded-xl text-sm transition-all duration-200 relative font-medium",
               collapsed
                 ? isActive
-                  ? "justify-center mx-auto w-9 h-9 bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold"
-                  : "justify-center mx-auto w-9 h-9 text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40"
+                  ? "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold shadow-sm"
+                  : "justify-center mx-auto w-9 h-9 text-white/70 hover:text-white hover:bg-white/10"
                 : "gap-3 px-3 py-2 pr-8",
               !collapsed && (isActive
-                ? "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 font-bold border-l-4 border-emerald-500 pl-2.5"
-                : "text-slate-600 dark:text-emerald-100/70 hover:text-slate-900 dark:hover:text-emerald-50 hover:bg-slate-100 dark:hover:bg-emerald-950/40")
+                ? "bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold border-l-4 border-[#FF6B00] pl-2.5 shadow-sm"
+                : "text-white/70 hover:text-white hover:bg-white/10 font-medium")
             )}
           >
             <span className="relative flex-shrink-0 flex items-center justify-center">
-              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive && "text-emerald-600 dark:text-emerald-400")} />
+              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive ? "text-[#FF6B00]" : "text-white/60 group-hover:text-white")} />
               {showLiveDot && (
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -1083,7 +1164,7 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
      return (
         <div className="space-y-0.5 mt-2">
           {navItems.map((item, idx) => {
-            if (item.section) {
+            if (item.section && activeIndustry !== 'real_estate_jcl') {
               return (
                 <div key={`sec-${idx}`} className={cn("px-4 py-2 mt-4 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider", collapsed && "hidden")}>
                   {item.section}
@@ -1100,26 +1181,23 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
    return categoryOrder.map(cat => {
      const items = groupedNav[cat];
      if (!items || items.length === 0) return null;
-     const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : (cat === 'Platform' || cat === 'Operations');
+const isDefaultOpen = activeIndustry === 'real_estate_jcl'
+        ? ['Operations', 'Secretary', 'Marketing', 'Procurement', 'Engineering', 'Properties', 'Finance', 'Human Resources', 'System Admin'].includes(cat)
+        : (cat === 'Platform' || cat === 'Operations');
+      const isExpanded = expandedCats[cat] !== undefined ? expandedCats[cat] : isDefaultOpen;
      
      return (
        <div key={cat} className="space-y-0.5">
          {!collapsed && (
-            <button 
-              onClick={() => toggleCat(cat)}
-              className="w-full flex items-center justify-between px-3 py-2.5 mb-1.5 group transition-all rounded-xl hover:bg-sidebar-accent/50 border border-transparent hover:border-sidebar-border"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className={cn("w-1 h-3.5 rounded-full transition-all duration-300 shadow-sm", isExpanded ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]" : "bg-primary/30 group-hover:bg-primary/60")} />
-                <p className="text-[11px] font-bold text-sidebar-foreground/70 group-hover:text-sidebar-foreground uppercase tracking-[0.15em]">{cat}</p>
-              </div>
-              <ChevronRight className={cn("w-3.5 h-3.5 text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-transform duration-300", isExpanded && "rotate-90")} />
-            </button>
+            <div className="flex items-center gap-2.5 px-3 py-2 mb-1">
+              <div className="w-1 h-3.5 rounded-full bg-[#FF6B00]" />
+              <p className="text-[11px] font-bold text-white/65 uppercase tracking-[0.15em]">{cat}</p>
+            </div>
          )}
          
           <div className={cn("space-y-0.5 transition-all duration-300 overflow-hidden", (!isExpanded && !collapsed) ? "max-h-0 opacity-0" : "max-h-[2000px] opacity-100")}>
             {items.map((item, idx) => {
-              if (item.section) {
+              if (item.section && activeIndustry !== 'real_estate_jcl') {
                 return (
                   <div key={`sec-${idx}`} className={cn("px-4 py-2 mt-4 mb-1 text-[10px] font-bold text-sidebar-foreground/50 uppercase tracking-wider", collapsed && "hidden")}>
                     {item.section}
@@ -1156,10 +1234,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  )}
 
  {/* Modern User Profile & Dropdown Section */}
- <div className="mt-auto p-3 border-t border-black/5 dark:border-white/10 bg-slate-50/50 dark:bg-[#08120d]">
+ <div className="mt-auto p-3 border-t border-white/10 dark:border-white/5 bg-[#00477D] dark:bg-[#060B0D] text-white">
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20">
+ <button onClick={() => navigate('/personal-info')} className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-white/10 transition-colors focus:outline-none text-white" title="Open profile">
  <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 overflow-hidden">
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -1172,17 +1250,17 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  
  {!collapsed && (
  <div className="flex-1 text-left min-w-0 animate-in fade-in duration-200">
- <p className="text-[13px] font-medium leading-none text-foreground">
+ <p className="text-[13px] font-bold leading-none text-white">
  {user?.full_name || user?.company_name || (user?.role === "super_admin" ? "Super Admin" : "Admin")}
  </p>
- <p className="text-[11px] text-foreground/50 capitalize truncate mt-0.5">
+ <p className="text-[11px] text-white/60 capitalize truncate mt-0.5">
  {user?.role?.replace("_", " ")}
  </p>
  </div>
  )}
  
  {!collapsed && (
- <MoreHorizontal className="w-4 h-4 text-[#71717a] dark:text-gray-400 flex-shrink-0 ml-auto" />
+ <MoreHorizontal className="w-4 h-4 text-white/50 group-hover:text-white flex-shrink-0 ml-auto" />
  )}
  </button>
  </DropdownMenuTrigger>
@@ -1194,6 +1272,10 @@ export default function Sidebar({ user, isCollapsed, setIsCollapsed}) {
  </div>
  </DropdownMenuLabel>
  <DropdownMenuSeparator />
+ <DropdownMenuItem onClick={() => navigate('/personal-info')} className="cursor-pointer">
+ <UserCircle className="w-4 h-4 mr-2" />
+ Profile
+ </DropdownMenuItem>
  <DropdownMenuItem onClick={() => setShowAvatarDialog(true)} className="cursor-pointer">
  <UserCircle className="w-4 h-4 mr-2" />
  Change Avatar
@@ -1224,8 +1306,8 @@ return (
     <>
       {/* Desktop sidebar - Full height sidebar matching reference design */}
       <aside className={cn(
-        "hidden md:flex flex-col h-full sticky top-0 border-r border-black/10 dark:border-white/10 transition-all duration-300 relative z-20 overflow-hidden",
-        "bg-white text-slate-800 dark:bg-[#0c1a13] dark:text-emerald-50",
+        "hidden md:flex flex-col h-full sticky top-0 border-r border-white/10 dark:border-white/5 transition-all duration-300 relative z-20 overflow-hidden",
+        "bg-[#005A9C] text-white dark:bg-[#091114] border-white/10 dark:border-white/5",
         isCollapsed ? "w-[64px] min-w-[64px] max-w-[64px]" : "w-[240px] min-w-[240px] max-w-[240px]"
       )}>
         {renderNavContent(isCollapsed)}

@@ -1,13 +1,13 @@
 import React from "react";
-import { Sun, Moon, Laptop, ChevronDown} from "lucide-react";
-import { useTheme} from "@/lib/ThemeContext";
-import { cn} from "@/lib/utils";
+import { Sun, Moon, Laptop, ChevronDown, Check } from "lucide-react";
+import { useTheme } from "@/lib/ThemeContext";
+import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 const themeOptions = [
-  { value: "light", label: "LIGHT", icon: Sun, color: "text-amber-500" },
-  { value: "dark", label: "DARK", icon: Moon, color: "text-indigo-400" },
-  { value: "system", label: "SYSTEM", icon: Laptop, color: "text-[#71717a] dark:text-gray-400" },
+  { value: "light", label: "Light", icon: Sun, color: "text-amber-500" },
+  { value: "dark", label: "Dark", icon: Moon, color: "text-sky-400" },
+  { value: "system", label: "System", icon: Laptop, color: "text-slate-400" },
 ];
 
 export default function ThemeToggle({ iconOnly = false }) {
@@ -19,11 +19,15 @@ export default function ThemeToggle({ iconOnly = false }) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="w-8 h-8 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center focus:outline-none hover:bg-white/10 transition-transform cursor-pointer border border-white/10 outline-none">
+          <button 
+            type="button"
+            className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-foreground flex items-center justify-center focus:outline-none transition-all cursor-pointer border border-black/5 dark:border-white/10 active:scale-95 shadow-sm"
+            title={`Theme: ${activeOption.label}`}
+          >
             <ActiveIcon className={cn("w-4 h-4", activeOption.color)} />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="z-[100] w-36 rounded-xl border border-white/10 bg-secondary text-secondary-foreground p-1.5 animate-in fade-in zoom-in-95 duration-150 shadow-xl">
+        <DropdownMenuContent align="end" className="z-[100] w-40 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#091114] text-slate-900 dark:text-white p-1.5 animate-in fade-in zoom-in-95 duration-150 shadow-2xl backdrop-blur-xl">
           <div className="space-y-1">
             {themeOptions.map((option) => {
               const isSelected = option.value === theme;
@@ -33,15 +37,15 @@ export default function ThemeToggle({ iconOnly = false }) {
                   key={option.value}
                   onClick={() => changeTheme(option.value)}
                   className={cn(
-                    "flex items-center gap-2.5 w-full px-2.5 py-2 rounded-xl text-left text-xs font-medium transition-all duration-150 cursor-pointer select-none",
+                    "flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left text-xs font-semibold transition-all duration-150 cursor-pointer select-none",
                     isSelected
-                      ? "bg-primary/10 text-primary font-bold focus:bg-primary/15 focus:text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted focus:bg-muted focus:text-foreground"
+                      ? "bg-[#005A9C]/10 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00]"
+                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10"
                   )}
                 >
-                  <OptIcon className={cn("w-3.5 h-3.5 shrink-0", isSelected ? "text-primary" : option.color)} />
+                  <OptIcon className={cn("w-4 h-4 shrink-0", isSelected ? "text-[#005A9C] dark:text-[#FF6B00]" : option.color)} />
                   <span className="flex-1">{option.label}</span>
-                  {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#005A9C] dark:text-[#FF6B00]" />}
                 </DropdownMenuItem>
               );
             })}
@@ -54,16 +58,19 @@ export default function ThemeToggle({ iconOnly = false }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl border border-border bg-secondary hover:bg-muted text-foreground transition-all duration-200 focus:outline-none cursor-pointer outline-none">
-          <ActiveIcon className={cn("w-4 h-4", activeOption.color)} />
-          <span className="hidden sm:inline text-xs font-medium text-foreground select-none uppercase tracking-wider tracking-[0.04em]">
+        <button 
+          type="button"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/10 dark:bg-white/5 hover:bg-white/20 text-white transition-all duration-200 focus:outline-none cursor-pointer active:scale-95 shadow-sm h-9"
+        >
+          <ActiveIcon className={cn("w-3.5 h-3.5", activeOption.color)} />
+          <span className="hidden sm:inline text-xs font-semibold select-none text-white">
             {activeOption.label}
           </span>
-          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+          <ChevronDown className="w-3 h-3 text-white/70" />
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="z-[100] w-36 rounded-xl border border-white/10 bg-secondary text-secondary-foreground p-1.5 animate-in fade-in zoom-in-95 duration-150 shadow-xl transition-shadow duration-200">
+      <DropdownMenuContent align="end" className="z-[100] w-40 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#091114] text-slate-900 dark:text-white p-1.5 animate-in fade-in zoom-in-95 duration-150 shadow-2xl backdrop-blur-xl">
         <div className="space-y-1">
           {themeOptions.map((option) => {
             const isSelected = option.value === theme;
@@ -74,17 +81,15 @@ export default function ThemeToggle({ iconOnly = false }) {
                 key={option.value}
                 onClick={() => changeTheme(option.value)}
                 className={cn(
-                  "flex items-center gap-2.5 w-full px-2.5 py-2 rounded-xl text-left text-xs font-medium transition-all duration-150 cursor-pointer select-none",
+                  "flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-left text-xs font-semibold transition-all duration-150 cursor-pointer select-none",
                   isSelected
-                    ? "bg-primary/10 text-primary font-bold focus:bg-primary/15 focus:text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted focus:bg-muted focus:text-foreground"
+                    ? "bg-[#005A9C]/10 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00]"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10"
                 )}
               >
-                <OptIcon className={cn("w-3.5 h-3.5 shrink-0", isSelected ? "text-primary" : option.color)} />
+                <OptIcon className={cn("w-4 h-4 shrink-0", isSelected ? "text-[#005A9C] dark:text-[#FF6B00]" : option.color)} />
                 <span className="flex-1">{option.label}</span>
-                {isSelected && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                )}
+                {isSelected && <Check className="w-3.5 h-3.5 text-[#005A9C] dark:text-[#FF6B00]" />}
               </DropdownMenuItem>
             );
           })}

@@ -130,7 +130,7 @@ export function useNavigation(user, impersonatedCompany) {
   const appBuilderItem = { label: "OrbitBolt AI Builder", icon: "Zap", path: "/slate/BOLT" };
   const marketplaceItem = { label: "Marketplace", icon: "ShoppingCart", path: "/marketplace" };
 
-  // For JCL Real Estate, exclude legacy Marketplace, OrbitBolt, and Firm Setup
+  // For JCL Real Estate within Slate, exclude Marketplace, OrbitBolt, and Firm Setup
   const extraItems = isJCL ? [] : (isAdmin ? [appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }] : [marketplaceItem]);
 
   let navItems = [...baseNav, ...dynamicNavItems, ...extraItems];

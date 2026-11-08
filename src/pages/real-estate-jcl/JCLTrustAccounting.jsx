@@ -78,7 +78,7 @@ export default function JCLTrustAccounting() {
       setLedger(ledgerRes.rows._array || Array.from(ledgerRes.rows || []));
     } catch (_err) {
       toast.error('Failed to load trust accounting data');
-    } font
+    }
     setIsLoading(false);
   };
 
@@ -191,12 +191,12 @@ export default function JCLTrustAccounting() {
   };
 
   return (
-    <div className="p-3 sm:p-6 pb-[max(96px,env(safe-area-inset-bottom))] w-full max-w-full space-y-5 sm:space-y-6 font-sans overflow-x-hidden">
+    <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
               <Wallet className="h-5 w-5" />
             </div>
             <div>
@@ -229,7 +229,7 @@ export default function JCLTrustAccounting() {
             }}
             variant="outline"
             size="sm"
-            className="h-9 px-3 text-xs font-semibold gap-1.5 border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+            className="h-9 px-3 text-xs font-semibold gap-1.5 border-[#005A9C]/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
           >
             <Plus className="h-3.5 w-3.5" />
             Add Trust Account
@@ -242,7 +242,7 @@ export default function JCLTrustAccounting() {
               setShowTxnForm(true);
             }}
             size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 gap-1.5"
+            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Record Transaction
@@ -259,11 +259,11 @@ export default function JCLTrustAccounting() {
               <p className="text-2xl font-extrabold text-foreground tracking-tight">
                 {formatCurrency(stats.netTrustBalance, 'USD')}
               </p>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+              <p className="text-[11px] text-[#005A9C] dark:text-[#FF6B00] font-semibold flex items-center gap-1">
                 <CheckCircle2 className="h-3.5 w-3.5" /> 3-Way Reconciled
               </p>
             </div>
-            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+            <div className="h-12 w-12 rounded-2xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center border border-[#005A9C]/20 shadow-inner">
               <Shield className="h-6 w-6" />
             </div>
           </CardContent>
@@ -273,7 +273,7 @@ export default function JCLTrustAccounting() {
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Client Deposits</span>
-              <p className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
+              <p className="text-2xl font-extrabold text-[#005A9C] dark:text-[#FF6B00] tracking-tight">
                 {formatCurrency(stats.totalDeposits, 'USD')}
               </p>
               <p className="text-[11px] text-muted-foreground font-semibold">Fiduciary inflows</p>
@@ -333,7 +333,7 @@ export default function JCLTrustAccounting() {
                 <div className="p-5 pb-4 space-y-3.5 flex-1">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00]">
                         <Banknote className="w-5 h-5" />
                       </div>
                       <div className="min-w-0">
@@ -345,7 +345,7 @@ export default function JCLTrustAccounting() {
                         </Badge>
                       </div>
                     </div>
-                    <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-extrabold text-[10px] uppercase border-emerald-200">
+                    <Badge className="bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] font-extrabold text-[10px] uppercase border-emerald-200">
                       Active
                     </Badge>
                   </div>
@@ -374,7 +374,7 @@ export default function JCLTrustAccounting() {
                     <Button
                       size="sm"
                       onClick={() => setInspectAccount(acc)}
-                      className="text-xs h-8 px-3 font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-sm gap-1"
+                      className="text-xs h-8 px-3 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-sm gap-1"
                     >
                       <Eye className="w-3.5 h-3.5" /> History
                     </Button>
@@ -388,19 +388,19 @@ export default function JCLTrustAccounting() {
 
       {/* ── 4. Main Ledger Table ── */}
       <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 bg-card border border-border/80 p-2.5 sm:p-3 rounded-2xl shadow-xs">
-          <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center gap-2">
-            <div className="relative flex-1 w-full min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
+          <div className="flex flex-1 items-center gap-2">
+            <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search ledger entries by reference or details..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="pl-9 h-10 sm:h-9 text-xs bg-background rounded-xl"
+                className="pl-9 h-9 text-xs bg-background"
               />
             </div>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-10 sm:h-9 text-xs w-full sm:w-[150px] bg-background rounded-xl">
+              <SelectTrigger className="h-9 text-xs w-[150px] bg-background">
                 <SelectValue placeholder="Transaction Type" />
               </SelectTrigger>
               <SelectContent>
@@ -443,12 +443,12 @@ export default function JCLTrustAccounting() {
                         <td className="py-3 px-4">
                           <Badge variant="outline" className={cn(
                             "text-[9px] uppercase font-bold px-2 py-0.5",
-                            isCredit ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30" : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
+                            isCredit ? "bg-[#005A9C]/10 text-emerald-700 dark:text-emerald-400 border-[#005A9C]/30" : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
                           )}>
                             {entry.transaction_type}
                           </Badge>
                         </td>
-                        <td className={cn("py-3 px-4 text-right font-bold font-mono text-sm", isCredit ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400")}>
+                        <td className={cn("py-3 px-4 text-right font-bold font-mono text-sm", isCredit ? "text-[#005A9C] dark:text-[#FF6B00]" : "text-rose-600 dark:text-rose-400")}>
                           {isCredit ? '+' : '-'}{formatCurrency(entry.amount, 'USD')}
                         </td>
                       </tr>
@@ -509,7 +509,7 @@ export default function JCLTrustAccounting() {
                 />
               </div>
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
               Save Trust Account
             </Button>
           </form>
@@ -586,7 +586,7 @@ export default function JCLTrustAccounting() {
                 className="h-9 text-xs mt-1"
               />
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
               Record Entry
             </Button>
           </form>

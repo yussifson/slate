@@ -1,6 +1,6 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useTranslation} from "react-i18next";
-import { Search, Plus, Eye, Trash2, ShieldAlert, ShoppingCart, Check, X, MoreVertical, Edit2} from 'lucide-react';
+import { Search, Plus, FileText, CheckCircle2, Clock, Ban, Eye, FileDown, Trash2, Mail, Edit, ShieldAlert, ShoppingCart, Check, X, MoreVertical, Edit2} from 'lucide-react';
 import { useAuth} from '@/lib/AuthContext';
 import { isRetailAdmin, isRetailInventoryManager} from '@/lib/constants';
 import { usePowerSync } from '@powersync/react';
@@ -261,11 +261,11 @@ export default function PurchaseOrders() {
 }
 
  return (
- <div className="flex-1 p-3 sm:p-6 pb-[max(96px,env(safe-area-inset-bottom))] overflow-y-auto bg-background overflow-x-hidden">
+ <div className="flex-1 p-6 overflow-y-auto bg-background">
  <div className="max-w-7xl mx-auto space-y-6">
  
  {/* Header */}
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
  <div>
  <h1 className="text-2xl font-semibold text-foreground tracking-tight tracking-[-0.02em]">{t("purchase_orders", "Purchase Orders")}</h1>
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">{t("po_desc", "Manage supplier orders and restock inventory.")}</p>

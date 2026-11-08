@@ -2,13 +2,14 @@ import React, { useState} from "react";
 import { useTranslation} from "react-i18next";
 import { useQuery, useQueryClient} from "@tanstack/react-query";
 import { powerSync} from "@/api/PowerSyncConnector";
+import { base44} from "@/api/base44Client";
 import { supabase} from "@/api/supabaseClient";
 import { useAuth} from "@/lib/AuthContext";
 import { useToast} from "@/components/ui/use-toast";
 import { getSubdomainAndBase} from "@/lib/domainUtils";
 
 import {
- Settings2, Palette, DollarSign, Lock, CreditCard, FileText
+ Settings2, Palette, DollarSign, ShieldCheck, Lock, CreditCard, Building, FileText
 } from "lucide-react";
 
 import { SystemSettings, BrandSettings} from "@/components/settings/SystemBrandSettings";
@@ -173,7 +174,7 @@ export default function Settings() {
  const categories = ["General", "Security & Access", "Billing"];
 
  return (
- <div className="flex flex-col min-h-screen pb-[max(96px,env(safe-area-inset-bottom))] bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">
+ <div className="flex flex-col h-full bg-background md:flex-row rounded-tl-2xl overflow-hidden border-t border-l border-primary/40">
  
  {/* Sidebar Navigation */}
  <div className="w-full md:w-64 lg:w-72 shrink-0 border-r border-primary/40 bg-muted/30 overflow-y-auto hidden md:block">
@@ -216,25 +217,22 @@ export default function Settings() {
  </div>
  </div>
 
-  {/* Mobile Nav Select (Native iOS/Android Card Header) */}
-  <div className="md:hidden p-4 border-b border-border w-full bg-card/90 backdrop-blur-xl sticky top-0 z-10 shadow-xs">
-    <div className="flex items-center justify-between mb-3">
-      <h1 className="text-xl font-bold tracking-tight text-foreground">Settings</h1>
-      <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">System Control</span>
-    </div>
-    <select 
-      value={activeSection}
-      onChange={(e) => setActiveSection(e.target.value)}
-      className="w-full bg-background border border-border rounded-xl px-4 py-3 font-semibold text-xs text-foreground focus:ring-2 focus:ring-primary shadow-xs outline-none"
-    >
-      {SECTIONS.map(s => (
-        <option key={s.id} value={s.id}>{s.label}</option>
-      ))}
-    </select>
-  </div>
+ {/* Mobile Nav Select (Fallback) */}
+ <div className="md:hidden p-4 border-b border-primary/40 w-full bg-background sticky top-0 z-10">
+ <h1 className="text-xl font-semibold mb-4">Settings</h1>
+ <select 
+ value={activeSection}
+ onChange={(e) => setActiveSection(e.target.value)}
+ className="w-full bg-muted border-none rounded-xl px-4 py-3 font-medium text-sm focus:ring-2 focus:ring-foreground"
+ >
+ {SECTIONS.map(s => (
+ <option key={s.id} value={s.id}>{s.label}</option>
+ ))}
+ </select>
+ </div>
 
  {/* Main Content Area */}
- <div className="flex-1 overflow-y-auto bg-background p-4 sm:p-6 md:p-10 lg:p-16">
+ <div className="flex-1 overflow-y-auto bg-background p-6 md:p-10 lg:p-16">
  <div className="max-w-3xl mx-auto animate-in fade-in duration-300">
  {renderActiveSection()}
  </div>
