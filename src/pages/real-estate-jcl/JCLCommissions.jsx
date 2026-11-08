@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   TrendingUp, User, DollarSign, Percent, Calendar, ArrowUpRight, Plus, MoreVertical,
-  RefreshCw, CheckCircle2, Award, Building2, UserCheck, Shield
+  CheckCircle2, Award, Building2, UserCheck, Shield
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { toast } from 'react-hot-toast';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
@@ -51,9 +50,9 @@ export default function JCLCommissions() {
     agentName: user?.user_metadata?.full_name || 'Lead Broker',
     propertyAddress: '',
     salePrice: 500000,
-    commissionRate: 3.0, // 3%
+    commissionRate: 3.0,
     commissionAmount: 15000,
-    brokerageSplitRate: 70, // 70% agent / 30% broker
+    brokerageSplitRate: 70,
     agentPayoutAmount: 10500,
     status: 'pending',
     paymentDate: format(new Date(), 'yyyy-MM-dd'),
@@ -102,47 +101,30 @@ export default function JCLCommissions() {
     }
 
     try {
+      const newId = editingId || generateUUID();
       const now = new Date().toISOString();
-      const grossComm = (Number(formData.salePrice) * Number(formData.commissionRate)) / 100;
-      const netAgentPayout = (grossComm * Number(formData.brokerageSplitRate)) / 100;
+      const gross = (Number(formData.salePrice) * Number(formData.commissionRate)) / 100;
+      const net = (gross * Number(formData.brokerageSplitRate)) / 100;
 
-      if (editingId) {
-        await powerSync.execute(
-          `UPDATE univ_re_commissions SET
-            agent_name = ?, property_address = ?, sale_price = ?,
-            commission_rate = ?, commission_amount = ?, brokerage_split_rate = ?,
-            agent_payout_amount = ?, status = ?, payment_date = ?, notes = ?
-          WHERE id = ? AND company_id = ?`,
-          [
-            formData.agentName, formData.propertyAddress, Number(formData.salePrice) || 0,
-            Number(formData.commissionRate) || 0, grossComm, Number(formData.brokerageSplitRate) || 0,
-            netAgentPayout, formData.status, formData.paymentDate || null, formData.notes || null,
-            editingId, companyId
-          ]
-        );
-        toast.success('Commission record updated');
-      } else {
-        const newId = generateUUID();
-        await powerSync.execute(
-          `INSERT INTO univ_re_commissions (
-            id, created_at, company_id, agent_name, property_address,
-            sale_price, commission_rate, commission_amount, brokerage_split_rate,
-            agent_payout_amount, status, payment_date, notes
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [
-            newId, now, companyId, formData.agentName, formData.propertyAddress,
-            Number(formData.salePrice) || 0, Number(formData.commissionRate) || 0, grossComm,
-            Number(formData.brokerageSplitRate) || 0, netAgentPayout, formData.status,
-            formData.paymentDate || null, formData.notes || null
-          ]
-        );
-        toast.success('Commission split logged');
-      }
+      await powerSync.execute(
+        `INSERT INTO univ_re_commissions (
+          id, created_at, company_id, agent_name, property_address,
+          sale_price, commission_rate, commission_amount,
+          brokerage_split_rate, agent_payout_amount, status, payment_date, notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          newId, now, companyId, formData.agentName, formData.propertyAddress,
+          Number(formData.salePrice) || 0, Number(formData.commissionRate) || 3.0,
+          gross, Number(formData.brokerageSplitRate) || 70, net,
+          formData.status, formData.paymentDate, formData.notes || null
+        ]
+      );
 
+      toast.success('Commission split recorded');
       setShowForm(false);
       fetchCommissionsData();
     } catch (_err) {
-      toast.error('Failed to save commission record');
+      toast.error('Failed to log commission split');
     }
   };
 
@@ -156,64 +138,79 @@ export default function JCLCommissions() {
       toast.success(`Commission status updated to ${nextStatus}`);
       fetchCommissionsData();
     } catch (_err) {
-      toast.error('Failed to update status');
+      toast.error('Failed to update commission');
     }
   };
 
   return (
-    <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
-      {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <TrendingUp className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Commission Splits & Agent Payouts
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Brokerage commission splits, tiered performance rates, and agent earnings ledger
-              </p>
-            </div>
+    <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans overflow-x-hidden">
+      {/* ── 1. Header (Clean mobile native header, no sub-description, no refresh button) ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+            <TrendingUp className="h-5 w-5" />
           </div>
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground truncate">
+            Commission Splits
+          </h1>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchCommissionsData}
-            className="h-9 px-3 text-xs gap-1.5 border-border"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
+        <Button
+          onClick={() => {
+            setEditingId(null);
+            setFormData({
+              agentName: user?.user_metadata?.full_name || 'Lead Broker', propertyAddress: '',
+              salePrice: 500000, commissionRate: 3.0, commissionAmount: 15000,
+              brokerageSplitRate: 70, agentPayoutAmount: 10500, status: 'pending',
+              paymentDate: format(new Date(), 'yyyy-MM-dd'), notes: ''
+            });
+            setShowForm(true);
+          }}
+          size="sm"
+          className="w-full sm:w-auto h-9 px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm rounded-xl gap-1.5"
+        >
+          <Plus className="h-4 w-4" /> Log Commission
+        </Button>
+      </div>
 
-          <Button
-            onClick={() => {
-              setEditingId(null);
-              setFormData({
-                agentName: user?.user_metadata?.full_name || 'Lead Broker', propertyAddress: '',
-                salePrice: 500000, commissionRate: 3.0, commissionAmount: 15000,
-                brokerageSplitRate: 70, agentPayoutAmount: 10500, status: 'pending',
-                paymentDate: format(new Date(), 'yyyy-MM-dd'), notes: ''
-              });
-              setShowForm(true);
-            }}
-            size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
-          >
-            <Plus className="h-4 w-4" />
-            Log Commission Split
-          </Button>
+      {/* ── 2. Dedicated Mobile 2x2 Stats Grid (< md) & Desktop Row (>= md) ── */}
+      <div className="grid grid-cols-2 md:hidden gap-2.5">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Paid Payouts</span>
+          </div>
+          <p className="text-sm font-black text-[#005A9C] truncate">{formatCurrency(stats.totalEarned, 'USD')}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Disbursed</span>
+        </div>
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <DollarSign className="w-3.5 h-3.5 text-amber-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Pending Payouts</span>
+          </div>
+          <p className="text-sm font-black text-amber-600 truncate">{formatCurrency(stats.totalPending, 'USD')}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">In pipeline</span>
+        </div>
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <Percent className="w-3.5 h-3.5 text-blue-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Avg Deal</span>
+          </div>
+          <p className="text-sm font-black text-foreground truncate">{formatCurrency(stats.avgCommission, 'USD')}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Gross average</span>
+        </div>
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <UserCheck className="w-3.5 h-3.5 text-purple-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Agents</span>
+          </div>
+          <p className="text-sm font-black text-foreground truncate">{stats.agents.length}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">Commission earners</span>
         </div>
       </div>
 
-      {/* ── 2. KPI Hero Row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
+        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm rounded-2xl">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Paid Payouts</p>
@@ -228,7 +225,7 @@ export default function JCLCommissions() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
+        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm rounded-2xl">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pending Payout Pipeline</p>
@@ -243,7 +240,7 @@ export default function JCLCommissions() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
+        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm rounded-2xl">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Avg Deal Commission</p>
@@ -258,7 +255,7 @@ export default function JCLCommissions() {
           </CardContent>
         </Card>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
+        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm rounded-2xl">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Agents</p>
@@ -273,10 +270,10 @@ export default function JCLCommissions() {
       </div>
 
       {/* ── 3. Filters ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-card border border-border/80 p-2.5 sm:p-3 rounded-2xl shadow-xs">
         <div className="flex items-center gap-2">
           <Select value={selectedAgent} onValueChange={setSelectedAgent}>
-            <SelectTrigger className="h-9 text-xs w-[200px] bg-background">
+            <SelectTrigger className="h-9 text-xs w-[180px] sm:w-[200px] bg-background rounded-xl">
               <SelectValue placeholder="Filter by Agent" />
             </SelectTrigger>
             <SelectContent>
@@ -289,12 +286,57 @@ export default function JCLCommissions() {
         </div>
       </div>
 
-      {/* ── 4. Table ── */}
-      <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
+      {/* ── 4. Mobile Cards (< md) ── */}
+      <div className="md:hidden space-y-2.5">
+        {filteredCommissions.length === 0 ? (
+          <div className="p-8 text-center text-xs text-muted-foreground bg-card border border-border rounded-2xl">
+            No commission records found.
+          </div>
+        ) : (
+          filteredCommissions.map(item => {
+            const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+            const gross = item.commission_amount || (item.sale_price * (item.commission_rate || 3)) / 100;
+            const agentNet = item.agent_payout_amount || (gross * (item.brokerage_split_rate || 70)) / 100;
+
+            return (
+              <div key={item.id} className="bg-card border border-border/80 rounded-2xl p-3.5 space-y-2.5 shadow-xs">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-bold text-xs text-foreground truncate">{item.agent_name || 'Agent'}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{item.property_address || 'Property Deal'}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="font-bold font-mono text-sm text-[#005A9C]">{formatCurrency(agentNet, 'USD')}</p>
+                    <p className="text-[9px] text-muted-foreground">Net Payout</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-2 pt-1 border-t border-border/50 text-[10px] text-muted-foreground">
+                  <span>Gross: {formatCurrency(gross, 'USD')} ({item.brokerage_split_rate || 70}% split)</span>
+                  <Button
+                    size="sm"
+                    variant={item.status === 'paid' ? 'outline' : 'default'}
+                    onClick={() => handleStatusToggle(item.id, item.status)}
+                    className={cn(
+                      "text-[10px] h-7 px-2.5 font-bold rounded-lg",
+                      item.status === 'paid' ? "border-[#005A9C]/30 text-emerald-700 dark:text-emerald-400" : "bg-[#005A9C] hover:bg-[#00477D] text-white"
+                    )}
+                  >
+                    {item.status === 'paid' ? 'Paid' : 'Mark Paid'}
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* ── 5. Desktop Table (>= md) ── */}
+      <div className="hidden md:block border border-border rounded-2xl bg-card overflow-hidden shadow-xs w-full max-w-full">
+        <div className="overflow-x-auto w-full">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
+              <tr className="border-b border-border bg-muted/40 text-muted-foreground font-extrabold text-[10px] uppercase">
                 <th className="py-3 px-4">Agent / Broker</th>
                 <th className="py-3 px-4">Property / Deal</th>
                 <th className="py-3 px-4">Sale Price</th>
@@ -339,7 +381,7 @@ export default function JCLCommissions() {
                         {formatCurrency(agentNet, 'USD')}
                       </td>
                       <td className="py-3.5 px-4">
-                        <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1", st.badge)}>
+                        <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1 rounded-lg", st.badge)}>
                           <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
                           {st.label}
                         </Badge>
@@ -350,7 +392,7 @@ export default function JCLCommissions() {
                           variant={item.status === 'paid' ? 'outline' : 'default'}
                           onClick={() => handleStatusToggle(item.id, item.status)}
                           className={cn(
-                            "text-[10px] h-7 px-2 font-bold",
+                            "text-[10px] h-7 px-2.5 font-bold rounded-lg",
                             item.status === 'paid' ? "border-[#005A9C]/30 text-emerald-700 dark:text-emerald-400" : "bg-[#005A9C] hover:bg-[#00477D] text-white"
                           )}
                         >
@@ -368,7 +410,7 @@ export default function JCLCommissions() {
 
       {/* ── Form Sheet ── */}
       <Sheet open={showForm} onOpenChange={setShowForm}>
-        <SheetContent className="sm:max-w-md overflow-y-auto">
+        <SheetContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-[24px] p-4 sm:p-6">
           <SheetHeader className="mb-4">
             <SheetTitle>Log Commission Split</SheetTitle>
             <SheetDescription>Set up agent split percentage and deal commission calculation</SheetDescription>
@@ -380,7 +422,7 @@ export default function JCLCommissions() {
                 value={formData.agentName}
                 onChange={e => setFormData({ ...formData, agentName: e.target.value })}
                 placeholder="Agent full name"
-                className="h-9 text-xs mt-1"
+                className="h-9 text-xs mt-1 rounded-xl"
                 required
               />
             </div>
@@ -390,7 +432,7 @@ export default function JCLCommissions() {
                 value={formData.propertyAddress}
                 onChange={e => setFormData({ ...formData, propertyAddress: e.target.value })}
                 placeholder="Property address"
-                className="h-9 text-xs mt-1"
+                className="h-9 text-xs mt-1 rounded-xl"
                 required
               />
             </div>
@@ -401,7 +443,7 @@ export default function JCLCommissions() {
                   type="number"
                   value={formData.salePrice}
                   onChange={e => setFormData({ ...formData, salePrice: e.target.value })}
-                  className="h-9 text-xs mt-1"
+                  className="h-9 text-xs mt-1 rounded-xl"
                   required
                 />
               </div>
@@ -412,7 +454,7 @@ export default function JCLCommissions() {
                   step="0.1"
                   value={formData.commissionRate}
                   onChange={e => setFormData({ ...formData, commissionRate: e.target.value })}
-                  className="h-9 text-xs mt-1"
+                  className="h-9 text-xs mt-1 rounded-xl"
                   required
                 />
               </div>
@@ -424,11 +466,11 @@ export default function JCLCommissions() {
                 value={formData.brokerageSplitRate}
                 onChange={e => setFormData({ ...formData, brokerageSplitRate: e.target.value })}
                 placeholder="70"
-                className="h-9 text-xs mt-1"
+                className="h-9 text-xs mt-1 rounded-xl"
                 required
               />
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2 rounded-xl">
               Log Commission
             </Button>
           </form>

@@ -119,9 +119,9 @@ const TAB_COLORS = {
 // ── Reusable table shell ───────────────────────────────────────
 function TableShell({ headers, children }) {
   return (
-    <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs border-collapse">
+    <div className="border border-border rounded-2xl bg-card overflow-hidden shadow-xs w-full max-w-full">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full text-left text-xs border-collapse min-w-[500px]">
           <thead>
             <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
               {headers.map((h, i) => (
@@ -624,54 +624,71 @@ export default function FirmAccountingHub() {
   }
 
   return (
-    <div className="w-full min-w-0 p-3 sm:p-5 lg:p-6 pb-28 space-y-6 font-sans">
+    <div className="w-full min-w-0 p-2 sm:p-4 md:p-6 pb-28 space-y-4 sm:space-y-6 font-sans overflow-x-hidden">
 
-      {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary to-primary/70 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+      {/* ── 1. Header (Clean mobile native header, no sub-description, no refresh button) ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
             <Building2 className="h-5 w-5" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Firm Accounting</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              JCL Real Estate corporate accounting — income, expenses, payroll, TONEFO installments & reports
-            </p>
-          </div>
+          <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground truncate">
+            Firm Accounting
+          </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadData} className="h-9 px-3 text-xs gap-1.5 border-border">
-            <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} /> Refresh
-          </Button>
-          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="h-9 px-4 text-xs font-semibold bg-primary hover:bg-primary/90 text-white shadow-md shadow-indigo-600/20 gap-1.5">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="w-full sm:w-auto h-9 px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm rounded-xl gap-1.5">
             <Plus className="h-4 w-4" /> New Invoice
           </Button>
         </div>
       </div>
 
-      {/* ── 2. KPI Row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── 2. Dedicated Mobile 2x2 Stats Grid (< md) & Desktop Row (>= md) ── */}
+      <div className="grid grid-cols-2 md:hidden gap-2.5">
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Total AR</span>
+          </div>
+          <p className="text-sm font-black text-emerald-600 truncate">{fmt(totalAR)}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">{invoices.length} invoices</span>
+        </div>
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <Receipt className="w-3.5 h-3.5 text-rose-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Total AP</span>
+          </div>
+          <p className="text-sm font-black text-rose-600 truncate">{fmt(totalAP)}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">{bills.length} bills</span>
+        </div>
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <LineChart className="w-3.5 h-3.5 text-[#005A9C]" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Net Income</span>
+          </div>
+          <p className={cn("text-sm font-black truncate", netIncome >= 0 ? "text-[#005A9C]" : "text-rose-600")}>{fmt(netIncome)}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">AR minus AP</span>
+        </div>
+        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+            <ShoppingBag className="w-3.5 h-3.5 text-orange-500" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">TONEFO</span>
+          </div>
+          <p className="text-sm font-black text-orange-600 truncate">{fmt(totalOutstanding)}</p>
+          <span className="text-[9px] text-muted-foreground font-semibold">{tonefoCases.length} clients</span>
+        </div>
+      </div>
+
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
         <KpiCard label="Total AR (Invoices)" value={fmt(totalAR)} sub={`${invoices.length} invoices`} icon={DollarSign} color="emerald" />
         <KpiCard label="Total AP (Bills)" value={fmt(totalAP)} sub={`${bills.length} vendor bills`} icon={Receipt} color="rose" />
         <KpiCard label="Net Operating Income" value={fmt(netIncome)} sub="Invoices minus Bills" icon={LineChart} color={netIncome >= 0 ? 'indigo' : 'rose'} />
         <KpiCard label="TONEFO Outstanding" value={fmt(totalOutstanding)} sub={`${tonefoCases.length} customers`} icon={ShoppingBag} color="orange" />
       </div>
 
-      {/* ── 3. Tab Navigation ── */}
-      <nav aria-label="Finance sections" className={cn('w-full rounded-2xl border border-border/60 bg-card/90 p-2 shadow-sm transition-all', financeNavCollapsed && 'md:w-fit')}>
-        <div className="flex items-center justify-between gap-2 border-b border-border/60 px-1 pb-2 mb-2">
-          {!financeNavCollapsed && <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Finance sections</span>}
-          <button
-            type="button"
-            onClick={() => setFinanceNavCollapsed(prev => !prev)}
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
-            aria-label={financeNavCollapsed ? 'Expand Finance navigation' : 'Collapse Finance navigation'}
-            title={financeNavCollapsed ? 'Expand Finance navigation' : 'Collapse Finance navigation'}
-          >
-            {financeNavCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-          </button>
-        </div>
-        <div className={cn('flex flex-wrap gap-2', financeNavCollapsed && 'md:flex-col')}>
+      {/* ── 3. Horizontally Scrollable Sub-pages Pill Bar ── */}
+      <div className="w-full overflow-x-auto scrollbar-none pb-1 -mx-1 px-1">
+        <div className="flex items-center gap-1.5 min-w-max bg-card/90 border border-border/80 p-1.5 rounded-2xl shadow-xs">
           {TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -680,22 +697,19 @@ export default function FirmAccountingHub() {
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
                 className={cn(
-                  'inline-flex min-h-10 items-center gap-2 rounded-xl px-3.5 py-2.5 text-left text-[11px] font-semibold transition-all',
-                  financeNavCollapsed && 'md:w-10 md:justify-center md:px-0',
+                  'inline-flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all',
                   isActive
-                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    ? 'bg-[#005A9C] text-white shadow-sm'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
-                title={financeNavCollapsed ? tab.label : undefined}
-                aria-label={financeNavCollapsed ? tab.label : undefined}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" />
-                {!financeNavCollapsed && tab.label}
+                <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
-      </nav>
+      </div>
 
       {/* ══════════════════════════════════════════════════════ */}
       {/* TAB: CHART OF ACCOUNTS                                */}
