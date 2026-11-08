@@ -326,7 +326,7 @@ export default function Employees() {
           </button>
         </div>
         <ExportButton
-          data={filteredEmployees.map(e => ({
+          data={filtered.map(e => ({
             name: e.name,
             position: e.position,
             department: departments.find(d => d.id === e.departmentId)?.name || 'General',
