@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, GripVertical, CheckCircle, Loader2, Sparkles,
   User, Tag, Calendar, TrendingUp, AlertTriangle, X, ChevronRight,
-  MoreHorizontal, Zap
+  MoreHorizontal, Zap, LayoutGrid, List
 } from "lucide-react";
 import { generateText } from "@/lib/cloudflareAI";
 
@@ -223,6 +223,7 @@ export default function UniversalPipelineKanban({ pipeline, pipelineStates, comp
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [addingToStage, setAddingToStage] = useState(null);
+  const [viewMode, setViewMode] = useState("board"); // "board" | "list"
   const { user } = useAuth();
 
   const stages = React.useMemo(() => {

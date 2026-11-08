@@ -57,10 +57,10 @@ function DocumentCard({ doc, onClick, isSelected }) {
   return (
     <div
       onClick={() => onClick(doc)}
-      className={`group cursor-pointer rounded-2xl border p-4 hover:shadow-lg transition-all duration-200 ${isSelected ? "border-violet-400 bg-violet-50/60 dark:bg-violet-900/20 shadow-lg scale-[1.01]" : "border-border bg-card hover:-translate-y-0.5"}`}
+      className={`group cursor-pointer rounded-[20px] border border-border/80 p-3.5 sm:p-4 shadow-xs hover:border-emerald-500/40 active:scale-[0.99] transition-all ${isSelected ? "border-violet-400 bg-violet-50/60 dark:bg-violet-900/20 shadow-lg scale-[1.01]" : "border-border bg-card hover:-translate-y-0.5"}`}
     >
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
           <DocIcon type={doc.file_type} />
         </div>
         <div className="flex-1 min-w-0">
@@ -378,36 +378,45 @@ export default function SmartDocs() {
 
   return (
     <div className="space-y-6 p-6 pt-0">
-      {/* Hero Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-teal-700 p-6 md:p-8 text-white">
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="absolute -top-8 -right-8 w-48 h-48 bg-white/10 rounded-full" />
-        <div className="absolute -bottom-12 -right-20 w-64 h-64 bg-white/5 rounded-full" />
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Smart Docs</h1>
-                <p className="text-emerald-200 text-sm">Business Knowledge Graph Â· AI-powered document intelligence</p>
-              </div>
+      {/* Native Mobile Header & Stats */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+              <Brain className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <div className="flex gap-6 mt-3 text-sm">
-              <span className="flex items-center gap-1.5"><FileText className="w-4 h-4 text-emerald-300" /><strong>{docs.length}</strong> Documents</span>
-              <span className="flex items-center gap-1.5"><Folder className="w-4 h-4 text-emerald-300" /><strong>{folders.length}</strong> Folders</span>
-              <span className="flex items-center gap-1.5"><Network className="w-4 h-4 text-emerald-300" /><strong>{links.length}</strong> Connections</span>
-              {expiringSoon.length > 0 && <span className="flex items-center gap-1.5 text-amber-300"><AlertTriangle className="w-4 h-4" /><strong>{expiringSoon.length}</strong> Expiring soon</span>}
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">Smart Docs</h1>
+              <p className="text-xs text-muted-foreground font-medium">{filteredDocs.length} documents indexed</p>
             </div>
           </div>
-          <div className="flex gap-2 flex-wrap">
-            <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 gap-2" onClick={() => setShowFolderForm(true)}>
-              <Folder className="w-4 h-4" />New Folder
+
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" className="h-9 px-3 text-xs font-bold border-border rounded-xl" onClick={() => setShowFolderForm(true)}>
+              <Folder className="w-3.5 h-3.5 mr-1" /><span className="hidden sm:inline">New Folder</span><span className="sm:hidden">Folder</span>
             </Button>
-            <Button size="sm" className="bg-white text-emerald-700 hover:bg-white/90 gap-2" onClick={() => setShowUploadForm(true)}>
-              <Plus className="w-4 h-4" />Add Document
+            <Button size="sm" className="h-9 px-3.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1.5" onClick={() => setShowUploadForm(true)}>
+              <Plus className="w-4 h-4" /><span className="hidden sm:inline">Add Document</span><span className="sm:hidden">Upload</span>
             </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Total Docs</span>
+            <span className="text-xl sm:text-2xl font-black text-foreground">{docs.length}</span>
+          </div>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Folders</span>
+            <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{folders.length}</span>
+          </div>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Knowledge Links</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{links.length}</span>
+          </div>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Expiring Soon</span>
+            <span className={cn("text-xl sm:text-2xl font-black", expiringSoon.length > 0 ? "text-amber-500" : "text-muted-foreground")}>{expiringSoon.length}</span>
           </div>
         </div>
       </div>
@@ -426,7 +435,7 @@ export default function SmartDocs() {
         </div>
       )}
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-5">
         {/* LEFT: Folder Tree + Doc Grid */}
         <div className="flex-1 min-w-0 space-y-4">
           {/* Filters */}

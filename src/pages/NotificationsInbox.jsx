@@ -148,52 +148,32 @@ export default function NotificationsInbox() {
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10 max-w-5xl mx-auto w-full">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white flex items-center gap-3 tracking-[-0.02em]">
-              <Bell className="w-8 h-8 text-primary" />
-              Inbox
-              {unreadCount > 0 && (
-                <Badge variant="destructive" className="ml-2 text-sm px-2">
-                  {unreadCount} Unread
-                </Badge>
-              )}
-            </h1>
-            <p className="text-[#71717a] dark:text-gray-400 mt-1">
-              Manage your alerts, mentions, and system updates.
-            </p>
-          </div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div className="flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+              <Bell className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Inbox</h1>
+                {unreadCount > 0 && (
+                  <Badge variant="destructive" className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full">
+                    {unreadCount} Unread
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground font-medium">Activity updates & team alerts</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             {unreadCount > 0 && (
-              <Button onClick={handleAiTriage} disabled={isGeneratingBriefing} variant="outline" className="gap-2 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-500/30">
-                {isGeneratingBriefing ? <Sparkles className="w-4 h-4 animate-pulse" /> : <BrainCircuit className="w-4 h-4" />}
-                {isGeneratingBriefing ? "Triaging..." : "AI Triage"}
+              <Button size="sm" variant="outline" onClick={markAllAsRead} className="h-9 px-3 text-xs font-bold gap-1.5 border-border rounded-xl">
+                <CheckSquare className="w-3.5 h-3.5 text-primary" /> <span className="hidden sm:inline">Mark All Read</span><span className="sm:hidden">Read All</span>
               </Button>
             )}
-            {unreadCount > 0 && (
-              <Button variant="outline" onClick={markAllAsRead} className="gap-2 text-primary border-primary/20 bg-primary/5 hover:bg-primary/10">
-                <CheckSquare className="w-4 h-4" /> Mark All Read
-              </Button>
-            )}
-            <Button 
-              variant="outline" 
-              onClick={async () => {
-                const { NotificationService } = await import('@/services/NotificationService');
-                await NotificationService.emit({
-                  companyId: user?.company_id,
-                  recipientEmail: user?.email,
-                  title: 'Test Novu Alert',
-                  message: 'This is a test notification to verify your Novu email pipeline is working!',
-                  type: 'other'
-                });
-                toast({ title: 'Test alert dispatched' });
-              }} 
-              className="gap-2 bg-primary text-white hover:bg-primary/90"
-            >
-              <Bell className="w-4 h-4" /> Send Test Ping
-            </Button>
-            <Button variant="outline" onClick={clearAll} className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50">
-              <Trash2 className="w-4 h-4" /> Clear Inbox
+            <Button size="sm" variant="outline" onClick={clearAll} className="h-9 px-3 text-xs font-bold gap-1.5 text-rose-600 border-border rounded-xl hover:bg-rose-50">
+              <Trash2 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Clear Inbox</span><span className="sm:hidden">Clear</span>
             </Button>
           </div>
         </div>
@@ -211,29 +191,29 @@ export default function NotificationsInbox() {
           )}
         </AnimatePresence>
 
-        {/* Toolbar */}
-        <div className="bg-card border-[0.5px] border-black/9 dark:border-white/8 border-[0.5px] border-black/9 dark:border-white/8 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm mb-6 flex flex-col sm:flex-row items-center justify-between p-2 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
-          <div className="flex w-full sm:w-auto p-1 bg-muted/50 rounded-xl">
+        {/* Toolbar & Filter Bar */}
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-2 sm:p-2.5 shadow-xs mb-4 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="flex w-full sm:w-auto p-1 bg-muted/60 rounded-xl border border-border/60">
             <button 
               onClick={() => setActiveTab('all')}
-              className={cn("flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-lg transition-all", activeTab === 'all' ? "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground" : "text-[#71717a] dark:text-gray-400 hover:text-foreground")}
+              className={cn("flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-lg transition-all", activeTab === 'all' ? "bg-card shadow-xs text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
-              All Notifications
+              All ({notifications.length})
             </button>
             <button 
               onClick={() => setActiveTab('unread')}
-              className={cn("flex-1 sm:flex-none px-6 py-2 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2", activeTab === 'unread' ? "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm text-foreground" : "text-[#71717a] dark:text-gray-400 hover:text-foreground")}
+              className={cn("flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5", activeTab === 'unread' ? "bg-card shadow-xs text-foreground" : "text-muted-foreground hover:text-foreground")}
             >
-              Unread
+              Unread {unreadCount > 0 && <span className="text-[10px] bg-rose-500 text-white rounded-full px-1.5 py-0.2 font-black">{unreadCount}</span>}
             </button>
           </div>
-          <div className="w-full sm:w-72 mt-2 sm:mt-0 p-1 relative flex items-center">
-            <Search className="w-4 h-4 absolute left-3.5 text-muted-foreground z-10" />
+          <div className="w-full sm:w-72 relative flex items-center">
+            <Search className="w-4 h-4 absolute left-3.5 text-muted-foreground" />
             <Input 
               placeholder="Search notifications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-background border-[0.5px] border-black/9 dark:border-white/8 h-10 w-full"
+              className="pl-9 bg-background border-border/80 h-9.5 text-xs rounded-xl w-full"
             />
           </div>
         </div>
@@ -277,12 +257,12 @@ export default function NotificationsInbox() {
                       }
                     }}
                     className={cn(
-                      "group flex gap-4 p-5 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 transition-all cursor-pointer",
+                      "group flex gap-3 p-3.5 sm:p-4 rounded-[20px] border border-border/80 transition-all cursor-pointer active:scale-[0.99]",
                       isRead ? "bg-card border-[0.5px] border-black/9 dark:border-white/8 hover:border-primary/30 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm" : "bg-primary/5 border-primary/20 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-primary/10 hover:bg-primary/10"
                     )}
                   >
                     <div className="shrink-0">
-                      <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", isRead ? "bg-muted" : "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm")}>
+                      <div className={cn("w-10 h-10 sm:w-11 sm:h-11 rounded-2xl flex items-center justify-center", isRead ? "bg-muted" : "bg-background shadow-[0_1px_3px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]-sm")}>
                         {getIcon(notification.type)}
                       </div>
                     </div>

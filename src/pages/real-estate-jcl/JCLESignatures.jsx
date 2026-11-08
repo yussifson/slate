@@ -295,17 +295,12 @@ export default function JCLESignatures() {
               </Badge>
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5 font-medium">
-              Legal document execution pipeline, multi-party signers, SHA-256 audit hashing & tamper-proof certificates
+              Legal document execution pipeline & audit certificates
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <Button variant="outline" size="sm" onClick={fetchData} className="h-9 px-3.5 text-xs font-semibold gap-1.5 border-border/80 rounded-xl shadow-xs">
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
-
           <Button
             onClick={() => {
               setFormData({ documentTitle: '', signerName: '', signerEmail: '', signerRole: 'Buyer', expirationDate: '', requireInitials: true });

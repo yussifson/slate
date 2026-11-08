@@ -476,7 +476,7 @@ export default function Tasks() {
         }
       />
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { label: "Total", value: stats.total, icon: Clock, bg: "bg-gradient-to-br from-emerald-500 to-emerald-600", text: "text-white", border: "border-emerald-500/20" },
           { label: "Pending", value: stats.pending, icon: AlertCircle, bg: "bg-white dark:bg-[#2C2C2E]", text: "text-emerald-700 dark:text-emerald-400", border: "border-emerald-500/20", iconBg: "bg-emerald-50 dark:bg-emerald-500/10" },
@@ -484,17 +484,17 @@ export default function Tasks() {
           { label: "Completed", value: stats.completed, icon: CheckCircle2, bg: "bg-white dark:bg-[#2C2C2E]", text: "text-emerald-700 dark:text-emerald-400", border: "border-emerald-500/20", iconBg: "bg-emerald-50 dark:bg-emerald-500/10" },
         ].map(({ label, value, icon: Icon, bg, text, border, iconBg }) => {
           return (
-            <div key={label} className={`rounded-2xl border ${border} ${bg} p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group`}>
+            <div key={label} className={`rounded-2xl border ${border} ${bg} p-3.5 sm:p-4 rounded-[20px] flex flex-col gap-2.5 sm:gap-3 shadow-xs hover:shadow-sm transition-all relative overflow-hidden group`}>
               <div className="flex items-center justify-between z-10">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg || 'bg-white/20 text-white'}`}>
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${iconBg || 'bg-white/20 text-white'}`}>
                   <Icon className={`w-5 h-5 ${iconBg ? 'text-emerald-600 dark:text-emerald-400' : 'text-white'}`} />
                 </div>
-                <p className={`text-3xl font-bold tracking-tight ${bg.includes('emerald-500') ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
+                <p className={`text-xl sm:text-2xl font-black tracking-tight ${bg.includes('emerald-500') ? 'text-white' : 'text-slate-900 dark:text-white'}`}>
                   {value}
                 </p>
               </div>
               <div className="z-10 mt-auto">
-                <p className={`text-sm font-semibold tracking-wide uppercase ${bg.includes('emerald-500') ? 'text-emerald-50' : 'text-slate-500 dark:text-muted-foreground'}`}>
+                <p className={`text-[10px] sm:text-xs font-bold tracking-wider uppercase ${bg.includes('emerald-500') ? 'text-emerald-50' : 'text-slate-500 dark:text-muted-foreground'}`}>
                   {label} Tasks
                 </p>
               </div>
@@ -506,27 +506,33 @@ export default function Tasks() {
       </div>
 
       {/* View Toggle + Filters */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <div className="flex items-center bg-muted border border-border rounded-lg p-1 gap-1">
-          <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'list' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><List className="w-4 h-4"/>List</button>
-          <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'board' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><BarChart2 className="w-4 h-4"/>Board</button>
-          <button onClick={() => setActiveView('gantt')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors', activeView === 'gantt' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground')}><GanttChartSquare className="w-4 h-4"/>Timeline</button>
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 sm:items-center justify-between bg-card/90 backdrop-blur-xl p-2.5 sm:p-3.5 rounded-[20px] border border-border/80 shadow-xs">
+        <div className="flex flex-wrap items-center gap-2 flex-1">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input className="pl-9 h-10 rounded-xl bg-background text-xs border-border/80" placeholder="Search tasks or assignees..." value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-40 h-10 rounded-xl text-xs font-semibold bg-background border-border/80"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="text-xs">{t("all_statuses", "All Statuses")}</SelectItem>
+              <SelectItem value="pending" className="text-xs">{t("pending", "Pending")}</SelectItem>
+              <SelectItem value="in_progress" className="text-xs">{t("in_progress", "In Progress")}</SelectItem>
+              <SelectItem value="completed" className="text-xs">{t("completed", "Completed")}</SelectItem>
+              <SelectItem value="cancelled" className="text-xs">{t("cancelled", "Cancelled")}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#71717a] dark:text-gray-400" />
-          <Input className="pl-9" placeholder="Search tasks..." value={search} onChange={e => setSearch(e.target.value)} />
+
+        <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto shrink-0">
+          <div className="flex items-center bg-muted/60 p-1 rounded-xl border border-border/60 shrink-0">
+            <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all', activeView === 'list' ? 'bg-card text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground')}><List className="w-3.5 h-3.5"/>List</button>
+            <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all', activeView === 'board' ? 'bg-card text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground')}><BarChart2 className="w-3.5 h-3.5"/>Board</button>
+            <button onClick={() => setActiveView('gantt')} className={cn('flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all', activeView === 'gantt' ? 'bg-card text-foreground shadow-xs' : 'text-muted-foreground hover:text-foreground')}><GanttChartSquare className="w-3.5 h-3.5"/>Timeline</button>
+          </div>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{t("all_statuses", "All Statuses")}</SelectItem>
-            <SelectItem value="pending">{t("pending", "Pending")}</SelectItem>
-            <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
-            <SelectItem value="completed">{t("completed", "Completed")}</SelectItem>
-            <SelectItem value="cancelled">{t("cancelled", "Cancelled")}</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
+
       {activeView === 'gantt' ? (
         <GanttView tasks={filtered} />
       ) : (

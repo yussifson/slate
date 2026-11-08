@@ -827,111 +827,180 @@ function TimeEntriesTable({ entries, isLoading, onAiInsights, onEdit, onDelete, 
     }
     if (entries.length === 0) {
         return (
-            <div className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center shadow-sm">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-                <Clock className="w-8 h-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-lg font-semibold text-foreground">No time entries yet</h3>
-            <p className="text-muted-foreground mt-1 max-w-sm">Track your first activity using the timer above, or log historical time manually.</p>
+            <div className="bg-card border border-dashed border-border rounded-[22px] p-10 text-center flex flex-col items-center shadow-xs">
+              <div className="w-14 h-14 bg-muted/60 rounded-2xl flex items-center justify-center mb-3">
+                  <Clock className="w-7 h-7 text-muted-foreground" />
+              </div>
+              <h3 className="text-sm font-extrabold text-foreground">No time entries recorded</h3>
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm">Use the timer above or log historical hours to populate your timesheet.</p>
             </div>
         );
     }
     return (
-        <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left text-foreground">
-            <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] tracking-widest font-semibold border-b border-border">
-                <tr>
-                <th className="px-6 py-4">Activity</th>
-                <th className="px-6 py-4">Project / Tags</th>
-                <th className="px-6 py-4">Billing</th>
-                <th className="px-6 py-4 text-right">Duration</th>
-                <th className="px-6 py-4 text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody className="divide-y divide-border bg-card">
-                {entries.map(entry => (
-                <tr key={entry.id} className="hover:bg-muted/30 transition-colors group">
-                    <td className="px-6 py-4">
-                        <div className="flex flex-col gap-1 max-w-[300px]">
-                            <span className="font-medium text-foreground truncate">{entry.description || '(No description)'}</span>
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Calendar className="w-3 h-3" /> {entry.date}
-                            </div>
-                            {entry.ai_summary && (
-                                <p className="text-xs text-primary/80 bg-primary/5 p-1.5 rounded mt-1 border border-primary/10 leading-snug">
-                                    ✨ {entry.ai_summary}
-                                </p>
-                            )}
-                        </div>
-                    </td>
-                    <td className="px-6 py-4">
-                        <div className="flex flex-col gap-2 items-start">
-                            {entry.project_id && (
-                                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-md border border-blue-200 dark:border-blue-800/50">
-                                    <Tag className="w-3 h-3" /> {entry.project_id}
-                                </span>
-                            )}
-                            {entry.ai_tags && (
-                                <div className="flex flex-wrap gap-1 mt-1">
-                                {entry.ai_tags.split(',').map(tag => (
-                                    <span key={tag} className="px-1.5 py-0.5 bg-secondary text-secondary-foreground text-[10px] rounded-sm font-medium">
-                                    {tag.trim()}
-                                    </span>
-                                ))}
-                                </div>
-                            )}
-                        </div>
-                    </td>
-                    <td className="px-6 py-4">
-                    {entry.is_billable === 1 ? (
-                        <div className="flex flex-col">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold w-fit border border-green-200 dark:border-green-800/50">
-                            <DollarSign className="w-3 h-3" /> Billable
-                        </span>
-                        <span className="text-xs text-muted-foreground mt-1.5 font-medium">${entry.hourly_rate}/hr &rarr; <span className="text-foreground">${entry.total_amount?.toFixed(2)}</span></span>
-                        </div>
-                    ) : (
-                        <span className="inline-flex items-center px-2 py-1 rounded-md bg-muted text-muted-foreground text-xs font-medium">
-                        Non-billable
-                        </span>
+        <div className="space-y-3">
+          {/* Mobile Native List Cards (< md) */}
+          <div className="md:hidden space-y-2.5">
+            {entries.map(entry => (
+              <div
+                key={entry.id}
+                onClick={() => onEdit(entry)}
+                className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-transform space-y-2.5 cursor-pointer"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-foreground text-sm leading-snug line-clamp-2">{entry.description || '(No description)'}</p>
+                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">
+                      <Calendar className="w-3 h-3 shrink-0" />
+                      <span>{entry.date}</span>
+                      {entry.user_name && <span>· {entry.user_name}</span>}
+                    </div>
+                  </div>
+                  <span className="font-mono font-black text-sm text-foreground bg-muted/60 px-2.5 py-1 rounded-xl shrink-0">
+                    {formatDuration(entry.duration_minutes)}
+                  </span>
+                </div>
+
+                {entry.ai_summary && (
+                  <p className="text-[11px] text-primary bg-primary/5 p-2 rounded-xl border border-primary/10 leading-snug">
+                    ✨ {entry.ai_summary}
+                  </p>
+                )}
+
+                <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    {entry.project_id && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-lg">
+                        <Tag className="w-3 h-3" /> {entry.project_id}
+                      </span>
                     )}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                        <span className="font-mono font-bold text-base text-foreground bg-muted/50 px-2 py-1 rounded">
-                            {formatDuration(entry.duration_minutes)}
-                        </span>
-                        <div className="mt-1 text-xs font-medium text-muted-foreground">
-                            {entry.status || 'Logged'}
-                        </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {!entry.ai_summary && (
-                                <Button 
-                                    onClick={() => onAiInsights(entry)}
-                                    variant="ghost" 
-                                    size="icon" 
-                                    disabled={isAiProcessing}
-                                    className="h-8 w-8 text-primary hover:bg-primary/10"
-                                    title="Generate AI Insights"
-                                >
-                                    <Brain className="w-4 h-4" />
-                                </Button>
-                            )}
-                            <Button onClick={() => onEdit(entry)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-                                <Edit3 className="w-4 h-4" />
-                            </Button>
-                            <Button onClick={() => onDelete(entry.id)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                                <Trash2 className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </td>
+                    {entry.is_billable === 1 ? (
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-lg flex items-center gap-0.5">
+                        <DollarSign className="w-3 h-3" /> ${entry.total_amount?.toFixed(2) || '0.00'}
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-lg">Non-billable</span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                    {!entry.ai_summary && (
+                      <Button
+                        onClick={() => onAiInsights(entry)}
+                        variant="ghost"
+                        size="icon"
+                        disabled={isAiProcessing}
+                        className="h-7 w-7 text-primary hover:bg-primary/10 rounded-lg"
+                      >
+                        <Brain className="w-3.5 h-3.5" />
+                      </Button>
+                    )}
+                    <Button onClick={() => onEdit(entry)} variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-lg">
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button onClick={() => onDelete(entry.id)} variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive rounded-lg">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop High-Density Table (>= md) */}
+          <div className="hidden md:block bg-card border border-border/80 rounded-[22px] shadow-xs overflow-hidden">
+            <table className="w-full text-xs text-left text-foreground">
+              <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] tracking-wider font-extrabold border-b border-border/80">
+                <tr>
+                  <th className="px-5 py-3.5">Activity</th>
+                  <th className="px-4 py-3.5">Project / Tags</th>
+                  <th className="px-4 py-3.5">Billing</th>
+                  <th className="px-4 py-3.5 text-right">Duration</th>
+                  <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
+              </thead>
+              <tbody className="divide-y divide-border/60">
+                {entries.map(entry => (
+                  <tr key={entry.id} className="hover:bg-muted/30 transition-colors group">
+                    <td className="px-5 py-3.5">
+                      <div className="flex flex-col gap-1 max-w-[300px]">
+                        <span className="font-bold text-foreground text-sm truncate">{entry.description || '(No description)'}</span>
+                        <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                          <Calendar className="w-3 h-3" /> {entry.date}
+                        </div>
+                        {entry.ai_summary && (
+                          <p className="text-[11px] text-primary/80 bg-primary/5 p-1.5 rounded-lg border border-primary/10 leading-snug">
+                            ✨ {entry.ai_summary}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <div className="flex flex-col gap-1 items-start">
+                        {entry.project_id && (
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-md">
+                            <Tag className="w-3 h-3" /> {entry.project_id}
+                          </span>
+                        )}
+                        {entry.ai_tags && (
+                          <div className="flex flex-wrap gap-1 mt-0.5">
+                            {entry.ai_tags.split(',').map(tag => (
+                              <span key={tag} className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] rounded font-medium">
+                                {tag.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      {entry.is_billable === 1 ? (
+                        <div className="flex flex-col">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold w-fit border border-emerald-500/20">
+                            <DollarSign className="w-3 h-3" /> Billable
+                          </span>
+                          <span className="text-[11px] text-muted-foreground mt-1 font-medium">${entry.hourly_rate}/hr &rarr; <span className="font-bold text-foreground">${entry.total_amount?.toFixed(2)}</span></span>
+                        </div>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-muted text-muted-foreground text-xs font-medium">
+                          Non-billable
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3.5 text-right">
+                      <span className="font-mono font-black text-sm text-foreground bg-muted/60 px-2 py-1 rounded-lg">
+                        {formatDuration(entry.duration_minutes)}
+                      </span>
+                      <div className="mt-1 text-[11px] font-medium text-muted-foreground">
+                        {entry.status || 'Logged'}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {!entry.ai_summary && (
+                          <Button 
+                            onClick={() => onAiInsights(entry)}
+                            variant="ghost" 
+                            size="icon" 
+                            disabled={isAiProcessing}
+                            className="h-8 w-8 text-primary hover:bg-primary/10 rounded-lg"
+                            title="Generate AI Insights"
+                          >
+                            <Brain className="w-4 h-4" />
+                          </Button>
+                        )}
+                        <Button onClick={() => onEdit(entry)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-lg">
+                          <Edit3 className="w-4 h-4" />
+                        </Button>
+                        <Button onClick={() => onDelete(entry.id)} variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive rounded-lg">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
-            </tbody>
+              </tbody>
             </table>
-        </div>
+          </div>
         </div>
     );
 }
