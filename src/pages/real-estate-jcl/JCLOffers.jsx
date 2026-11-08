@@ -257,48 +257,69 @@ export default function JCLOffers() {
 
   return (
     <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
-      {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <DollarSign className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Purchase Offers & Negotiations
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Purchase bids, earnest deposits, counter-offers, and buyer contingency tracking
-              </p>
-            </div>
+      {/* ── 1. Clean Top Header ── */}
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          Offers
+        </h1>
+
+        <Button
+          onClick={handleOpenCreate}
+          size="sm"
+          className="h-9 px-3.5 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 rounded-xl gap-1.5 active:scale-95 transition-all"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Create Offer</span>
+        </Button>
+      </div>
+
+      {/* ── 2. Dedicated Mobile Stats Layout (< md) ── */}
+      <div className="grid grid-cols-2 gap-2.5 md:hidden">
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <AlertCircle className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Active</span>
+            <span className="text-lg font-black text-foreground">{stats.pending}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchOffersData}
-            className="h-9 px-3 text-xs gap-1.5 border-border"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Accepted</span>
+            <span className="text-lg font-black text-[#005A9C] dark:text-[#FF6B00]">{stats.accepted}</span>
+          </div>
+        </div>
 
-          <Button
-            onClick={handleOpenCreate}
-            size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
-          >
-            <Plus className="h-4 w-4" />
-            Create Offer
-          </Button>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <DollarSign className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Volume</span>
+            <span className="text-base font-black text-foreground truncate block">
+              {stats.totalOfferedValue >= 1000000 ? '$' + (stats.totalOfferedValue / 1000000).toFixed(1) + 'M' : formatCurrency(stats.totalOfferedValue, 'USD')}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <Building2 className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Total</span>
+            <span className="text-lg font-black text-foreground">{stats.total}</span>
+          </div>
         </div>
       </div>
 
-      {/* ── 2. KPI Hero Row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── 2. Desktop KPI Hero Row (>= md) ── */}
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
         <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
@@ -499,10 +520,70 @@ export default function JCLOffers() {
           })}
         </div>
       ) : (
-        /* List View */
-        <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
+        <div className="space-y-3">
+          {/* Mobile Native Card View (< md) */}
+          <div className="md:hidden space-y-2.5">
+            {filteredOffers.map(offer => {
+              const st = STATUS_CONFIG[offer.status] || STATUS_CONFIG.pending;
+              return (
+                <div
+                  key={offer.id}
+                  onClick={() => setInspectorOffer(offer)}
+                  className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-transform space-y-2.5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-foreground text-sm truncate leading-snug">
+                        {offer.property_address}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        Buyer: <strong className="text-foreground">{offer.buyer_name}</strong>
+                      </p>
+                    </div>
+                    <Badge variant="outline" className={cn("text-[10px] font-bold border gap-1 shrink-0 py-0.5 px-2", st.badge)}>
+                      {st.label}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                    <span className="font-extrabold text-[#005A9C] dark:text-[#FF6B00] text-sm font-mono">
+                      {formatCurrency(offer.offer_amount, 'USD')}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-mono">
+                      Dep: {formatCurrency(offer.earnest_money, 'USD')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-border/50 text-[11px] text-muted-foreground">
+                    <span>Expires: <strong className="text-foreground font-mono">{offer.expiration_date || 'N/A'}</strong></span>
+                    <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs font-semibold"
+                        onClick={() => handleOpenEdit(offer)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-rose-500 hover:text-rose-600"
+                        onClick={() => setDeleteTarget(offer)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop High-Density Table View (>= md) */}
+          <div className="hidden md:block border border-border rounded-xl bg-card overflow-hidden shadow-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
                   <th className="py-3 px-4">Property Address</th>
@@ -575,6 +656,7 @@ export default function JCLOffers() {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
       )}
 

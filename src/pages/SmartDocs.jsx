@@ -8,13 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import {
-  FolderOpen, FileText, Search, Plus, Link2, Brain, Tag,
+  FolderOpen, FileText, Lock, Globe, Search, Plus, Link2, Brain, Tag,
   Calendar, AlertTriangle, CheckCircle2, Eye, Download,
   Folder, File, Layers, Network, Clock, Shield, Zap, Upload, X
 } from "lucide-react";
@@ -243,7 +244,22 @@ export default function SmartDocs() {
   const loadFolders = useCallback(async () => {
     if (companyId === undefined) return;
     const res = await powerSync.execute("SELECT * FROM smart_folders WHERE company_id = ? ORDER BY name ASC", [companyId]);
-    setFolders(res.rows?._array || []);
+    const parsed = (res.rows?._array || []).map(f => {
+      let extra = {};
+      try {
+        if (f.color && f.color.startsWith('{')) {
+          extra = JSON.parse(f.color);
+        }
+      } catch (e) {}
+      return {
+        ...f,
+        color: extra.color || f.color || '#6366f1',
+        visibility: extra.visibility || 'public',
+        owner_id: extra.owner_id || null,
+        created_by: extra.created_by || null
+      };
+    });
+    setFolders(parsed);
   }, [companyId]);
 
   const loadLinks = useCallback(async () => {
@@ -338,12 +354,19 @@ export default function SmartDocs() {
   };
 
   const saveFolder = async () => {
-    if (!folderForm.name) return toast({ title: "Folder name required", variant: "destructive" });
+    if (!folderForm.name.trim()) return toast({ title: "Folder name required", variant: "destructive" });
+    const colorPayload = JSON.stringify({
+      color: folderForm.color || '#6366f1',
+      visibility: folderForm.visibility || 'public',
+      owner_id: user?.id || user?.email,
+      created_by: user?.full_name || user?.email
+    });
     await powerSync.execute("INSERT INTO smart_folders (id, created_at, company_id, name, color) VALUES (?,?,?,?,?)",
-      [crypto.randomUUID(), new Date().toISOString(), companyId, folderForm.name, folderForm.color]);
+      [crypto.randomUUID(), new Date().toISOString(), companyId, folderForm.name.trim(), colorPayload]);
     await loadFolders();
     setShowFolderForm(false);
-    toast({ title: "Folder created" });
+    setFolderForm({ name: "", color: "#6366f1", visibility: "public" });
+    toast({ title: "Folder created successfully" });
   };
 
   const expiringSoon = docs.filter(d => {
@@ -359,7 +382,26 @@ export default function SmartDocs() {
 
   const [visibilityScope, setVisibilityScope] = useState("all"); // "all" | "mine"
 
+  // Filter folders by visibility
+  const visibleFolders = useMemo(() => {
+    return folders.filter(f => {
+      if (f.visibility === 'private' && !isSuperOrAdmin) {
+        const isOwner = f.owner_id === user?.id || f.owner_id === user?.email || f.created_by === user?.full_name || f.created_by === user?.email;
+        if (!isOwner) return false;
+      }
+      return true;
+    });
+  }, [folders, isSuperOrAdmin, user]);
+
+  const visibleFolderIdSet = useMemo(() => {
+    return new Set(visibleFolders.map(f => f.id));
+  }, [visibleFolders]);
+
   const filteredDocs = docs.filter(d => {
+    // If document belongs to a folder that is private and not accessible to current user, restrict it
+    if (d.folder_id && !visibleFolderIdSet.has(d.folder_id)) {
+      return false;
+    }
     // Access rights: Private documents only visible to author + company admin
     if (d.visibility === "private" && !isSuperOrAdmin) {
       const isOwner = d.owner_id === user?.id || d.owner_id === user?.email || d.uploaded_by === user?.full_name || d.uploaded_by === user?.email;
@@ -378,7 +420,7 @@ export default function SmartDocs() {
   });
 
   return (
-    <div className="space-y-6 p-6 pt-0">
+    <div className="space-y-5 sm:space-y-6 p-3 sm:p-6 pt-0 pb-[max(96px,env(safe-area-inset-bottom))] font-sans min-h-screen relative bg-background w-full max-w-full overflow-x-hidden">
       {/* Native Mobile Header & Stats */}
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-3">
@@ -436,50 +478,75 @@ export default function SmartDocs() {
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-5">
-        {/* LEFT: Folder Tree + Doc Grid */}
-        <div className="flex-1 min-w-0 space-y-4">
-          {/* Filters */}
-          <div className="flex gap-3 flex-wrap">
-            <div className="relative flex-1 min-w-48">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Search documents, tags, categories..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+      {/* Main Container - strictly constrained to screen width to prevent horizontal overflow */}
+      <div className="w-full max-w-full overflow-hidden flex flex-col xl:flex-row gap-5">
+        {/* LEFT: Folder Quick Access + Filters + Doc Grid */}
+        <div className="flex-1 min-w-0 space-y-4 w-full max-w-full overflow-hidden">
+          {/* Filters Bar: Responsive wrapping with full-width search on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap gap-2.5 bg-card/90 backdrop-blur-xl p-3 sm:p-4 rounded-[20px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+            <div className="relative col-span-1 sm:col-span-2 lg:flex-1 lg:min-w-[220px]">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input placeholder="Search documents, tags, categories..." className="pl-9 h-10 rounded-xl bg-background text-xs border-border/80 w-full" value={search} onChange={e => setSearch(e.target.value)} />
             </div>
             <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Category" /></SelectTrigger>
+              <SelectTrigger className="w-full lg:w-44 h-10 rounded-xl text-xs font-medium bg-background border-border/80"><SelectValue placeholder="Category" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
                 {DOC_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={filterFolder} onValueChange={setFilterFolder}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Folder" /></SelectTrigger>
+              <SelectTrigger className="w-full lg:w-44 h-10 rounded-xl text-xs font-medium bg-background border-border/80"><SelectValue placeholder="Folder" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Folders</SelectItem>
-                {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                {visibleFolders.map(f => (
+                  <SelectItem key={f.id} value={f.id}>
+                    {f.name} {f.visibility === 'private' ? '🔒' : ''}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={visibilityScope} onValueChange={setVisibilityScope}>
-              <SelectTrigger className="w-40"><SelectValue placeholder="Visibility" /></SelectTrigger>
+              <SelectTrigger className="w-full lg:w-40 h-10 rounded-xl text-xs font-semibold bg-background border-border/80"><SelectValue placeholder="Visibility" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Documents</SelectItem>
-                <SelectItem value="mine">My Documents</SelectItem>
+                <SelectItem value="all">All Visible Docs</SelectItem>
+                <SelectItem value="mine">Only My Docs</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Folder Quick Access */}
-          {folders.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
-              <button onClick={() => setFilterFolder("all")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${filterFolder === "all" ? "bg-violet-100 text-violet-700 border-violet-200" : "bg-muted text-muted-foreground border-transparent hover:border-border"}`}>
-                <Layers className="w-3.5 h-3.5" />All
-              </button>
-              {folders.map(f => (
-                <button key={f.id} onClick={() => setFilterFolder(f.id)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${filterFolder === f.id ? "bg-violet-100 text-violet-700 border-violet-200" : "bg-muted text-muted-foreground border-transparent hover:border-border"}`}>
-                  <Folder className="w-3.5 h-3.5" style={{ color: f.color }} />{f.name}
-                  <span className="ml-1 text-[10px] bg-white/60 px-1.5 rounded-full">{docs.filter(d => d.folder_id === f.id).length}</span>
+          {/* Folder Quick Access Pills (Smooth horizontal scroll on mobile) */}
+          {visibleFolders.length > 0 && (
+            <div className="overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
+              <div className="flex items-center gap-2 min-w-max">
+                <button
+                  onClick={() => setFilterFolder("all")}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${filterFolder === "all" ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs" : "bg-card text-muted-foreground border-border/80 hover:text-foreground hover:bg-muted"}`}
+                >
+                  <Layers className="w-3.5 h-3.5" /> All Folders
+                  <span className={`ml-1 text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${filterFolder === "all" ? "bg-white/20 text-white" : "bg-muted text-muted-foreground"}`}>
+                    {docs.length}
+                  </span>
                 </button>
-              ))}
+                {visibleFolders.map(f => {
+                  const count = docs.filter(d => d.folder_id === f.id).length;
+                  const isPrivate = f.visibility === "private";
+                  return (
+                    <button
+                      key={f.id}
+                      onClick={() => setFilterFolder(f.id)}
+                      className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${filterFolder === f.id ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs" : "bg-card text-muted-foreground border-border/80 hover:text-foreground hover:bg-muted"}`}
+                    >
+                      <Folder className="w-3.5 h-3.5 shrink-0" style={{ color: filterFolder === f.id ? "#ffffff" : f.color }} />
+                      <span className="truncate max-w-[130px]">{f.name}</span>
+                      {isPrivate && <Lock className="w-3 h-3 text-amber-500 shrink-0 ml-0.5" />}
+                      <span className={`ml-1 text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${filterFolder === f.id ? "bg-white/20 text-white" : "bg-muted text-muted-foreground"}`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
 
@@ -499,15 +566,20 @@ export default function SmartDocs() {
           )}
         </div>
 
-        {/* RIGHT: AI Intelligence Panel */}
+        {/* RIGHT: AI Intelligence Panel for Desktop (>= xl) */}
         {selectedDoc && (
-          <div className="w-80 flex-shrink-0 bg-card border border-border rounded-2xl p-5 h-fit sticky top-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <p className="font-bold text-foreground truncate text-sm">{selectedDoc.name}</p>
-              <button onClick={() => setSelectedDoc(null)} className="text-muted-foreground hover:text-foreground text-lg leading-none">Ã—</button>
+          <div className="hidden xl:block w-84 shrink-0 bg-card/95 backdrop-blur-xl border border-border/80 rounded-[24px] p-5 h-fit sticky top-4 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between border-b border-border/60 pb-3">
+              <div className="min-w-0 pr-2">
+                <p className="font-extrabold text-foreground truncate text-sm">{selectedDoc.name}</p>
+                <p className="text-[11px] text-muted-foreground">Document Details & AI</p>
+              </div>
+              <button onClick={() => setSelectedDoc(null)} className="h-7 w-7 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            <Button size="sm" variant="outline" className="w-full gap-2 text-violet-600 border-violet-200 hover:bg-violet-50" onClick={() => setShowLinkForm(true)}>
+            <Button size="sm" variant="outline" className="w-full gap-2 text-[#005A9C] border-[#005A9C]/30 hover:bg-[#005A9C]/10 rounded-xl text-xs font-bold h-9" onClick={() => setShowLinkForm(true)}>
               <Link2 className="w-4 h-4" /> Link to Entity
             </Button>
 
@@ -515,6 +587,30 @@ export default function SmartDocs() {
           </div>
         )}
       </div>
+
+      {/* MOBILE SHEET DRAWER for Document Details (< xl) */}
+      <Sheet open={!!selectedDoc && typeof window !== 'undefined' && window.innerWidth < 1280} onOpenChange={(open) => !open && setSelectedDoc(null)}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto p-5 pb-28 space-y-4">
+          {selectedDoc && (
+            <>
+              <SheetHeader className="border-b border-border/80 pb-3">
+                <SheetTitle className="text-base font-extrabold text-foreground truncate">
+                  {selectedDoc.name}
+                </SheetTitle>
+                <SheetDescription className="text-xs text-muted-foreground">
+                  AI Summary, Knowledge Connections & Document Metadata
+                </SheetDescription>
+              </SheetHeader>
+
+              <Button size="sm" variant="outline" className="w-full gap-2 text-[#005A9C] border-[#005A9C]/30 hover:bg-[#005A9C]/10 rounded-xl text-xs font-bold h-9" onClick={() => setShowLinkForm(true)}>
+                <Link2 className="w-4 h-4" /> Link to Entity
+              </Button>
+
+              <AISummaryPanel doc={selectedDoc} links={selectedLinks} onView={setViewingDoc} />
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
 
       {/* Add Document Dialog */}
       <Dialog open={showUploadForm} onOpenChange={setShowUploadForm}>
@@ -536,7 +632,11 @@ export default function SmartDocs() {
                   <SelectTrigger><SelectValue placeholder="No Folder" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">No Folder</SelectItem>
-                    {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                    {visibleFolders.map(f => (
+                      <SelectItem key={f.id} value={f.id}>
+                        {f.name} {f.visibility === 'private' ? '🔒' : ''}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -669,14 +769,38 @@ export default function SmartDocs() {
 
       {/* New Folder Dialog */}
       <Dialog open={showFolderForm} onOpenChange={setShowFolderForm}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Create Folder</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-sm rounded-[24px]">
+          <DialogHeader><DialogTitle className="text-base font-bold text-foreground">Create Folder</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div><Label>Folder Name</Label><Input placeholder="e.g. HR Documents" value={folderForm.name} onChange={e => setFolderForm(f => ({ ...f, name: e.target.value }))} /></div>
-            <div><Label>Color</Label><input type="color" value={folderForm.color} onChange={e => setFolderForm(f => ({ ...f, color: e.target.value }))} className="w-full h-10 rounded-lg cursor-pointer border border-border" /></div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowFolderForm(false)}>Cancel</Button>
-              <Button onClick={saveFolder}>Create Folder</Button>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold">Folder Name *</Label>
+              <Input placeholder="e.g. HR Documents" className="rounded-xl h-10 text-xs" value={folderForm.name} onChange={e => setFolderForm(f => ({ ...f, name: e.target.value }))} />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold">Folder Visibility</Label>
+              <Select value={folderForm.visibility || "public"} onValueChange={v => setFolderForm(f => ({ ...f, visibility: v }))}>
+                <SelectTrigger className="rounded-xl text-xs h-10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="public">🌐 Public (Visible to everyone in company)</SelectItem>
+                  <SelectItem value="private">🔒 Private (Restricted to you & admins)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground">
+                {folderForm.visibility === 'private' ? 'Only you and company admins will see this folder and its contents.' : 'All members of your company can see this folder.'}
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold">Color Badge</Label>
+              <input type="color" value={folderForm.color} onChange={e => setFolderForm(f => ({ ...f, color: e.target.value }))} className="w-full h-10 rounded-xl cursor-pointer border border-border p-1 bg-background" />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-border/80">
+              <Button variant="outline" className="rounded-xl text-xs font-bold" onClick={() => setShowFolderForm(false)}>Cancel</Button>
+              <Button className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl text-xs font-bold" onClick={saveFolder}>Create Folder</Button>
             </div>
           </div>
         </DialogContent>

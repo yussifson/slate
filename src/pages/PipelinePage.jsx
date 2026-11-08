@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus, GitBranch, Trash2, Save, Edit2, Bell, Clock, Sparkles, Loader2,
   GripVertical, Zap, ChevronRight,
-  CheckCircle2, X
+  CheckCircle2, X, Search, LayoutGrid, List
 } from "lucide-react";
 import PageHeader from "@/components/shared/PageHeader";
 import { generateText } from "@/lib/cloudflareAI";

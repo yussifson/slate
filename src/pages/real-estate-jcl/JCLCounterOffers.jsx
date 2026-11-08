@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   DollarSign, Plus, Search, Edit, Trash2, TrendingUp, Clock, CheckCircle2, 
-  AlertCircle, MessageSquare, RefreshCw, Eye, List, ArrowRight
+  AlertCircle, MessageSquare, RefreshCw, Eye, List, ArrowRight, ArrowUpRight
 } from 'lucide-react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
@@ -172,64 +172,85 @@ export default function JCLCounterOffers() {
   };
 
   return (
-    <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
-      {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <DollarSign className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Counter Offers & Negotiations
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Seller counter proposals, buyer price revisions, and contingency adjustments
-              </p>
-            </div>
+    <div className="p-3 sm:p-6 pb-24 w-full max-w-full overflow-x-hidden space-y-4 sm:space-y-6 font-sans">
+      {/* ── 1. Clean Top Header (No redundant page title or descriptions) ── */}
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          Counter Offers
+        </h1>
+
+        <Button
+          onClick={() => {
+            setEditingId(null);
+            setFormData({
+              originalOfferId: '',
+              propertyAddress: '',
+              buyerName: '',
+              originalPrice: 450000,
+              counterPrice: 475000,
+              earnestMoney: 15000,
+              contingencies: '7-day inspection waiver, pre-approval letter attached',
+              expirationDate: format(new Date(Date.now() + 5 * 86400000), 'yyyy-MM-dd'),
+              notes: '',
+              status: 'pending',
+            });
+            setShowForm(true);
+          }}
+          size="sm"
+          className="h-9 px-3.5 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 rounded-xl gap-1.5 active:scale-95 transition-all"
+        >
+          <Plus className="h-4 w-4" />
+          <span>New Counter</span>
+        </Button>
+      </div>
+
+      {/* ── 2. Dedicated Mobile Stats Layout (< md) ── */}
+      <div className="grid grid-cols-2 gap-2.5 md:hidden">
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <Clock className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Pending</span>
+            <span className="text-lg font-black text-foreground">{stats.pending}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchData}
-            className="h-9 px-3 text-xs gap-1.5 border-border"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Accepted</span>
+            <span className="text-lg font-black text-[#005A9C] dark:text-[#FF6B00]">{stats.accepted}</span>
+          </div>
+        </div>
 
-          <Button
-            onClick={() => {
-              setEditingId(null);
-              setFormData({
-                originalOfferId: '',
-                propertyAddress: '',
-                buyerName: '',
-                originalPrice: 450000,
-                counterPrice: 475000,
-                earnestMoney: 15000,
-                contingencies: '7-day inspection waiver, pre-approval letter attached',
-                expirationDate: format(new Date(Date.now() + 5 * 86400000), 'yyyy-MM-dd'),
-                notes: '',
-                status: 'pending',
-              });
-              setShowForm(true);
-            }}
-            size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
-          >
-            <Plus className="h-4 w-4" />
-            New Counter Offer
-          </Button>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <DollarSign className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Volume</span>
+            <span className="text-base font-black text-foreground truncate block">
+              {stats.totalVolume >= 1000000 ? `$${(stats.totalVolume / 1000000).toFixed(1)}M` : formatCurrency(stats.totalVolume, 'USD')}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <TrendingUp className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Total</span>
+            <span className="text-lg font-black text-foreground">{stats.total}</span>
+          </div>
         </div>
       </div>
 
-      {/* ── 2. KPI Hero Row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── Desktop KPI Hero Row (>= md) ── */}
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
         <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
@@ -284,21 +305,21 @@ export default function JCLCounterOffers() {
       </div>
 
       {/* ── 3. Filters ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
-        <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1 min-w-[220px]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
+        <div className="flex flex-1 items-center gap-2 w-full">
+          <div className="relative flex-1 min-w-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search by property, buyer..."
+              placeholder="Search property or buyer..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-9 h-9 text-xs bg-background"
+              className="pl-9 h-9 text-xs bg-background w-full"
             />
           </div>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-9 text-xs w-[170px] bg-background">
-              <SelectValue placeholder="Filter Status" />
+            <SelectTrigger className="h-9 text-xs w-[130px] sm:w-[160px] bg-background shrink-0">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all" className="text-xs">All Statuses</SelectItem>
@@ -311,7 +332,7 @@ export default function JCLCounterOffers() {
         </div>
       </div>
 
-      {/* ── 4. Main Body: Clean Data Table List View ── */}
+      {/* ── 4. Main Body: Clean Responsive List View ── */}
       {filteredCounterOffers.length === 0 ? (
         <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/40">
           <DollarSign className="h-10 w-10 mx-auto text-muted-foreground/50 mb-3" />
@@ -321,113 +342,221 @@ export default function JCLCounterOffers() {
           </p>
         </div>
       ) : (
-        <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
-                  <th className="py-3 px-4">Property Address</th>
-                  <th className="py-3 px-4">Buyer / Prospect</th>
-                  <th className="py-3 px-4">Original Offer</th>
-                  <th className="py-3 px-4">Counter Price</th>
-                  <th className="py-3 px-4">Delta (Difference)</th>
-                  <th className="py-3 px-4">Earnest Deposit</th>
-                  <th className="py-3 px-4">Expires</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filteredCounterOffers.map(item => {
-                  const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
-                  const delta = (item.counter_price || 0) - (item.original_price || 0);
+        <div className="space-y-3">
+          {/* Mobile Native Cards (< md) — Zero horizontal scroll */}
+          <div className="md:hidden space-y-2.5">
+            {filteredCounterOffers.map(item => {
+              const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+              const delta = (item.counter_price || 0) - (item.original_price || 0);
 
-                  return (
-                    <tr
-                      key={item.id}
-                      className="hover:bg-muted/30 transition-colors cursor-pointer group"
-                      onClick={() => setInspectorOffer(item)}
-                    >
-                      <td className="py-3.5 px-4 font-semibold text-foreground group-hover:text-emerald-600 transition-colors">
-                        {item.property_address || 'Property Counter Proposal'}
-                      </td>
-                      <td className="py-3.5 px-4 text-foreground font-medium">
-                        {item.buyer_name || 'Prospect'}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono text-muted-foreground line-through">
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => setInspectorOffer(item)}
+                  className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-transform space-y-2.5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-foreground text-sm truncate leading-snug">
+                        {item.property_address || 'Property Counter'}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        Buyer: <strong className="text-foreground">{item.buyer_name || 'Prospect'}</strong>
+                      </p>
+                    </div>
+                    <Badge variant="outline" className={cn("text-[10px] font-bold border gap-1 shrink-0 py-0.5 px-2", st.badge)}>
+                      <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
+                      {st.label}
+                    </Badge>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 p-2 rounded-xl bg-muted/40 text-center font-mono text-xs">
+                    <div>
+                      <span className="text-[9px] text-muted-foreground uppercase block">Original</span>
+                      <span className="font-semibold line-through text-muted-foreground">
                         {formatCurrency(item.original_price, 'USD')}
-                      </td>
-                      <td className="py-3.5 px-4 font-bold text-[#005A9C] dark:text-[#FF6B00]">
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-[#005A9C] dark:text-[#FF6B00] uppercase block font-bold">Counter</span>
+                      <span className="font-black text-[#005A9C] dark:text-[#FF6B00]">
                         {formatCurrency(item.counter_price, 'USD')}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono">
-                        {delta !== 0 ? (
-                          <span className={cn("text-[11px] font-bold px-1.5 py-0.5 rounded", delta > 0 ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40" : "text-rose-700 bg-rose-50")}>
-                            {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
-                          </span>
-                        ) : '—'}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono text-muted-foreground">
-                        {formatCurrency(item.earnest_money, 'USD')}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono text-muted-foreground">
-                        {item.expiration_date || 'N/A'}
-                      </td>
-                      <td className="py-3.5 px-4" onClick={e => e.stopPropagation()}>
-                        <Select value={item.status} onValueChange={v => handleStatusChange(item.id, v)}>
-                          <SelectTrigger className={cn("h-7 text-[10px] w-[125px] font-medium border", st.badge)}>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending" className="text-xs">Pending</SelectItem>
-                            <SelectItem value="accepted" className="text-xs">Accepted</SelectItem>
-                            <SelectItem value="rejected" className="text-xs">Declined</SelectItem>
-                            <SelectItem value="expired" className="text-xs">Expired</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </td>
-                      <td className="py-3.5 px-4 text-right" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                            onClick={() => {
-                              setEditingId(item.id);
-                              setFormData({
-                                originalOfferId: item.original_offer_id || '',
-                                propertyAddress: item.property_address || '',
-                                buyerName: item.buyer_name || '',
-                                originalPrice: item.original_price || 0,
-                                counterPrice: item.counter_price || 0,
-                                earnestMoney: item.earnest_money || 0,
-                                contingencies: item.contingencies || '',
-                                expirationDate: item.expiration_date || '',
-                                notes: item.notes || '',
-                                status: item.status || 'pending',
-                              });
-                              setShowForm(true);
-                            }}
-                            title="Edit Counter"
-                          >
-                            <Edit className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
-                            onClick={() => handleDelete(item.id)}
-                            title="Delete"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] pt-1 border-t border-border/60">
+                    <span className="text-muted-foreground">
+                      Exp: <strong className="text-foreground font-mono">{item.expiration_date || 'N/A'}</strong>
+                    </span>
+                    {delta !== 0 && (
+                      <span className={cn("font-bold font-mono px-1.5 py-0.5 rounded text-[10px]", delta > 0 ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40" : "text-rose-700 bg-rose-50")}>
+                        {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-border/50 text-[11px]" onClick={e => e.stopPropagation()}>
+                    <Select value={item.status} onValueChange={v => handleStatusChange(item.id, v)}>
+                      <SelectTrigger className="h-7 text-[10px] w-[110px] bg-background">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                        <SelectItem value="accepted" className="text-xs">Accepted</SelectItem>
+                        <SelectItem value="rejected" className="text-xs">Declined</SelectItem>
+                        <SelectItem value="expired" className="text-xs">Expired</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs font-semibold"
+                        onClick={() => {
+                          setEditingId(item.id);
+                          setFormData({
+                            originalOfferId: item.original_offer_id || '',
+                            propertyAddress: item.property_address || '',
+                            buyerName: item.buyer_name || '',
+                            originalPrice: item.original_price || 0,
+                            counterPrice: item.counter_price || 0,
+                            earnestMoney: item.earnest_money || 0,
+                            contingencies: item.contingencies || '',
+                            expirationDate: item.expiration_date || '',
+                            notes: item.notes || '',
+                            status: item.status || 'pending',
+                          });
+                          setShowForm(true);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-rose-500 hover:text-rose-600"
+                        onClick={() => handleDelete(item.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop High-Density Table View (>= md) */}
+          <div className="hidden md:block border border-border rounded-xl bg-card overflow-hidden shadow-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
+                    <th className="py-3 px-4">Property Address</th>
+                    <th className="py-3 px-4">Buyer / Prospect</th>
+                    <th className="py-3 px-4">Original Offer</th>
+                    <th className="py-3 px-4">Counter Price</th>
+                    <th className="py-3 px-4">Delta</th>
+                    <th className="py-3 px-4">Earnest Deposit</th>
+                    <th className="py-3 px-4">Expires</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredCounterOffers.map(item => {
+                    const st = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+                    const delta = (item.counter_price || 0) - (item.original_price || 0);
+
+                    return (
+                      <tr
+                        key={item.id}
+                        className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                        onClick={() => setInspectorOffer(item)}
+                      >
+                        <td className="py-3.5 px-4 font-semibold text-foreground group-hover:text-emerald-600 transition-colors">
+                          {item.property_address || 'Property Counter Proposal'}
+                        </td>
+                        <td className="py-3.5 px-4 text-foreground font-medium">
+                          {item.buyer_name || 'Prospect'}
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-muted-foreground line-through">
+                          {formatCurrency(item.original_price, 'USD')}
+                        </td>
+                        <td className="py-3.5 px-4 font-bold text-[#005A9C] dark:text-[#FF6B00]">
+                          {formatCurrency(item.counter_price, 'USD')}
+                        </td>
+                        <td className="py-3.5 px-4 font-mono">
+                          {delta !== 0 ? (
+                            <span className={cn("text-[11px] font-bold px-1.5 py-0.5 rounded", delta > 0 ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40" : "text-rose-700 bg-rose-50")}>
+                              {delta > 0 ? `+${formatCurrency(delta, 'USD')}` : formatCurrency(delta, 'USD')}
+                            </span>
+                          ) : '—'}
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-muted-foreground">
+                          {formatCurrency(item.earnest_money, 'USD')}
+                        </td>
+                        <td className="py-3.5 px-4 font-mono text-muted-foreground">
+                          {item.expiration_date || 'N/A'}
+                        </td>
+                        <td className="py-3.5 px-4" onClick={e => e.stopPropagation()}>
+                          <Select value={item.status} onValueChange={v => handleStatusChange(item.id, v)}>
+                            <SelectTrigger className={cn("h-7 text-[10px] w-[125px] font-medium border", st.badge)}>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending" className="text-xs">Pending</SelectItem>
+                              <SelectItem value="accepted" className="text-xs">Accepted</SelectItem>
+                              <SelectItem value="rejected" className="text-xs">Declined</SelectItem>
+                              <SelectItem value="expired" className="text-xs">Expired</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </td>
+                        <td className="py-3.5 px-4 text-right" onClick={e => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                              onClick={() => {
+                                setEditingId(item.id);
+                                setFormData({
+                                  originalOfferId: item.original_offer_id || '',
+                                  propertyAddress: item.property_address || '',
+                                  buyerName: item.buyer_name || '',
+                                  originalPrice: item.original_price || 0,
+                                  counterPrice: item.counter_price || 0,
+                                  earnestMoney: item.earnest_money || 0,
+                                  contingencies: item.contingencies || '',
+                                  expirationDate: item.expiration_date || '',
+                                  notes: item.notes || '',
+                                  status: item.status || 'pending',
+                                });
+                                setShowForm(true);
+                              }}
+                              title="Edit Counter"
+                            >
+                              <Edit className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-rose-500 hover:text-rose-600 hover:bg-rose-50"
+                              onClick={() => handleDelete(item.id)}
+                              title="Delete"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
