@@ -281,80 +281,73 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
   return (
     <main className="min-h-full bg-background p-4 sm:p-6 lg:p-8 font-sans">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        {/* Executive Header */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#005A9C] via-[#00477D] to-[#0A2540] p-6 text-white shadow-lg shadow-[#005A9C]/15 border border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Native Mobile Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FF6B00] text-white">
-                  Materials & Supply Chain
-                </span>
-                <span className="text-xs text-white/70">JCL Royal Group Operations</span>
-              </div>
-              <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                <ShoppingCart className="h-6 w-6 text-[#FF6B00]" />
-                Procurement & Materials Management
-              </h1>
-              <p className="text-xs text-white/80 max-w-xl mt-1">
-                Full-lifecycle requisitions, supplier purchase orders, delivery verification, and warehouse material balances.
-              </p>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Procurement</h1>
+              <p className="text-xs text-muted-foreground font-medium">Requisitions, purchase orders & inventory supply</p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={load} 
-                disabled={loading}
-                className="bg-white/15 hover:bg-white/25 text-white border-0 text-xs backdrop-blur-sm"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
+          </div>
+
+          <div className="flex items-center gap-2">
+            {activeTab === 'requisitions' && (
+              <Button onClick={openCreateReq} size="sm" className="bg-[#005A9C] hover:bg-[#00477D] text-white text-xs font-bold rounded-xl h-10 px-4 gap-1.5 shadow-sm">
+                <Plus className="h-4 w-4" /> <span className="hidden sm:inline">New Requisition</span><span className="sm:hidden">Request</span>
               </Button>
-              {activeTab === 'requisitions' && (
-                <Button onClick={openCreateReq} size="sm" className="bg-[#FF6B00] hover:bg-[#E05E00] text-white text-xs font-semibold shadow-md">
-                  <Plus className="h-3.5 w-3.5 mr-1" /> New Requisition
-                </Button>
-              )}
-              {activeTab === 'orders' && (
-                <Button onClick={openCreatePo} size="sm" className="bg-[#FF6B00] hover:bg-[#E05E00] text-white text-xs font-semibold shadow-md">
-                  <Plus className="h-3.5 w-3.5 mr-1" /> Issue Purchase Order
-                </Button>
-              )}
-              {activeTab === 'inventory' && (
-                <Button onClick={() => setMatModalOpen(true)} size="sm" className="bg-[#FF6B00] hover:bg-[#E05E00] text-white text-xs font-semibold shadow-md">
-                  <Plus className="h-3.5 w-3.5 mr-1" /> Add Material Item
-                </Button>
-              )}
-            </div>
+            )}
+            {activeTab === 'orders' && (
+              <Button onClick={openCreatePo} size="sm" className="bg-[#005A9C] hover:bg-[#00477D] text-white text-xs font-bold rounded-xl h-10 px-4 gap-1.5 shadow-sm">
+                <Plus className="h-4 w-4" /> <span className="hidden sm:inline">Issue Purchase Order</span><span className="sm:hidden">Order</span>
+              </Button>
+            )}
+            {activeTab === 'inventory' && (
+              <Button onClick={() => setMatModalOpen(true)} size="sm" className="bg-[#005A9C] hover:bg-[#00477D] text-white text-xs font-bold rounded-xl h-10 px-4 gap-1.5 shadow-sm">
+                <Plus className="h-4 w-4" /> <span className="hidden sm:inline">Add Material Item</span><span className="sm:hidden">Add</span>
+              </Button>
+            )}
           </div>
         </div>
 
-        {/* Metrics Row */}
-        <section className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <Metric label="Total Requisitions" value={stat.requisitions || 0} tone="bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00]" icon={ClipboardList} />
-          <Metric label="Pending Review" value={stat.pendingRequisitions || 0} tone="bg-amber-500/10 text-amber-600" icon={AlertCircle} />
-          <Metric label="Approved Orders" value={stat.approvedOrders || 0} tone="bg-emerald-500/10 text-emerald-600" icon={ArrowUpRight} />
-          <Metric label="Pending Deliveries" value={stat.pendingDeliveries || 0} tone="bg-sky-500/10 text-sky-600" icon={Truck} />
-        </section>
+        {/* 2x2 Native Mobile Metrics Row */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Requisitions</span>
+            <span className="text-xl sm:text-2xl font-black text-foreground">{stat.requisitions || 0}</span>
+          </div>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Pending Review</span>
+            <span className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{stat.pendingRequisitions || 0}</span>
+          </div>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Approved Orders</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">{stat.approvedOrders || 0}</span>
+          </div>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Deliveries Due</span>
+            <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{stat.pendingDeliveries || 0}</span>
+          </div>
+        </div>
 
-        {/* Search & Actions Bar */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+        {/* Search & Filters */}
+        <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
-              className="pl-8 text-xs h-9 bg-card" 
+              className="pl-9 text-xs h-9.5 rounded-xl bg-background border-border/80 w-full" 
               placeholder="Search references, projects, suppliers..." 
               value={query} 
               onChange={e => setQuery(e.target.value)} 
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs font-normal">
-              {activeTab === 'requisitions' ? `${filteredRequisitions.length} Requisitions` : 
-               activeTab === 'orders' ? `${filteredOrders.length} Orders` : 
-               `${filteredBalances.length} Balances`}
-            </Badge>
-          </div>
+          <Badge variant="outline" className="text-xs font-bold px-3 py-1 rounded-xl self-end sm:self-auto">
+            {activeTab === 'requisitions' ? `${filteredRequisitions.length} Requisitions` : 
+             activeTab === 'orders' ? `${filteredOrders.length} Orders` : 
+             `${filteredBalances.length} Balances`}
+          </Badge>
         </div>
 
         {/* Tabs Content */}
@@ -367,9 +360,49 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
 
           {/* TAB 1: REQUISITIONS */}
           <TabsContent value="requisitions" className="m-0">
-            <Card className="border border-border/80 shadow-xs bg-card overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+            <div className="space-y-3">
+              {/* Mobile Native Card View (< md) */}
+              <div className="md:hidden space-y-2.5">
+                {filteredRequisitions.length ? filteredRequisitions.map(row => (
+                  <div key={row.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <span className="font-extrabold text-xs font-mono text-[#005A9C] dark:text-blue-400">{row.reference}</span>
+                        <h4 className="font-bold text-sm text-foreground truncate mt-0.5">{row.description || 'No description provided'}</h4>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">{row.ops_projects?.name || 'Unassigned Project'}</p>
+                      </div>
+                      <Badge variant="outline" className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-lg border shrink-0">
+                        {statusLabels[row.status] || row.status}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                      <span className="text-[11px] text-muted-foreground">Required: {row.required_date || 'ASAP'}</span>
+                      <span className={cn("text-[10px] font-bold uppercase", row.priority === 'urgent' ? 'text-rose-600' : row.priority === 'high' ? 'text-amber-600' : 'text-muted-foreground')}>
+                        {row.priority} priority
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/40">
+                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs font-bold text-muted-foreground hover:text-foreground rounded-lg" onClick={() => openEditReq(row)}>
+                        <Edit3 className="size-3.5 mr-1" /> Edit
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs font-bold text-rose-500 hover:text-rose-700 rounded-lg" onClick={() => deleteRequisition(row.id, row.reference)}>
+                        <Trash2 className="size-3.5 mr-1" /> Delete
+                      </Button>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+                    No requisitions recorded.
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop High-Density Table (>= md) */}
+              <Card className="hidden md:block border border-border/80 shadow-xs bg-card rounded-[22px] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
                   <thead className="bg-muted/50 border-b border-border text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
                     <tr>
                       <th className="p-3">Reference</th>
@@ -420,13 +453,54 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
                 </table>
               </div>
             </Card>
+          </div>
           </TabsContent>
 
           {/* TAB 2: PURCHASE ORDERS */}
           <TabsContent value="orders" className="m-0">
-            <Card className="border border-border/80 shadow-xs bg-card overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+            <div className="space-y-3">
+              {/* Mobile Native Card View (< md) */}
+              <div className="md:hidden space-y-2.5">
+                {filteredOrders.length ? filteredOrders.map(row => (
+                  <div key={row.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <span className="font-extrabold text-xs font-mono text-[#005A9C] dark:text-blue-400">{row.reference || row.po_number}</span>
+                        <h4 className="font-bold text-sm text-foreground truncate mt-0.5">{row.supplier_name || 'Vendor Not Specified'}</h4>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">{row.ops_projects?.name || 'Unassigned Project'}</p>
+                      </div>
+                      <Badge variant="outline" className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-lg border shrink-0">
+                        {statusLabels[row.status] || row.status}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                      <span className="font-mono font-black text-sm text-foreground">
+                        ${Number(row.total_amount || 0).toLocaleString()}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">Due: {row.expected_delivery_date || 'TBD'}</span>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/40">
+                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs font-bold text-muted-foreground hover:text-foreground rounded-lg" onClick={() => openEditPo(row)}>
+                        <Edit3 className="size-3.5 mr-1" /> Edit
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs font-bold text-rose-500 hover:text-rose-700 rounded-lg" onClick={() => deletePurchaseOrder(row.id, row.reference || row.po_number)}>
+                        <Trash2 className="size-3.5 mr-1" /> Delete
+                      </Button>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+                    No purchase orders found.
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop High-Density Table (>= md) */}
+              <Card className="hidden md:block border border-border/80 shadow-xs bg-card rounded-[22px] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
                   <thead className="bg-muted/50 border-b border-border text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
                     <tr>
                       <th className="p-3">PO Reference</th>
@@ -473,13 +547,51 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
                 </table>
               </div>
             </Card>
+          </div>
           </TabsContent>
 
           {/* TAB 3: MATERIALS & INVENTORY */}
           <TabsContent value="inventory" className="m-0 space-y-4">
-            <Card className="border border-border/80 shadow-xs bg-card overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+            <div className="space-y-3">
+              {/* Mobile Native Card View (< md) */}
+              <div className="md:hidden space-y-2.5">
+                {filteredBalances.length ? filteredBalances.map(row => (
+                  <div key={row.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-[#005A9C] flex items-center justify-center shrink-0">
+                        <Package className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-sm text-foreground truncate">{row.jcl_materials?.name || 'Material Item'}</h4>
+                        <p className="text-[11px] text-muted-foreground truncate">{row.jcl_storage_locations?.name || 'Central Depot'}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-center pt-1 border-t border-border/60">
+                      <div className="bg-muted/30 p-2 rounded-xl">
+                        <span className="text-[9px] uppercase font-bold text-muted-foreground block">Available</span>
+                        <span className="font-mono font-bold text-xs text-emerald-600">{row.available_quantity}</span>
+                      </div>
+                      <div className="bg-muted/30 p-2 rounded-xl">
+                        <span className="text-[9px] uppercase font-bold text-muted-foreground block">Allocated</span>
+                        <span className="font-mono font-bold text-xs text-amber-600">{row.allocated_quantity}</span>
+                      </div>
+                      <div className="bg-muted/30 p-2 rounded-xl">
+                        <span className="text-[9px] uppercase font-bold text-muted-foreground block">Consumed</span>
+                        <span className="font-mono font-bold text-xs text-muted-foreground">{row.consumed_quantity}</span>
+                      </div>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+                    No inventory recorded.
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop High-Density Table (>= md) */}
+              <Card className="hidden md:block border border-border/80 shadow-xs bg-card rounded-[22px] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
                   <thead className="bg-muted/50 border-b border-border text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
                     <tr>
                       <th className="p-3">Item / Material</th>
@@ -530,6 +642,7 @@ export default function JCLProcurement({ defaultTab = 'requisitions' }) {
                 </table>
               </div>
             </Card>
+          </div>
           </TabsContent>
         </Tabs>
 

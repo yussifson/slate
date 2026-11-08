@@ -237,64 +237,63 @@ export default function JCLTechnicalDrawings() {
 
   return (
     <div className="flex flex-col h-full bg-background text-foreground p-6 space-y-6 overflow-y-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5 border-border">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <Layers className="w-6 h-6 text-primary" /> Technical Drawings Register
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Architectural, Structural, MEP and Civil blueprint version control with engineering revision audits.
-          </p>
+      {/* Native Mobile Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+            <Layers className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Drawings Register</h1>
+            <p className="text-xs text-muted-foreground font-medium">{filtered.length} technical blueprints & revisions</p>
+          </div>
         </div>
+
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadData} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} /> Refresh
-          </Button>
-          <Button size="sm" onClick={openCreateDrawing} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Plus className="w-4 h-4 mr-2" /> Register Drawing
+          <Button size="sm" onClick={openCreateDrawing} className="bg-[#005A9C] hover:bg-[#00477D] text-white text-xs font-bold rounded-xl h-10 px-4 gap-1.5 shadow-sm">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Register Drawing</span><span className="sm:hidden">Add Drawing</span>
           </Button>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Registered Drawings</div>
-          <div className="text-2xl font-bold mt-1">{drawings.length}</div>
+      {/* 2x2 Native Mobile Metric Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Registered</span>
+          <span className="text-xl sm:text-2xl font-black text-foreground">{drawings.length}</span>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Approved for Construction</div>
-          <div className="text-2xl font-bold mt-1 text-emerald-600">
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Approved IFC</span>
+          <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">
             {drawings.filter(d => ['approved', 'ifc', 'approved_as_noted'].includes(d.current_status)).length}
-          </div>
+          </span>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Under Engineering Review</div>
-          <div className="text-2xl font-bold mt-1 text-amber-600">
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Under Review</span>
+          <span className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">
             {drawings.filter(d => ['submitted', 'in_review'].includes(d.current_status)).length}
-          </div>
+          </span>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Revision History Logs</div>
-          <div className="text-2xl font-bold mt-1 text-blue-600">{revisions.length}</div>
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Revision Logs</span>
+          <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{revisions.length}</span>
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+      {/* Search and Filter */}
+      <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input 
             placeholder="Search drawing #, title, project..." 
             value={query} 
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 text-xs h-9.5 rounded-xl bg-background border-border/80 w-full"
           />
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select value={disciplineFilter} onValueChange={setDisciplineFilter}>
-            <SelectTrigger className="w-full sm:w-48">
+            <SelectTrigger className="w-full sm:w-48 text-xs font-semibold h-9.5 rounded-xl bg-background border-border/80">
               <SelectValue placeholder="All Disciplines" />
             </SelectTrigger>
             <SelectContent>
@@ -308,76 +307,129 @@ export default function JCLTechnicalDrawings() {
         </div>
       </div>
 
-      {/* Drawings Table */}
-      <div className="rounded-xl border bg-card overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b">
-              <tr>
-                <th className="p-4 font-semibold">Drawing Number</th>
-                <th className="p-4 font-semibold">Title</th>
-                <th className="p-4 font-semibold">Project</th>
-                <th className="p-4 font-semibold">Discipline</th>
-                <th className="p-4 font-semibold text-center">Rev</th>
-                <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.length === 0 ? (
+      {/* Drawings Table & Mobile Card List */}
+      <div className="space-y-3">
+        {/* Mobile Native Card View (< md) */}
+        <div className="md:hidden space-y-2.5">
+          {filtered.length ? filtered.map(dwg => (
+            <div key={dwg.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <span className="font-extrabold text-xs font-mono text-[#005A9C] dark:text-blue-400">{dwg.drawing_number}</span>
+                  <h4 className="font-bold text-sm text-foreground truncate mt-0.5">{dwg.title}</h4>
+                  <p className="text-[11px] text-muted-foreground mt-0.5 capitalize">{dwg.discipline} · {dwg.ops_projects?.name || 'General'}</p>
+                </div>
+                <Badge variant="outline" className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-lg border shrink-0 ${
+                  dwg.current_status === 'approved' || dwg.current_status === 'ifc' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
+                  dwg.current_status === 'rejected' ? 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40' :
+                  'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
+                }`}>
+                  {dwg.current_status}
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                <Badge variant="outline" className="font-mono text-[10px] bg-muted/40">
+                  Rev {dwg.current_revision_number || 'A'}
+                </Badge>
+                <span className="text-[11px] text-muted-foreground">{dwg.created_at ? new Date(dwg.created_at).toLocaleDateString() : 'Active'}</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/40">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-7 text-xs font-bold gap-1 border-primary/40 text-primary hover:bg-primary/10 rounded-lg"
+                  onClick={() => openAddRevision(dwg)}
+                >
+                  <History className="w-3.5 h-3.5" /> +Rev
+                </Button>
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-bold text-muted-foreground hover:text-foreground rounded-lg" onClick={() => openEditDrawing(dwg)}>
+                  <Edit3 className="size-3.5 mr-1" /> Edit
+                </Button>
+                <Button variant="ghost" size="sm" className="h-7 px-2 text-xs font-bold text-destructive hover:text-destructive/80 rounded-lg" onClick={() => handleDeleteDrawing(dwg.id)}>
+                  <Trash2 className="size-3.5 mr-1" /> Delete
+                </Button>
+              </div>
+            </div>
+          )) : (
+            <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+              No drawings registered yet.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop High-Density Table (>= md) */}
+        <div className="hidden md:block rounded-[22px] border border-border/80 bg-card shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs whitespace-nowrap">
+              <thead className="bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground font-bold border-b border-border/80">
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-muted-foreground">
-                    No drawings registered yet. Click "Register Drawing" to add one.
-                  </td>
+                  <th className="p-3.5">Drawing Number</th>
+                  <th className="p-3.5">Title</th>
+                  <th className="p-3.5">Project</th>
+                  <th className="p-3.5">Discipline</th>
+                  <th className="p-3.5 text-center">Rev</th>
+                  <th className="p-3.5">Status</th>
+                  <th className="p-3.5 text-right">Actions</th>
                 </tr>
-              ) : (
-                filtered.map((dwg) => (
-                  <tr key={dwg.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-4 font-mono font-medium text-foreground">{dwg.drawing_number}</td>
-                    <td className="p-4 font-semibold text-foreground">{dwg.title}</td>
-                    <td className="p-4 text-foreground">
-                      {dwg.ops_projects?.name || <span className="text-muted-foreground italic">General</span>}
-                    </td>
-                    <td className="p-4">
-                      <span className="inline-flex px-2 py-0.5 rounded text-xs font-semibold uppercase bg-muted border">
-                        {dwg.discipline}
-                      </span>
-                    </td>
-                    <td className="p-4 text-center font-mono font-bold text-foreground">
-                      {dwg.current_revision_number || 'A'}
-                    </td>
-                    <td className="p-4">
-                      <Badge variant="outline" className={`font-semibold capitalize ${
-                        dwg.current_status === 'approved' || dwg.current_status === 'ifc' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
-                        dwg.current_status === 'rejected' ? 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40' :
-                        'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
-                      }`}>
-                        {dwg.current_status}
-                      </Badge>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="h-8 text-xs gap-1 border-primary/40 text-primary hover:bg-primary/10"
-                          onClick={() => openAddRevision(dwg)}
-                        >
-                          <History className="w-3.5 h-3.5" /> +Rev
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => openEditDrawing(dwg)}>
-                          <Edit3 className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDeleteDrawing(dwg.id)}>
-                          <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
-                        </Button>
-                      </div>
+              </thead>
+              <tbody className="divide-y divide-border/60">
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-10 text-center text-muted-foreground">
+                      No drawings registered yet.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filtered.map((dwg) => (
+                    <tr key={dwg.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-3.5 font-mono font-medium text-foreground">{dwg.drawing_number}</td>
+                      <td className="p-3.5 font-bold text-foreground">{dwg.title}</td>
+                      <td className="p-3.5 text-foreground">
+                        {dwg.ops_projects?.name || <span className="text-muted-foreground italic">General</span>}
+                      </td>
+                      <td className="p-3.5">
+                        <span className="inline-flex px-2 py-0.5 rounded text-xs font-semibold uppercase bg-muted border border-border">
+                          {dwg.discipline}
+                        </span>
+                      </td>
+                      <td className="p-3.5 text-center font-mono font-bold text-foreground">
+                        {dwg.current_revision_number || 'A'}
+                      </td>
+                      <td className="p-3.5">
+                        <Badge variant="outline" className={`text-[10px] font-bold uppercase ${
+                          dwg.current_status === 'approved' || dwg.current_status === 'ifc' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
+                          dwg.current_status === 'rejected' ? 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40' :
+                          'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
+                        }`}>
+                          {dwg.current_status}
+                        </Badge>
+                      </td>
+                      <td className="p-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="h-8 text-xs gap-1 border-primary/40 text-primary hover:bg-primary/10 rounded-lg"
+                            onClick={() => openAddRevision(dwg)}
+                          >
+                            <History className="w-3.5 h-3.5" /> +Rev
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => openEditDrawing(dwg)} className="h-7 w-7 text-muted-foreground hover:text-foreground">
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteDrawing(dwg.id)} className="h-7 w-7 text-destructive hover:text-destructive/80">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

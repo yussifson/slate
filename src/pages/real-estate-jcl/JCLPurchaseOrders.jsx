@@ -149,145 +149,186 @@ export default function JCLPurchaseOrders() {
 
   return (
     <div className="flex flex-col h-full bg-background text-foreground p-6 space-y-6 overflow-y-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5 border-border">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <FileCheck className="w-6 h-6 text-primary" /> Purchase Orders
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Official commercial purchase orders issued to construction material suppliers and trade vendors.
-          </p>
+      {/* Native Mobile Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+            <FileCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Purchase Orders</h1>
+            <p className="text-xs text-muted-foreground font-medium">{filtered.length} commercial vendor orders</p>
+          </div>
         </div>
+
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadData} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} /> Refresh
-          </Button>
-          <Button size="sm" onClick={openCreate} className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Plus className="w-4 h-4 mr-2" /> New Purchase Order
+          <Button size="sm" onClick={openCreate} className="bg-[#005A9C] hover:bg-[#00477D] text-white text-xs font-bold rounded-xl h-10 px-4 gap-1.5 shadow-sm">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">New Purchase Order</span><span className="sm:hidden">New PO</span>
           </Button>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total POs</div>
-          <div className="text-2xl font-bold mt-1">{orders.length}</div>
+      {/* 2x2 Native Mobile Metric Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Total POs</span>
+          <span className="text-xl sm:text-2xl font-black text-foreground">{orders.length}</span>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Pending Approval</div>
-          <div className="text-2xl font-bold mt-1 text-amber-600">
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Pending Approval</span>
+          <span className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">
             {orders.filter(o => ['draft', 'pending_approval'].includes(o.status)).length}
-          </div>
+          </span>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Issued & Active</div>
-          <div className="text-2xl font-bold mt-1 text-blue-600">
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Issued & Active</span>
+          <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">
             {orders.filter(o => ['issued', 'acknowledged', 'approved'].includes(o.status)).length}
-          </div>
+          </span>
         </div>
-        <div className="p-4 rounded-xl border bg-card text-card-foreground shadow-sm">
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Committed Spend</div>
-          <div className="text-2xl font-bold mt-1 text-emerald-600 font-mono">
-            ${totalCommittedSpend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
+        <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+          <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Committed Spend</span>
+          <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">
+            ${totalCommittedSpend.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+          </span>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+      {/* Search and Filter */}
+      <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input 
             placeholder="Search PO reference, vendor, project..." 
             value={query} 
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 text-xs h-9.5 rounded-xl bg-background border-border/80 w-full"
           />
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="All Statuses" />
+            <SelectTrigger className="w-full sm:w-44 text-xs font-semibold h-9.5 rounded-xl bg-background border-border/80">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="pending_approval">Pending Approval</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="issued">Issued</SelectItem>
-              <SelectItem value="acknowledged">Acknowledged</SelectItem>
-              <SelectItem value="fully_delivered">Fully Delivered</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
+              <SelectItem value="all">All Statuses ({orders.length})</SelectItem>
+              {Object.keys(statusLabels).map(k => (
+                <SelectItem key={k} value={k}>{statusLabels[k]}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="rounded-xl border bg-card overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground border-b">
-              <tr>
-                <th className="p-4 font-semibold">PO Number</th>
-                <th className="p-4 font-semibold">Supplier / Vendor</th>
-                <th className="p-4 font-semibold">Project</th>
-                <th className="p-4 font-semibold text-right">Total Amount</th>
-                <th className="p-4 font-semibold">Expected Delivery</th>
-                <th className="p-4 font-semibold">Payment Terms</th>
-                <th className="p-4 font-semibold">Status</th>
-                <th className="p-4 font-semibold text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {filtered.length === 0 ? (
+      {/* Table & Mobile Card List */}
+      <div className="space-y-3">
+        {/* Mobile Native Card View (< md) */}
+        <div className="md:hidden space-y-2.5">
+          {filtered.length ? filtered.map(po => (
+            <div key={po.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <span className="font-extrabold text-xs font-mono text-[#005A9C] dark:text-blue-400">{po.reference}</span>
+                  <h4 className="font-bold text-sm text-foreground truncate mt-0.5">{po.supplier_name}</h4>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{po.ops_projects?.name || 'General Site'}</p>
+                </div>
+                <Badge variant="outline" className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-lg border shrink-0 ${
+                  po.status === 'fully_delivered' || po.status === 'approved' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
+                  po.status === 'cancelled' ? 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40' :
+                  po.status === 'issued' ? 'border-blue-500 text-blue-600 bg-blue-50 dark:bg-blue-950/40' :
+                  'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
+                }`}>
+                  {statusLabels[po.status] || po.status}
+                </Badge>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                <span className="font-mono font-black text-sm text-foreground">
+                  ${Number(po.total_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </span>
+                <span className="text-[11px] text-muted-foreground">Due: {po.expected_delivery_date ? new Date(po.expected_delivery_date).toLocaleDateString() : '—'}</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/40">
+                <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs font-bold text-muted-foreground hover:text-foreground rounded-lg" onClick={() => openEdit(po)}>
+                  <Edit3 className="size-3.5 mr-1" /> Edit
+                </Button>
+                <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs font-bold text-destructive hover:text-destructive/80 rounded-lg" onClick={() => handleDelete(po.id)}>
+                  <Trash2 className="size-3.5 mr-1" /> Delete
+                </Button>
+              </div>
+            </div>
+          )) : (
+            <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+              No purchase orders found.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop High-Density Table (>= md) */}
+        <div className="hidden md:block rounded-[22px] border border-border/80 bg-card shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs whitespace-nowrap">
+              <thead className="bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground font-bold border-b border-border/80">
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-muted-foreground">
-                    No purchase orders found. Click "New Purchase Order" to generate one.
-                  </td>
+                  <th className="p-3.5">PO Number</th>
+                  <th className="p-3.5">Supplier / Vendor</th>
+                  <th className="p-3.5">Project</th>
+                  <th className="p-3.5 text-right">Total Amount</th>
+                  <th className="p-3.5">Expected Delivery</th>
+                  <th className="p-3.5">Payment Terms</th>
+                  <th className="p-3.5">Status</th>
+                  <th className="p-3.5 text-right">Actions</th>
                 </tr>
-              ) : (
-                filtered.map((po) => (
-                  <tr key={po.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="p-4 font-mono font-medium text-foreground">{po.reference}</td>
-                    <td className="p-4 font-semibold text-foreground">{po.supplier_name}</td>
-                    <td className="p-4 text-foreground">
-                      {po.ops_projects?.name || <span className="text-muted-foreground italic">General Site</span>}
-                    </td>
-                    <td className="p-4 font-mono font-semibold text-foreground text-right">
-                      ${Number(po.total_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="p-4 text-muted-foreground">
-                      {po.expected_delivery_date ? new Date(po.expected_delivery_date).toLocaleDateString() : '—'}
-                    </td>
-                    <td className="p-4 text-muted-foreground">{po.payment_terms}</td>
-                    <td className="p-4">
-                      <Badge variant="outline" className={`font-semibold capitalize ${
-                        po.status === 'fully_delivered' || po.status === 'approved' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
-                        po.status === 'cancelled' ? 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40' :
-                        po.status === 'issued' ? 'border-blue-500 text-blue-600 bg-blue-50 dark:bg-blue-950/40' :
-                        'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
-                      }`}>
-                        {statusLabels[po.status] || po.status}
-                      </Badge>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => openEdit(po)}>
-                          <Edit3 className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleDelete(po.id)}>
-                          <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
-                        </Button>
-                      </div>
+              </thead>
+              <tbody className="divide-y divide-border/60">
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="p-10 text-center text-muted-foreground">
+                      No purchase orders found.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filtered.map((po) => (
+                    <tr key={po.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="p-3.5 font-mono font-medium text-foreground">{po.reference}</td>
+                      <td className="p-3.5 font-bold text-foreground">{po.supplier_name}</td>
+                      <td className="p-3.5 text-foreground">
+                        {po.ops_projects?.name || <span className="text-muted-foreground italic">General Site</span>}
+                      </td>
+                      <td className="p-3.5 font-mono font-bold text-foreground text-right">
+                        ${Number(po.total_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="p-3.5 text-muted-foreground">
+                        {po.expected_delivery_date ? new Date(po.expected_delivery_date).toLocaleDateString() : '—'}
+                      </td>
+                      <td className="p-3.5 text-muted-foreground">{po.payment_terms}</td>
+                      <td className="p-3.5">
+                        <Badge variant="outline" className={`text-[10px] font-bold uppercase ${
+                          po.status === 'fully_delivered' || po.status === 'approved' ? 'border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40' :
+                          po.status === 'cancelled' ? 'border-rose-500 text-rose-600 bg-rose-50 dark:bg-rose-950/40' :
+                          po.status === 'issued' ? 'border-blue-500 text-blue-600 bg-blue-50 dark:bg-blue-950/40' :
+                          'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/40'
+                        }`}>
+                          {statusLabels[po.status] || po.status}
+                        </Badge>
+                      </td>
+                      <td className="p-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <Button variant="ghost" size="icon" onClick={() => openEdit(po)} className="h-7 w-7 text-muted-foreground hover:text-foreground">
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => handleDelete(po.id)} className="h-7 w-7 text-destructive hover:text-destructive/80">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

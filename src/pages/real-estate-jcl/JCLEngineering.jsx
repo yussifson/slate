@@ -266,113 +266,68 @@ export default function JCLEngineering() {
   return (
     <main className="min-h-full bg-background p-4 sm:p-6 lg:p-8 font-sans">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        {/* Executive Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#005A9C] via-[#00477D] to-[#0A2540] p-6 text-white shadow-lg shadow-[#005A9C]/15 border border-white/10">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Native Mobile Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+              <Layers className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FF6B00] text-white">
-                  Engineering & Technical Records
-                </span>
-                <span className="text-xs text-white/70">JCL Design & Construction Hub</span>
-              </div>
-              <h1 className="text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                <Layers className="h-6 w-6 text-[#FF6B00]" />
-                Engineering Command & Drawing Register
-              </h1>
-              <p className="text-xs text-white/80 max-w-xl mt-1">
-                Manage architectural, structural, MEP, and civil engineering drawings with full revision control and technical approvals.
-              </p>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Engineering</h1>
+              <p className="text-xs text-muted-foreground font-medium">Drawing registers, technical revisions & approvals</p>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={loadData} 
-                disabled={loading}
-                className="bg-white/15 hover:bg-white/25 text-white border-0 text-xs backdrop-blur-sm"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-              <Button 
-                onClick={openCreateDrawing} 
-                size="sm" 
-                className="bg-[#FF6B00] hover:bg-[#E05E00] text-white text-xs font-semibold shadow-md"
-              >
-                <Plus className="h-3.5 w-3.5 mr-1" /> New Technical Drawing
-              </Button>
-            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={openCreateDrawing} 
+              size="sm" 
+              className="bg-[#005A9C] hover:bg-[#00477D] text-white text-xs font-bold rounded-xl h-10 px-4 gap-1.5 shadow-sm"
+            >
+              <Plus className="h-4 w-4" /> <span className="hidden sm:inline">New Technical Drawing</span><span className="sm:hidden">Add Drawing</span>
+            </Button>
           </div>
         </div>
 
-        {/* Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border border-border/80 shadow-xs bg-card">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Total Drawings</p>
-                <h3 className="text-2xl font-bold text-foreground mt-0.5">{drawings.length}</h3>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
-                <Compass className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
+        {/* 2x2 Native Mobile Metric Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Total Drawings</span>
+            <span className="text-xl sm:text-2xl font-black text-foreground">{drawings.length}</span>
+          </div>
 
-          <Card className="border border-border/80 shadow-xs bg-card">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Approved Designs</p>
-                <h3 className="text-2xl font-bold text-emerald-600 mt-0.5">
-                  {drawings.filter(d => d.current_status === 'approved' || d.current_status === 'approved_with_comments').length}
-                </h3>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                <CheckCircle2 className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Approved Designs</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">
+              {drawings.filter(d => d.current_status === 'approved' || d.current_status === 'approved_with_comments').length}
+            </span>
+          </div>
 
-          <Card className="border border-border/80 shadow-xs bg-card">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Pending Review</p>
-                <h3 className="text-2xl font-bold text-amber-600 mt-0.5">
-                  {drawings.filter(d => d.current_status === 'submitted').length}
-                </h3>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
-                <Clock className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Pending Review</span>
+            <span className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">
+              {drawings.filter(d => d.current_status === 'submitted').length}
+            </span>
+          </div>
 
-          <Card className="border border-border/80 shadow-xs bg-card">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Total Revisions Logged</p>
-                <h3 className="text-2xl font-bold text-blue-600 mt-0.5">{revisions.length}</h3>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
-                <Ruler className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Revisions Logged</span>
+            <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{revisions.length}</span>
+          </div>
         </div>
 
-        {/* Filter and Search Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+        {/* Search and Filter */}
+        <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
-              className="pl-8 text-xs h-9 bg-card" 
+              className="pl-9 text-xs h-9.5 rounded-xl bg-background border-border/80 w-full" 
               placeholder="Search drawings, disciplines, projects..." 
               value={query} 
               onChange={e => setQuery(e.target.value)} 
             />
           </div>
-          <Badge variant="outline" className="text-xs font-normal">
+          <Badge variant="outline" className="text-xs font-bold px-3 py-1 rounded-xl self-end sm:self-auto">
             {filteredDrawings.length} Drawings Listed
           </Badge>
         </div>
@@ -386,9 +341,70 @@ export default function JCLEngineering() {
 
           {/* TAB 1: DRAWING REGISTER */}
           <TabsContent value="drawings" className="m-0">
-            <Card className="border border-border/80 shadow-xs bg-card overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+            <div className="space-y-3">
+              {/* Mobile Native Card View (< md) */}
+              <div className="md:hidden space-y-2.5">
+                {filteredDrawings.length ? filteredDrawings.map(row => {
+                  const statusInfo = STATUS_CONFIG[row.current_status] || STATUS_CONFIG.submitted;
+                  return (
+                    <div key={row.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <span className="font-extrabold text-xs font-mono text-[#005A9C] dark:text-blue-400">{row.drawing_number}</span>
+                          <h4 className="font-bold text-sm text-foreground truncate mt-0.5">{row.title}</h4>
+                          <p className="text-[11px] text-muted-foreground capitalize mt-0.5">{row.discipline?.replace(/_/g, ' ')} · {row.ops_projects?.name || 'Unassigned Project'}</p>
+                        </div>
+                        <Badge variant="outline" className={cn("text-[9px] font-bold uppercase px-2 py-0.5 rounded-lg border shrink-0", statusInfo.color)}>
+                          {statusInfo.label}
+                        </Badge>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                        <Badge variant="outline" className="font-mono text-[10px] bg-muted/40">
+                          Rev {row.current_revision_number}
+                        </Badge>
+                        <span className="text-[11px] text-muted-foreground">{row.created_at ? new Date(row.created_at).toLocaleDateString() : 'Active'}</span>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-1.5 pt-1 border-t border-border/40">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs font-bold px-2.5 text-[#005A9C] border-[#005A9C]/30 hover:bg-[#005A9C]/10 rounded-lg" 
+                          onClick={() => openAddRevision(row)}
+                        >
+                          + Rev
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 px-2 text-xs font-bold text-muted-foreground hover:text-foreground rounded-lg"
+                          onClick={() => openEditDrawing(row)}
+                        >
+                          <Edit3 className="size-3.5 mr-1" /> Edit
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 px-2 text-xs font-bold text-rose-500 hover:text-rose-700 rounded-lg"
+                          onClick={() => deleteDrawing(row.id, row.drawing_number)}
+                        >
+                          <Trash2 className="size-3.5 mr-1" /> Delete
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                }) : (
+                  <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">
+                    No technical drawings found.
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop High-Density Table (>= md) */}
+              <Card className="hidden md:block border border-border/80 shadow-xs bg-card rounded-[22px] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
                   <thead className="bg-muted/50 border-b border-border text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
                     <tr>
                       <th className="p-3">Drawing Number</th>
@@ -465,6 +481,7 @@ export default function JCLEngineering() {
                 </table>
               </div>
             </Card>
+          </div>
           </TabsContent>
 
           {/* TAB 2: REVISION HISTORY */}

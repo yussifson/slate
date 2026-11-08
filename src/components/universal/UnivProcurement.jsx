@@ -132,79 +132,118 @@ export default function UnivProcurement() {
 
  return (
  <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
- <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
+ <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0">
  <div>
- <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]"><ShoppingCart className="w-7 h-7 text-primary" /> Procurement</h1>
- <p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">Manage purchase orders and supplier requests.</p>
+ <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight flex items-center gap-2"><ShoppingCart className="w-6 h-6 text-[#005A9C]" /> Procurement</h1>
+ <p className="text-muted-foreground text-xs font-medium mt-0.5">{filtered.length} commercial purchase orders & vendor requests</p>
  </div>
  <div className="flex items-center gap-2">
-
- 
- 
-<button onClick={handleExport} className="h-10 px-4 bg-secondary text-secondary-foreground rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-secondary/80 -[0_2px_8px_-2px_rgba(0,0,0,0.1)] transition-all active:scale-95">
- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
- Export CSV
+ <button onClick={handleExport} className="h-9 px-3.5 bg-muted text-foreground border border-border rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-muted/80 transition-all active:scale-95">
+ <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+ <span className="hidden sm:inline">Export CSV</span><span className="sm:hidden">Export</span>
  </button>
 
- <button onClick={() => openModal()} className="h-10 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors "><Plus className="w-4 h-4" /> Create PO</button>
+ <button onClick={() => openModal()} className="h-9 px-3.5 bg-[#005A9C] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 hover:bg-[#00477D] transition-colors"><Plus className="w-4 h-4" /> Create PO</button>
  </div>
  </div>
 
- <div className="flex gap-3 shrink-0">
+ <div className="bg-card/90 backdrop-blur-xl p-2.5 sm:p-3 rounded-[20px] border border-border/80 shadow-xs flex gap-3 shrink-0">
  <div className="relative flex-1">
- <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#71717a] dark:text-gray-400" />
- <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search POs or suppliers..." className="w-full h-11 pl-10 pr-4 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-sm  hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200" />
+ <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+ <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search POs or suppliers..." className="w-full h-9.5 pl-9 pr-4 bg-background border border-border/80 rounded-xl focus:ring-2 focus:ring-primary/40 focus:outline-none text-xs" />
  </div>
  </div>
 
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col min-h-0 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className="space-y-3 flex-1 min-h-0">
+ {/* Mobile Native Card View (< md) */}
+ <div className="md:hidden space-y-2.5 overflow-y-auto">
+ {loading ? (
+ <div className="p-8 text-center"><Loader2 className="w-7 h-7 animate-spin text-primary mx-auto" /></div>
+ ) : filtered.length === 0 ? (
+ <div className="p-8 text-center text-xs text-muted-foreground border border-dashed border-border rounded-2xl">No purchase orders found.</div>
+ ) : (
+ filtered.map(r => (
+ <div key={r.id} className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-all space-y-2.5">
+ <div className="flex items-start justify-between gap-2">
+ <div className="min-w-0 flex-1">
+ <span className="font-extrabold text-xs font-mono text-[#005A9C] dark:text-blue-400">{r.po_number}</span>
+ <h4 className="font-bold text-sm text-foreground truncate mt-0.5">{r.supplier}</h4>
+ </div>
+ <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${STATUS_COLORS[r.status] || 'bg-muted text-muted-foreground'}`}>
+ {r.status}
+ </span>
+ </div>
+
+ <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+ <span className="font-mono font-black text-sm text-foreground">
+ ${Number(r.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}
+ </span>
+ <span className="text-[11px] text-muted-foreground">Expected: {r.expected_date || '—'}</span>
+ </div>
+
+ <div className="flex items-center justify-between pt-1 border-t border-border/40">
+ <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className="text-[11px] font-bold px-2 py-1 rounded-lg bg-muted border border-border">
+ {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
+ </select>
+
+ <div className="flex items-center gap-1.5">
+ <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg text-muted-foreground hover:text-foreground"><Edit2 className="w-3.5 h-3.5" /></button>
+ <button onClick={() => deleteRecord(r.id)} className="p-1.5 bg-rose-500/10 rounded-lg text-rose-600 hover:text-rose-700"><Trash2 className="w-3.5 h-3.5" /></button>
+ </div>
+ </div>
+ </div>
+ ))
+ )}
+ </div>
+
+ {/* Desktop Table (>= md) */}
+ <div className="hidden md:flex flex-1 bg-card border border-border/80 rounded-[22px] overflow-hidden flex-col min-h-0 shadow-xs">
  <div className="overflow-auto flex-1 custom-scrollbar">
- <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-primary/40 sticky top-0 z-10">
+ <table className="w-full text-xs">
+ <thead className="bg-muted/50 border-b border-border/80 sticky top-0 z-10 text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
  <tr>
  {['PO Number', 'Supplier', 'Amount', 'Order Date', 'Expected', 'Status', 'Actions'].map((h, i) => (
- <th key={i} className="p-4 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider whitespace-nowrap tracking-[0.04em]">{h}</th>
+ <th key={i} className="p-3.5 text-left tracking-wider whitespace-nowrap">{h}</th>
  ))}
  </tr>
  </thead>
- <tbody className="divide-y divide-border">
+ <tbody className="divide-y divide-border/60">
  {loading ? (
- <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" /></td></tr>
+ <tr><td colSpan={7} className="p-8 text-center"><Loader2 className="w-7 h-7 animate-spin text-primary mx-auto" /></td></tr>
  ) : filtered.length === 0 ? (
- <tr><td colSpan={7} className="p-12 text-center text-[#71717a] dark:text-gray-400">No purchase orders found.</td></tr>
+ <tr><td colSpan={7} className="p-10 text-center text-muted-foreground">No purchase orders found.</td></tr>
  ) : (
- filtered.map(r => {
- return (
+ filtered.map(r => (
  <tr key={r.id} className="hover:bg-muted/30 transition-colors group">
- <td className="p-4"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold"><FileText className="w-4 h-4" /></div><span className="font-semibold text-foreground">{r.po_number}</span></div></td>
- <td className="p-4 text-foreground font-medium">{r.supplier}</td>
- <td className="p-4 font-black">${Number(r.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
- <td className="p-4 text-[#71717a] dark:text-gray-400 whitespace-nowrap">{r.order_date || '—'}</td>
- <td className="p-4 text-[#71717a] dark:text-gray-400 whitespace-nowrap">{r.expected_date || '—'}</td>
- <td className="p-4">
- <div className="flex flex-col gap-2">
- <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className={`px-2 py-0.5 w-max rounded-full text-[10px] font-semibold uppercase tracking-wider border-[0.5px] border-black/9 dark:border-white/8 outline-none cursor-pointer ${STATUS_COLORS[r.status] || 'bg-muted text-[#71717a] dark:text-gray-400'}`}>
+ <td className="p-3.5"><div className="flex items-center gap-2"><span className="font-bold font-mono text-foreground">{r.po_number}</span></div></td>
+ <td className="p-3.5 text-foreground font-bold">{r.supplier}</td>
+ <td className="p-3.5 font-black text-foreground font-mono">${Number(r.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+ <td className="p-3.5 text-muted-foreground whitespace-nowrap">{r.order_date || '—'}</td>
+ <td className="p-3.5 text-muted-foreground whitespace-nowrap">{r.expected_date || '—'}</td>
+ <td className="p-3.5">
+ <div className="flex flex-col gap-1">
+ <select value={r.status} onChange={(e) => updateStatus(r.id, e.target.value)} className={`px-2 py-0.5 w-max rounded-lg text-[10px] font-bold uppercase tracking-wider border outline-none cursor-pointer ${STATUS_COLORS[r.status] || 'bg-muted text-muted-foreground'}`}>
  {Object.keys(STATUS_COLORS).map(s => <option key={s} value={s}>{s}</option>)}
  </select>
  {WORKFLOW_STAGES.indexOf(r.status) >= 0 && WORKFLOW_STAGES.indexOf(r.status) < WORKFLOW_STAGES.length - 1 && (
- <button onClick={() => advanceWorkflow(r)} className="text-[10px] font-semibold text-primary hover:underline text-left mt-1">
+ <button onClick={() => advanceWorkflow(r)} className="text-[10px] font-bold text-primary hover:underline text-left">
  Approve &rarr; {WORKFLOW_STAGES[WORKFLOW_STAGES.indexOf(r.status) + 1]}
  </button>
  )}
  </div>
  </td>
- <td className="p-4">
- <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
- <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors"><Edit2 className="w-4 h-4" /></button>
- <button onClick={() => deleteRecord(r.id)} className="p-1.5 bg-red-50 rounded-lg text-red-400 hover:text-red-600 transition-colors"><Trash2 className="w-4 h-4" /></button>
+ <td className="p-3.5">
+ <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+ <button onClick={() => openModal(r)} className="p-1.5 bg-muted rounded-lg text-muted-foreground hover:text-foreground transition-colors"><Edit2 className="w-3.5 h-3.5" /></button>
+ <button onClick={() => deleteRecord(r.id)} className="p-1.5 bg-rose-500/10 rounded-lg text-rose-600 hover:text-rose-700 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
  </div>
  </td>
  </tr>
- )
-})
+ ))
  )}
  </tbody>
  </table>
+ </div>
  </div>
  </div>
 
