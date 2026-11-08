@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePowerSync } from '@powersync/react';
+import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Badge } from '@/components/ui/badge';
@@ -80,15 +81,40 @@ export default function JCLDashboard() {
 
         if (active) {
           const extractRows = (res) => res?.rows?._array || Array.from(res?.rows || []);
-          setProperties(extractRows(propRes));
-          setClients(extractRows(clientRes));
-          setLeads(extractRows(leadRes));
-          setViewings(extractRows(viewRes));
-          setTransactions(extractRows(txnRes));
-          setLeases(extractRows(leaseRes));
-          setOffers(extractRows(offerRes));
-          setTasks(extractRows(taskRes));
-          const compRows = extractRows(compRes);
+          let pRows = extractRows(propRes);
+          let cRows = extractRows(clientRes);
+          let lRows = extractRows(leadRes);
+          let vRows = extractRows(viewRes);
+          let tRows = extractRows(txnRes);
+          let leRows = extractRows(leaseRes);
+          let oRows = extractRows(offerRes);
+          let tkRows = extractRows(taskRes);
+          let compRows = extractRows(compRes);
+
+          // Fallback to Supabase directly if offline local DB is still hydrating or unpopulated
+          if (pRows.length === 0 || cRows.length === 0 || lRows.length === 0) {
+            try {
+              const [supaP, supaC, supaL] = await Promise.all([
+                supabase.from('univ_re_properties').select('*').eq('company_id', companyId).order('created_at', { ascending: false }).limit(50),
+                supabase.from('univ_re_clients').select('*').eq('company_id', companyId).order('created_at', { ascending: false }).limit(50),
+                supabase.from('univ_re_leads').select('*').eq('company_id', companyId).order('created_at', { ascending: false }).limit(50)
+              ]);
+              if (pRows.length === 0 && supaP.data?.length) pRows = supaP.data;
+              if (cRows.length === 0 && supaC.data?.length) cRows = supaC.data;
+              if (lRows.length === 0 && supaL.data?.length) lRows = supaL.data;
+            } catch (errFallback) {
+              console.warn('[JCLDashboard] Direct Supabase fallback warning:', errFallback);
+            }
+          }
+
+          setProperties(pRows);
+          setClients(cRows);
+          setLeads(lRows);
+          setViewings(vRows);
+          setTransactions(tRows);
+          setLeases(leRows);
+          setOffers(oRows);
+          setTasks(tkRows);
           if (compRows.length > 0) {
             setCompany(compRows[0]);
           }
