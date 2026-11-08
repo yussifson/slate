@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Building2, BookOpen, Trash2, MoreVertical, Edit, Eye, Printer, Receipt, FileText, Landmark, LineChart,
+  Building2, BookOpen, Wallet, BookCheck, Trash2, MoreVertical, Edit, Eye, Printer, Receipt, FileText, Landmark, LineChart,
   Plus, Search, RefreshCw, CheckCircle2, ArrowUpRight, ArrowDownLeft,
   DollarSign, TrendingUp, Users, ShoppingBag, BarChart2,
   Banknote, Shield,
@@ -19,6 +19,9 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import ExportButton from '@/components/shared/ExportButton';
+import PettyCash from './PettyCash';
+import FinancialStatements from './FinancialStatements';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -95,6 +98,8 @@ const TABS = [
   { id: 'income',   label: 'Income & Expenses',    icon: TrendingUp,    color: 'blue'    },
   { id: 'payroll',  label: 'Payroll & Tax',        icon: Users,         color: 'violet'  },
   { id: 'tonefo',   label: 'TONEFO Installments',  icon: ShoppingBag,   color: 'orange'  },
+  { id: 'petty_cash',  label: 'Petty Cash',           icon: Wallet,        color: 'emerald' },
+  { id: 'statements',  label: 'Financial Statements', icon: BookCheck,     color: 'indigo'  },
   { id: 'reports',  label: 'Reports',              icon: BarChart2,     color: 'pink'    },
 ];
 
@@ -1213,6 +1218,18 @@ export default function FirmAccountingHub() {
       {/* ══════════════════════════════════════════════════════ */}
       {/* TAB: REPORTS                                           */}
       {/* ══════════════════════════════════════════════════════ */}
+      {activeTab === 'petty_cash' && (
+        <div className="space-y-5">
+          <PettyCash />
+        </div>
+      )}
+
+      {activeTab === 'statements' && (
+        <div className="space-y-5">
+          <FinancialStatements />
+        </div>
+      )}
+
       {activeTab === 'reports' && (
         <div className="space-y-5">
           <SectionHeader icon={BarChart2} title="Financial Reports Dashboard" color="pink" />
