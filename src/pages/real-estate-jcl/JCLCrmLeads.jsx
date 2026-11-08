@@ -12,7 +12,6 @@ import { PortalAwareItem } from '@/lib/kanbanPortal.jsx';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
 import { useCompanyId } from '@/hooks/useCompanyId';
-import { useAuth } from '@/lib/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,7 +40,7 @@ const STATUS_COLUMNS = [
   { id: 'contacted', title: 'Contact Made', dot: 'bg-amber-500', badgeColor: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200' },
   { id: 'qualified', title: 'Qualified', dot: 'bg-purple-500', badgeColor: 'bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200' },
   { id: 'negotiating', title: 'Negotiating', dot: 'bg-indigo-500', badgeColor: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 border-indigo-200' },
-  { id: 'closed', title: 'Won / Converted', dot: 'bg-emerald-500', badgeColor: 'bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200' },
+  { id: 'closed', title: 'Won / Converted', dot: 'bg-emerald-500', badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-200' },
   { id: 'lost', title: 'Lost', dot: 'bg-slate-400', badgeColor: 'bg-muted text-muted-foreground border-border' },
 ];
 
@@ -53,7 +52,7 @@ const STATUS_CONFIG = STATUS_COLUMNS.reduce((acc, col) => {
 const getInitialsBg = (name = '') => {
   const code = (name.charCodeAt(0) || 65) + (name.charCodeAt(1) || 66);
   const colors = [
-    'bg-[#005A9C] text-white',
+    'bg-emerald-600 text-white',
     'bg-blue-600 text-white',
     'bg-indigo-600 text-white',
     'bg-amber-600 text-white',
@@ -131,7 +130,7 @@ function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, 
                     ref={provided.innerRef}
                     className={cn(
                       "flex-1 flex flex-col gap-3 min-h-[400px] p-1.5 rounded-[20px] transition-colors border border-transparent",
-                      snapshot.isDraggingOver && "bg-muted/40 border-dashed border-[#005A9C]/30"
+                      snapshot.isDraggingOver && "bg-muted/40 border-dashed border-emerald-500/30"
                     )}
                   >
                     {columnLeads.map((lead, index) => {
@@ -264,7 +263,7 @@ function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, 
 export default function JCLCrmLeads() {
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
-  const { user } = useAuth();
+
   const [leads, setLeads] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -364,18 +363,8 @@ export default function JCLCrmLeads() {
     toast.success('Leads exported to CSV');
   };
 
-  const isAdmin = ['company_admin', 'super_admin', 'admin', 'managing_partner', 'owner'].includes((user?.role || '').toLowerCase());
-
-  // Access-Base Isolation: Non-admin staff only see leads assigned to them or created by them
   const filteredLeads = useMemo(() => {
     return leads.filter(l => {
-      if (!isAdmin && user?.id) {
-        const isAssigned = l.assigned_agent_id === user.id ||
-                           l.assigned_agent_id === user.email ||
-                           l.notes?.includes(user.email);
-        // If lead was created before assigned_agent_id tracking, allow creator or unassigned if none
-        if (l.assigned_agent_id && !isAssigned) return false;
-      }
       const matchSearch = !search ||
         l.first_name?.toLowerCase().includes(search.toLowerCase()) ||
         l.last_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -384,7 +373,7 @@ export default function JCLCrmLeads() {
       const matchStatus = statusFilter === 'all' || l.status === statusFilter;
       return matchSearch && matchStatus;
     });
-  }, [leads, search, statusFilter, isAdmin, user]);
+  }, [leads, search, statusFilter]);
 
   // Update Status in PowerSync
   const handleUpdateStatus = async (leadId, newStatus) => {
@@ -430,14 +419,14 @@ export default function JCLCrmLeads() {
         await powerSync.execute(
           `INSERT INTO univ_re_leads (
             id, created_at, company_id, first_name, last_name, email, phone,
-            lead_type, source, status, budget_min, budget_max, lead_score, notes, assigned_agent_id
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            lead_type, source, status, budget_min, budget_max, lead_score, notes
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             newId, now, companyId,
             formData.firstName, formData.lastName, formData.email, formData.phone,
             formData.leadType, formData.source, formData.status,
             Number(formData.budgetMin) || 0, Number(formData.budgetMax) || 0,
-            75, formData.notes, user?.id || null
+            75, formData.notes
           ]
         );
         toast.success('New lead captured successfully');
@@ -566,7 +555,7 @@ export default function JCLCrmLeads() {
   };
 
   return (
-    <div className="space-y-6 pb-12 font-sans min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 relative bg-background">
+    <div className="space-y-5 sm:space-y-6 pb-[max(96px,env(safe-area-inset-bottom))] font-sans min-h-screen -m-4 lg:-m-8 p-3 sm:p-6 lg:p-8 relative bg-background overflow-x-hidden">
       
       {/* ── Top Header & Breadcrumbs Row ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
@@ -658,7 +647,7 @@ export default function JCLCrmLeads() {
                 });
                 setShowForm(true);
               }}
-              className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl h-10 px-4 gap-2 shadow-sm"
             >
               <UserPlus className="w-4 h-4" />
               Capture Lead
@@ -824,7 +813,7 @@ export default function JCLCrmLeads() {
                   <Button
                     size="sm"
                     onClick={() => handleConvertToClient(inspectorLead)}
-                    className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl h-8 gap-1.5"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl h-8 gap-1.5"
                   >
                     <Users className="w-3.5 h-3.5" /> Convert To Customer
                   </Button>
@@ -904,7 +893,7 @@ export default function JCLCrmLeads() {
                     <Button
                       size="xs"
                       onClick={() => { setSelectedLead(inspectorLead); setShowActivityModal(true); }}
-                      className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-lg h-7 gap-1"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg h-7 gap-1"
                     >
                       <MessageSquare className="w-3 h-3" /> Log Activity
                     </Button>
@@ -1092,7 +1081,7 @@ export default function JCLCrmLeads() {
               </Button>
               <Button
                 type="submit"
-                className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl font-bold text-xs"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs"
               >
                 {editingId ? 'Update Lead' : 'Save Lead'}
               </Button>
@@ -1200,7 +1189,7 @@ export default function JCLCrmLeads() {
             <Button
               type="button"
               onClick={handleSaveActivity}
-              className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl font-bold text-xs"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs"
             >
               Save Activity
             </Button>

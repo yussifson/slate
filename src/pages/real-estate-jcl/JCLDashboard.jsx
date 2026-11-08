@@ -28,8 +28,6 @@ import {
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/constants';
 
-let jcl_dash_cache = null;
-
 export default function JCLDashboard() {
   const { t } = useTranslation();
   const { user } = useAuth();
@@ -39,16 +37,16 @@ export default function JCLDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [properties, setProperties] = useState(() => jcl_dash_cache?.properties || []);
-  const [clients, setClients] = useState(() => jcl_dash_cache?.clients || []);
-  const [leads, setLeads] = useState(() => jcl_dash_cache?.leads || []);
-  const [viewings, setViewings] = useState(() => jcl_dash_cache?.viewings || []);
-  const [transactions, setTransactions] = useState(() => jcl_dash_cache?.transactions || []);
-  const [leases, setLeases] = useState(() => jcl_dash_cache?.leases || []);
-  const [offers, setOffers] = useState(() => jcl_dash_cache?.offers || []);
-  const [tasks, setTasks] = useState(() => jcl_dash_cache?.tasks || []);
-  const [company, setCompany] = useState(() => jcl_dash_cache?.company || null);
-  const [isLoading, setIsLoading] = useState(() => !jcl_dash_cache);
+  const [properties, setProperties] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [leads, setLeads] = useState([]);
+  const [viewings, setViewings] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [leases, setLeases] = useState([]);
+  const [offers, setOffers] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [company, setCompany] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [dateRangeView, setDateRangeView] = useState('Monthly');
 
@@ -66,7 +64,7 @@ export default function JCLDashboard() {
   useEffect(() => {
     let active = true;
     const fetchData = async () => {
-      if (!jcl_dash_cache) setIsLoading(true);
+      setIsLoading(true);
       try {
         const [propRes, clientRes, leadRes, viewRes, txnRes, leaseRes, offerRes, taskRes, compRes] = await Promise.all([
           powerSync.execute('SELECT * FROM univ_re_properties WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
@@ -91,19 +89,9 @@ export default function JCLDashboard() {
           setOffers(extractRows(offerRes));
           setTasks(extractRows(taskRes));
           const compRows = extractRows(compRes);
-          const compObj = compRows.length > 0 ? compRows[0] : null;
-          if (compObj) setCompany(compObj);
-          jcl_dash_cache = {
-            properties: extractRows(propRes),
-            clients: extractRows(clientRes),
-            leads: extractRows(leadRes),
-            viewings: extractRows(viewRes),
-            transactions: extractRows(txnRes),
-            leases: extractRows(leaseRes),
-            offers: extractRows(offerRes),
-            tasks: extractRows(taskRes),
-            company: compObj
-          };
+          if (compRows.length > 0) {
+            setCompany(compRows[0]);
+          }
         }
       } catch (e) {
         console.error('[JCLDashboard] Data fetch failed:', e);
@@ -255,7 +243,7 @@ export default function JCLDashboard() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-8 pb-20 font-sans min-h-screen p-2 sm:p-4 md:p-6 lg:p-8 relative bg-background w-full max-w-full">
+    <div className="space-y-6 sm:space-y-8 pb-[max(96px,env(safe-area-inset-bottom))] font-sans min-h-screen p-3 sm:p-6 lg:p-8 relative bg-background overflow-x-hidden">
       <div className="relative z-10 space-y-8">
 
         {/* ── 24h Real Estate Urgent Reminders Banner ── */}
@@ -303,77 +291,93 @@ export default function JCLDashboard() {
         )}
 
         {/* ── Dashboard Header ── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-[28px] font-bold text-foreground tracking-tight flex items-center gap-2">
               Good morning, {user?.full_name?.split(' ')[0] || user?.name?.split(' ')[0] || "Executive"} {greetingEmoji}
             </h1>
-            <p className="text-xs sm:text-[13px] font-medium text-muted-foreground mt-0.5">
+            <p className="text-[13px] font-medium text-muted-foreground mt-1">
               {format(new Date(), "EEEE, do MMMM yyyy")} · <strong>{company?.name || 'JCL Royal Group Real Estate'}</strong>
             </p>
+              <Badge className="mt-2 bg-blue-100 text-blue-800 border-none">Isolated JCL Real Estate</Badge>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Link to="/real-estate/land" className="flex-1 sm:flex-none">
+              <Button size="sm" className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold gap-1.5 shadow-sm h-9 px-4 justify-center">
+                <Compass className="w-3.5 h-3.5" /> Land Parcels
+              </Button>
+            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="flex-1 sm:flex-none justify-center rounded-xl border-border bg-card text-xs font-semibold gap-1.5 h-9 px-3"
+            >
+              <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
+              Refresh
+            </Button>
           </div>
         </div>
 
-        {/* ── Unified Stats Container (Compact Frosted Glass) ── */}
-        <div className="px-1 sm:px-2 pt-2 sm:pt-4 pb-2">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-4">
+        {/*  Unified Stats Container (Native Mobile Cards)  */}
+        <div className="px-0 sm:px-2 pt-1 sm:pt-4 pb-1">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-4">
 
             {/* Active Land / Properties */}
-            <div className="flex flex-col items-center text-center">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#FFB6C1] to-[#FFE4E1] flex items-center justify-center mb-3 shadow-[0_4px_12px_rgba(255,182,193,0.4)]">
+            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#FFB6C1] to-[#FFE4E1] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(255,182,193,0.4)]">
                 <Compass className="w-4 h-4 text-[#D05370]" />
               </div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Active Listings</p>
-              <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">
+              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Active Listings</p>
+              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
                 {activePropertiesCount}
               </h2>
-              <p className="text-[11px] font-medium text-[#005A9C] dark:text-[#FF6B00] mt-0.5">
-                {availableLand} available · {activeLandAllocations} reserved
+              <p className="text-[10px] sm:text-[11px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5 line-clamp-1">
+                {availableLand} available • {activeLandAllocations} reserved
               </p>
             </div>
 
             {/* Active Clients */}
-            <div className="flex flex-col items-center text-center relative">
-              <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-[#E8D5D8] to-transparent"></div>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#A7F3D0] to-[#D1FAE5] flex items-center justify-center mb-3 shadow-[0_4px_12px_rgba(167,243,208,0.4)]">
+            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#A7F3D0] to-[#D1FAE5] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(167,243,208,0.4)]">
                 <Users className="w-4 h-4 text-[#047857]" />
               </div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Active Clients</p>
-              <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">
+              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Active Clients</p>
+              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
                 {totalClientsCount}
               </h2>
-              <p className="text-[11px] font-medium text-muted-foreground mt-0.5">
-                {leads.length} leads in pipeline
+              <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground mt-0.5 line-clamp-1">
+                {leads.length} in pipeline
               </p>
             </div>
 
             {/* Closed Sales Volume */}
-            <div className="flex flex-col items-center text-center relative">
-              <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-[#E8D5D8] to-transparent"></div>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#FCA5A5] to-[#FEE2E2] flex items-center justify-center mb-3 shadow-[0_4px_12px_rgba(252,165,165,0.4)]">
+            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#FCA5A5] to-[#FEE2E2] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(252,165,165,0.4)]">
                 <ArrowUpRight className="w-4 h-4 text-[#B91C1C]" />
               </div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Closed Volume</p>
-              <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">
+              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Closed Volume</p>
+              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
                 {currencySymbol}{totalClosedVolume > 1000 ? `${(totalClosedVolume / 1000).toFixed(0)}k` : totalClosedVolume.toLocaleString()}
               </h2>
-              <p className="text-[11px] font-medium text-[#005A9C] dark:text-[#FF6B00] mt-0.5">
-                {transactions.filter(t => t.status === 'closed' || t.status === 'completed').length} completed deals
+              <p className="text-[10px] sm:text-[11px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5 line-clamp-1">
+                {transactions.filter(t => t.status === "closed" || t.status === "completed").length} completed
               </p>
             </div>
 
             {/* Pending Tasks & Actions */}
-            <div className="flex flex-col items-center text-center relative">
-              <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-12 bg-gradient-to-b from-transparent via-[#E8D5D8] to-transparent"></div>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#C4B5FD] to-[#EDE9FE] flex items-center justify-center mb-3 shadow-[0_4px_12px_rgba(196,181,253,0.4)]">
+            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#C4B5FD] to-[#EDE9FE] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(196,181,253,0.4)]">
                 <Activity className="w-4 h-4 text-[#5B21B6]" />
               </div>
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Pending Tasks</p>
-              <h2 className="text-[24px] font-extrabold text-foreground tracking-tight">
+              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Pending Tasks</p>
+              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
                 {pendingTasksCount}
               </h2>
-              <p className="text-[11px] font-medium text-muted-foreground mt-0.5">
-                {offers.filter(o => o.status === 'pending').length} offers · {leases.filter(l => l.status === 'active').length} active leases
+              <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground mt-0.5 line-clamp-1">
+                {offers.filter(o => o.status === "pending").length} offers • {leases.filter(l => l.status === "active").length} leases
               </p>
             </div>
 
@@ -594,26 +598,23 @@ export default function JCLDashboard() {
           </div>
         </div>
 
-        {/* ── Row 4: Native Mobile Quick Action Launch Grid ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pb-8">
+        {/* ── Row 4: Quick Action Launch Grid ── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
           {[
-            { label: "Add Parcel", sub: "New listing", icon: Compass, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20", link: "/real-estate/land" },
-            { label: "New CRM Lead", sub: "Client intake", icon: UserPlus, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", link: "/real-estate/crm-leads" },
-            { label: "Book Viewing", sub: "Schedule tour", icon: Calendar, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", link: "/real-estate/viewings" },
-            { label: "New Offer / Deal", sub: "Commercial terms", icon: DollarSign, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", link: "/real-estate/offers" }
+            { label: "Add Parcel", icon: Compass, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/40", link: "/real-estate/land" },
+            { label: "New CRM Lead", icon: UserPlus, color: "text-[#10B981]", bg: "bg-emerald-50 dark:bg-emerald-950/40", link: "/real-estate/crm-leads" },
+            { label: "Book Viewing", icon: Calendar, color: "text-[#8B5CF6]", bg: "bg-purple-50 dark:bg-purple-950/40", link: "/real-estate/viewings" },
+            { label: "New Offer / Deal", icon: DollarSign, color: "text-[#3B82F6]", bg: "bg-blue-50 dark:bg-blue-950/40", link: "/real-estate/offers" }
           ].map((item, i) => (
             <Link
               key={i}
               to={item.link}
-              className="bg-card rounded-2xl p-3.5 sm:p-5 border border-border shadow-sm hover:border-primary/40 active:scale-[0.98] transition-all duration-200 flex flex-row sm:flex-col items-center sm:text-center gap-3 group"
+              className="bg-card rounded-[24px] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-border/80 hover:border-border hover:shadow-[0_8px_16px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center gap-4 group"
             >
-              <div className={cn("w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105", item.bg, item.color, item.border)}>
-                <item.icon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.2} />
+              <div className={cn("w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:shadow-sm", item.bg, item.color)}>
+                <item.icon className="w-[22px] h-[22px]" strokeWidth={2.5} />
               </div>
-              <div className="flex flex-col min-w-0 text-left sm:text-center">
-                <span className="text-xs sm:text-sm font-bold text-foreground tracking-tight truncate">{item.label}</span>
-                <span className="text-[10px] text-muted-foreground font-medium hidden sm:block">{item.sub}</span>
-              </div>
+              <span className="text-[14px] font-extrabold text-foreground tracking-tight">{item.label}</span>
             </Link>
           ))}
         </div>
@@ -622,3 +623,6 @@ export default function JCLDashboard() {
     </div>
   );
 }
+
+
+

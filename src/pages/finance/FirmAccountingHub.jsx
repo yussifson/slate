@@ -1,35 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Building2, BookOpen, Trash2, MoreVertical, Edit, Eye, Printer, Receipt, FileText, Landmark, LineChart,
+  Building2, BookOpen, Receipt, FileText, Landmark, LineChart,
   Plus, Search, RefreshCw, CheckCircle2, ArrowUpRight, ArrowDownLeft,
   DollarSign, TrendingUp, Users, ShoppingBag, BarChart2,
   Banknote, Shield,
-  ClipboardList, BarChart, Phone, PanelLeftClose, PanelLeftOpen
+  ClipboardList, BarChart, Phone
 } from 'lucide-react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
 import { FirmAccountingAPI } from '@/api/FirmAccountingAPI';
 import { powerSync } from '@/api/PowerSyncConnector';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import ExportButton from '@/components/shared/ExportButton';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {
-  Dialog as Sheet,
-  DialogContent as SheetContent,
-  DialogHeader as SheetHeader,
-  DialogTitle as SheetTitle,
-  DialogDescription as SheetDescription
-} from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { toast } from 'react-hot-toast';
@@ -99,7 +85,7 @@ const TABS = [
 ];
 
 const TAB_COLORS = {
-  indigo:  { icon: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',  badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30',  btn: 'bg-primary hover:bg-primary/90 shadow-indigo-600/20' },
+  indigo:  { icon: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',  badge: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30',  btn: 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-600/20' },
   emerald: { icon: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20', badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30', btn: 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20' },
   rose:    { icon: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',          badge: 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30',          btn: 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20' },
   purple:  { icon: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',  badge: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30',  btn: 'bg-purple-600 hover:bg-purple-700 shadow-purple-600/20' },
@@ -192,7 +178,7 @@ function KpiCard({ label, value, sub, icon: Icon, color = 'indigo' }) {
 }
 
 // ── Status badge ──────────────────────────────────────────────
-function StatusBadge({ status, onStatusChange, allowedStatuses = [] }) {
+function StatusBadge({ status }) {
   const map = {
     paid: 'emerald', active: 'emerald', posted: 'emerald', reconciled: 'emerald', approved: 'emerald', collected: 'emerald',
     draft: 'amber', pending: 'amber', in_progress: 'amber', partial: 'amber',
@@ -201,40 +187,10 @@ function StatusBadge({ status, onStatusChange, allowedStatuses = [] }) {
     cancelled: 'rose', fully_depreciated: 'purple',
   };
   const color = map[status] || 'indigo';
-
-  if (!onStatusChange || allowedStatuses.length === 0) {
-    return (
-      <Badge variant="outline" className={cn('text-[9px] uppercase font-bold px-2 py-0.5', TAB_COLORS[color]?.badge || 'bg-muted text-foreground')}>
-        {status?.replace(/_/g, ' ')}
-      </Badge>
-    );
-  }
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          type="button"
-          className={cn('inline-flex items-center gap-1 text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-full border shadow-xs transition-all hover:scale-105 hover:opacity-90 cursor-pointer', TAB_COLORS[color]?.badge || 'bg-muted text-foreground')}
-          title="Click to change status"
-        >
-          <span>{status?.replace(/_/g, ' ')}</span>
-          <span className="text-[8px] opacity-60">▼</span>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="center" className="w-36 text-xs p-1">
-        {allowedStatuses.map(st => (
-          <DropdownMenuItem
-            key={st}
-            onClick={() => onStatusChange(st)}
-            className={cn('cursor-pointer font-semibold capitalize text-xs px-2.5 py-1.5 rounded-md flex items-center justify-between', status === st && 'bg-primary/10 text-primary')}
-          >
-            {st.replace(/_/g, ' ')}
-            {status === st && <span className="text-primary font-bold text-xs">✓</span>}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Badge variant="outline" className={cn('text-[9px] uppercase font-bold px-2 py-0.5', TAB_COLORS[color].badge)}>
+      {status?.replace(/_/g, ' ')}
+    </Badge>
   );
 }
 
@@ -248,7 +204,6 @@ export default function FirmAccountingHub() {
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'coa');
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [financeNavCollapsed, setFinanceNavCollapsed] = useState(false);
 
   useEffect(() => {
     if (tabFromUrl && tabFromUrl !== activeTab) setActiveTab(tabFromUrl);
@@ -279,31 +234,6 @@ export default function FirmAccountingHub() {
   // ── Modal states ─────────────────────────────────────────────
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showJVModal, setShowJVModal] = useState(false);
-  const [viewRecord, setViewRecord] = useState(null);
-  const [deleteModal, setDeleteModal] = useState({ open: false, table: '', id: '', name: '' });
-
-  const handleUpdateStatus = async (tableName, id, newStatus) => {
-    try {
-      await FirmAccountingAPI.updateRecordStatus(tableName, id, newStatus);
-      toast.success(`Status updated to ${newStatus.replace(/_/g, ' ')}`);
-      loadData();
-    } catch (e) {
-      toast.error('Failed to update status');
-    }
-  };
-
-  const handleDeleteItem = async () => {
-    if (!deleteModal.id || !deleteModal.table) return;
-    try {
-      await FirmAccountingAPI.deleteRecord(deleteModal.table, deleteModal.id);
-      toast.success(`Deleted successfully`);
-      setDeleteModal({ open: false, table: '', id: '', name: '' });
-      loadData();
-    } catch (e) {
-      toast.error('Failed to delete record');
-    }
-  };
-
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
@@ -619,12 +549,12 @@ export default function FirmAccountingHub() {
   }
 
   return (
-    <div className="w-full min-w-0 p-3 sm:p-5 lg:p-6 pb-28 space-y-6 font-sans">
+    <div className="p-3 sm:p-6 pb-[max(96px,env(safe-area-inset-bottom))] w-full max-w-full space-y-5 sm:space-y-6 font-sans overflow-x-hidden">
 
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-primary to-primary/70 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
             <Building2 className="h-5 w-5" />
           </div>
           <div>
@@ -638,7 +568,7 @@ export default function FirmAccountingHub() {
           <Button variant="outline" size="sm" onClick={loadData} className="h-9 px-3 text-xs gap-1.5 border-border">
             <RefreshCw className={cn('h-3.5 w-3.5', isLoading && 'animate-spin')} /> Refresh
           </Button>
-          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="h-9 px-4 text-xs font-semibold bg-primary hover:bg-primary/90 text-white shadow-md shadow-indigo-600/20 gap-1.5">
+          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="h-9 px-4 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 gap-1.5">
             <Plus className="h-4 w-4" /> New Invoice
           </Button>
         </div>
@@ -652,21 +582,29 @@ export default function FirmAccountingHub() {
         <KpiCard label="TONEFO Outstanding" value={fmt(totalOutstanding)} sub={`${tonefoCases.length} customers`} icon={ShoppingBag} color="orange" />
       </div>
 
-      {/* ── 3. Tab Navigation ── */}
-      <nav aria-label="Finance sections" className={cn('w-full rounded-2xl border border-border/60 bg-card/90 p-2 shadow-sm transition-all', financeNavCollapsed && 'md:w-fit')}>
-        <div className="flex items-center justify-between gap-2 border-b border-border/60 px-1 pb-2 mb-2">
-          {!financeNavCollapsed && <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Finance sections</span>}
-          <button
-            type="button"
-            onClick={() => setFinanceNavCollapsed(prev => !prev)}
-            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
-            aria-label={financeNavCollapsed ? 'Expand Finance navigation' : 'Collapse Finance navigation'}
-            title={financeNavCollapsed ? 'Expand Finance navigation' : 'Collapse Finance navigation'}
-          >
-            {financeNavCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-          </button>
+      {/*  3. Tab Navigation (Mobile Native Select + Horizontal Scroll)  */}
+      <div className="space-y-2">
+        {/* Mobile Quick Dropdown */}
+        <div className="md:hidden">
+          <Select value={activeTab} onValueChange={handleTabChange}>
+            <SelectTrigger className="w-full h-11 bg-card border-border rounded-xl text-xs font-semibold shadow-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Tab:</span>
+                <SelectValue placeholder="Select Section" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {TABS.map(t => (
+                <SelectItem key={t.id} value={t.id} className="text-xs font-medium">
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <div className={cn('flex flex-wrap gap-2', financeNavCollapsed && 'md:flex-col')}>
+
+        {/* Scrollable Pills for Touch & Desktop */}
+        <div className="flex items-center gap-1.5 bg-muted/60 p-1.5 rounded-2xl border border-border/60 overflow-x-auto -webkit-overflow-scrolling-touch scrollbar-none">
           {TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -675,22 +613,19 @@ export default function FirmAccountingHub() {
                 key={tab.id}
                 onClick={() => handleTabChange(tab.id)}
                 className={cn(
-                  'inline-flex min-h-10 items-center gap-2 rounded-xl px-3.5 py-2.5 text-left text-[11px] font-semibold transition-all',
-                  financeNavCollapsed && 'md:w-10 md:justify-center md:px-0',
+                  "flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all shrink-0 active:scale-95",
                   isActive
-                    ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    ? "bg-card shadow-sm text-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-card/50"
                 )}
-                title={financeNavCollapsed ? tab.label : undefined}
-                aria-label={financeNavCollapsed ? tab.label : undefined}
               >
-                <Icon className="h-3.5 w-3.5 shrink-0" />
-                {!financeNavCollapsed && tab.label}
+                <Icon className={cn("w-3.5 h-3.5", isActive ? `text-${tab.color}-500` : "text-muted-foreground")} />
+                {tab.label}
               </button>
             );
           })}
         </div>
-      </nav>
+      </div>
 
       {/* ══════════════════════════════════════════════════════ */}
       {/* TAB: CHART OF ACCOUNTS                                */}
@@ -723,18 +658,9 @@ export default function FirmAccountingHub() {
           <SectionHeader icon={Receipt} title="Accounts Receivable — Customer Invoices" color="emerald"
             action={<Button size="sm" onClick={() => setShowInvoiceModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.emerald.btn)}><Plus className="w-3.5 h-3.5" /> Create Invoice</Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by customer or invoice number..." />
-          <div className="flex items-center justify-between pb-1">
-            <span className="text-xs text-muted-foreground">{filteredInvoices.length} invoices found</span>
-            <ExportButton
-              data={filteredInvoices.map(i => ({ invoice_number: i.invoice_number, customer: i.customer_name, issue_date: i.issue_date, due_date: i.due_date, total_amount: i.total_amount, status: i.status }))}
-              filename="invoices_report"
-              title="Accounts Receivable — Invoices"
-              subtitle="Customer Invoices Register"
-            />
-          </div>
-          <TableShell headers={[{ label: 'Invoice #' }, { label: 'Customer' }, { label: 'Issue Date' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }, { label: 'Actions', center: true }]}>
+          <TableShell headers={[{ label: 'Invoice #' }, { label: 'Customer' }, { label: 'Issue Date' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }]}>
             {filteredInvoices.length === 0 ? (
-              <tr><td colSpan={7}><EmptyState icon={Receipt} title="No Invoices Created" desc="Create your first customer invoice. GL journal entry posts automatically." color="emerald" /></td></tr>
+              <tr><td colSpan={6}><EmptyState icon={Receipt} title="No Invoices Created" desc="Create your first customer invoice. GL journal entry posts automatically." color="emerald" /></td></tr>
             ) : filteredInvoices.map(inv => (
               <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4 font-mono font-bold text-foreground">{inv.invoice_number}</td>
@@ -742,23 +668,7 @@ export default function FirmAccountingHub() {
                 <td className="py-3 px-4 text-muted-foreground font-medium">{inv.issue_date || '—'}</td>
                 <td className="py-3 px-4 text-muted-foreground font-medium">{inv.due_date}</td>
                 <td className="py-3 px-4 text-right font-extrabold text-emerald-600 dark:text-emerald-400">{fmt(inv.total_amount)}</td>
-                <td className="py-3 px-4 text-center">
-                  <StatusBadge
-                    status={inv.status}
-                    onStatusChange={(newSt) => handleUpdateStatus('univ_firm_invoices', inv.id, newSt)}
-                    allowedStatuses={['draft', 'sent', 'paid', 'overdue', 'cancelled']}
-                  />
-                </td>
-                <td className="py-3 px-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5">
-                    <Button variant="ghost" size="icon" onClick={() => setViewRecord({ type: 'Invoice', data: inv })} className="h-7 w-7 text-primary hover:bg-primary/10" title="View details">
-                      <Eye className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteModal({ open: true, table: 'univ_firm_invoices', id: inv.id, name: `Invoice ${inv.invoice_number}` })} className="h-7 w-7 text-destructive hover:bg-destructive/10" title="Delete invoice">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                  </div>
-                </td>
+                <td className="py-3 px-4 text-center"><StatusBadge status={inv.status} /></td>
               </tr>
             ))}
           </TableShell>
@@ -773,41 +683,16 @@ export default function FirmAccountingHub() {
           <SectionHeader icon={FileText} title="Accounts Payable — Vendor Bills" color="rose"
             action={<Button size="sm" onClick={() => setShowBillModal(true)} className={cn('gap-1.5 h-8 text-xs font-semibold text-white shadow-md', TAB_COLORS.rose.btn)}><Plus className="w-3.5 h-3.5" /> Record Bill</Button>} />
           <FilterBar search={search} onSearch={setSearch} placeholder="Search by vendor or bill number..." />
-          <div className="flex items-center justify-between pb-1">
-            <span className="text-xs text-muted-foreground">{filteredBills.length} vendor bills found</span>
-            <ExportButton
-              data={filteredBills.map(b => ({ bill_number: b.bill_number, vendor: b.vendor_name, due_date: b.due_date, total_amount: b.total_amount, status: b.status }))}
-              filename="vendor_bills_report"
-              title="Accounts Payable — Bills"
-              subtitle="Vendor Bills Register"
-            />
-          </div>
-          <TableShell headers={[{ label: 'Bill #' }, { label: 'Vendor' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }, { label: 'Actions', center: true }]}>
+          <TableShell headers={[{ label: 'Bill #' }, { label: 'Vendor' }, { label: 'Due Date' }, { label: 'Total', right: true }, { label: 'Status', center: true }]}>
             {filteredBills.length === 0 ? (
-              <tr><td colSpan={6}><EmptyState icon={FileText} title="No Bills Recorded" desc="Record a vendor bill. GL AP journal entry posts automatically." color="rose" /></td></tr>
+              <tr><td colSpan={5}><EmptyState icon={FileText} title="No Bills Recorded" desc="Record a vendor bill. GL AP journal entry posts automatically." color="rose" /></td></tr>
             ) : filteredBills.map(b => (
               <tr key={b.id} className="hover:bg-muted/30 transition-colors">
                 <td className="py-3 px-4 font-mono font-bold text-foreground">{b.bill_number}</td>
                 <td className="py-3 px-4 font-semibold text-foreground">{b.vendor_name}</td>
                 <td className="py-3 px-4 text-muted-foreground font-medium">{b.due_date}</td>
                 <td className="py-3 px-4 text-right font-extrabold text-rose-600 dark:text-rose-400">{fmt(b.total_amount)}</td>
-                <td className="py-3 px-4 text-center">
-                  <StatusBadge
-                    status={b.status}
-                    onStatusChange={(newSt) => handleUpdateStatus('univ_firm_bills', b.id, newSt)}
-                    allowedStatuses={['draft', 'approved', 'paid', 'overdue', 'rejected']}
-                  />
-                </td>
-                <td className="py-3 px-4 text-center">
-                  <div className="flex items-center justify-center gap-1.5">
-                    <Button variant="ghost" size="icon" onClick={() => setViewRecord({ type: 'Vendor Bill', data: b })} className="h-7 w-7 text-primary hover:bg-primary/10" title="View details">
-                      <Eye className="w-3.5 h-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteModal({ open: true, table: 'univ_firm_bills', id: b.id, name: `Bill ${b.bill_number}` })} className="h-7 w-7 text-destructive hover:bg-destructive/10" title="Delete bill">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </Button>
-                  </div>
-                </td>
+                <td className="py-3 px-4 text-center"><StatusBadge status={b.status} /></td>
               </tr>
             ))}
           </TableShell>
@@ -1320,7 +1205,7 @@ export default function FirmAccountingHub() {
 
       {/* Add Account */}
       <Sheet open={showAccountModal} onOpenChange={setShowAccountModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Add Account to Chart of Accounts</SheetTitle><SheetDescription>Configure a new GL account code</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateAccount} className="space-y-4 text-xs">
             <div><Label className="text-xs">Account Code (e.g. 1300)</Label><Input value={accountForm.code} onChange={e => setAccountForm({ ...accountForm, code: e.target.value })} placeholder="1300" className="h-9 text-xs mt-1" required /></div>
@@ -1331,14 +1216,14 @@ export default function FirmAccountingHub() {
                 <SelectContent>{['Asset','Liability','Equity','Revenue','Expense'].map(t => <SelectItem key={t} value={t} className="text-xs">{t}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-primary hover:bg-primary/90 text-white mt-2">Add Account</Button>
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white mt-2">Add Account</Button>
           </form>
         </SheetContent>
       </Sheet>
 
       {/* Journal Entry */}
       <Sheet open={showJVModal} onOpenChange={setShowJVModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Post Journal Voucher</SheetTitle><SheetDescription>Double-entry — Debits must equal Credits</SheetDescription></SheetHeader>
           <form onSubmit={handlePostJV} className="space-y-4 text-xs">
             <div><Label className="text-xs">Description</Label><Input value={jvForm.description} onChange={e => setJvForm({ ...jvForm, description: e.target.value })} placeholder="Monthly rent accrual" className="h-9 text-xs mt-1" required /></div>
@@ -1366,117 +1251,16 @@ export default function FirmAccountingHub() {
 
       {/* Create Invoice */}
       <Sheet open={showInvoiceModal} onOpenChange={setShowInvoiceModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Create Customer Invoice</SheetTitle><SheetDescription>Invoice auto-posts AR journal entry to GL</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateInvoice} className="space-y-4 text-xs">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div><Label className="text-xs">Customer Name</Label><Input value={invoiceForm.customerName} onChange={e => setInvoiceForm({ ...invoiceForm, customerName: e.target.value })} placeholder="Acme Corp" className="h-9 text-xs mt-1" required /></div>
-              <div><Label className="text-xs">Customer Email</Label><Input value={invoiceForm.customerEmail} onChange={e => setInvoiceForm({ ...invoiceForm, customerEmail: e.target.value })} placeholder="billing@acme.com" className="h-9 text-xs mt-1" /></div>
+            <div><Label className="text-xs">Customer Name</Label><Input value={invoiceForm.customerName} onChange={e => setInvoiceForm({ ...invoiceForm, customerName: e.target.value })} placeholder="Acme Corp" className="h-9 text-xs mt-1" required /></div>
+            <div><Label className="text-xs">Customer Email</Label><Input value={invoiceForm.customerEmail} onChange={e => setInvoiceForm({ ...invoiceForm, customerEmail: e.target.value })} placeholder="billing@acme.com" className="h-9 text-xs mt-1" /></div>
+            <div><Label className="text-xs">Service / Item Description</Label><Input value={invoiceForm.items[0].description} onChange={e => { const items = [...invoiceForm.items]; items[0].description = e.target.value; setInvoiceForm({ ...invoiceForm, items }); }} className="h-9 text-xs mt-1" required /></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label className="text-xs">Amount (GH₵)</Label><Input type="number" value={invoiceForm.items[0].unitPrice} onChange={e => { const items = [...invoiceForm.items]; items[0].unitPrice = Number(e.target.value); setInvoiceForm({ ...invoiceForm, items }); }} className="h-9 text-xs mt-1" required /></div>
+              <div><Label className="text-xs">Due Date</Label><Input type="date" value={invoiceForm.dueDate} onChange={e => setInvoiceForm({ ...invoiceForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required /></div>
             </div>
-
-            {/* Multiple Line Items */}
-            <div className="border border-border/60 rounded-xl p-3 bg-muted/20 space-y-3">
-              <div className="flex items-center justify-between pb-1 border-b border-border/40">
-                <span className="font-semibold text-foreground text-xs uppercase tracking-wider">Invoice Line Items</span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setInvoiceForm({
-                    ...invoiceForm,
-                    items: [...invoiceForm.items, { description: "", quantity: 1, unitPrice: 0, taxRate: 0 }]
-                  })}
-                  className="h-7 text-xs px-2.5 font-medium border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
-                >
-                  <Plus className="w-3.5 h-3.5 mr-1" /> Add Item
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {invoiceForm.items.map((it, idx) => {
-                  const lineTotal = (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0);
-                  return (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-card p-2 rounded-lg border border-border/50">
-                      <div className="col-span-5">
-                        <Input
-                          placeholder="Item description"
-                          value={it.description}
-                          onChange={e => {
-                            const newItems = [...invoiceForm.items];
-                            newItems[idx].description = e.target.value;
-                            setInvoiceForm({ ...invoiceForm, items: newItems });
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <Input
-                          type="number"
-                          placeholder="Qty"
-                          min="1"
-                          value={it.quantity}
-                          onChange={e => {
-                            const newItems = [...invoiceForm.items];
-                            newItems[idx].quantity = Number(e.target.value) || 1;
-                            setInvoiceForm({ ...invoiceForm, items: newItems });
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <Input
-                          type="number"
-                          placeholder="Rate (GH₵)"
-                          step="0.01"
-                          value={it.unitPrice}
-                          onChange={e => {
-                            const newItems = [...invoiceForm.items];
-                            newItems[idx].unitPrice = Number(e.target.value) || 0;
-                            setInvoiceForm({ ...invoiceForm, items: newItems });
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-2 flex items-center justify-between pl-1">
-                        <span className="font-semibold text-xs text-foreground truncate">
-                          GH₵{lineTotal.toLocaleString()}
-                        </span>
-                        {invoiceForm.items.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              const newItems = invoiceForm.items.filter((_, i) => i !== idx);
-                              setInvoiceForm({ ...invoiceForm, items: newItems });
-                            }}
-                            className="h-7 w-7 text-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="flex justify-between items-center pt-2 border-t border-border/40 text-xs font-semibold">
-                <span>Subtotal ({invoiceForm.items.length} items):</span>
-                <span className="text-emerald-600 font-bold text-sm">
-                  GH₵{invoiceForm.items.reduce((s, it) => s + ((Number(it.quantity) || 0) * (Number(it.unitPrice) || 0)), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                </span>
-              </div>
-            </div>
-
-            <div>
-              <Label className="text-xs">Due Date</Label>
-              <Input type="date" value={invoiceForm.dueDate} onChange={e => setInvoiceForm({ ...invoiceForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required />
-            </div>
-
             <Button type="submit" className="w-full h-9 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white">Create & Post Invoice</Button>
           </form>
         </SheetContent>
@@ -1484,114 +1268,15 @@ export default function FirmAccountingHub() {
 
       {/* Record Bill */}
       <Sheet open={showBillModal} onOpenChange={setShowBillModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Record Vendor Bill</SheetTitle><SheetDescription>Bill auto-posts AP journal to GL</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateBill} className="space-y-4 text-xs">
             <div><Label className="text-xs">Vendor Name</Label><Input value={billForm.vendorName} onChange={e => setBillForm({ ...billForm, vendorName: e.target.value })} placeholder="Dell Commercial" className="h-9 text-xs mt-1" required /></div>
-
-            {/* Multiple Line Items for Bill */}
-            <div className="border border-border/60 rounded-xl p-3 bg-muted/20 space-y-3">
-              <div className="flex items-center justify-between pb-1 border-b border-border/40">
-                <span className="font-semibold text-foreground text-xs uppercase tracking-wider">Bill Line Items</span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setBillForm({
-                    ...billForm,
-                    items: [...billForm.items, { description: "", quantity: 1, unitPrice: 0 }]
-                  })}
-                  className="h-7 text-xs px-2.5 font-medium border-rose-500/40 text-rose-600 hover:bg-rose-500/10"
-                >
-                  <Plus className="w-3.5 h-3.5 mr-1" /> Add Item
-                </Button>
-              </div>
-
-              <div className="space-y-2">
-                {billForm.items.map((it, idx) => {
-                  const lineTotal = (Number(it.quantity) || 0) * (Number(it.unitPrice) || 0);
-                  return (
-                    <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-card p-2 rounded-lg border border-border/50">
-                      <div className="col-span-5">
-                        <Input
-                          placeholder="Item description"
-                          value={it.description}
-                          onChange={e => {
-                            const newItems = [...billForm.items];
-                            newItems[idx].description = e.target.value;
-                            setBillForm({ ...billForm, items: newItems });
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <Input
-                          type="number"
-                          placeholder="Qty"
-                          min="1"
-                          value={it.quantity}
-                          onChange={e => {
-                            const newItems = [...billForm.items];
-                            newItems[idx].quantity = Number(e.target.value) || 1;
-                            setBillForm({ ...billForm, items: newItems });
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-3">
-                        <Input
-                          type="number"
-                          placeholder="Rate (GH₵)"
-                          step="0.01"
-                          value={it.unitPrice}
-                          onChange={e => {
-                            const newItems = [...billForm.items];
-                            newItems[idx].unitPrice = Number(e.target.value) || 0;
-                            setBillForm({ ...billForm, items: newItems });
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-2 flex items-center justify-between pl-1">
-                        <span className="font-semibold text-xs text-foreground truncate">
-                          GH₵{lineTotal.toLocaleString()}
-                        </span>
-                        {billForm.items.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              const newItems = billForm.items.filter((_, i) => i !== idx);
-                              setBillForm({ ...billForm, items: newItems });
-                            }}
-                            className="h-7 w-7 text-destructive hover:bg-destructive/10"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="flex justify-between items-center pt-2 border-t border-border/40 text-xs font-semibold">
-                <span>Subtotal ({billForm.items.length} items):</span>
-                <span className="text-rose-600 font-bold text-sm">
-                  GH₵{billForm.items.reduce((s, it) => s + ((Number(it.quantity) || 0) * (Number(it.unitPrice) || 0)), 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                </span>
-              </div>
+            <div><Label className="text-xs">Bill Description</Label><Input value={billForm.items[0].description} onChange={e => { const items = [...billForm.items]; items[0].description = e.target.value; setBillForm({ ...billForm, items }); }} className="h-9 text-xs mt-1" required /></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label className="text-xs">Amount (GH₵)</Label><Input type="number" value={billForm.items[0].unitPrice} onChange={e => { const items = [...billForm.items]; items[0].unitPrice = Number(e.target.value); setBillForm({ ...billForm, items }); }} className="h-9 text-xs mt-1" required /></div>
+              <div><Label className="text-xs">Due Date</Label><Input type="date" value={billForm.dueDate} onChange={e => setBillForm({ ...billForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required /></div>
             </div>
-
-            <div>
-              <Label className="text-xs">Due Date</Label>
-              <Input type="date" value={billForm.dueDate} onChange={e => setBillForm({ ...billForm, dueDate: e.target.value })} className="h-9 text-xs mt-1" required />
-            </div>
-
             <Button type="submit" className="w-full h-9 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white">Record Vendor Bill</Button>
           </form>
         </SheetContent>
@@ -1599,7 +1284,7 @@ export default function FirmAccountingHub() {
 
       {/* Add Asset */}
       <Sheet open={showAssetModal} onOpenChange={setShowAssetModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Register Fixed Asset</SheetTitle><SheetDescription>Capital expenditure asset — straight-line depreciation</SheetDescription></SheetHeader>
           <form onSubmit={handleCreateAsset} className="space-y-4 text-xs">
             <div><Label className="text-xs">Asset Name</Label><Input value={assetForm.assetName} onChange={e => setAssetForm({ ...assetForm, assetName: e.target.value })} placeholder="Office Workstations" className="h-9 text-xs mt-1" required /></div>
@@ -1621,7 +1306,7 @@ export default function FirmAccountingHub() {
 
       {/* Bank Reconciliation */}
       <Sheet open={showBankRecModal} onOpenChange={setShowBankRecModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Reconcile Bank Statement</SheetTitle><SheetDescription>Compare bank ending balance against GL ledger</SheetDescription></SheetHeader>
           <form onSubmit={handleBankRec} className="space-y-4 text-xs">
             <div><Label className="text-xs">Statement Date</Label><Input type="date" value={bankRecForm.statementDate} onChange={e => setBankRecForm({ ...bankRecForm, statementDate: e.target.value })} className="h-9 text-xs mt-1" required /></div>
@@ -1633,7 +1318,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Office Income */}
       <Sheet open={showIncomeModal} onOpenChange={setShowIncomeModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Record Office Income</SheetTitle><SheetDescription>Track company revenue — agency fees, commissions, rent, etc.</SheetDescription></SheetHeader>
           <form onSubmit={handleAddIncome} className="space-y-4 text-xs">
             <div><Label className="text-xs">Income Source</Label><Input value={incomeForm.source} onChange={e => setIncomeForm({ ...incomeForm, source: e.target.value })} placeholder="e.g. Acme Client Agency Fee" className="h-9 text-xs mt-1" required /></div>
@@ -1655,7 +1340,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Office Expense */}
       <Sheet open={showExpenseModal} onOpenChange={setShowExpenseModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Record Office Expense</SheetTitle><SheetDescription>Track office-level operating costs</SheetDescription></SheetHeader>
           <form onSubmit={handleAddExpense} className="space-y-4 text-xs">
             <div><Label className="text-xs">Description</Label><Input value={expenseForm.description} onChange={e => setExpenseForm({ ...expenseForm, description: e.target.value })} placeholder="e.g. Office Rent — September" className="h-9 text-xs mt-1" required /></div>
@@ -1677,7 +1362,7 @@ export default function FirmAccountingHub() {
 
       {/* Record Project Expense */}
       <Sheet open={showProjectExpenseModal} onOpenChange={setShowProjectExpenseModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Add Project Expense</SheetTitle><SheetDescription>Track costs tied to a specific real estate project</SheetDescription></SheetHeader>
           <form onSubmit={handleAddProjectExpense} className="space-y-4 text-xs">
             <div><Label className="text-xs">Project Name</Label><Input value={projExpenseForm.projectName} onChange={e => setProjExpenseForm({ ...projExpenseForm, projectName: e.target.value })} placeholder="e.g. Adjiringanor Residential Block A" className="h-9 text-xs mt-1" required /></div>
@@ -1699,7 +1384,7 @@ export default function FirmAccountingHub() {
 
       {/* Add Employee */}
       <Sheet open={showPayrollEmployeeModal} onOpenChange={setShowPayrollEmployeeModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Add Employee to Payroll</SheetTitle><SheetDescription>Ghana PAYE & SSNIT calculated automatically</SheetDescription></SheetHeader>
           <form onSubmit={handleAddEmployee} className="space-y-4 text-xs">
             <div><Label className="text-xs">Full Name</Label><Input value={employeeForm.name} onChange={e => setEmployeeForm({ ...employeeForm, name: e.target.value })} placeholder="Kofi Mensah" className="h-9 text-xs mt-1" required /></div>
@@ -1728,7 +1413,7 @@ export default function FirmAccountingHub() {
 
       {/* Run Payroll */}
       <Sheet open={showPayrollRunModal} onOpenChange={setShowPayrollRunModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Run Payroll</SheetTitle><SheetDescription>Process payroll for all active employees</SheetDescription></SheetHeader>
           <form onSubmit={handleRunPayroll} className="space-y-4 text-xs">
             <div><Label className="text-xs">Payroll Period (e.g. September 2026)</Label><Input value={payrollRunForm.period} onChange={e => setPayrollRunForm({ ...payrollRunForm, period: e.target.value })} placeholder="September 2026" className="h-9 text-xs mt-1" required /></div>
@@ -1745,7 +1430,7 @@ export default function FirmAccountingHub() {
 
       {/* TONEFO New Sale */}
       <Sheet open={showTonefoSaleModal} onOpenChange={setShowTonefoSaleModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4"><SheetTitle>Record TONEFO Sale</SheetTitle><SheetDescription>Electronics sale on installment or full payment</SheetDescription></SheetHeader>
           <form onSubmit={handleAddTonefoSale} className="space-y-4 text-xs">
             <div><Label className="text-xs">Customer Name</Label><Input value={tonefoSaleForm.customerName} onChange={e => setTonefoSaleForm({ ...tonefoSaleForm, customerName: e.target.value })} placeholder="Ama Owusu" className="h-9 text-xs mt-1" required /></div>
@@ -1774,7 +1459,7 @@ export default function FirmAccountingHub() {
 
       {/* TONEFO Record Payment */}
       <Sheet open={showTonefoPaymentModal} onOpenChange={setShowTonefoPaymentModal}>
-        <SheetContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto rounded-2xl shadow-2xl">
+        <SheetContent className="sm:max-w-md overflow-y-auto">
           <SheetHeader className="mb-4">
             <SheetTitle>Record Installment Payment</SheetTitle>
             <SheetDescription>{selectedTonefoCase?.customer_name} — {selectedTonefoCase?.item_description}</SheetDescription>
@@ -1794,56 +1479,6 @@ export default function FirmAccountingHub() {
         </SheetContent>
       </Sheet>
 
-    
-      {/* ── Corporate Details View Modal ── */}
-      <Sheet open={!!viewRecord} onOpenChange={(open) => !open && setViewRecord(null)}>
-        <SheetContent className="sm:max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl shadow-2xl">
-          <SheetHeader className="mb-4">
-            <SheetTitle className="flex items-center gap-2">
-              <Eye className="w-5 h-5 text-primary" />
-              <span>{viewRecord?.type} Details</span>
-            </SheetTitle>
-            <SheetDescription>Executive record preview & corporate data breakdown</SheetDescription>
-          </SheetHeader>
-          {viewRecord && (
-            <div className="space-y-4 text-xs">
-              <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-2.5">
-                {Object.entries(viewRecord.data).map(([k, v]) => {
-                  if (typeof v === 'object' && v !== null) return null;
-                  return (
-                    <div key={k} className="flex justify-between items-center py-1 border-b border-border/30 last:border-0">
-                      <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">{k.replace(/_/g, ' ')}</span>
-                      <span className="font-medium text-foreground text-right max-w-[65%] truncate">{String(v ?? '—')}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <Button type="button" onClick={() => setViewRecord(null)} className="w-full bg-primary text-white">
-                Close Preview
-              </Button>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
-
-      {/* ── Corporate Delete Confirmation Modal ── */}
-      <Sheet open={deleteModal.open} onOpenChange={(open) => !open && setDeleteModal({ open: false, table: '', id: '', name: '' })}>
-        <SheetContent className="sm:max-w-md max-h-[85vh] overflow-y-auto rounded-2xl shadow-2xl">
-          <SheetHeader className="mb-2">
-            <SheetTitle className="flex items-center gap-2 text-rose-600">
-              <Trash2 className="w-5 h-5 text-rose-600" />
-              <span>Confirm Deletion</span>
-            </SheetTitle>
-            <SheetDescription>
-              Are you sure you want to permanently delete <strong className="text-foreground">{deleteModal.name}</strong>? This action cannot be undone.
-            </SheetDescription>
-          </SheetHeader>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="outline" size="sm" onClick={() => setDeleteModal({ open: false, table: '', id: '', name: '' })}>Cancel</Button>
-            <Button variant="destructive" size="sm" onClick={handleDeleteItem} className="bg-rose-600 hover:bg-rose-700 text-white font-semibold">Delete Permanently</Button>
-          </div>
-        </SheetContent>
-      </Sheet>
-</div>
+    </div>
   );
 }

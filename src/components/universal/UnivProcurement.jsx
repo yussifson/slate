@@ -1,10 +1,6 @@
 import { powerSync} from '@/api/PowerSyncConnector';
 import React, { useState, useEffect} from 'react';
 
-import GenericGrid from '@/components/views/GenericGrid';
-import GenericKanban from '@/components/views/GenericKanban';
-import GenericCalendar from '@/components/views/GenericCalendar';
-import GenericDashboard from '@/components/views/GenericDashboard';
 
 
 import { supabase} from "@/api/supabaseClient";
@@ -131,13 +127,13 @@ export default function UnivProcurement() {
 };
 
  return (
- <div className="h-full flex flex-col gap-6 w-full bg-background p-4 sm:p-6 lg:p-8 ${view !== 'Default' ? 'hide-default' : ''}">
+ <div className="min-h-screen flex flex-col gap-5 sm:gap-6 w-full bg-background p-3 sm:p-6 lg:p-8 pb-[max(96px,env(safe-area-inset-bottom))] overflow-x-hidden ${view !== 'Default' ? 'hide-default' : ''}">
  <div className="view-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
  <div>
  <h1 className="text-2xl font-black text-foreground tracking-tight flex items-center gap-2 tracking-[-0.02em]"><ShoppingCart className="w-7 h-7 text-primary" /> Procurement</h1>
  <p className="text-[#71717a] dark:text-gray-400 text-sm font-medium mt-1">Manage purchase orders and supplier requests.</p>
  </div>
- <div className="flex items-center gap-2">
+ <div className="flex items-center gap-2 w-full sm:w-auto">
 
  
  
@@ -176,7 +172,7 @@ export default function UnivProcurement() {
  filtered.map(r => {
  return (
  <tr key={r.id} className="hover:bg-muted/30 transition-colors group">
- <td className="p-4"><div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold"><FileText className="w-4 h-4" /></div><span className="font-semibold text-foreground">{r.po_number}</span></div></td>
+ <td className="p-4"><div className="flex items-center gap-2 w-full sm:w-auto"><div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold"><FileText className="w-4 h-4" /></div><span className="font-semibold text-foreground">{r.po_number}</span></div></td>
  <td className="p-4 text-foreground font-medium">{r.supplier}</td>
  <td className="p-4 font-black">${Number(r.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
  <td className="p-4 text-[#71717a] dark:text-gray-400 whitespace-nowrap">{r.order_date || '—'}</td>

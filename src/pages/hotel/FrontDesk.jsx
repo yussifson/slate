@@ -1,16 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { BedDouble, Calendar, UserCheck, LogIn, LogOut, CheckCircle2, Settings, Brush, Moon, Clock, Key, Users, TrendingUp, X, Sparkles, Receipt, CreditCard, ScanLine, AlertTriangle, Activity, ArrowUpRight, ArrowDownLeft, Zap } from 'lucide-react';
-import { generateText } from '@/lib/cloudflareAI';
-import ReactMarkdown from 'react-markdown';
+import { LogIn, LogOut, Moon, Key, Users, TrendingUp, X, Receipt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
-import { Input } from '@/components/ui/input';
 import { useIndustryRecords, useMutateIndustryRecord } from '@/hooks/useIndustryData';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import HotelKPICard from '@/components/hotel/HotelKPICard';
-import BentoGrid, { BentoGridItem } from '@/components/shared/BentoGrid';
+import BentoGrid from '@/components/shared/BentoGrid';
 import DashboardSectionHeader from '@/components/shared/DashboardSectionHeader';
 
 const getRoomStatus = (roomNumber, reservations, today) => {
@@ -91,16 +88,16 @@ export default function FrontDeskNew() {
 
   return (
     <motion.div 
-      className="min-h-screen pb-12"
+      className="min-h-screen pb-[max(96px,env(safe-area-inset-bottom))] p-3 sm:p-6 overflow-x-hidden"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       {/* Luxe Header */}
       <motion.div className="mb-8" variants={itemVariants}>
-        <div className="flex justify-between items-end gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 sm:gap-4">
           <div className="flex-1">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-[hsl(var(--hotel-primary))] to-[hsl(var(--hotel-secondary))] bg-clip-text text-transparent tracking-tight mb-2">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-[hsl(var(--hotel-primary))] to-[hsl(var(--hotel-secondary))] bg-clip-text text-transparent tracking-tight mb-1 sm:mb-2">
               {t("front_desk", "Front Desk")}
             </h1>
             <p className="text-sm text-slate-600 dark:text-muted-foreground">

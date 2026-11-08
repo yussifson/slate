@@ -758,20 +758,12 @@ export const INDUSTRIES = {
       venue: 'Office', intake: 'Client Registration',
       hearing: 'Viewing', hearings: 'Viewings'},
     roles: [
-      { value: 'company_admin', label: 'Company Admin / Executive' },
-      { value: 'project_manager', label: 'Project Manager (Construction & PM)' },
-      { value: 'lead_engineer', label: 'Lead Engineer (Structural/Civil/MEP)' },
-      { value: 'site_supervisor', label: 'Site Supervisor / Clerk of Works' },
-      { value: 'quantity_surveyor', label: 'Quantity Surveyor (QS & Costing)' },
-      { value: 'procurement_officer', label: 'Procurement & Logistics Officer' },
-      { value: 'architect', label: 'Architect / Design Consultant' },
-      { value: 'marketing_executive', label: 'Marketing Executive & CRM' },
-      { value: 'field_tracker', label: 'Field Officer & Marketer' },
-      { value: 'front_desk', label: 'Front Desk / Secretary' },
-      { value: 'agent', label: 'Real Estate & Brokerage Agent' },
+      { value: 'company_admin', label: 'Broker / Owner' },
+      { value: 'agent', label: 'Real Estate Agent' },
       { value: 'property_manager', label: 'Property Manager' },
-      { value: 'accountant', label: 'Accountant & Finance Officer' },
-      { value: 'admin', label: 'System Administrator' },
+      { value: 'accountant', label: 'Accountant' },
+      { value: 'finance', label: 'Finance Officer' },
+      { value: 'admin', label: 'Office Administrator' },
     ],
 
     departments: [
@@ -864,57 +856,47 @@ export const INDUSTRIES = {
       { value: 'operations', label: 'Operations' },
       { value: 'tech', label: 'IT & Support' }
     ],    nav: [
-      { section: 'Operations', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
-      { label: 'Calendar', path: '/calendar', icon: 'CalendarDays' },
-      { label: 'Tasks', path: '/tasks', icon: 'Briefcase' },
-      { label: 'Time Tracking', path: '/time-tracking', icon: 'Clock3' },
-      { label: 'Pipeline', path: '/pipeline', icon: 'GitBranch' },
-      { label: 'Notifications', path: '/notifications', icon: 'Bell' },
-      { section: 'Marketing', label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Target' },
+      { label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+      { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
+      { label: 'Field GPS', path: '/real-estate/marketer-tracker', icon: 'MapPin' },
+      { label: 'Land Parcels', path: '/real-estate/land', icon: 'Compass' },
+      { label: 'Leads', path: '/real-estate/crm-leads', icon: 'Sparkles' },
       { label: 'Clients', path: '/real-estate/clients', icon: 'Users' },
+      { label: 'Timeline', path: '/real-estate/customer-timeline', icon: 'Clock' },
       { label: 'Viewings', path: '/real-estate/viewings', icon: 'Eye' },
       { label: 'Offers', path: '/real-estate/offers', icon: 'FileText' },
       { label: 'Counter Offers', path: '/real-estate/counter-offers', icon: 'MessageCircle' },
-      { label: 'Engagement', path: '/jcl/engagements', icon: 'FolderKanban' },
-      { label: 'Timeline', path: '/real-estate/customer-timeline', icon: 'Clock' },
-      { label: 'Market Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
-      { section: 'Secretary', label: 'Front Desk', path: '/jcl/front-desk', icon: 'BookOpen' },
-      { label: 'Item Register', path: '/jcl/item-register', icon: 'ClipboardCheck' },
-      { label: 'Custody Tracker', path: '/jcl/employee-assets', icon: 'ShieldCheck' },
-      { section: 'Properties', label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
-      { label: 'Land Parcels', path: '/real-estate/land', icon: 'Compass' },
+      { label: 'Deals', path: '/real-estate/transactions', icon: 'Banknote' },
+      { label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
       { label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
       { label: 'Renewals', path: '/real-estate/lease-renewals', icon: 'RotateCcw' },
       { label: 'Maintenance', path: '/real-estate/maintenance', icon: 'Wrench' },
       { label: 'Contractors', path: '/real-estate/contractors', icon: 'Users2' },
       { label: 'Reviews', path: '/real-estate/contractor-reviews', icon: 'Star' },
-      { section: 'Procurement', label: 'Procurement', path: '/jcl/procurement', icon: 'ShoppingCart' },
-      { label: 'Requisitions', path: '/jcl/requisitions', icon: 'ClipboardList' },
-      { label: 'Purchase Orders', path: '/jcl/purchase-orders', icon: 'FileText' },
-      { label: 'Materials & Inventory', path: '/jcl/inventory', icon: 'Package' },
-      { section: 'Engineering', label: 'Engineering', path: '/engineering', icon: 'Layers' },
-      { label: 'Drawings', path: '/engineering/drawings', icon: 'FileText' },
-      { label: 'Projects', path: '/jcl/projects', icon: 'BriefcaseBusiness' },
-      { label: 'Project Operations', path: '/jcl/project-operations', icon: 'Briefcase' },
-      { label: 'Project Collaboration', path: '/jcl/project-collaboration', icon: 'MessageCircle' },
-      { label: 'Bill of Quantities', path: '/boq', icon: 'Calculator' },
-      { section: 'Finance', label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
-      { label: 'Firm Accounting', path: '/finance/accounting', icon: 'Landmark' },
-      { label: 'Invoices', path: '/invoices', icon: 'Receipt' },
+      { label: 'Trust Accounting', path: '/real-estate/trust-accounting', icon: 'Wallet' },
+      { label: 'Escrow', path: '/real-estate/escrow', icon: 'Lock' },
       { label: 'Rent Payments', path: '/real-estate/rent-payments', icon: 'CreditCard' },
       { label: 'Payment Schedules', path: '/real-estate/payment-schedules', icon: 'Calendar' },
       { label: 'Commissions', path: '/real-estate/commissions', icon: 'TrendingUp' },
-      { label: 'Project Finance', path: '/jcl/project-finance', icon: 'Calculator' },
-      { section: 'Documents', label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
+      { label: 'Commission Rules', path: '/real-estate/commission-rules', icon: 'Settings' },
+      { label: 'Front Desk', path: '/front-desk', icon: 'Building2' },
+      { label: 'Guest Requests', path: '/guest-requests', icon: 'Bell' },
+      { label: 'Guests', path: '/guests', icon: 'Users' },
+      { label: 'Procurement', path: '/procurement', icon: 'ShoppingBag' },
+      { label: 'Purchase Orders', path: '/purchase-orders', icon: 'FileText' },
+      { label: 'Suppliers', path: '/suppliers', icon: 'Truck' },
+      { label: 'Invoices', path: '/invoices', icon: 'Receipt' },
+      { label: 'Projects', path: '/tasks', icon: 'Briefcase' },
+      { label: 'HR & Team', path: '/hr', icon: 'HeartHandshake' },
+      { label: 'Smart Docs', path: '/smart-docs', icon: 'FileText' },
       { label: 'E-Signatures', path: '/real-estate/e-signatures', icon: 'PenTool' },
-      { section: 'System Admin', label: 'Client Portal', path: '/portal', icon: 'Globe' },
+      { label: 'Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
+      { label: 'Reports', path: '/reports', icon: 'FileText' },
       { label: 'Audit Log', path: '/real-estate/audit-log', icon: 'ClipboardList' },
-      { label: 'Live GPS', path: '/real-estate/field-tracker', icon: 'Navigation' },
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
+      { label: 'Automations', path: '/automations', icon: 'Zap' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
-      { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' }
-    ]
-  },
+    ]},
 
   pharmacy: {
     name: 'Pharmacy',
@@ -1087,20 +1069,22 @@ export const getIndustryNav = (industryKey, educationLevel) => {
      nav = nav.filter(n => allowedModules.includes(n.path) || n.path === '/' || n.path === '/settings' || n.path === '/integrations' || n.path === '/hr' || n.path === '/smart-docs' || n.path === '/tasks');
   }
   
-  // Keep communication tools available to other industries, but not the JCL workspace.
-  if (industryKey !== 'real_estate_jcl' && !nav.find(n => n.path === '/email-inbox')) {
+  // Ensure Email Inbox exists globally across all industries
+  if (!nav.find(n => n.path === '/email-inbox')) {
     // Insert it right before Integrations/Settings
     const insertIndex = Math.max(0, nav.length - 2);
     nav.splice(insertIndex, 0, { label: 'Email Inbox', path: '/email-inbox', icon: 'Mail' });
   }
 
-  if (industryKey !== 'real_estate_jcl' && !nav.find(n => n.path === '/chat')) {
+  // Ensure Chat exists globally
+  if (!nav.find(n => n.path === '/chat')) {
     // Insert it before Email Inbox
     const insertIndex = Math.max(0, nav.length - 3);
     nav.splice(insertIndex, 0, { label: 'Team Chat', path: '/chat', icon: 'MessageSquare' });
   }
 
-  if (industryKey !== 'real_estate_jcl' && !nav.find(n => n.path === '/board')) {
+  // Ensure Board exists globally
+  if (!nav.find(n => n.path === '/board')) {
     const insertIndex = Math.max(0, nav.length - 3);
     nav.splice(insertIndex, 0, { label: 'Video Calls', path: '/board', icon: 'Video' });
   }

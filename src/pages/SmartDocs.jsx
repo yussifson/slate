@@ -9,13 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  FolderOpen, FileText, Search, Plus, Link2, Brain, Tag,
+import { FileText, Search, Plus, Link2, Brain, Tag,
   Calendar, AlertTriangle, CheckCircle2, Eye, Download,
-  Folder, File, Layers, Network, Clock, Shield, Zap, Upload, X
+  Folder, Layers, Network, Clock, Shield, Zap, Upload, X
 } from "lucide-react";
 
 const DOC_CATEGORIES = ["Contract", "Invoice", "Receipt", "Employee File", "Passport/ID", "Certification", "Policy", "Medical Report", "Purchase Order", "Other"];
@@ -332,9 +330,9 @@ export default function SmartDocs() {
   });
 
   return (
-    <div className="space-y-6 p-6 pt-0">
+    <div className="space-y-5 sm:space-y-6 p-3 sm:p-6 pt-0 pb-[max(96px,env(safe-area-inset-bottom))] overflow-x-hidden">
       {/* Hero Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-teal-700 p-6 md:p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-green-600 to-teal-700 p-4 sm:p-6 md:p-8 text-white">
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute -top-8 -right-8 w-48 h-48 bg-white/10 rounded-full" />
         <div className="absolute -bottom-12 -right-20 w-64 h-64 bg-white/5 rounded-full" />
@@ -356,7 +354,7 @@ export default function SmartDocs() {
               {expiringSoon.length > 0 && <span className="flex items-center gap-1.5 text-amber-300"><AlertTriangle className="w-4 h-4" /><strong>{expiringSoon.length}</strong> Expiring soon</span>}
             </div>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap w-full sm:w-auto">
             <Button size="sm" variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 gap-2" onClick={() => setShowFolderForm(true)}>
               <Folder className="w-4 h-4" />New Folder
             </Button>
@@ -381,34 +379,36 @@ export default function SmartDocs() {
         </div>
       )}
 
-      <div className="flex gap-6">
+      <div className="flex flex-col lg:flex-row gap-5 sm:gap-6">
         {/* LEFT: Folder Tree + Doc Grid */}
         <div className="flex-1 min-w-0 space-y-4">
-          {/* Filters */}
-          <div className="flex gap-3 flex-wrap">
-            <div className="relative flex-1 min-w-48">
+          {/* Filters (Mobile Native Stack) */}
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+            <div className="relative flex-1 w-full min-w-0">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input placeholder="Search documents, tags, categories..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+              <Input placeholder="Search documents, tags..." className="pl-9 h-10 sm:h-9 rounded-xl" value={search} onChange={e => setSearch(e.target.value)} />
             </div>
-            <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Category" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {DOC_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={filterFolder} onValueChange={setFilterFolder}>
-              <SelectTrigger className="w-44"><SelectValue placeholder="Folder" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Folders</SelectItem>
-                {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2">
+              <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <SelectTrigger className="h-10 sm:h-9 w-full sm:w-44 rounded-xl text-xs"><SelectValue placeholder="Category" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {DOC_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Select value={filterFolder} onValueChange={setFilterFolder}>
+                <SelectTrigger className="h-10 sm:h-9 w-full sm:w-44 rounded-xl text-xs"><SelectValue placeholder="Folder" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Folders</SelectItem>
+                  {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Folder Quick Access */}
           {folders.length > 0 && (
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-2 flex-wrap w-full sm:w-auto">
               <button onClick={() => setFilterFolder("all")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${filterFolder === "all" ? "bg-violet-100 text-violet-700 border-violet-200" : "bg-muted text-muted-foreground border-transparent hover:border-border"}`}>
                 <Layers className="w-3.5 h-3.5" />All
               </button>
@@ -437,9 +437,9 @@ export default function SmartDocs() {
           )}
         </div>
 
-        {/* RIGHT: AI Intelligence Panel */}
+        {/* RIGHT: AI Intelligence Panel (Responsive width on mobile) */}
         {selectedDoc && (
-          <div className="w-80 flex-shrink-0 bg-card border border-border rounded-2xl p-5 h-fit sticky top-4 space-y-4">
+          <div className="w-full lg:w-80 flex-shrink-0 bg-card border border-border rounded-2xl p-4 sm:p-5 h-fit sticky top-4 space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
               <p className="font-bold text-foreground truncate text-sm">{selectedDoc.name}</p>
               <button onClick={() => setSelectedDoc(null)} className="text-muted-foreground hover:text-foreground text-lg leading-none">Ã—</button>
