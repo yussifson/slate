@@ -70,9 +70,10 @@ export const JCLProcurementService = {
 
   // --- REQUISITION CRUD ---
   async createRequisition(companyId, actorId, payload) {
+    const resolvedProjectId = await ensureValidProjectId(companyId, payload.project_id);
     const { data, error } = await supabase.from('jcl_purchase_requisitions').insert({
       company_id: companyId,
-      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
+      project_id: resolvedProjectId,
       reference: payload.reference || `REQ-${Date.now().toString().slice(-6)}`,
       department: payload.department || 'Construction',
       requested_by: actorId,
@@ -87,8 +88,11 @@ export const JCLProcurementService = {
   },
 
   async updateRequisition(companyId, requisitionId, payload) {
+    const resolvedProjectId = payload.project_id && payload.project_id.trim() !== ""
+      ? await ensureValidProjectId(companyId, payload.project_id)
+      : null;
     const { data, error } = await supabase.from('jcl_purchase_requisitions').update({
-      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
+      project_id: resolvedProjectId,
       department: payload.department,
       required_date: payload.required_date || null,
       priority: payload.priority || 'normal',

@@ -138,17 +138,66 @@ export async function getCompanyProjects(companyId) {
 
 /**
  * Ensures a valid project ID exists for tables requiring non-null project_id.
- * If provided projectId is valid, returns it.
+ * If provided projectId is valid, verifies it exists in ops_projects; if not in ops_projects,
+ * mirrors/provisions it into ops_projects so foreign key constraints (e.g. jcl_purchase_requisitions_project_id_fkey) are satisfied.
  * Otherwise returns the first active project or automatically provisions a General Operations project.
  */
 export async function ensureValidProjectId(companyId, providedId) {
   if (providedId && String(providedId).trim() !== '' && providedId !== 'unassigned') {
-    return providedId;
+    // Check if it already exists in ops_projects to satisfy the foreign key
+    try {
+      const { data: existingOps } = await supabase
+        .from('ops_projects')
+        .select('id')
+        .eq('id', providedId)
+        .maybeSingle();
+
+      if (existingOps?.id) return existingOps.id;
+
+      // If not in ops_projects, find its details from projects lookup and mirror it to ops_projects
+      const allProjects = await getCompanyProjects(companyId);
+      const match = allProjects.find(p => p.id === providedId);
+
+      const mirrorPayload = {
+        id: providedId,
+        company_id: companyId,
+        name: match?.name || `Project ${String(providedId).slice(-6)}`,
+        project_code: match?.project_code || `PRJ-${String(providedId).slice(-4)}`,
+        status: match?.status || 'active',
+        description: 'Auto-synchronized project mirror for operations and procurement.'
+      };
+
+      await supabase.from('ops_projects').upsert(mirrorPayload);
+      return providedId;
+    } catch (e) {
+      console.warn('[ProjectLookupService] ops_projects mirroring caught:', e);
+      return providedId;
+    }
   }
+
   const existing = await getCompanyProjects(companyId);
   if (existing.length > 0 && existing[0]?.id) {
-    return existing[0].id;
+    const firstId = existing[0].id;
+    try {
+      const { data: checkFirst } = await supabase
+        .from('ops_projects')
+        .select('id')
+        .eq('id', firstId)
+        .maybeSingle();
+
+      if (!checkFirst?.id) {
+        await supabase.from('ops_projects').upsert({
+          id: firstId,
+          company_id: companyId,
+          name: existing[0].name || 'Project',
+          project_code: existing[0].project_code || 'PRJ-01',
+          status: 'active'
+        });
+      }
+    } catch (_) {}
+    return firstId;
   }
+
   // Provision a default ops_project
   try {
     const defId = crypto.randomUUID();

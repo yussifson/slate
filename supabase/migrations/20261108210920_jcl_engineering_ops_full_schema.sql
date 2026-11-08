@@ -223,6 +223,60 @@ CREATE TABLE IF NOT EXISTS public.ops_project_risks (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- 4. JCL Item Register (Custody & Assets)
+CREATE TABLE IF NOT EXISTS public.jcl_item_register (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    person_id UUID,
+    person_name TEXT NOT NULL,
+    item_name TEXT NOT NULL,
+    description TEXT,
+    issued_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    expected_return_at TIMESTAMPTZ,
+    actual_return_at TIMESTAMPTZ,
+    status TEXT NOT NULL DEFAULT 'issued',
+    issued_by_id UUID,
+    issued_by_name TEXT,
+    returned_to_name TEXT,
+    return_condition TEXT,
+    return_notes TEXT,
+    notes TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.jcl_item_register_history (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES public.companies(id) ON DELETE CASCADE,
+    item_id UUID NOT NULL REFERENCES public.jcl_item_register(id) ON DELETE CASCADE,
+    status TEXT NOT NULL,
+    changed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    changed_by_id UUID,
+    changed_by_name TEXT,
+    notes TEXT
+);
+
+-- 5. Relax Requisitions & Purchase Orders strict project FK constraint if needed
+DO $$
+BEGIN
+    ALTER TABLE IF EXISTS public.jcl_purchase_requisitions 
+        DROP CONSTRAINT IF EXISTS jcl_purchase_requisitions_project_id_fkey;
+    ALTER TABLE IF EXISTS public.jcl_purchase_requisitions 
+        ADD CONSTRAINT jcl_purchase_requisitions_project_id_fkey 
+        FOREIGN KEY (project_id) REFERENCES public.ops_projects(id) ON DELETE SET NULL;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
+DO $$
+BEGIN
+    ALTER TABLE IF EXISTS public.jcl_purchase_orders 
+        DROP CONSTRAINT IF EXISTS jcl_purchase_orders_project_id_fkey;
+    ALTER TABLE IF EXISTS public.jcl_purchase_orders 
+        ADD CONSTRAINT jcl_purchase_orders_project_id_fkey 
+        FOREIGN KEY (project_id) REFERENCES public.ops_projects(id) ON DELETE SET NULL;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
+
 -- RLS Enable & Tenant Isolation Policies
 DO $$
 DECLARE
@@ -232,7 +286,8 @@ DECLARE
         'ops_work_packages', 'ops_site_diary', 'ops_daily_reports',
         'ops_resource_allocations', 'ops_project_issues', 'ops_site_inspections',
         'ops_project_activity', 'ops_project_members', 'ops_project_messages',
-        'ops_project_risks'
+        'ops_project_risks', 'jcl_item_register', 'jcl_item_register_history',
+        'jcl_purchase_requisitions', 'jcl_purchase_orders', 'jcl_visitor_logbook', 'jcl_staff_logbook'
     ];
 BEGIN
     FOREACH tbl IN ARRAY all_ops_tables LOOP

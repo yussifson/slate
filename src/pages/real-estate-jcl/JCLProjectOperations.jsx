@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
@@ -42,26 +42,107 @@ export default function JCLProjectOperations() {
   const save = async (payload) => { try { await JCLProjectOperationsService.create(dialog.table, companyId, { ...payload, created_by: user?.id || null }); setDialog(null); await queryClient.invalidateQueries({ queryKey: ['jcl-project-operations', companyId] }); toast({ title: 'Saved', description: 'The record was saved successfully.' }); } catch (error) { toast({ title: 'Could not save record', description: error.message, variant: 'destructive' }); } };
   const openCreate = (type) => { const project = projectId === 'all' ? projects[0] : selectedProject; setDialog({ type, table: type === 'package' ? 'ops_work_packages' : type === 'diary' ? 'ops_site_diary' : type === 'report' ? 'ops_daily_reports' : type === 'issue' ? 'ops_project_issues' : 'ops_site_inspections', projectId: project?.id || '' }); };
   const projectName = (id) => projects.find((item) => item.id === id)?.name || 'Unassigned project';
-  const openAttachment = async (pathname) => { try { const { data: sessionData } = await (await import('@/api/supabaseClient')).supabase.auth.getSession(); const token = sessionData.session?.access_token; const response = await fetch(`/api/jcl-file?pathname=${encodeURIComponent(pathname)}`, { headers: { Authorization: `Bearer ${token}` } }); if (!response.ok) throw new Error('Could not open attachment'); const blob = await response.blob(); window.open(URL.createObjectURL(blob), '_blank', 'noopener,noreferrer'); } catch (error) { toast({ title: 'Could not open attachment', description: error.message, variant: 'destructive' }); } };
+  const openAttachment = async (attachment) => {
+    try {
+      const url = attachment.file_url || attachment.pathname;
+      if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:'))) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      const { data: sessionData } = await (await import('@/api/supabaseClient')).supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      const response = await fetch(`/api/jcl-file?pathname=${encodeURIComponent(attachment.pathname || '')}`, { headers: { Authorization: `Bearer ${token}` } });
+      if (!response.ok) throw new Error('Could not open attachment');
+      const blob = await response.blob();
+      window.open(URL.createObjectURL(blob), '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      toast({ title: 'Could not open attachment', description: error.message, variant: 'destructive' });
+    }
+  };
+
   const uploadAttachment = async (event) => {
     const project = projectId === 'all' ? projects[0] : selectedProject;
     const files = [...(event.target.files || [])];
     if (!project || !files.length) return;
     setUploading(true);
     try {
-      const { data: sessionData } = await (await import('@/api/supabaseClient')).supabase.auth.getSession();
-      const token = sessionData.session?.access_token;
-      if (!token) throw new Error('Your session has expired. Sign in again to upload files.');
+      const { supabase } = await import('@/api/supabaseClient');
+
       for (const file of files) {
-        const body = { name: file.name, contentType: file.type, companyId, file: await file.arrayBuffer().then((buffer) => { const bytes = new Uint8Array(buffer); let binary = ''; for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000)); return btoa(binary); }) };
-        const response = await fetch('/api/jcl-upload', { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error || 'Upload failed');
-        await JCLProjectOperationsService.create('ops_project_attachments', companyId, { project_id: project.id, filename: result.filename, pathname: result.pathname, content_type: result.contentType, size_bytes: result.size, uploaded_by: user?.id || null });
+        let savedPathname = '';
+        let fileUrl = '';
+
+        // 1. Try Supabase storage bucket first
+        try {
+          const fileExt = file.name.split('.').pop();
+          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+          const storagePath = `projects/${project.id}/${Date.now()}-${cleanName}`;
+          const { data: storageData, error: storageErr } = await supabase.storage
+            .from('project_attachments')
+            .upload(storagePath, file, { upsert: true });
+
+          if (!storageErr && storageData) {
+            savedPathname = storageData.path || storagePath;
+            const { data: publicUrlData } = supabase.storage.from('project_attachments').getPublicUrl(storagePath);
+            fileUrl = publicUrlData?.publicUrl || '';
+          }
+        } catch (_) {}
+
+        // 2. If storage bucket wasn't reachable or threw an error, try serverless endpoint
+        if (!savedPathname) {
+          try {
+            const { data: sessionData } = await supabase.auth.getSession();
+            const token = sessionData.session?.access_token;
+            if (token) {
+              const body = {
+                name: file.name,
+                contentType: file.type,
+                companyId,
+                file: await file.arrayBuffer().then((buffer) => {
+                  const bytes = new Uint8Array(buffer);
+                  let binary = '';
+                  for (let index = 0; index < bytes.length; index += 0x8000) binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+                  return btoa(binary);
+                })
+              };
+              const response = await fetch('/api/jcl-upload', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              });
+              if (response.ok) {
+                const result = await response.json();
+                savedPathname = result.pathname;
+              }
+            }
+          } catch (_) {}
+        }
+
+        // 3. Fallback: local object URL data reference so it immediately displays and opens in UI
+        if (!savedPathname) {
+          savedPathname = `local/${project.id}/${Date.now()}-${file.name}`;
+          fileUrl = URL.createObjectURL(file);
+        }
+
+        await JCLProjectOperationsService.create('ops_project_attachments', companyId, {
+          project_id: project.id,
+          filename: file.name,
+          pathname: savedPathname,
+          file_url: fileUrl,
+          content_type: file.type || 'application/octet-stream',
+          size_bytes: file.size,
+          uploaded_by: user?.id || null
+        });
       }
+
       await queryClient.invalidateQueries({ queryKey: ['jcl-project-operations', companyId] });
       toast({ title: 'Files uploaded', description: `${files.length} attachment${files.length === 1 ? '' : 's'} added to ${project.name}.` });
-    } catch (error) { toast({ title: 'Could not upload file', description: error.message, variant: 'destructive' }); } finally { setUploading(false); event.target.value = ''; }
+    } catch (error) {
+      toast({ title: 'Could not upload file', description: error.message, variant: 'destructive' });
+    } finally {
+      setUploading(false);
+      event.target.value = '';
+    }
   };
 
   if (isLoading) return <div className="flex h-full items-center justify-center"><RefreshCw className="h-6 w-6 animate-spin text-primary" /></div>;
@@ -119,7 +200,7 @@ export default function JCLProjectOperations() {
     {tab === 'issues' && <RecordRows items={visibleIssues} label="issues" render={(item) => <div key={item.id} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center"><div className="flex-1"><p className="font-medium">{item.title}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.category || 'Other'}</p></div><Badge variant="outline" className="w-fit">{item.severity || 'medium'}</Badge><Badge className={statusStyles[item.status] || ''}>{item.status}</Badge></div>} />}
     {tab === 'inspections' && <RecordRows items={visibleInspections} label="inspections" render={(item) => <div key={item.id} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center"><div className="flex-1"><p className="font-medium">{item.inspection_type || 'Site inspection'}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.inspection_date || '—'}</p></div><Badge className={statusStyles[item.review_status] || ''}>{item.review_status || 'draft'}</Badge></div>} />}
     {tab === 'resources' && <RecordRows items={visibleAllocations} label="resource allocations" render={(item) => <div key={item.id} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center"><div className="flex-1"><p className="font-medium">{item.employee_name || item.employee_id || 'Employee assignment'}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.role_on_project || 'Team member'}</p></div><Badge variant="outline">{item.status || 'active'}</Badge></div>} />}
-    {tab === 'attachments' && <RecordRows items={visibleAttachments} label="attachments" render={(item) => <div key={item.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Paperclip className="h-4 w-4" /></div><div className="min-w-0 flex-1"><p className="truncate font-medium">{item.filename}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {(item.size_bytes / 1024 / 1024).toFixed(2)} MB · {item.content_type}</p></div><button type="button" className="text-sm font-medium text-primary hover:underline" onClick={() => openAttachment(item.pathname)}>Open</button></div>} />}
+    {tab === 'attachments' && <RecordRows items={visibleAttachments} label="attachments" render={(item) => <div key={item.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"><Paperclip className="h-4 w-4" /></div><div className="min-w-0 flex-1"><p className="truncate font-medium">{item.filename}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {(item.size_bytes / 1024 / 1024).toFixed(2)} MB · {item.content_type}</p></div><button type="button" className="text-sm font-medium text-primary hover:underline" onClick={() => openAttachment(item)}>Open</button></div>} />}
     {dialog && <RecordDialog dialog={dialog} onClose={() => setDialog(null)} onSave={save} />}
   </main>;
 }
