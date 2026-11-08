@@ -78,12 +78,12 @@ const JCL_DEPARTMENTS = [
   {
     id: "sales",
     label: "Sales & CRM",
-    icon: Sparkles,
+    icon: Target,
     color: "amber",
     actionLabel: "New Lead",
     actionPath: "/real-estate/crm-leads",
     items: [
-      { label: "CRM Leads", path: "/real-estate/crm-leads", icon: Sparkles, badgeKey: "leads" },
+      { label: "CRM Leads", path: "/real-estate/crm-leads", icon: Target, badgeKey: "leads" },
       { label: "Clients Directory", path: "/real-estate/clients", icon: Users },
       { label: "Tours & Viewings", path: "/real-estate/viewings", icon: Eye, badgeKey: "viewings" },
       { label: "Purchase Offers", path: "/real-estate/offers", icon: FileText, badgeKey: "offers" },
