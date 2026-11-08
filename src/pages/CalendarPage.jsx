@@ -310,20 +310,20 @@ export default function CalendarPage() {
 
   return (
     <div className="space-y-4 font-sans w-full max-w-full">
-      <PageHeader
-        title={getTerm(activeIndustry, "hearing", true) + " Calendar"}
-        subtitle={`${hearingTermPlural} and important dates`}
-        actions={
-          <div className="flex items-center gap-2">
-            <Button onClick={() => setShowNewCalendarModal(true)} variant="outline" size="sm" className="h-9 text-xs gap-1.5">
-              <Plus className="w-3.5 h-3.5" /> New Calendar
-            </Button>
-            <Button onClick={() => setShowForm(true)} size="sm" className="h-9 text-xs gap-1.5 font-semibold bg-primary text-white">
-              <Plus className="w-4 h-4" /> Add Event
-            </Button>
-          </div>
-        }
-      />
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          {getTerm(activeIndustry, "hearing", true)} Calendar
+        </h1>
+
+        <div className="flex items-center gap-2">
+          <Button onClick={() => setShowNewCalendarModal(true)} variant="outline" size="sm" className="h-9 px-3 text-xs gap-1.5 rounded-xl">
+            <Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">New Calendar</span>
+          </Button>
+          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-3.5 text-xs gap-1.5 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md shadow-[#005A9C]/20 active:scale-95 transition-all">
+            <Plus className="w-4 h-4" /> <span>Add Event</span>
+          </Button>
+        </div>
+      </div>
 
       {/* ── Multi-User Calendars Bar ── */}
       <div className="bg-card rounded-xl border border-border p-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">

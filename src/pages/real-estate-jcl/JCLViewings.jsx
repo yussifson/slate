@@ -250,48 +250,67 @@ export default function JCLViewings() {
 
   return (
     <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
-      {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <CalendarIcon className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Viewings & Site Inspections
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Client inspection itineraries, tour agendas, broker schedules, and visitor feedback
-              </p>
-            </div>
+      {/* ── 1. Clean Top Header ── */}
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          Viewings & Tours
+        </h1>
+
+        <Button
+          onClick={handleOpenCreate}
+          size="sm"
+          className="h-9 px-3.5 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 rounded-xl gap-1.5 active:scale-95 transition-all"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Schedule Viewing</span>
+        </Button>
+      </div>
+
+      {/* ── 2. Dedicated Mobile Stats Layout (< md) ── */}
+      <div className="grid grid-cols-2 gap-2.5 md:hidden">
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <Clock className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Scheduled</span>
+            <span className="text-lg font-black text-foreground">{stats.scheduled}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchViewingsData}
-            className="h-9 px-3 text-xs gap-1.5 border-border"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <CalendarIcon className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Today</span>
+            <span className="text-lg font-black text-[#005A9C] dark:text-[#FF6B00]">{stats.todayCount}</span>
+          </div>
+        </div>
 
-          <Button
-            onClick={handleOpenCreate}
-            size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
-          >
-            <Plus className="h-4 w-4" />
-            Schedule Viewing
-          </Button>
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Completed</span>
+            <span className="text-lg font-black text-foreground">{stats.completed}</span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-slate-500/10 text-slate-600 dark:text-slate-400 flex items-center justify-center shrink-0">
+            <Eye className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Total Tours</span>
+            <span className="text-lg font-black text-foreground">{stats.total}</span>
+          </div>
         </div>
       </div>
 
-      {/* ── 2. KPI Hero Row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── 2. Desktop KPI Hero Row (>= md) ── */}
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
         <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
@@ -414,97 +433,142 @@ export default function JCLViewings() {
             </div>
           ) : (
             <div className="space-y-3">
-              {filteredViewings.map(v => {
-                const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
-                const bannerColor = 'from-emerald-800 via-emerald-700 to-emerald-600';
-
-                const clientInitials = (v.client_name || 'C').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-                return (
-                  <div
-                    key={v.id}
-                    onClick={() => setInspectorViewing(v)}
-                    className="group relative flex flex-col rounded-2xl border border-border/60 hover:border-emerald-500/50 bg-card overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
-                  >
-                    {/* Gradient Banner */}
-                    <div className={cn("relative h-28 flex flex-col justify-between p-4 overflow-hidden bg-gradient-to-br", bannerColor)}>
-                      <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-                      <div className="flex items-start justify-between relative z-10">
-                        <span className="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                          Tour Inspection
-                        </span>
-                        <span className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-white/20 text-white backdrop-blur-sm">
-                          <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                          {st.label}
-                        </span>
-                      </div>
-
-                      <div className="flex items-end justify-between relative z-10">
-                        <div>
-                          <p className="text-white/70 text-[9px] font-semibold uppercase tracking-widest mb-0.5">Viewing Date</p>
-                          <p className="text-lg font-extrabold text-white tracking-tight">
-                            {v.viewing_date ? format(new Date(v.viewing_date), 'MMM dd, yyyy') : 'TBD'}
+              {/* Mobile Native Card View (< md) */}
+              <div className="md:hidden space-y-2.5">
+                {filteredViewings.map(v => {
+                  const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
+                  return (
+                    <div
+                      key={v.id}
+                      onClick={() => setInspectorViewing(v)}
+                      className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-transform space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-foreground text-sm truncate leading-snug">
+                            {v.property_address}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground truncate">
+                            Client: <strong className="text-foreground">{v.client_name}</strong>
                           </p>
                         </div>
-                        {v.viewing_time && (
-                          <span className="text-[11px] font-bold text-white bg-white/20 px-2.5 py-1 rounded-lg backdrop-blur-sm">
-                            {v.viewing_time}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-4 flex flex-col gap-3 flex-1 justify-between">
-                      <div>
-                        <h3 className="font-bold text-foreground text-sm group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-1">
-                          {v.property_address}
-                        </h3>
-                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-1">
-                          <Building2 className="h-3 w-3 text-emerald-500 shrink-0" />
-                          <span className="truncate">Prime Inspection Site</span>
-                        </div>
+                        <Badge variant="outline" className={cn("text-[10px] font-bold border gap-1 shrink-0 py-0.5 px-2", st.badge)}>
+                          {st.label}
+                        </Badge>
                       </div>
 
-                      {/* 3-Spec Blueprint Strip */}
-                      <div className="grid grid-cols-2 divide-x divide-border/60 rounded-xl border border-border/60 bg-muted/30 overflow-hidden text-center">
-                        <div className="flex flex-col items-center py-2 gap-0.5">
-                          <User className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="text-xs font-bold text-foreground truncate max-w-[110px]">{v.client_name}</span>
-                          <span className="text-[8px] uppercase font-semibold text-muted-foreground tracking-wider">Client</span>
-                        </div>
-                        <div className="flex flex-col items-center py-2 gap-0.5">
-                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                          <span className="text-xs font-bold text-foreground">{v.duration_minutes || 45}m</span>
-                          <span className="text-[8px] uppercase font-semibold text-muted-foreground tracking-wider">Duration</span>
-                        </div>
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                        <span className="font-semibold text-foreground text-xs">
+                          📅 {v.viewing_date ? format(new Date(v.viewing_date), 'MMM dd, yyyy') : 'TBD'} {v.viewing_time ? `· ${v.viewing_time}` : ''}
+                        </span>
+                        <span className="text-[11px] text-muted-foreground font-mono">
+                          ⏱️ {v.duration_minutes || 45} mins
+                        </span>
                       </div>
 
-                      {/* Footer */}
-                      <div className="pt-2 border-t border-border/50 flex items-center justify-between mt-auto">
-                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground min-w-0">
-                          <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-white text-[9px] font-extrabold shrink-0">
-                            {clientInitials}
-                          </div>
-                          <span className="truncate font-medium">{v.agent_name || 'Assigned Broker'}</span>
-                        </div>
-
+                      <div className="flex items-center justify-between pt-1 border-t border-border/50 text-[11px] text-muted-foreground">
+                        <span>Agent: <strong className="text-foreground">{v.agent_name || 'Assigned'}</strong></span>
                         <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-emerald-600" onClick={() => setInspectorViewing(v)} title="Inspect">
-                            <Eye className="h-3.5 w-3.5" />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2 text-xs font-semibold"
+                            onClick={() => handleOpenEdit(v)}
+                          >
+                            Edit
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground" onClick={() => handleOpenEdit(v)} title="Edit">
-                            <Edit className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-rose-500/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30" onClick={() => setDeleteTarget(v)} title="Delete">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-rose-500 hover:text-rose-600"
+                            onClick={() => setDeleteTarget(v)}
+                          >
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+
+              {/* Desktop High-Density Table View (>= md) */}
+              <div className="hidden md:block border border-border rounded-xl bg-card overflow-hidden shadow-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
+                        <th className="py-3 px-4">Property Address</th>
+                        <th className="py-3 px-4">Client Name</th>
+                        <th className="py-3 px-4">Date & Time</th>
+                        <th className="py-3 px-4">Duration</th>
+                        <th className="py-3 px-4">Assigned Agent</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {filteredViewings.map(v => {
+                        const st = STATUS_CONFIG[v.status] || STATUS_CONFIG.scheduled;
+                        return (
+                          <tr
+                            key={v.id}
+                            className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                            onClick={() => setInspectorViewing(v)}
+                          >
+                            <td className="py-3.5 px-4 font-semibold text-foreground group-hover:text-emerald-600 transition-colors">
+                              {v.property_address}
+                            </td>
+                            <td className="py-3.5 px-4 text-foreground font-medium">{v.client_name}</td>
+                            <td className="py-3.5 px-4 font-mono text-muted-foreground">
+                              {v.viewing_date ? format(new Date(v.viewing_date), 'MMM dd, yyyy') : 'TBD'} {v.viewing_time && `· ${v.viewing_time}`}
+                            </td>
+                            <td className="py-3.5 px-4 font-mono text-muted-foreground">
+                              {v.duration_minutes || 45} mins
+                            </td>
+                            <td className="py-3.5 px-4 text-muted-foreground">
+                              {v.agent_name || 'Assigned Broker'}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <Badge variant="outline" className={cn("text-[10px] font-medium border", st.badge)}>
+                                {st.label}
+                              </Badge>
+                            </td>
+                            <td className="py-3.5 px-4 text-right" onClick={e => e.stopPropagation()}>
+                              <div className="flex items-center justify-end gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 text-muted-foreground hover:text-emerald-600"
+                                  onClick={() => setInspectorViewing(v)}
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                                  onClick={() => handleOpenEdit(v)}
+                                >
+                                  <Edit className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-7 w-7 text-rose-500 hover:text-rose-600"
+                                  onClick={() => setDeleteTarget(v)}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
         </div>

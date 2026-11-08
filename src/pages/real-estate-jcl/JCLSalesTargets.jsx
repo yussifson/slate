@@ -253,40 +253,73 @@ export default function JCLSalesTargets() {
 
   return (
     <div className="p-3 sm:p-6 w-full max-w-full overflow-x-hidden space-y-5">
-      {/* ── 1. Top Header ── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/80 pb-5">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 rounded-xl">
-              <Target className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                Marketer Sales Targets
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Set monthly acquisition targets, track closed leads, and evaluate team performance in real-time.
-              </p>
-            </div>
+      {/* ── 1. Clean Top Header ── */}
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          Sales Targets
+        </h1>
+
+        {isManager && (
+          <Button 
+            onClick={() => setShowCreateModal(true)} 
+            size="sm" 
+            className="gap-1.5 text-xs h-9 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md shadow-[#005A9C]/20 active:scale-95 transition-all"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Target</span>
+          </Button>
+        )}
+      </div>
+
+      {/* ── 2. Dedicated Mobile Stats Layout (< md) ── */}
+      <div className="grid grid-cols-2 gap-2.5 md:hidden">
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 flex items-center justify-center shrink-0">
+            <TrendingUp className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Active Goals</span>
+            <span className="text-lg font-black text-foreground">{targets.filter(t => t.status === 'active').length}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {isManager && (
-            <Button 
-              onClick={() => setShowCreateModal(true)} 
-              size="sm" 
-              className="gap-1.5 text-xs h-9 font-semibold bg-primary hover:bg-primary/90 text-white shadow-sm"
-            >
-              <Plus className="w-4 h-4" />
-              Create Target
-            </Button>
-          )}
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center shrink-0">
+            <Users className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Marketers</span>
+            <span className="text-lg font-black text-foreground">{marketers.length}</span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Closed Deals</span>
+            <span className="text-lg font-black text-emerald-600">
+              {leads.filter(l => (l.status || '').toLowerCase() === 'closed').length}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-card rounded-2xl p-3 border border-border/80 shadow-xs flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center shrink-0">
+            <Award className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">Achieved</span>
+            <span className="text-lg font-black text-purple-600">
+              {targets.filter(t => calculateProgress(t).isCompleted).length}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* ── 2. Summary KPI Ribbon ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {/* ── 2. Desktop KPI Ribbon (>= md) ── */}
+      <div className="hidden md:grid md:grid-cols-4 gap-4">
         <Card className="rounded-2xl border-border/80 shadow-xs">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
