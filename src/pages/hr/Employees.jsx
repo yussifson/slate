@@ -378,99 +378,123 @@ export default function Employees() {
         <p className="text-sm mt-1">Add your first employee to get started.</p>
       </div>
     ) : (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filtered.map(emp => {
-          const deptColor = getDeptColor(emp.departmentName);
-          const statusStyle = STATUS_STYLES[emp.status] || STATUS_STYLES['Active'];
-          const initials = emp.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
-          return (
-            <div key={emp.id} className="group bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
-              
-              {/* Card top accent bar */}
-              <div className={`h-1.5 w-full bg-gradient-to-r ${deptColor.bg}`} />
-
-              {/* Card body */}
-              <div className="p-5 flex-1">
-                <div className="flex items-start gap-4">
-                  {/* Avatar */}
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${deptColor.bg} flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0`}>
-                    {initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-bold text-foreground text-base leading-tight truncate">{emp.name}</h3>
-                        <span className="inline-block mt-0.5 text-[10px] font-bold tracking-wider text-muted-foreground bg-slate-100 dark:bg-secondary rounded-full px-2 py-0.5">{emp.employeeId}</span>
+      <div className="border border-border/80 rounded-2xl bg-card overflow-hidden shadow-xs w-full max-w-full">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs border-collapse min-w-[700px]">
+            <thead>
+              <tr className="border-b border-border bg-muted/40 text-muted-foreground font-semibold">
+                <th className="py-3.5 px-4">Employee</th>
+                <th className="py-3.5 px-4">Role & Department</th>
+                <th className="py-3.5 px-4">Contact</th>
+                <th className="py-3.5 px-4">Compensation</th>
+                <th className="py-3.5 px-4 text-center">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/60">
+              {filtered.map(emp => {
+                const deptColor = getDeptColor(emp.departmentName);
+                const statusStyle = STATUS_STYLES[emp.status] || STATUS_STYLES['Active'];
+                const initials = emp.name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+                return (
+                  <tr key={emp.id} className="hover:bg-muted/40 transition-colors group">
+                    {/* Employee avatar & name */}
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${deptColor.bg} flex items-center justify-center text-white font-bold text-xs shadow-xs shrink-0`}>
+                          {initials}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-foreground text-xs leading-snug truncate">{emp.name}</p>
+                          <span className="text-[10px] text-muted-foreground font-mono">{emp.employeeId || 'EMP'}</span>
+                        </div>
                       </div>
-                      <span className={`text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full shrink-0 ${statusStyle}`}>
-                        {emp.status}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                    </td>
 
-                {/* Role & Dept */}
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${deptColor.light}`}>
-                      {emp.roleName || emp.role || 'No Role'}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Briefcase className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{emp.departmentName}</span>
-                  </div>
-                  {emp.email && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Mail className="w-3.5 h-3.5 shrink-0 text-blue-400" />
-                      <span className="truncate">{emp.email}</span>
-                    </div>
-                  )}
-                  {emp.phone && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Phone className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
-                      <span>{emp.phone}</span>
-                    </div>
-                  )}
-                  {emp.salary && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <DollarSign className="w-3.5 h-3.5 shrink-0 text-amber-400" />
-                      <span>${Number(emp.salary).toLocaleString()} / mo</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+                    {/* Role & Dept */}
+                    <td className="py-3.5 px-4">
+                      <div className="space-y-0.5">
+                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md ${deptColor.light}`}>
+                          {emp.roleName || emp.role || 'General Staff'}
+                        </span>
+                        <p className="text-[11px] text-muted-foreground truncate">{emp.departmentName || 'General'}</p>
+                      </div>
+                    </td>
 
-              {/* ── Action Buttons ── */}
-              <div className="px-5 pb-4 pt-2 border-t border-border/50 flex gap-2">
-                <button onClick={() => setViewTargetId(emp.id)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/40 dark:hover:bg-blue-900/40 transition-colors">
-                  <Eye className="w-3.5 h-3.5" /> View
-                </button>
-                <button onClick={() => openEdit(emp)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/40 dark:hover:bg-emerald-900/40 transition-colors">
-                  <Edit className="w-3.5 h-3.5" /> Edit
-                </button>
-                <button onClick={() => setDeleteTargetId(emp.id)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/40 dark:hover:bg-red-900/40 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" /> Delete
-                </button>
-              </div>
+                    {/* Contact */}
+                    <td className="py-3.5 px-4">
+                      <div className="space-y-0.5 text-[11px] text-muted-foreground">
+                        {emp.email && (
+                          <div className="flex items-center gap-1.5 truncate">
+                            <Mail className="w-3 h-3 text-blue-500 shrink-0" />
+                            <span className="truncate">{emp.email}</span>
+                          </div>
+                        )}
+                        {emp.phone && (
+                          <div className="flex items-center gap-1.5 truncate">
+                            <Phone className="w-3 h-3 text-emerald-500 shrink-0" />
+                            <span>{emp.phone}</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
 
-              {/* Status quick-change */}
-              <div className="px-5 pb-4">
-                <select
-                  value={emp.status}
-                  onChange={e => handleUpdateStatus(emp, e.target.value)}
-                  className="w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 bg-slate-50 dark:bg-secondary px-3 py-2 text-xs font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30">
-                  <option>Active</option>
-                  <option>On Leave</option>
-                  <option>Terminated</option>
-                </select>
-              </div>
-            </div>
-          );
-        })}
+                    {/* Salary */}
+                    <td className="py-3.5 px-4">
+                      {emp.salary ? (
+                        <span className="font-semibold text-foreground text-xs">
+                          ${Number(emp.salary).toLocaleString()} <span className="text-[10px] text-muted-foreground font-normal">/mo</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground text-[11px]">—</span>
+                      )}
+                    </td>
+
+                    {/* Status with quick change dropdown */}
+                    <td className="py-3.5 px-4 text-center">
+                      <select
+                        value={emp.status}
+                        onChange={e => handleUpdateStatus(emp, e.target.value)}
+                        className={`text-[10px] font-bold tracking-wide px-2 py-1 rounded-lg border-0 cursor-pointer focus:ring-1 focus:ring-primary/40 ${statusStyle}`}
+                      >
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Terminated">Terminated</option>
+                      </select>
+                    </td>
+
+                    {/* Action buttons */}
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => setViewTargetId(emp.id)}
+                          className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                          title="View Details"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openEdit(emp)}
+                          className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+                          title="Edit Employee"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTargetId(emp.id)}
+                          className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                          title="Delete Employee"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     )}
    </div>

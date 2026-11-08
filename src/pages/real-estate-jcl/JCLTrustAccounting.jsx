@@ -365,169 +365,164 @@ export default function JCLTrustAccounting() {
 
       {/* ── 2. Dedicated Mobile 2x2 Stats Grid (< md) & Desktop Row (>= md) ── */}
       <div className="grid grid-cols-2 md:hidden gap-2.5">
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Shield className="w-3.5 h-3.5 text-[#005A9C]" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Net Trust</span>
+        <div className="bg-card/95 border border-border/80 rounded-xl p-2.5 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+            <Shield className="w-3 h-3 text-[#005A9C]" />
+            <span className="text-[9px] font-bold uppercase tracking-wider truncate">Net Trust</span>
           </div>
-          <p className="text-sm font-black text-foreground truncate">{formatCurrency(stats.netTrustBalance, 'USD')}</p>
-          <span className="text-[9px] text-[#005A9C] font-semibold">3-Way Reconciled</span>
+          <p className="text-xs font-black text-foreground truncate">{formatCurrency(stats.netTrustBalance, 'USD')}</p>
+          <span className="text-[8px] text-[#005A9C] font-semibold">3-Way Reconciled</span>
         </div>
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ArrowDownLeft className="w-3.5 h-3.5 text-blue-500" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Deposits</span>
+        <div className="bg-card/95 border border-border/80 rounded-xl p-2.5 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+            <ArrowDownLeft className="w-3 h-3 text-blue-500" />
+            <span className="text-[9px] font-bold uppercase tracking-wider truncate">Deposits</span>
           </div>
-          <p className="text-sm font-black text-[#005A9C] truncate">{formatCurrency(stats.totalDeposits, 'USD')}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Client inflows</span>
+          <p className="text-xs font-black text-[#005A9C] truncate">{formatCurrency(stats.totalDeposits, 'USD')}</p>
+          <span className="text-[8px] text-muted-foreground font-semibold">Inflows</span>
         </div>
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ArrowUpRight className="w-3.5 h-3.5 text-amber-500" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Disbursements</span>
+        <div className="bg-card/95 border border-border/80 rounded-xl p-2.5 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+            <ArrowUpRight className="w-3 h-3 text-amber-500" />
+            <span className="text-[9px] font-bold uppercase tracking-wider truncate">Disbursements</span>
           </div>
-          <p className="text-sm font-black text-amber-600 truncate">{formatCurrency(stats.totalDisbursements, 'USD')}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Closing releases</span>
+          <p className="text-xs font-black text-amber-600 truncate">{formatCurrency(stats.totalDisbursements, 'USD')}</p>
+          <span className="text-[8px] text-muted-foreground font-semibold">Releases</span>
         </div>
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Building2 className="w-3.5 h-3.5 text-purple-500" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Accounts</span>
+        <div className="bg-card/95 border border-border/80 rounded-xl p-2.5 shadow-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+            <Building2 className="w-3 h-3 text-purple-500" />
+            <span className="text-[9px] font-bold uppercase tracking-wider truncate">Accounts</span>
           </div>
-          <p className="text-sm font-black text-foreground truncate">{stats.accountCount}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Insured banks</span>
+          <p className="text-xs font-black text-foreground truncate">{stats.accountCount}</p>
+          <span className="text-[8px] text-muted-foreground font-semibold">Insured banks</span>
         </div>
       </div>
 
-      <div className="hidden md:grid md:grid-cols-4 gap-4">
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Net Trust Holdings</span>
-              <p className="text-2xl font-extrabold text-foreground tracking-tight">
-                {formatCurrency(stats.netTrustBalance, 'USD')}
-              </p>
-              <p className="text-[11px] text-[#005A9C] font-semibold flex items-center gap-1">
-                <CheckCircle2 className="h-3.5 w-3.5" /> 3-Way Reconciled
-              </p>
-            </div>
-            <div className="h-12 w-12 rounded-2xl bg-[#005A9C]/10 text-[#005A9C] flex items-center justify-center border border-[#005A9C]/20 shadow-inner">
-              <Shield className="h-6 w-6" />
-            </div>
-          </CardContent>
-        </Card>
+      <div className="hidden md:grid md:grid-cols-4 gap-3">
+        <div className="rounded-xl border border-border/80 bg-card p-3.5 shadow-xs flex items-center justify-between">
+          <div className="space-y-0.5 min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Net Trust Holdings</span>
+            <p className="text-lg font-black text-foreground tracking-tight truncate">
+              {formatCurrency(stats.netTrustBalance, 'USD')}
+            </p>
+            <p className="text-[10px] text-[#005A9C] font-semibold flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3" /> 3-Way Reconciled
+            </p>
+          </div>
+          <div className="h-9 w-9 rounded-xl bg-[#005A9C]/10 text-[#005A9C] flex items-center justify-center shrink-0">
+            <Shield className="h-4 w-4" />
+          </div>
+        </div>
 
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Client Deposits</span>
-              <p className="text-2xl font-extrabold text-[#005A9C] tracking-tight">
-                {formatCurrency(stats.totalDeposits, 'USD')}
-              </p>
-              <p className="text-[11px] text-muted-foreground font-semibold">Fiduciary inflows</p>
-            </div>
-            <div className="h-12 w-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center border border-blue-500/20 shadow-inner">
-              <ArrowDownLeft className="h-6 w-6" />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-border/80 bg-card p-3.5 shadow-xs flex items-center justify-between">
+          <div className="space-y-0.5 min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Client Deposits</span>
+            <p className="text-lg font-black text-[#005A9C] tracking-tight truncate">
+              {formatCurrency(stats.totalDeposits, 'USD')}
+            </p>
+            <p className="text-[10px] text-muted-foreground font-semibold">Fiduciary inflows</p>
+          </div>
+          <div className="h-9 w-9 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+            <ArrowDownLeft className="h-4 w-4" />
+          </div>
+        </div>
 
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Disbursements</span>
-              <p className="text-2xl font-extrabold text-amber-600 tracking-tight">
-                {formatCurrency(stats.totalDisbursements, 'USD')}
-              </p>
-              <p className="text-[11px] text-muted-foreground font-semibold">Closing payout releases</p>
-            </div>
-            <div className="h-12 w-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center border border-amber-500/20 shadow-inner">
-              <ArrowUpRight className="h-6 w-6" />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-border/80 bg-card p-3.5 shadow-xs flex items-center justify-between">
+          <div className="space-y-0.5 min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Disbursements</span>
+            <p className="text-lg font-black text-amber-600 tracking-tight truncate">
+              {formatCurrency(stats.totalDisbursements, 'USD')}
+            </p>
+            <p className="text-[10px] text-muted-foreground font-semibold">Closing releases</p>
+          </div>
+          <div className="h-9 w-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+            <ArrowUpRight className="h-4 w-4" />
+          </div>
+        </div>
 
-        <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-xs">
-          <CardContent className="p-5 flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Active Trust Accounts</span>
-              <p className="text-2xl font-extrabold text-foreground tracking-tight">{stats.accountCount}</p>
-              <p className="text-[11px] text-muted-foreground font-semibold">Insured banking accounts</p>
-            </div>
-            <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center border border-purple-500/20 shadow-inner">
-              <Building2 className="h-6 w-6" />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-border/80 bg-card p-3.5 shadow-xs flex items-center justify-between">
+          <div className="space-y-0.5 min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Active Trust Accounts</span>
+            <p className="text-lg font-black text-foreground tracking-tight truncate">{stats.accountCount}</p>
+            <p className="text-[10px] text-muted-foreground font-semibold">Insured banks</p>
+          </div>
+          <div className="h-9 w-9 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
+            <Building2 className="h-4 w-4" />
+          </div>
+        </div>
       </div>
 
-      {/* ── 3. Trust Accounts Responsive Grid ── */}
-      <div className="space-y-3">
+      {/* ── 3. Trust Accounts Responsive List View (No Ugly Grid) ── */}
+      <div className="space-y-2.5">
         <h2 className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
           <Building2 className="h-4 w-4 text-[#005A9C]" />
           Fiduciary Bank Accounts
         </h2>
         {accounts.length === 0 ? (
-          <div className="p-6 border border-dashed border-border rounded-2xl text-center bg-card/40">
+          <div className="p-6 border border-dashed border-border rounded-xl text-center bg-card/40">
             <p className="text-xs text-muted-foreground">No trust accounts configured yet. Establish your first escrow/trust bank account.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-            {accounts.map(acc => (
-              <div
-                key={acc.id}
-                className="bg-card/95 backdrop-blur-xl rounded-[20px] sm:rounded-[24px] border border-border/90 shadow-xs hover:border-[#005A9C]/50 transition-all flex flex-col justify-between overflow-hidden"
-              >
-                <div className="p-4 sm:p-5 space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 bg-[#005A9C]/10 text-[#005A9C]">
-                        <Banknote className="w-5 h-5" />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-sm text-foreground truncate">
-                          {acc.account_name}
-                        </h3>
-                        <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/40 capitalize mt-0.5">
+          <div className="border border-border/80 rounded-2xl bg-card overflow-hidden shadow-xs w-full max-w-full">
+            <div className="overflow-x-auto w-full">
+              <table className="w-full text-left text-xs border-collapse min-w-[650px]">
+                <thead>
+                  <tr className="border-b border-border bg-muted/40 text-muted-foreground font-semibold">
+                    <th className="py-3 px-4">Account Name</th>
+                    <th className="py-3 px-4">Bank & Routing</th>
+                    <th className="py-3 px-4">Account Number</th>
+                    <th className="py-3 px-4">Type</th>
+                    <th className="py-3 px-4 text-right">Available Balance</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  {accounts.map(acc => (
+                    <tr key={acc.id} className="hover:bg-muted/40 transition-colors group">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 bg-[#005A9C]/10 text-[#005A9C]">
+                            <Banknote className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-xs text-foreground truncate">{acc.account_name}</p>
+                            <span className="text-[10px] text-muted-foreground">{acc.account_holder_name || 'Trustee'}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1.5 text-muted-foreground">
+                          <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                          <span className="font-medium">{acc.bank_name || 'Bank'}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 font-mono text-xs text-muted-foreground">
+                        •••• {acc.account_number?.slice(-4) || '8841'}
+                      </td>
+                      <td className="py-3 px-4">
+                        <Badge variant="outline" className="text-[9px] font-bold uppercase py-0.5 px-2 bg-muted/40 capitalize">
                           {acc.account_type || 'Escrow'}
                         </Badge>
-                      </div>
-                    </div>
-                    <Badge className="bg-[#005A9C]/15 text-[#005A9C] font-extrabold text-[10px] uppercase border-[#005A9C]/30 shrink-0">
-                      Active
-                    </Badge>
-                  </div>
-
-                  <div className="space-y-1 text-xs text-muted-foreground bg-muted/30 p-2.5 rounded-xl border border-border/50">
-                    <div className="flex items-center gap-1.5 truncate">
-                      <Building2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                      <span className="truncate font-medium">{acc.bank_name}</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 truncate">
-                      <Lock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span className="truncate font-medium">Acc: •••• {acc.account_number?.slice(-4) || '8841'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-3 sm:p-4 px-4 sm:px-5 border-t border-border/70 bg-muted/15 flex items-center justify-between">
-                  <div>
-                    <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider block">Balance</span>
-                    <span className="text-sm sm:text-base font-black text-emerald-600">
-                      {formatCurrency(acc.balance || 0, acc.currency || 'USD')}
-                    </span>
-                  </div>
-
-                  <Button
-                    size="sm"
-                    onClick={() => setInspectAccount(acc)}
-                    className="text-xs h-8 px-3 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-xs gap-1"
-                  >
-                    <Eye className="w-3.5 h-3.5" /> Details
-                  </Button>
-                </div>
-              </div>
-            ))}
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-xs text-emerald-600">
+                        {formatCurrency(acc.balance || 0, acc.currency || 'USD')}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setInspectAccount(acc)}
+                          className="text-xs h-7 px-2.5 font-semibold text-[#005A9C] hover:text-[#00477D] hover:bg-[#005A9C]/10 rounded-lg gap-1"
+                        >
+                          <Eye className="w-3 h-3" /> Details
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>

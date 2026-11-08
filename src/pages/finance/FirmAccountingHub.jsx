@@ -181,18 +181,16 @@ function FilterBar({ search, onSearch, placeholder = 'Search...', rightSlot }) {
 function KpiCard({ label, value, sub, icon: Icon, color = 'indigo' }) {
   const c = TAB_COLORS[color];
   return (
-    <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
-      <CardContent className="p-5 flex items-center justify-between">
-        <div className="space-y-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{label}</span>
-          <p className="text-2xl font-extrabold text-foreground tracking-tight">{value}</p>
-          {sub && <p className="text-[11px] text-muted-foreground font-semibold">{sub}</p>}
-        </div>
-        <div className={cn('h-12 w-12 rounded-2xl flex items-center justify-center border shadow-inner', c.icon)}>
-          <Icon className="h-6 w-6" />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="rounded-xl border border-border/80 bg-card p-3.5 shadow-xs flex items-center justify-between transition-all hover:border-primary/40">
+      <div className="space-y-0.5 min-w-0">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground truncate block">{label}</span>
+        <p className="text-lg font-black text-foreground tracking-tight truncate">{value}</p>
+        {sub && <p className="text-[10px] text-muted-foreground font-semibold truncate">{sub}</p>}
+      </div>
+      <div className={cn('h-9 w-9 rounded-xl flex items-center justify-center shrink-0 border shadow-xs', c.icon)}>
+        <Icon className="h-4 w-4" />
+      </div>
+    </div>
   );
 }
 
@@ -973,21 +971,21 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
         {currentContextKpi.cards.map((c, idx) => {
           const Icon = c.icon;
           return (
-            <div key={idx} className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-                <Icon className={cn("w-3.5 h-3.5", `text-${c.color}-500`)} />
-                <span className="text-[10px] font-bold uppercase tracking-wider truncate">{c.label}</span>
+            <div key={idx} className="bg-card/95 border border-border/80 rounded-xl p-2.5 shadow-xs">
+              <div className="flex items-center gap-1.5 text-muted-foreground mb-0.5">
+                <Icon className={cn("w-3 h-3 shrink-0", `text-${c.color}-500`)} />
+                <span className="text-[9px] font-bold uppercase tracking-wider truncate">{c.label}</span>
               </div>
-              <p className={cn("text-sm font-black truncate", c.color === 'rose' ? 'text-rose-600' : c.color === 'emerald' ? 'text-emerald-600' : c.color === 'orange' ? 'text-orange-600' : 'text-[#005A9C]')}>
+              <p className={cn("text-xs font-black truncate", c.color === 'rose' ? 'text-rose-600' : c.color === 'emerald' ? 'text-emerald-600' : c.color === 'orange' ? 'text-orange-600' : 'text-[#005A9C]')}>
                 {c.value}
               </p>
-              <span className="text-[9px] text-muted-foreground font-semibold truncate block">{c.sub}</span>
+              <span className="text-[8px] text-muted-foreground font-semibold truncate block">{c.sub}</span>
             </div>
           );
         })}
       </div>
 
-      <div className="hidden md:grid md:grid-cols-4 gap-4">
+      <div className="hidden md:grid md:grid-cols-4 gap-3">
         {currentContextKpi.cards.map((c, idx) => (
           <KpiCard key={idx} label={c.label} value={c.value} sub={c.sub} icon={c.icon} color={c.color} />
         ))}

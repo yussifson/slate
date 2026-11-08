@@ -4,7 +4,7 @@ import {
   LayoutDashboard, WalletCards, BookOpen, Receipt, FileText,
   LineChart, ShieldCheck, CheckCircle2, TrendingUp, Users,
   ShoppingBag, Wallet, BookCheck, BarChart3, Calculator,
-  ClipboardCheck, PanelLeftClose, PanelLeftOpen
+  ClipboardCheck, ChevronsLeft, ChevronsRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -85,7 +85,7 @@ export default function FinanceLayout() {
       {/* ── Desktop Secondary Left Inner Sidebar (>= md) matching HRLayout ── */}
       <aside className={cn(
         "hidden md:flex bg-card border-r border-border/70 flex-col shrink-0 overflow-hidden transition-all duration-300 z-20 h-full",
-        sidebarCollapsed ? "w-[76px]" : "w-56 lg:w-64"
+        sidebarCollapsed ? "w-[72px]" : "w-52 lg:w-56"
       )}>
         <div className={cn("shrink-0 h-14 p-3 border-b border-border/60 bg-gradient-to-br from-primary/10 via-transparent to-transparent flex items-center justify-between", sidebarCollapsed && "px-2 justify-center")}>
           <div className={cn("flex items-center gap-2.5 min-w-0", sidebarCollapsed && "hidden")}>
@@ -104,7 +104,7 @@ export default function FinanceLayout() {
             aria-label={sidebarCollapsed ? "Expand Finance sidebar" : "Collapse Finance sidebar"}
             title={sidebarCollapsed ? "Expand Finance sidebar" : "Collapse Finance sidebar"}
           >
-            {sidebarCollapsed ? <PanelLeftOpen className="w-3.5 h-3.5" /> : <PanelLeftClose className="w-3.5 h-3.5" />}
+            {sidebarCollapsed ? <ChevronsRight className="w-4 h-4" /> : <ChevronsLeft className="w-4 h-4" />}
           </button>
         </div>
 

@@ -85,20 +85,26 @@ export default function UnivAccessControl() {
   // Fetch roles
   const __resR = await powerSync.execute(`SELECT * FROM univ_roles WHERE company_id = ?`, [companyId]); 
   const rData = __resR.rows ? (__resR.rows._array || Array.from(__resR.rows)) : [];
-  // Get all default platform roles
-  const predefinedRoles = DEFAULT_PLATFORM_ROLES.map(r => ({
-    id: r.id,
-    role_name: r.label,
-    description: r.description + ' (' + r.department + ')',
-    department: r.department,
-    permissions: availableFeatures.reduce((acc, feat) => {
-      acc[feat] = { read: true, write: true, delete: false };
-      return acc;
-    }, {}),
-    is_predefined: true
-  }));
+  // Match predefined roles with any saved overrides in univ_roles
+  const predefinedRoles = DEFAULT_PLATFORM_ROLES.map(r => {
+    const saved = rData.find(item => item.id === r.id || item.role_name === r.label || item.role_name?.toLowerCase() === r.id);
+    return {
+      id: r.id,
+      role_name: r.label,
+      description: r.description + ' (' + r.department + ')',
+      department: r.department,
+      permissions: saved?.permissions || availableFeatures.reduce((acc, feat) => {
+        acc[feat] = { read: true, write: true, delete: false };
+        return acc;
+      }, {}),
+      is_predefined: true,
+      has_override: !!saved
+    };
+  });
 
-  setRoles([...predefinedRoles, ...rData]);
+  // Include custom roles (roles that do not match predefined IDs)
+  const customRoles = rData.filter(item => !DEFAULT_PLATFORM_ROLES.some(r => r.id === item.id || r.label === item.role_name || r.id === item.role_name?.toLowerCase()));
+  setRoles([...predefinedRoles, ...customRoles]);
 } catch (e) {
  console.error(e);
 } finally {
@@ -186,26 +192,41 @@ export default function UnivAccessControl() {
 
  /* --- ROLES LOGIC --- */
  const saveRole = async (e) => {
- e.preventDefault();
- const payload = { ...roleForm, company_id: companyId};
- 
- await (async () => {
- const _payload = editingRoleId ? payload : { id: crypto.randomUUID(), ...payload };
- const _keys = Object.keys(_payload);
- const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
- if (editingRoleId) {
- await powerSync.execute(`UPDATE univ_roles SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, editingRoleId]);
-} else {
- const _plhdr = _keys.map(()=>'?').join(', ');
- await powerSync.execute(`INSERT INTO univ_roles (${_keys.join(', ')}) VALUES (${_plhdr})`, _vals);
-}
-})();
- const error = null;
- 
- if (error) { toast.error('Failed to save role'); return;}
- toast.success(editingRoleId ? 'Role Updated' : 'Role Created');
- setRoleModal(false); fetchData();
-};
+   e.preventDefault();
+   const roleId = editingRoleId || crypto.randomUUID();
+   const payload = {
+     id: roleId,
+     company_id: companyId,
+     role_name: roleForm.role_name,
+     permissions: roleForm.permissions || {},
+     created_at: new Date().toISOString()
+   };
+   
+   try {
+     // 1. Direct Supabase upsert to sync across all web and mobile apps immediately
+     await supabase.from('univ_roles').upsert({
+       id: payload.id,
+       company_id: payload.company_id,
+       role_name: payload.role_name,
+       permissions: payload.permissions
+     }, { onConflict: 'id' });
+
+     // 2. Local PowerSync write
+     const _vals = [payload.id, payload.company_id, payload.role_name, JSON.stringify(payload.permissions), payload.created_at];
+     const existing = await powerSync.getOptional('SELECT id FROM univ_roles WHERE id = ?', [payload.id]);
+     if (existing) {
+       await powerSync.execute('UPDATE univ_roles SET company_id = ?, role_name = ?, permissions = ? WHERE id = ?', [payload.company_id, payload.role_name, JSON.stringify(payload.permissions), payload.id]);
+     } else {
+       await powerSync.execute('INSERT INTO univ_roles (id, company_id, role_name, permissions, created_at) VALUES (?, ?, ?, ?, ?)', _vals);
+     }
+     toast.success(editingRoleId ? 'Role permissions updated successfully' : 'Role created successfully');
+     setRoleModal(false);
+     fetchData();
+   } catch (err) {
+     console.error('Failed to save role:', err);
+     toast.error('Failed to save role: ' + (err.message || 'Error'));
+   }
+ };
 
  const deleteRole = async (id) => {
  await powerSync.execute(`DELETE FROM univ_roles WHERE id = ?`, [id]);
@@ -308,15 +329,15 @@ export default function UnivAccessControl() {
                         )}
                       </div>
                     </div>
-                    {!r.is_predefined && (
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button 
-                          onClick={() => openRoleModal(r)} 
-                          className="p-1.5 bg-muted rounded-xl text-muted-foreground hover:text-primary transition-colors"
-                          title="Edit Role"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button 
+                        onClick={() => openRoleModal(r)} 
+                        className="p-1.5 bg-primary/10 rounded-xl text-primary hover:bg-primary/20 transition-colors"
+                        title="Edit Role Permissions"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      {!r.is_predefined && (
                         <button 
                           onClick={() => deleteRole(r.id)} 
                           className="p-1.5 bg-red-500/10 text-destructive rounded-xl hover:bg-red-500/20 transition-colors"
@@ -324,8 +345,8 @@ export default function UnivAccessControl() {
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
 
                   {r.description && (

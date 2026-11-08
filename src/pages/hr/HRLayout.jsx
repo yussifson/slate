@@ -4,7 +4,7 @@ import {
   Users, Building2, Shield, CalendarHeart, Clock,
   BadgeDollarSign, Target, GraduationCap, UserPlus,
   AlertCircle, Wallet, LayoutDashboard, ShieldCheck,
-  Menu, X, PanelLeftClose, PanelLeftOpen
+  Menu, X, SidebarClose, SidebarOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -66,7 +66,7 @@ export default function HRLayout() {
       {/* ── Desktop Secondary Left Sidebar (>= md) ── */}
       <aside className={cn(
         "hidden md:flex bg-card border-r border-border/70 flex-col shrink-0 overflow-hidden transition-all duration-300 z-20 h-full",
-        sidebarCollapsed ? "w-[76px]" : "w-56 lg:w-60"
+        sidebarCollapsed ? "w-[72px]" : "w-52 lg:w-56"
       )}>
         <div className={cn("shrink-0 h-14 p-3 border-b border-border/60 bg-gradient-to-br from-primary/10 via-transparent to-transparent flex items-center justify-between", sidebarCollapsed && "px-2 justify-center")}>
           <div className={cn("flex items-center gap-2.5 min-w-0", sidebarCollapsed && "hidden")}>
@@ -85,7 +85,7 @@ export default function HRLayout() {
             aria-label={sidebarCollapsed ? "Expand HR sidebar" : "Collapse HR sidebar"}
             title={sidebarCollapsed ? "Expand HR sidebar" : "Collapse HR sidebar"}
           >
-            {sidebarCollapsed ? <PanelLeftOpen className="w-3.5 h-3.5" /> : <PanelLeftClose className="w-3.5 h-3.5" />}
+            {sidebarCollapsed ? <SidebarOpen className="w-4 h-4" /> : <SidebarClose className="w-4 h-4" />}
           </button>
         </div>
 

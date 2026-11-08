@@ -213,83 +213,117 @@ export default function Leave() {
         <p className="text-sm mt-1">{t("submit_a_new_request_using_the", "Submit a new request using the button above.")}</p>
       </div>
     ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-        {requests.map(req => {
-          const leaveStyle = getLeaveStyle(req.leaveType);
-          const statusStyle = STATUS_STYLES[req.status] || STATUS_STYLES['Pending'];
-          const initials = req.employeeName?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
-          return (
-            <div key={req.id} className={`group bg-white dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col border-l-4 ${leaveStyle.accent}`}>
-              
-              {/* Card Header */}
-              <div className="p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${leaveStyle.bg} flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0`}>
-                      {initials}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-foreground leading-tight">{req.employeeName}</h3>
-                      <span className={`inline-block mt-0.5 text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full ${leaveStyle.light}`}>
+      <div className="border border-border/80 rounded-2xl bg-card overflow-hidden shadow-xs w-full max-w-full">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs border-collapse min-w-[700px]">
+            <thead>
+              <tr className="border-b border-border bg-muted/40 text-muted-foreground font-semibold">
+                <th className="py-3.5 px-4">Employee</th>
+                <th className="py-3.5 px-4">Leave Type</th>
+                <th className="py-3.5 px-4">Duration & Dates</th>
+                <th className="py-3.5 px-4">Reason</th>
+                <th className="py-3.5 px-4 text-center">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/60">
+              {requests.map(req => {
+                const leaveStyle = getLeaveStyle(req.leaveType);
+                const statusStyle = STATUS_STYLES[req.status] || STATUS_STYLES['Pending'];
+                const initials = req.employeeName?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || '?';
+                return (
+                  <tr key={req.id} className="hover:bg-muted/40 transition-colors group">
+                    {/* Employee */}
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${leaveStyle.bg} flex items-center justify-center text-white font-bold text-xs shadow-xs shrink-0`}>
+                          {initials}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-foreground text-xs leading-snug truncate">{req.employeeName}</p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Leave Type */}
+                    <td className="py-3.5 px-4">
+                      <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md ${leaveStyle.light}`}>
                         {req.leaveType} Leave
                       </span>
-                    </div>
-                  </div>
-                  <span className={`text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full shrink-0 ${statusStyle}`}>
-                    {req.status}
-                  </span>
-                </div>
+                    </td>
 
-                {/* Date range */}
-                <div className="mt-4 p-3 bg-slate-50 dark:bg-secondary rounded-xl flex items-center gap-3">
-                  <CalendarDays className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{req.startDate} → {req.endDate}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{req.days} {req.days === 1 ? 'day' : 'days'} off</p>
-                  </div>
-                </div>
+                    {/* Dates */}
+                    <td className="py-3.5 px-4">
+                      <div className="space-y-0.5">
+                        <p className="text-xs font-semibold text-foreground">{req.startDate} → {req.endDate}</p>
+                        <span className="text-[10px] text-muted-foreground font-medium">{req.days} {req.days === 1 ? 'day' : 'days'}</span>
+                      </div>
+                    </td>
 
-                {/* Reason */}
-                {req.reason && (
-                  <div className="mt-3">
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">Reason</p>
-                    <p className="text-sm text-foreground bg-slate-50 dark:bg-secondary p-2.5 rounded-lg leading-relaxed line-clamp-2">"{req.reason}"</p>
-                  </div>
-                )}
-              </div>
+                    {/* Reason */}
+                    <td className="py-3.5 px-4 max-w-xs">
+                      <p className="text-xs text-muted-foreground truncate" title={req.reason}>
+                        {req.reason || '—'}
+                      </p>
+                    </td>
 
-              {/* ── Action Buttons ── */}
-              <div className="px-5 pb-3 flex gap-2">
-                <button onClick={() => setViewTargetId(req.id)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/40 transition-colors">
-                  <Eye className="w-3.5 h-3.5" /> View
-                </button>
-                <button onClick={() => openEdit(req)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/40 transition-colors">
-                  <Edit className="w-3.5 h-3.5" /> Edit
-                </button>
-                <button onClick={() => setDeleteTargetId(req.id)}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/40 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" /> Delete
-                </button>
-              </div>
+                    {/* Status with quick actions if pending */}
+                    <td className="py-3.5 px-4 text-center">
+                      <span className={`inline-block text-[10px] font-bold tracking-wide px-2.5 py-0.5 rounded-full ${statusStyle}`}>
+                        {req.status}
+                      </span>
+                    </td>
 
-              {/* ── Approve / Reject (only for Pending) ── */}
-              {req.status === 'Pending' && (
-                <div className="px-5 pb-5 grid grid-cols-2 gap-2">
-                  <Button onClick={() => handleUpdateStatus(req, 'Rejected')} variant="outline"
-                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 border-red-200 dark:border-red-800/50 gap-2 rounded-xl">
-                    <X className="w-4 h-4"/> Reject
-                  </Button>
-                  <Button onClick={() => handleUpdateStatus(req, 'Approved')}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2 rounded-xl">
-                    <Check className="w-4 h-4"/> Approve
-                  </Button>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                    {/* Actions */}
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {req.status === 'Pending' && (
+                          <>
+                            <button
+                              onClick={() => handleUpdateStatus(req, 'Approved')}
+                              className="p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+                              title="Approve"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleUpdateStatus(req, 'Rejected')}
+                              className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                              title="Reject"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => setViewTargetId(req.id)}
+                          className="p-1.5 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                          title="View"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openEdit(req)}
+                          className="p-1.5 text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteTargetId(req.id)}
+                          className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     )}
   </div>
