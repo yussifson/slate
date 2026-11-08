@@ -18,7 +18,9 @@ const SHORT_NAMES = {
   "Viewings": "Viewings",
   "Offers": "Offers",
   "Counter Offers": "Counters",
-  "CRM Leads": "Leads",
+  "CRM Leads": "CRM",
+  "CRM": "CRM",
+  "Leads": "CRM",
   "Tenancy Leases": "Leases",
   "Leases": "Leases",
   "Lease Renewals": "Renewals",
@@ -283,6 +285,10 @@ export default function MobileBottomNav() {
     if (!grouped['Marketing']) grouped['Marketing'] = [];
     if (!grouped['Marketing'].some(i => i.path === '/real-estate/crm-leads')) {
       grouped['Marketing'].unshift({ label: 'CRM Leads', path: '/real-estate/crm-leads', icon: 'Target', section: 'Marketing' });
+    } else {
+      // Ensure the label clearly says CRM Leads
+      const item = grouped['Marketing'].find(i => i.path === '/real-estate/crm-leads');
+      if (item) item.label = 'CRM Leads';
     }
 
     // Ensure Engineering includes all core operational sub-modules

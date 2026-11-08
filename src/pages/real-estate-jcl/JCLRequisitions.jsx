@@ -56,16 +56,22 @@ export default function JCLRequisitions() {
     if (!companyId) return;
     setLoading(true);
     try {
-      const [resReq, resProj] = await Promise.all([
-        supabase
-          .from('jcl_purchase_requisitions')
-          .select('id, reference, status, priority, required_date, project_id, description, justification, department, created_at, ops_projects(id,name,project_code)')
-          .eq('company_id', companyId)
-          .order('created_at', { ascending: false }),
-        getCompanyProjects(companyId)
-      ]);
+      let resReq = await supabase
+        .from('jcl_purchase_requisitions')
+        .select('id, reference, status, priority, required_date, project_id, description, justification, department, created_at, ops_projects(id,name,project_code)')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
 
-      if (resReq.error) throw resReq.error;
+      if (resReq.error) {
+        console.warn('Requisitions join failed, falling back to clean select:', resReq.error.message);
+        resReq = await supabase
+          .from('jcl_purchase_requisitions')
+          .select('id, reference, status, priority, required_date, project_id, description, justification, department, created_at')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false });
+      }
+
+      const resProj = await getCompanyProjects(companyId).catch(() => []);
       setRequisitions(resReq.data || []);
       const projList = Array.isArray(resProj) ? resProj : (resProj?.data || []);
       setProjects(projList);

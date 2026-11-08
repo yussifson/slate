@@ -57,16 +57,22 @@ export default function JCLPurchaseOrders() {
     if (!companyId) return;
     setLoading(true);
     try {
-      const [resOrders, resProj] = await Promise.all([
-        supabase
-          .from('jcl_purchase_orders')
-          .select('id, reference, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at, ops_projects(id,name,project_code)')
-          .eq('company_id', companyId)
-          .order('created_at', { ascending: false }),
-        getCompanyProjects(companyId)
-      ]);
+      let resOrders = await supabase
+        .from('jcl_purchase_orders')
+        .select('id, reference, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at, ops_projects(id,name,project_code)')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
 
-      if (resOrders.error) throw resOrders.error;
+      if (resOrders.error) {
+        console.warn('Purchase orders join failed, falling back to clean select:', resOrders.error.message);
+        resOrders = await supabase
+          .from('jcl_purchase_orders')
+          .select('id, reference, status, total_amount, expected_delivery_date, supplier_name, delivery_address, payment_terms, project_id, created_at')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false });
+      }
+
+      const resProj = await getCompanyProjects(companyId).catch(() => []);
       setOrders(resOrders.data || []);
       const projList = Array.isArray(resProj) ? resProj : (resProj?.data || []);
       setProjects(projList);
