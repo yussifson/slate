@@ -205,7 +205,6 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         <button
           onClick={() => {
             window.dispatchEvent(new CustomEvent('open-spotlight'));
-            navigate('/search');
           }}
           className="w-full h-[36px] px-3 rounded-full bg-white/15 hover:bg-white/20 border border-white/15 flex items-center gap-2 text-white/80 transition-all active:scale-[0.98]"
           aria-label="Search"

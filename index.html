@@ -129,23 +129,19 @@
         var isClipad = host.includes('clipad');
         var isSlate = host.includes('slate');
         
-        var appTitle = 'JCL Real Estate - Enterprise Workspace';
-        var faviconHref = '/optavel-favicon.svg';
+        var appTitle = 'JCL Office - Enterprise Workspace';
+        var faviconHref = '/jcl-logo.png';
         var logoSrc = '/jcl-logo.png';
 
         if (isClipad) {
           appTitle = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Platform';
           faviconHref = '/clipad-logo.svg';
           logoSrc = '/clipad-logo-green.svg';
-        } else if (isSlate) {
-          appTitle = 'Slate - The Unified Workspace That Turns AI Into Clear Profit';
-          faviconHref = '/slate-favicon.svg';
-          logoSrc = '/slate-logo.png';
         } else {
-          // Account / Optavel / Default
-          appTitle = 'Optavel - Experience Infinite Scale With Next-Gen Enterprise Products';
-          faviconHref = '/optavel-favicon.svg'; // Main company favicon
-          logoSrc = '/optavel-favicon.svg'; // Main company logo
+          // Default to JCL Office logo for all mobile/web workspace loaders
+          appTitle = 'JCL Office - Enterprise Workspace';
+          faviconHref = '/jcl-logo.png';
+          logoSrc = '/jcl-logo.png';
         }
 
         document.title = appTitle;

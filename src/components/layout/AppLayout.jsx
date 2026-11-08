@@ -377,7 +377,7 @@ export default function AppLayout() {
             "flex-1 w-full mx-auto flex flex-col",
             ['/chat', '/email-inbox', '/search'].includes(location.pathname) 
               ? "overflow-hidden p-0" 
-              : "overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-2 sm:px-4 md:px-6 pt-2 sm:pt-4 md:pt-5 pb-[calc(60px+env(safe-area-inset-bottom))] md:pb-6"
+              : "overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-3 sm:px-4 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-8"
           )}>
        <div className="flex-1 w-full flex flex-col">
             {/* If Chat is docked, don't render it in the main outlet to avoid duplicate IDs/state */}

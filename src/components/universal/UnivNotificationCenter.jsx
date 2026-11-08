@@ -130,13 +130,17 @@ export default function UnivNotificationCenter() {
       <button 
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "relative p-2 rounded-full transition-all duration-300",
-          isOpen ? "bg-primary/10 text-primary" : "hover:bg-muted text-[#71717a] dark:text-gray-400 hover:text-foreground"
+          "relative p-2 rounded-full transition-all duration-200 focus:outline-none",
+          isOpen ? "bg-white/20 text-white" : "hover:bg-white/10 text-white/95 hover:text-white"
         )}
+        aria-label="Notifications"
       >
-        <Bell className="w-5 h-5" />
+        <Bell className="w-5 h-5 drop-shadow-sm text-white" strokeWidth={2.2} />
         {unreadCount > 0 && (
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500/10 rounded-full border-2 border-background animate-pulse"></span>
+          <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600 border border-white shadow-sm"></span>
+          </span>
         )}
       </button>
 

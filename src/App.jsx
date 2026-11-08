@@ -210,72 +210,71 @@ class ErrorBoundary extends React.Component {
       if (isChunkError) {
         return (
           <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col items-center justify-center p-6 font-sans">
-            <div className="hidden md:flex bg-[#006065] p-8 md:p-12 rounded-[24px] border border-white/10 shadow-xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#00beac]"></div>
+            <div className="hidden md:flex bg-[#0B1418] p-8 md:p-12 rounded-[24px] border border-white/10 shadow-2xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#005A9C]"></div>
               
-              <div className="w-20 h-20 relative flex items-center justify-center mb-6">
-                 <div className="absolute inset-0 rounded-full border-4 border-white/10" />
-                 <div className="absolute inset-0 rounded-full border-4 border-[#00beac] border-t-transparent animate-spin" />
-                 {(() => {
-                   let logoSrc = '/jcl-logo.png';
-                   try {
-                      const host = window.location.hostname.toLowerCase();
-                      if (host.includes('clipad')) logoSrc = '/clipad-logo-green.svg';
-                      else if (host.includes('slate') && !host.includes('optavel')) logoSrc = '/jcl-logo.png';
-                   } catch(e) {}
-                   return <img src={logoSrc} alt="Logo" className="w-10 h-10 object-contain animate-pulse" />;
-                 })()}
+              <div className="w-20 h-20 bg-white rounded-2xl shadow-lg p-2.5 flex items-center justify-center mb-6">
+                 <img src="/jcl-logo.png" alt="JCL Office" className="w-full h-full object-contain animate-pulse" />
               </div>
 
-              <h2 className="text-2xl font-black text-white mb-3">
-                {this.state.isUpdating ? "Applying Update..." : "Updating Workspace"}
+              <h2 className="text-2xl font-black text-white mb-3 tracking-tight">
+                {this.state.isUpdating ? "Applying Update..." : "Workspace Update Available"}
               </h2>
               <p className="text-white/80 mb-8 text-sm font-medium leading-relaxed">
-                {this.state.isUpdating ? "Please wait while we install the newest features." : "We've just released a new update to improve your experience. Please refresh the page to load the latest version."}
+                {this.state.isUpdating ? "Please wait while we install the newest features and optimize data." : "We've just released a new update to improve your experience. Please refresh to load the latest version."}
               </p>
               
               {this.state.isUpdating ? (
-                <div className="w-full bg-white/10 rounded-full h-2.5 mb-2 overflow-hidden">
-                  <div className="bg-[#00beac] h-2.5 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                <div className="w-full mb-2">
+                  <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden p-0.5 border border-white/10">
+                    <div className="bg-gradient-to-r from-[#005A9C] to-[#FF6B00] h-full rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-white/70 font-bold mt-2">
+                    <span>Installing...</span>
+                    <span className="text-[#FF6B00]">{this.state.updateProgress}%</span>
+                  </div>
                 </div>
               ) : (
                 <button 
                   onClick={this.handleUpdate} 
-                  className="w-full py-4 px-6 bg-[#00beac] hover:bg-[#00beac]/90 text-[#00beac] font-bold rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full py-4 px-6 bg-[#005A9C] hover:bg-[#00477D] text-white font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0 border border-white/20"
                 >
-                  Refresh Page
+                  Refresh Page Now
                 </button>
               )}
             </div>
 
             {/* Native Mobile Version */}
-            <div className="md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto">
-               <div className="w-16 h-16 bg-[#006065] rounded-3xl shadow-xl border border-white/10 flex items-center justify-center mb-6 animate-bounce">
-                  <svg className="w-8 h-8 text-[#fad503] animate-spin" fill="none" viewBox="0 0 24 24">
-                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+            <div className="md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto p-6 bg-[#0B1418] rounded-3xl border border-white/10 shadow-2xl">
+               <div className="w-20 h-20 bg-white rounded-2xl shadow-lg p-2.5 flex items-center justify-center mb-6">
+                  <img src="/jcl-logo.png" alt="JCL Office" className="w-full h-full object-contain animate-pulse" />
                </div>
-               <h2 className="text-xl font-bold text-white mb-2 text-center">
-                 {this.state.isUpdating ? "Installing Update..." : "Update Available"}
+               <h2 className="text-2xl font-black text-white mb-2 text-center tracking-tight">
+                 {this.state.isUpdating ? "Installing JCL Update..." : "New Update Available"}
                </h2>
-               <p className="text-white/80 mb-8 text-sm font-medium leading-relaxed text-center px-4">
-                 {this.state.isUpdating ? "Please wait, do not close the app." : "Tap to update to the newest features and bug fixes."}
+               <p className="text-white/75 mb-6 text-sm font-medium leading-relaxed text-center px-2">
+                 {this.state.isUpdating ? "Optimizing workspace files, please do not close the app." : "A newer version of JCL Office is available with bug fixes and new features."}
                </p>
                
                {this.state.isUpdating ? (
-                 <div className="w-full mb-4">
-                   <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden shadow-inner">
-                     <div className="bg-[#00beac] h-3 rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                 <div className="w-full mb-2">
+                   <div className="w-full bg-white/10 rounded-full h-3.5 overflow-hidden shadow-inner p-0.5 border border-white/10">
+                     <div className="bg-gradient-to-r from-[#005A9C] to-[#FF6B00] h-full rounded-full transition-all duration-200 shadow-sm" style={{ width: `${this.state.updateProgress}%` }}></div>
                    </div>
-                   <div className="text-center text-xs text-white/70 font-bold mt-3">{this.state.updateProgress}%</div>
+                   <div className="flex justify-between items-center text-xs text-white/70 font-bold mt-2.5 px-1">
+                     <span>Updating system...</span>
+                     <span className="text-[#FF6B00]">{this.state.updateProgress}%</span>
+                   </div>
                  </div>
                ) : (
                  <button 
                    onClick={this.handleUpdate} 
-                   className="w-full py-4 bg-[#00beac] text-[#00beac] font-bold rounded-2xl shadow-lg transition-transform active:scale-95"
+                   className="w-full py-4 px-6 bg-[#005A9C] hover:bg-[#00477D] text-white font-bold rounded-2xl shadow-lg shadow-[#005A9C]/30 transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/20"
                  >
-                   Tap to Update Now
+                   <svg className="w-5 h-5 text-[#FF6B00]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                   </svg>
+                   <span>Install Update Now</span>
                  </button>
                )}
             </div>

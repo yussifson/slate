@@ -954,3 +954,119 @@ input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
 }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   📱 NATIVE MOBILE ADAPTIVE ENGINE (High-Density Cards, Stats, Charts & Touch)
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* 1. Prevent content from jamming or hanging into TopBar */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 2. Compact, touch-friendly, high-density stats on mobile */
+  /* Target stats cards across all 30+ pages */
+  .grid.grid-cols-2,
+  .grid.grid-cols-1.sm\:grid-cols-2,
+  .grid.grid-cols-1.sm\:grid-cols-4,
+  .grid.grid-cols-2.md\:grid-cols-4,
+  .grid.grid-cols-2.lg\:grid-cols-4 {
+    gap: 0.625rem !important; /* 10px spacing for tighter, sleeker mobile cards */
+  }
+
+  /* Stat Card Body styling */
+  .grid > [class*="rounded-"][class*="border"],
+  .grid > [class*="bg-card"],
+  .grid > [class*="bg-muted"] {
+    padding: 0.75rem 0.875rem !important;
+    border-radius: 1rem !important;
+  }
+
+  /* Stat numbers & headings: scale to modern mobile typography */
+  .grid h2[class*="text-2xl"],
+  .grid h2[class*="text-3xl"],
+  .grid p[class*="text-2xl"],
+  .grid p[class*="text-3xl"],
+  .grid span[class*="text-2xl"],
+  .grid span[class*="text-3xl"],
+  .grid [class*="text-[24px]"],
+  .grid [class*="text-[28px]"] {
+    font-size: 1.25rem !important; /* 20px */
+    line-height: 1.625rem !important;
+    font-weight: 800 !important;
+  }
+
+  /* Stat labels & subheadings: crisp compact uppercase */
+  .grid p[class*="text-xs"],
+  .grid p[class*="text-sm"],
+  .grid span[class*="text-xs"],
+  .grid span[class*="text-sm"],
+  .grid [class*="text-[11px]"],
+  .grid [class*="text-[12px]"] {
+    font-size: 0.6875rem !important; /* 11px */
+    line-height: 0.875rem !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* Icon wrappers inside mobile stat badges */
+  .grid .w-10.h-10,
+  .grid .w-12.h-12 {
+    width: 2rem !important; /* 32px */
+    height: 2rem !important;
+    margin-bottom: 0.375rem !important;
+  }
+  .grid .w-10.h-10 svg,
+  .grid .w-12.h-12 svg,
+  .grid .w-4.h-4,
+  .grid .w-5.h-5 {
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+  }
+
+  /* 3. Action Buttons & Form Controls on Mobile */
+  button[class*="h-11"],
+  button[class*="h-10"],
+  .btn-primary,
+  .btn-secondary {
+    height: 2.375rem !important; /* 38px touch targets */
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
+    font-size: 0.8125rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  /* 4. Chart Containers on Mobile */
+  /* Prevent chart containers from blowing out height on small viewports */
+  .recharts-responsive-container {
+    max-height: 240px !important;
+  }
+  [class*="h-[400px]"],
+  [class*="h-[380px]"],
+  [class*="h-[350px]"] {
+    height: auto !important;
+    min-height: 240px !important;
+    padding: 1rem !important;
+  }
+
+  /* 5. Mobile Table / List View Horizontal Padding */
+  table th,
+  table td {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* 6. Section Page Titles on Mobile */
+  h1[class*="text-2xl"],
+  h1[class*="text-3xl"] {
+    font-size: 1.25rem !important;
+    line-height: 1.5rem !important;
+  }
+  p[class*="text-muted-foreground"] {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+}
