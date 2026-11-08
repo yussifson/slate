@@ -11,6 +11,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { PortalAwareItem } from '@/lib/kanbanPortal.jsx';
 import { usePowerSync } from '@powersync/react';
 import { supabase } from '@/api/supabaseClient';
+import { useAuth } from '@/lib/AuthContext';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -261,6 +262,7 @@ function LeadKanbanBoardComponent({ leads, onUpdateStatus, onLeadClick, onEdit, 
 }
 
 export default function JCLCrmLeads() {
+  const { user } = useAuth();
   const companyId = useCompanyId();
   const powerSync = usePowerSync();
 
