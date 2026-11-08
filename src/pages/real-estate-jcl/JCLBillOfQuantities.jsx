@@ -482,15 +482,7 @@ export default function JCLBillOfQuantities() {
               <FileSpreadsheet className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-extrabold tracking-tight text-foreground">Engineering BOQ Spreadsheet</h1>
-                <Badge variant="outline" className="text-[10px] uppercase font-bold tracking-wider bg-primary/10 text-primary border-primary/20">
-                  Spreadsheet Engine
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Interactive bill of quantities, custom formula calculation engine & project budgeting
-              </p>
+              <h1 className="text-xl font-extrabold tracking-tight text-foreground">Bill of Quantities (BOQ)</h1>
             </div>
           </div>
 

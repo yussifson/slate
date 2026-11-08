@@ -881,7 +881,6 @@ export const INDUSTRIES = {
       { label: 'Market Analytics', path: '/real-estate/analytics', icon: 'LineChart' },
       { section: 'Secretary', label: 'Front Desk', path: '/jcl/front-desk', icon: 'BookOpen' },
       { label: 'Item Register', path: '/jcl/item-register', icon: 'ClipboardCheck' },
-      { label: 'Custody Tracker', path: '/jcl/employee-assets', icon: 'ShieldCheck' },
       { section: 'Properties', label: 'Properties', path: '/real-estate/properties', icon: 'Home' },
       { label: 'Land Parcels', path: '/real-estate/land', icon: 'Compass' },
       { label: 'Leases', path: '/real-estate/leases', icon: 'FileCheck' },
@@ -914,7 +913,7 @@ export const INDUSTRIES = {
       { label: 'Integrations', path: '/integrations', icon: 'Blocks' },
       { label: 'Settings', path: '/settings', icon: 'Settings' },
       { section: 'Human Resources', label: 'Human Resources', path: '/hr', icon: 'HeartHandshake' },
-      { label: 'Custody Tracker', path: '/jcl/employee-assets', icon: 'ShieldCheck' }
+      { label: 'Asset Custody Register', path: '/jcl/employee-assets', icon: 'ShieldCheck' }
     ]
   },
 

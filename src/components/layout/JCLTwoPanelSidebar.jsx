@@ -73,7 +73,7 @@ const JCL_DEPARTMENTS = [
     items: [
       { label: "Front Desk", path: "/jcl/front-desk", icon: ClipboardList },
       { label: "Item Register", path: "/jcl/item-register", icon: Briefcase },
-      { label: "Custody Tracker", path: "/jcl/employee-assets", icon: ShieldCheck }
+      { label: "Asset Custody Register", path: "/jcl/employee-assets", icon: ShieldCheck }
     ]
   },
   {
@@ -130,7 +130,7 @@ const JCL_DEPARTMENTS = [
       { label: "Client Portal", path: "/portal", icon: Globe },
       { label: "Audit Log", path: "/real-estate/audit-log", icon: ShieldCheck },
       { label: "HR & Team Roster", path: "/hr", icon: HeartHandshake },
-      { label: "Custody Tracker", path: "/jcl/employee-assets", icon: ShieldCheck },
+      { label: "Asset Custody Register", path: "/jcl/employee-assets", icon: ShieldCheck },
       { label: "Workspace Settings", path: "/settings", icon: Settings },
       { label: "Integrations", path: "/integrations", icon: Blocks }
     ]

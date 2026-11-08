@@ -199,7 +199,7 @@ export default function HREmployeeAssets() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
-            Custody Tracker & Company Assets
+            Asset Custody Register
           </h1>
         </div>
         <Button

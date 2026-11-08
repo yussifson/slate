@@ -68,14 +68,53 @@ export default function JCLProjectCollaboration() {
   };
   const projectName = (id) => projects.find((item) => item.id === id)?.name || 'Unassigned project';
 
-  if (projectsQuery.isLoading || collaborationQuery.isLoading) return <div className="flex min-h-full items-center justify-center text-sm text-muted-foreground">Loading project workspace…</div>;
-  if (projectsQuery.isError || collaborationQuery.isError) return <div className="p-8"><div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">Project collaboration could not load. Apply the Phase 7 collaboration migration and check the Supabase RLS policies.</div></div>;
+  if (projectsQuery.isLoading) return <div className="flex min-h-full items-center justify-center text-sm text-muted-foreground">Loading project workspace…</div>;
 
-  return <main className="min-h-full bg-background p-4 sm:p-6 lg:p-8">
-    <header className="mx-auto max-w-[1600px] space-y-5">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">JCL Royal Group · Collaboration</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Project workspace</h1><p className="mt-1 max-w-2xl text-sm text-muted-foreground">One operational view for project delivery, team decisions, documents, risks and site communication.</p></div><div className="flex flex-wrap gap-2"><Button variant="outline" onClick={refresh}><Activity className="mr-2 h-4 w-4" />Refresh</Button>{['risks', 'milestones'].includes(tab) && <Button onClick={() => setDialog({ type: tab === 'risks' ? 'risk' : 'milestone', projectId: projectId === 'all' ? projects[0]?.id : projectId })}><Plus className="mr-2 h-4 w-4" />New {tab === 'risks' ? 'risk' : 'milestone'}</Button>}</div></div>
-      <div className="flex flex-col gap-3 rounded-2xl border bg-card p-3 lg:flex-row"><Select value={projectId} onValueChange={setProjectId}><SelectTrigger className="w-full lg:w-80"><SelectValue placeholder="All projects" /></SelectTrigger><SelectContent><SelectItem value="all">All projects</SelectItem>{projects.map((project) => <SelectItem key={project.id} value={project.id}>{project.project_code ? `${project.project_code} · ` : ''}{project.name}</SelectItem>)}</SelectContent></Select><div className="relative flex-1"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={(event) => setSearch(event.target.value)} className="pl-9" placeholder="Search tasks, documents, messages or risks" /></div><Button variant="outline" onClick={() => setFilter(filter === 'all' ? 'open' : 'all')}><SlidersHorizontal className="mr-2 h-4 w-4" />{filter === 'all' ? 'All statuses' : 'Open only'}</Button></div>
-      <nav className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">{tabs.map(([value, label, Icon]) => <button key={value} onClick={() => setTab(value)} className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-colors ${tab === value ? 'border-primary bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'}`}><Icon className="h-4 w-4" />{label}</button>)}</nav>
+  return <main className="w-full max-w-full overflow-x-hidden min-h-screen bg-background p-3.5 sm:p-6 lg:p-8 pb-24 sm:pb-12 font-sans">
+    <header className="mx-auto max-w-[1600px] space-y-4 sm:space-y-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Project Workspace</h1>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={refresh} className="rounded-xl text-xs font-bold h-9">
+            <Activity className="mr-1.5 h-3.5 w-3.5" />Refresh
+          </Button>
+          {['risks', 'milestones'].includes(tab) && (
+            <Button size="sm" className="bg-[#005A9C] text-white rounded-xl text-xs font-bold h-9 gap-1.5" onClick={() => setDialog({ type: tab === 'risks' ? 'risk' : 'milestone', projectId: projectId === 'all' ? projects[0]?.id : projectId })}>
+              <Plus className="h-3.5 w-3.5" />New {tab === 'risks' ? 'risk' : 'milestone'}
+            </Button>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col gap-3 rounded-2xl border bg-card p-3 lg:flex-row">
+        <Select value={projectId} onValueChange={setProjectId}>
+          <SelectTrigger className="w-full lg:w-80 text-xs h-9.5 rounded-xl">
+            <SelectValue placeholder="All projects" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All projects</SelectItem>
+            {projects.map((project) => <SelectItem key={project.id} value={project.id}>{project.project_code ? `${project.project_code} · ` : ''}{project.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input value={search} onChange={(event) => setSearch(event.target.value)} className="pl-9 text-xs h-9.5 rounded-xl bg-background" placeholder="Search tasks, documents, messages or risks" />
+        </div>
+        <Button variant="outline" size="sm" className="h-9.5 text-xs rounded-xl" onClick={() => setFilter(filter === 'all' ? 'open' : 'all')}>
+          <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />{filter === 'all' ? 'All statuses' : 'Open only'}
+        </Button>
+      </div>
+
+      <div className="w-full overflow-x-auto scrollbar-none pb-1">
+        <nav className="inline-flex w-auto min-w-full sm:min-w-0 gap-2 p-1 bg-muted/60 rounded-2xl border border-border">
+          {tabs.map(([value, label, Icon]) => (
+            <button key={value} onClick={() => setTab(value)} className={`flex items-center justify-center gap-1.5 shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${tab === value ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+              <Icon className="h-3.5 w-3.5" />{label}
+            </button>
+          ))}
+        </nav>
+      </div>
 
       {tab === 'overview' && <Overview projects={projects} tasks={tasks} risks={collab.risks || []} messages={messages} projectName={projectName} setTab={setTab} />}
       {tab === 'tasks' && <ListPanel title="Tasks" items={tasks} empty="No tasks match this view." render={(item) => <div key={item.id} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center"><div className="flex-1"><p className="font-medium">{item.title}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.assigned_to || 'Unassigned'} · {item.due_date || 'No deadline'}</p></div><Badge className={badge[item.status] || ''}>{item.status || 'planned'}</Badge></div>} />}

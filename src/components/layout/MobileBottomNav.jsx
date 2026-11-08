@@ -33,7 +33,8 @@ const SHORT_NAMES = {
   "Commissions": "Commissions",
   "Front Desk": "Front Desk",
   "Item Register": "Items",
-  "Custody Tracker": "Custody",
+  "Custody Tracker": "Assets",
+  "Asset Custody Register": "Assets",
   "Procurement": "Procure",
   "Requisitions": "Requests",
   "Purchase Orders": "PO Orders",
@@ -103,8 +104,8 @@ const getJCLCategory = (item) => {
     return 'Secretary';
   }
 
-  // Custody Tracker is shared between Secretary and Human Resources
-  if (p === '/jcl/employee-assets' || ['custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
+  // Asset Custody Register is shared between Secretary and Human Resources
+  if (p === '/jcl/employee-assets' || ['asset custody register', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
     if (item.section === 'Human Resources' || normalizedLabel.includes('(hr)')) {
       return 'Human Resources';
     }
@@ -258,7 +259,10 @@ export default function MobileBottomNav() {
       }
 
       if (!grouped[section]) grouped[section] = [];
-      grouped[section].push(item);
+      // Deduplicate items with identical paths or labels within the section
+      if (!grouped[section].some(existing => existing.path === item.path || existing.label?.toLowerCase() === item.label?.toLowerCase())) {
+        grouped[section].push(item);
+      }
     }
 
     // Ensure all 3 allowed Finance items exist in Finance if not already present

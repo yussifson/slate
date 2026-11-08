@@ -19,9 +19,17 @@ export const JCLProjectCollaborationService = {
   async load(companyId, projectId) {
     if (!companyId) return { members: [], messages: [], reactions: [], mentions: [], risks: [], milestones: [], activity: [] };
     const entries = await Promise.all(Object.entries(tables).map(async ([key, table]) => {
-      const { data, error } = await read(table, companyId, projectId);
-      if (error) throw error;
-      return [key, data || []];
+      try {
+        const { data, error } = await read(table, companyId, projectId);
+        if (error) {
+          console.warn(`[JCLProjectCollaborationService] Could not load ${table}:`, error.message);
+          return [key, []];
+        }
+        return [key, data || []];
+      } catch (err) {
+        console.warn(`[JCLProjectCollaborationService] Error querying ${table}:`, err.message);
+        return [key, []];
+      }
     }));
     return Object.fromEntries(entries);
   },

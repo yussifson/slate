@@ -66,10 +66,51 @@ export default function JCLProjectOperations() {
 
   if (isLoading) return <div className="flex h-full items-center justify-center"><RefreshCw className="h-6 w-6 animate-spin text-primary" /></div>;
   return <main className="min-h-full space-y-5 bg-background p-3 sm:p-6 lg:p-8 w-full max-w-full overflow-x-hidden">
-    <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">JCL Real Estate · Site operations</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Project operations</h1><p className="mt-1 text-sm text-muted-foreground">Plan work, document site activity and keep every project moving from one workspace.</p></div><div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => refetch()}><RefreshCw className="mr-2 h-4 w-4" />Refresh</Button>{tab === 'attachments' ? <label className="inline-flex cursor-pointer items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"><Upload className="mr-2 h-4 w-4" />{uploading ? 'Uploading…' : 'Upload files'}<input type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf,text/plain,.docx" className="sr-only" onChange={uploadAttachment} disabled={uploading} /></label> : <Button onClick={() => openCreate(tab === 'packages' ? 'package' : tab === 'diary' ? 'diary' : tab === 'reports' ? 'report' : tab === 'issues' ? 'issue' : 'inspection')}><Plus className="mr-2 h-4 w-4" />New {tab === 'packages' ? 'work package' : tab === 'diary' ? 'diary entry' : tab === 'reports' ? 'daily report' : tab === 'issues' ? 'issue' : 'inspection'}</Button>}</div></header>
+    <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">Project Operations</h1>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" size="sm" onClick={() => refetch()} className="rounded-xl text-xs font-bold h-9">
+          <RefreshCw className="mr-1.5 h-3.5 w-3.5" />Refresh
+        </Button>
+        {tab === 'attachments' ? (
+          <label className="inline-flex cursor-pointer items-center rounded-xl bg-[#005A9C] px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#00477D]">
+            <Upload className="mr-1.5 h-3.5 w-3.5" />{uploading ? 'Uploading…' : 'Upload files'}
+            <input type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf,text/plain,.docx" className="sr-only" onChange={uploadAttachment} disabled={uploading} />
+          </label>
+        ) : (
+          <Button size="sm" className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl text-xs font-bold h-9 gap-1.5" onClick={() => openCreate(tab === 'packages' ? 'package' : tab === 'diary' ? 'diary' : tab === 'reports' ? 'report' : tab === 'issues' ? 'issue' : 'inspection')}>
+            <Plus className="h-3.5 w-3.5" />New {tab === 'packages' ? 'work package' : tab === 'diary' ? 'diary entry' : tab === 'reports' ? 'daily report' : tab === 'issues' ? 'issue' : 'inspection'}
+          </Button>
+        )}
+      </div>
+    </header>
     {isError && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">Project operations could not be loaded. Check the Phase 2 migration and Supabase permissions.</div>}
-    <div className="flex flex-col gap-3 rounded-2xl border bg-card p-3 md:flex-row"><Select value={projectId} onValueChange={setProjectId}><SelectTrigger className="w-full md:w-72"><SelectValue placeholder="All projects" /></SelectTrigger><SelectContent><SelectItem value="all">All projects</SelectItem>{projects.map((p) => <SelectItem key={p.id} value={p.id}>{p.project_code ? `${p.project_code} · ` : ''}{p.name}</SelectItem>)}</SelectContent></Select><div className="relative flex-1"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /><Input className="pl-9" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search project records..." /></div></div>
-    <div className="overflow-x-auto pb-1 scrollbar-hide"><nav className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8 min-w-full">{TABS.map(([value, label, Icon]) => <button key={value} onClick={() => setTab(value)} className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-semibold transition-colors ${tab === value ? 'border-primary bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'}`}><Icon className="h-4 w-4" />{label}</button>)}</nav></div>
+    <div className="flex flex-col gap-3 rounded-2xl border bg-card p-3 md:flex-row">
+      <Select value={projectId} onValueChange={setProjectId}>
+        <SelectTrigger className="w-full md:w-72 text-xs h-9.5 rounded-xl">
+          <SelectValue placeholder="All projects" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All projects</SelectItem>
+          {projects.map((p) => <SelectItem key={p.id} value={p.id}>{p.project_code ? `${p.project_code} · ` : ''}{p.name}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input className="pl-9 text-xs h-9.5 rounded-xl bg-background" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search project records..." />
+      </div>
+    </div>
+    <div className="w-full overflow-x-auto scrollbar-none pb-1">
+      <nav className="inline-flex w-auto min-w-full sm:min-w-0 gap-2 p-1 bg-muted/60 rounded-2xl border border-border">
+        {TABS.map(([value, label, Icon]) => (
+          <button key={value} onClick={() => setTab(value)} className={`flex items-center justify-center gap-1.5 shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${tab === value ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}>
+            <Icon className="h-3.5 w-3.5" />{label}
+          </button>
+        ))}
+      </nav>
+    </div>
     {tab === 'overview' && <section className="space-y-6"><div className="grid gap-3 grid-cols-2 lg:grid-cols-5"><Stat label="Projects" value={projects.length} /><Stat label="Progress" value={`${progress}%`} tone="text-primary" /><Stat label="Open tasks" value={visibleTasks.filter((item) => item.status !== 'done').length} /><Stat label="Open issues" value={visibleIssues.filter((item) => !['resolved', 'closed'].includes(item.status)).length} tone="text-red-600" /><Stat label="Inspections" value={visibleInspections.length} /></div><div className="grid gap-6 xl:grid-cols-[1.2fr_.8fr]"><div className="rounded-2xl border bg-card p-5"><div className="mb-4 flex items-center justify-between"><div><h2 className="font-semibold">Projects</h2><p className="text-sm text-muted-foreground">Progress is derived from packages and tasks.</p></div><Badge variant="outline">Live records</Badge></div><RecordRows items={projects.filter((item) => !search || JSON.stringify(item).toLowerCase().includes(search.toLowerCase()))} label="projects" render={(item) => <button key={item.id} onClick={() => setProjectId(item.id)} className="flex w-full items-center gap-4 p-4 text-left hover:bg-muted/50"><div className="min-w-0 flex-1"><p className="truncate font-medium">{item.name}</p><p className="text-xs text-muted-foreground">{item.project_code || 'No reference'} · {item.status}</p></div><div className="w-32"><div className="mb-1 flex justify-between text-[11px] text-muted-foreground"><span>Progress</span><span>{calculateProjectProgress(item.id, packages, tasks)}%</span></div><div className="h-1.5 rounded-full bg-muted"><div className="h-full rounded-full bg-primary" style={{ width: `${calculateProjectProgress(item.id, packages, tasks)}%` }} /></div></div></button>} /></div><div className="rounded-2xl border bg-card p-5"><h2 className="font-semibold">Upcoming attention</h2><div className="mt-4 space-y-3">{visibleIssues.filter((item) => item.status !== 'closed').slice(0, 5).map((item) => <div key={item.id} className="flex gap-3 rounded-xl bg-muted/50 p-3"><ShieldAlert className="h-4 w-4 text-red-600" /><div><p className="text-sm font-medium">{item.title}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.severity || 'medium'}</p></div></div>)}{!visibleIssues.length && <p className="text-sm text-muted-foreground">No open blockers.</p>}</div></div></div></section>}
     {tab === 'packages' && <RecordRows items={visiblePackages} label="work packages" render={(item) => <div key={item.id} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center"><div className="flex-1"><p className="font-medium">{item.name}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.priority || 'medium'} priority</p></div><Badge className={statusStyles[item.status] || ''}>{item.status}</Badge><p className="text-xs text-muted-foreground">Due {item.target_completion_date || '—'}</p></div>} />}
     {tab === 'tasks' && <RecordRows items={visibleTasks} label="tasks" render={(item) => <div key={item.id} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center"><div className="flex-1"><p className="font-medium">{item.title}</p><p className="text-xs text-muted-foreground">{projectName(item.project_id)} · {item.due_date || 'No deadline'}</p></div><Badge className={statusStyles[item.status] || ''}>{item.status}</Badge></div>} />}
