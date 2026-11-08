@@ -391,7 +391,7 @@ export default function AppLayout() {
           </div>
         ) : (
           <PullToRefresh className="h-full w-full">
-            <div className="flex-1 w-full flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-3 sm:px-4 md:px-6 pt-4 sm:pt-5 md:pt-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-8">
+            <div className="flex-1 w-full flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch overscroll-y-auto px-2.5 sm:px-4 md:px-6 pt-1.5 sm:pt-4 md:pt-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-8">
               <Outlet />
             </div>
           </PullToRefresh>
