@@ -8,6 +8,7 @@ import { Input} from '@/components/ui/input';
 import { useAuth} from '@/lib/AuthContext';
 import { AlertCircle} from 'lucide-react';
 import { Logo} from '@/components/ui/Logo';
+import JCL_LOGO_BASE64 from '@/assets/jclLogoBase64';
 import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
 import IndustryFeatureShowcase from '@/components/shared/IndustryFeatureShowcase';
 
@@ -44,7 +45,7 @@ export default function Login() {
  const [workspace, setWorkspace] = useState('');
  const [error, setError] = useState('');
  const [loading, setLoading] = useState(false);
- const [branding, setBranding] = useState({ name: 'JCL Real Estate', logo_url: '/jcl-logo.png', tagline: 'Enter your credentials to access your JCL Portal'});
+ const [branding, setBranding] = useState({ name: 'JCL Real Estate', logo_url: JCL_LOGO_BASE64, industry_type: 'real_estate_jcl', tagline: 'Enter your credentials to access your JCL Portal'});
 
  const randomQuote = useMemo(() => {
     return LOGIN_QUOTES[Math.floor(Math.random() * LOGIN_QUOTES.length)];
@@ -182,7 +183,8 @@ export default function Login() {
        if (brandData?.id) {
         setBranding({
         name: brandData.name || 'Your Workslate',
-        logo_url: cleanLogo(brandData.logo_url || brandData.logo_light_url),
+        logo_url: cleanLogo(brandData.logo_url || brandData.logo_light_url) || JCL_LOGO_BASE64,
+        industry_type: brandData.industry_type || 'real_estate_jcl',
         tagline: brandData.tagline || `Sign in to ${brandData.name || 'your workslate'}`
         });
        } else {
@@ -542,16 +544,19 @@ export default function Login() {
  {/* Left Side: Form */}
  <div className="flex-1 flex flex-col pt-12 lg:pt-20 px-8 lg:px-16 pb-12">
  <div className="max-w-lg w-full mx-auto">
- <div className="flex flex-col mb-8">
- {branding.logo_url ? (
-   <img src={branding.logo_url} alt="Logo" className="h-10 object-contain w-fit" />
- ) : (
-   <>
-     <Logo className="w-10 h-10" />
-     {!isRootAccount && <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-1 tracking-[0.04em]">by Optavel</span>}
-   </>
- )}
- </div>
+ <div className="flex items-center gap-3 mb-8">
+  <img 
+    src={branding.logo_url || JCL_LOGO_BASE64} 
+    alt="JCL Office" 
+    className="h-11 max-w-[200px] object-contain rounded-lg shadow-xs"
+    onError={(e) => { e.currentTarget.src = JCL_LOGO_BASE64; }}
+  />
+  {!isRootAccount && (
+    <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-0.5">
+      by Optavel
+    </span>
+  )}
+</div>
  
   <div className="mb-8">
   <h1 className="text-2xl font-semibold text-slate-900 tracking-[-0.02em]">{isRootAccount ? 'Optavel Account' : branding.name !== 'Slate' ? `Sign in to ${branding.name}` : t("welcome_back", "Welcome back")}</h1>
@@ -563,7 +568,7 @@ export default function Login() {
       type="button"
       className="flex items-center justify-center gap-2 h-12 w-full bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-base font-semibold transition-colors shadow-sm"
     >
-      <Logo hideText={true} className="w-5 h-5 text-primary" />
+      <img src="/optavel-favicon.svg" alt="Optavel" className="w-5 h-5 object-contain" />
       Continue with Optavel
     </button>
     <div className="h-12 flex justify-center items-center w-full overflow-hidden rounded-xl border border-primary/20 bg-white hover:bg-slate-50 transition-colors shadow-sm">
@@ -687,80 +692,145 @@ export default function Login() {
  </div>
  </div>
 
-  {/* Right Side: Marketing Visual */}
-  <div className="hidden lg:flex flex-1 relative items-center justify-center bg-[#F8FAFC] border-l border-slate-200/80 overflow-hidden p-6 sm:p-8">
-    {/* Ambient geometry */}
-    <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
+  {/* Right Side: Professional CliPad-Style Executive Showcase */}
+  <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#061B2E] via-[#0A2540] to-[#04121F] relative overflow-hidden flex-col justify-between p-12 lg:p-16 text-white select-none min-h-screen">
+    {/* Subtle Luxury Mesh Glow */}
+    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#005A9C]/25 rounded-full blur-[120px] pointer-events-none" />
+    <div className="absolute bottom-0 left-0 w-[420px] h-[420px] bg-[#FF6B00]/15 rounded-full blur-[100px] pointer-events-none" />
 
-    {(currentSubdomain || isCustomDomain || branding.name !== 'Slate') ? (
-      <IndustryFeatureShowcase companyName={branding.name} industryType={branding.industry_type} />
-    ) : (
-      <div className="relative z-10 w-full max-w-2xl bg-white/95 backdrop-blur-2xl rounded-3xl border border-slate-200/90 p-6 sm:p-8 flex flex-col justify-between text-slate-900 shadow-sm overflow-hidden">
-        <div>
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-xs font-bold text-emerald-800 mb-4 shadow-xs">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
-            </span>
-            <span className="tracking-wide text-[11px] uppercase font-bold">Enterprise Operating System</span>
+    {/* Top Branding & Headline */}
+    <div className="relative z-10">
+      <div className="flex items-center gap-3 mb-5">
+        <img 
+          src={branding.logo_url || JCL_LOGO_BASE64} 
+          alt="JCL Office" 
+          className="h-10 w-auto object-contain drop-shadow-md rounded-md"
+          onError={(e) => { e.currentTarget.src = JCL_LOGO_BASE64; }}
+        />
+        <div className="h-5 w-px bg-white/20" />
+        <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#FF6B00]">
+          Executive Suite
+        </span>
+      </div>
+
+      <h2 className="text-3xl lg:text-[40px] font-black text-white leading-[1.15] tracking-tight max-w-lg mt-3">
+        Intelligent Real Estate & Operations Platform
+      </h2>
+      <p className="text-sm text-slate-300 font-medium mt-3 max-w-md leading-relaxed">
+        Unified land portfolio, client CRM, live engineering procurement, and executive intelligence across your enterprise.
+      </p>
+    </div>
+
+    {/* Bottom Right Tilted Perspective 3D Tablet Mockup */}
+    <div className="absolute -bottom-14 -right-14 w-[580px] lg:w-[660px] h-[520px] pointer-events-none select-none transition-transform duration-700 hover:scale-[1.02]">
+      <div 
+        className="w-full h-full bg-[#030914] p-3 rounded-[32px] shadow-[0_35px_80px_-15px_rgba(0,0,0,0.85)] border border-slate-700/60 flex flex-col"
+        style={{
+          transform: 'perspective(1200px) rotateX(12deg) rotateY(-18deg) rotate(-10deg)',
+          transformStyle: 'preserve-3d'
+        }}
+      >
+        {/* Inner Device Screen */}
+        <div className="w-full h-full bg-[#F8FAFC] rounded-[22px] overflow-hidden flex flex-row text-[10px] text-slate-800 font-sans shadow-inner">
+          {/* Mockup Sidebar */}
+          <div className="w-44 bg-[#0A2540] text-white p-3 flex flex-col justify-between shrink-0">
+            <div>
+              <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/10">
+                <img 
+                  src={branding.logo_url || JCL_LOGO_BASE64} 
+                  alt="JCL" 
+                  className="w-5 h-5 object-contain"
+                  onError={(e) => { e.currentTarget.src = JCL_LOGO_BASE64; }}
+                />
+                <span className="font-bold tracking-tight text-xs text-white">JCL Office</span>
+              </div>
+
+              <div className="text-[9px] uppercase font-bold text-white/40 tracking-wider mb-1.5">Commercial</div>
+              <div className="space-y-1 mb-3">
+                <div className="bg-[#FF6B00] text-white font-bold px-2 py-1 rounded-md flex items-center gap-1.5 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white"></span> Dashboard
+                </div>
+                <div className="text-white/70 hover:text-white px-2 py-0.5">Land Parcels</div>
+                <div className="text-white/70 hover:text-white px-2 py-0.5">CRM Leads</div>
+                <div className="text-white/70 hover:text-white px-2 py-0.5">Site Viewings</div>
+                <div className="text-white/70 hover:text-white px-2 py-0.5">Commercial Offers</div>
+              </div>
+
+              <div className="text-[9px] uppercase font-bold text-white/40 tracking-wider mb-1.5">Operations</div>
+              <div className="space-y-1">
+                <div className="text-white/70 px-2 py-0.5">Procurement & BOQ</div>
+                <div className="text-white/70 px-2 py-0.5">Field Operations</div>
+                <div className="text-white/70 px-2 py-0.5">Marketer Tracker</div>
+                <div className="text-white/70 px-2 py-0.5">Smart Docs</div>
+                <div className="text-white/70 px-2 py-0.5">Front Desk</div>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-white/10 text-white/60 text-[8px] flex items-center justify-between">
+              <span>JCL Enterprise</span>
+              <span className="text-emerald-400 font-bold">● Active</span>
+            </div>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2 tracking-tight leading-tight">
-            Modern Enterprise Workspace & Operations
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mb-5">
-            Integrated client management, real estate operations, cross-team collaboration, and executive intelligence.
-          </p>
-
-          {/* Operational Telemetry Card */}
-          <div className="mb-5 p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/80 space-y-2.5 shadow-xs">
-            <div className="flex items-center justify-between text-xs text-slate-700">
-              <span className="font-bold text-slate-900 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-                Executive Intelligence Hub
-              </span>
-              <span className="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                Live & Synced
-              </span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-2 text-center text-xs pt-0.5">
-              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
-                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Operations</span>
-                <span className="text-xs font-bold text-slate-900">Real-Time</span>
+          {/* Main App Content View */}
+          <div className="flex-1 bg-white p-3.5 flex flex-col justify-between overflow-hidden">
+            <div>
+              {/* Header Bar */}
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <div className="text-xs font-extrabold text-slate-900">Portfolio Overview</div>
+                  <div className="text-[8px] text-slate-500 font-medium">JCL Real Estate & Land Development</div>
+                </div>
+                <div className="bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full text-slate-500 text-[8px] flex items-center gap-1 font-semibold">
+                  🔍 Search plots, deeds...
+                </div>
               </div>
-              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
-                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Security</span>
-                <span className="text-xs font-bold text-emerald-700">Encrypted</span>
+
+              {/* Stat Cards */}
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                <div className="bg-slate-50 border border-slate-200/80 p-2 rounded-xl">
+                  <div className="text-slate-400 text-[8px] font-semibold uppercase tracking-wider">Total Valuation</div>
+                  <div className="text-xs font-extrabold text-slate-900 mt-0.5">$48.6M</div>
+                  <div className="text-[8px] text-emerald-600 font-bold mt-0.5">↑ 14.2% YoY growth</div>
+                </div>
+                <div className="bg-slate-50 border border-slate-200/80 p-2 rounded-xl">
+                  <div className="text-slate-400 text-[8px] font-semibold uppercase tracking-wider">Active Plots</div>
+                  <div className="text-xs font-extrabold text-[#005A9C] mt-0.5">142 Reserved / Sold</div>
+                  <div className="text-[8px] text-amber-600 font-bold mt-0.5">● 38 In Negotiation</div>
+                </div>
               </div>
-              <div className="bg-white p-2 rounded-xl border border-slate-200/60 shadow-xs">
-                <span className="text-[10px] text-slate-500 block font-semibold uppercase tracking-wider mb-0.5">Cloud Sync</span>
-                <span className="text-xs font-bold text-indigo-700">99.9% Uptime</span>
+
+              {/* Records Table Mockup */}
+              <div className="border border-slate-100 rounded-xl overflow-hidden shadow-2xs">
+                <div className="bg-slate-50 px-2.5 py-1 border-b border-slate-100 font-bold text-slate-600 text-[8px] flex justify-between">
+                  <span>Prime Land Sector</span>
+                  <span>Acquisition Status</span>
+                </div>
+                <div className="divide-y divide-slate-100 text-[8px]">
+                  <div className="px-2.5 py-1 flex justify-between items-center">
+                    <span className="font-semibold text-slate-800">Cantonments Executive Plot A-4</span>
+                    <span className="bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded text-[7px] border border-emerald-100">Deed Sealed</span>
+                  </div>
+                  <div className="px-2.5 py-1 flex justify-between items-center">
+                    <span className="font-semibold text-slate-800">Airport Residential Phase II</span>
+                    <span className="bg-blue-50 text-blue-700 font-bold px-1.5 py-0.5 rounded text-[7px] border border-blue-100">Site Viewing</span>
+                  </div>
+                  <div className="px-2.5 py-1 flex justify-between items-center">
+                    <span className="font-semibold text-slate-800">East Legon Hills Commercial</span>
+                    <span className="bg-amber-50 text-amber-700 font-bold px-1.5 py-0.5 rounded text-[7px] border border-amber-100">Offer Review</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
-              <span>Real-time updates active across team workspaces</span>
-              <span className="text-emerald-700 font-semibold shrink-0 ml-2">Active</span>
+            <div className="flex items-center justify-between text-[8px] text-slate-400 pt-1.5 border-t border-slate-100">
+              <span className="font-medium">JCL Real Estate OS</span>
+              <span className="text-[#005A9C] font-bold">● High Availability Sync</span>
             </div>
-          </div>
-        </div>
-
-        {/* Testimonial Quote Footer */}
-        <div className="pt-4 border-t border-slate-200/80 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 font-bold text-xs shrink-0 shadow-xs">
-            {randomQuote.initials}
-          </div>
-          <div className="min-w-0">
-            <p className="text-xs text-slate-600 italic line-clamp-2">
-              {isRootAccount ? randomQuote.quote.replace(/Slate/g, 'Optavel') : randomQuote.quote}
-            </p>
-            <p className="text-xs font-semibold text-slate-900 mt-0.5">{randomQuote.name}</p>
           </div>
         </div>
       </div>
-    )}
+    </div>
   </div>
   </div>
   </div>

@@ -306,11 +306,30 @@ export default function JCLCrmLeads() {
   const fetchLeads = async () => {
     try {
       setIsLoading(true);
-      const res = await powerSync.execute(
-        `SELECT * FROM univ_re_leads WHERE company_id = ? ORDER BY created_at DESC`,
-        [companyId]
-      );
-      setLeads(res.rows._array || Array.from(res.rows || []));
+      let rows = [];
+      try {
+        const res = await powerSync.execute(
+          `SELECT * FROM univ_re_leads WHERE company_id = ? ORDER BY created_at DESC`,
+          [companyId]
+        );
+        rows = res.rows._array || Array.from(res.rows || []);
+      } catch (psErr) {
+        console.warn('[JCLCrmLeads] PowerSync fetch failed, falling back to Supabase:', psErr);
+      }
+
+      // If PowerSync returned empty or failed, fall back to direct Supabase query
+      if (!rows || rows.length === 0) {
+        const { data: supaRows, error: supaErr } = await supabase
+          .from('univ_re_leads')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false });
+        if (!supaErr && supaRows && supaRows.length > 0) {
+          rows = supaRows;
+        }
+      }
+
+      setLeads(rows);
     } catch (_e) {
       toast.error('Failed to load leads');
     } finally {

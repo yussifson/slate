@@ -102,12 +102,23 @@ class SupabaseConnector {
 
     try {
       for (const op of transaction.crud) {
+        // Discard ops on tables that do not exist in remote Supabase schema cache
+        const missingRemoteTables = ['gl_accounts'];
+        if (missingRemoteTables.includes(op.table)) {
+          console.warn(`[PowerSync SKIPPED] Table '${op.table}' is not in remote schema cache. Discarding op to prevent sync block.`);
+          continue;
+        }
+
         const table = this.client.from(op.table);
         try {
           switch (op.op) {
             case 'PUT': {
               let payload = { ...op.opData, id: op.id };
               
+              if (op.table === 'case_pipelines') {
+                ['category', 'description', 'item_label'].forEach(c => delete payload[c]);
+              }
+
               if (op.table === 'industry_records' && op.id && op.id.includes('_orbitbuild')) {
                 console.warn('[v0] PowerSync SKIPPED: Invalid ID for industry_records:', op.id);
                 continue; // Skip this operation to prevent UUID errors and clear the queue
@@ -298,7 +309,13 @@ class SupabaseConnector {
             continue; // Skip the rest of the loop for this op
           }
 
-          // TIER 3: Hard errors (401, 403, 404, 422, or 400 with PG code)
+          // TIER 3: Table not found in remote Supabase schema cache (PGRST205) - Discard immediately so sync is never frozen
+          if (opEx.code === 'PGRST205' || opEx.message?.includes('PGRST205') || opEx.message?.includes('Could not find the table')) {
+            console.warn(`[PowerSync Discarded missing remote table op] ${op.op} on ${op.table}: ${opEx.message}`);
+            continue;
+          }
+
+          // TIER 4: Hard errors (401, 403, 404, 422, or 400 with PG code)
           if ([401, 403, 404, 422, 400].includes(opEx.status) || (opEx.code && typeof opEx.code === 'string')) {
             console.error(`[v0] PowerSync hard error ${op.op} on ${op.table}:`, {status: opEx.status, code: opEx.code, msg: opEx.message, data: op.opData});
             
