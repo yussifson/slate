@@ -46,6 +46,7 @@ export default function HREmployeeAssets() {
     person_name: '',
     item_name: '',
     item_category: 'Laptop / Computer',
+    custom_category: '',
     serial_number: '',
     description: '',
     issued_at: new Date().toISOString().slice(0, 10),
@@ -97,6 +98,7 @@ export default function HREmployeeAssets() {
       person_name: '',
       item_name: '',
       item_category: 'Laptop / Computer',
+      custom_category: '',
       serial_number: '',
       description: '',
       issued_at: new Date().toISOString().slice(0, 10),
@@ -115,13 +117,17 @@ export default function HREmployeeAssets() {
 
     setSaving(true);
     try {
+      const resolvedCategory = form.item_category === 'Other' && form.custom_category?.trim()
+        ? form.custom_category.trim()
+        : form.item_category;
+
       const payload = {
         company_id: companyId,
         person_id: form.person_id,
         person_name: form.person_name,
         item_name: form.item_name,
         description: [
-          form.item_category ? `[${form.item_category}]` : '',
+          resolvedCategory ? `[${resolvedCategory}]` : '',
           form.serial_number ? `S/N: ${form.serial_number}` : '',
           form.description
         ].filter(Boolean).join(' - '),
@@ -199,7 +205,7 @@ export default function HREmployeeAssets() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
-            Asset Custody Register
+            Asset Taking Register
           </h1>
         </div>
         <Button
@@ -227,7 +233,7 @@ export default function HREmployeeAssets() {
             <ShieldCheck className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">In Custody</span>
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block truncate">In Possession</span>
             <span className="text-lg font-black text-amber-600 dark:text-amber-400">
               {assets.filter(a => a.status === 'issued').length}
             </span>
@@ -266,7 +272,7 @@ export default function HREmployeeAssets() {
           <span className="text-2xl font-black mt-1 text-foreground">{assets.length}</span>
         </div>
         <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs flex flex-col justify-between">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Employee Custody</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Employee Possession</span>
           <span className="text-2xl font-black mt-1 text-amber-600">
             {assets.filter(a => a.status === 'issued').length}
           </span>
@@ -278,7 +284,7 @@ export default function HREmployeeAssets() {
           </span>
         </div>
         <div className="p-4 rounded-2xl border border-border/80 bg-card shadow-xs flex flex-col justify-between">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Employees With Custody</span>
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Employees With Items</span>
           <span className="text-2xl font-black mt-1 text-[#005A9C]">
             {new Set(assets.filter(a => a.status === 'issued').map(a => a.person_name)).size}
           </span>
@@ -460,6 +466,14 @@ export default function HREmployeeAssets() {
                   ))}
                 </SelectContent>
               </Select>
+              {form.item_category === 'Other' && (
+                <Input
+                  placeholder="Specify custom category..."
+                  value={form.custom_category || ''}
+                  onChange={e => setForm({ ...form, custom_category: e.target.value })}
+                  className="h-8 text-xs rounded-xl mt-1.5"
+                />
+              )}
             </div>
 
             <div className="space-y-1">

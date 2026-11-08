@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { usePowerSync } from '@powersync/react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useAuth } from '@/lib/AuthContext';
+import { supabase } from '@/api/supabaseClient';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,17 +44,36 @@ export default function JCLItemRegister() {
     if (!companyId) return;
     setLoading(true);
     const safe = (sql, params = []) => powerSync.execute(sql, params).catch(() => ({ rows: [] }));
+    let itemRows = [];
+    let historyRows = [];
+
     const [itemResult, peopleResult, historyResult] = await Promise.all([
       safe('SELECT * FROM jcl_item_register WHERE company_id = ? ORDER BY issued_at DESC', [companyId]),
       safe('SELECT id, name, first_name, last_name, email, status FROM univ_hr_employees WHERE company_id = ? ORDER BY name ASC, first_name ASC, last_name ASC', [companyId]),
       safe('SELECT * FROM jcl_item_register_history WHERE company_id = ? ORDER BY changed_at DESC', [companyId])
     ]);
-    setItems(rowsOf(itemResult));
+
+    itemRows = rowsOf(itemResult);
+    historyRows = rowsOf(historyResult);
+
+    // If local tables are empty, try Supabase fallback
+    if (itemRows.length === 0) {
+      try {
+        const { data: supaItems } = await supabase
+          .from('jcl_item_register')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('issued_at', { ascending: false });
+        if (supaItems && supaItems.length > 0) itemRows = supaItems;
+      } catch (_) {}
+    }
+
+    setItems(itemRows);
     setPeople(rowsOf(peopleResult).map(person => ({
       ...person,
       name: person.name || [person.first_name, person.last_name].filter(Boolean).join(' ') || person.email || 'Unnamed employee'
     })).filter(person => !person.status || String(person.status).toLowerCase() === 'active'));
-    setHistory(rowsOf(historyResult));
+    setHistory(historyRows);
     setLoading(false);
   };
 
@@ -77,11 +97,36 @@ export default function JCLItemRegister() {
     event.preventDefault();
     if (!form.personId || !form.itemName.trim() || !form.issuedAt) return toast.error('Select an employee and enter item details.');
     const now = new Date().toISOString();
+    const itemId = uuid();
+    const payload = {
+      id: itemId,
+      company_id: companyId,
+      person_id: form.personId,
+      person_name: form.personName,
+      item_name: form.itemName.trim(),
+      description: form.description.trim() || null,
+      issued_at: new Date(form.issuedAt).toISOString(),
+      expected_return_at: form.expectedReturn ? new Date(form.expectedReturn).toISOString() : null,
+      status: 'issued',
+      issued_by_id: user?.id || null,
+      issued_by_name: user?.user_metadata?.full_name || user?.email || 'Authorized user',
+      notes: form.notes.trim() || null,
+      created_at: now,
+      updated_at: now
+    };
+
     try {
-      await powerSync.execute(
-        `INSERT INTO jcl_item_register (id, company_id, person_id, person_name, item_name, description, issued_at, expected_return_at, status, issued_by_id, issued_by_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'issued', ?, ?, ?, ?, ?)`,
-        [uuid(), companyId, form.personId, form.personName, form.itemName.trim(), form.description.trim() || null, new Date(form.issuedAt).toISOString(), form.expectedReturn ? new Date(form.expectedReturn).toISOString() : null, user?.id || null, user?.user_metadata?.full_name || user?.email || 'Authorized user', form.notes.trim() || null, now, now]
-      );
+      try {
+        await powerSync.execute(
+          `INSERT INTO jcl_item_register (id, company_id, person_id, person_name, item_name, description, issued_at, expected_return_at, status, issued_by_id, issued_by_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'issued', ?, ?, ?, ?, ?)`,
+          [payload.id, companyId, payload.person_id, payload.person_name, payload.item_name, payload.description, payload.issued_at, payload.expected_return_at, payload.issued_by_id, payload.issued_by_name, payload.notes, now, now]
+        );
+      } catch (_) {}
+
+      try {
+        await supabase.from('jcl_item_register').insert(payload);
+      } catch (_) {}
+
       toast.success('Item issuance recorded');
       setForm(emptyForm);
       setShowForm(false);
@@ -96,15 +141,37 @@ export default function JCLItemRegister() {
     event.preventDefault();
     if (!returning) return;
     const now = new Date().toISOString();
+    const receiver = returning.receivedBy.trim() || user?.user_metadata?.full_name || user?.email || 'Authorized user';
+    const condition = returning.condition.trim() || null;
+    const notes = returning.notes.trim() || null;
+
     try {
-      await powerSync.execute(
-        `UPDATE jcl_item_register SET status = 'returned', actual_return_at = ?, returned_to_name = ?, return_condition = ?, return_notes = ?, updated_at = ? WHERE id = ? AND company_id = ?`,
-        [now, returning.receivedBy.trim() || user?.user_metadata?.full_name || user?.email, returning.condition.trim() || null, returning.notes.trim() || null, now, returning.item.id, companyId]
-      );
-      await powerSync.execute(
-        `INSERT INTO jcl_item_register_history (id, company_id, item_id, status, changed_at, changed_by_id, changed_by_name, notes) VALUES (?, ?, ?, 'returned', ?, ?, ?, ?)`,
-        [uuid(), companyId, returning.item.id, now, user?.id || null, user?.user_metadata?.full_name || user?.email || 'Authorized user', returning.notes.trim() || null]
-      );
+      try {
+        await powerSync.execute(
+          `UPDATE jcl_item_register SET status = 'returned', actual_return_at = ?, returned_to_name = ?, return_condition = ?, return_notes = ?, updated_at = ? WHERE id = ? AND company_id = ?`,
+          [now, receiver, condition, notes, now, returning.item.id, companyId]
+        );
+        await powerSync.execute(
+          `INSERT INTO jcl_item_register_history (id, company_id, item_id, status, changed_at, changed_by_id, changed_by_name, notes) VALUES (?, ?, ?, 'returned', ?, ?, ?, ?)`,
+          [uuid(), companyId, returning.item.id, now, user?.id || null, receiver, notes]
+        );
+      } catch (_) {}
+
+      try {
+        await supabase
+          .from('jcl_item_register')
+          .update({
+            status: 'returned',
+            actual_return_at: now,
+            returned_to_name: receiver,
+            return_condition: condition,
+            return_notes: notes,
+            updated_at: now
+          })
+          .eq('id', returning.item.id)
+          .eq('company_id', companyId);
+      } catch (_) {}
+
       toast.success('Item marked as returned');
       setReturning(null);
       load();

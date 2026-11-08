@@ -34,6 +34,7 @@ const SHORT_NAMES = {
   "Front Desk": "Front Desk",
   "Item Register": "Items",
   "Custody Tracker": "Assets",
+  "Asset Taking Register": "Assets",
   "Asset Custody Register": "Assets",
   "Procurement": "Procure",
   "Requisitions": "Requests",
@@ -104,8 +105,8 @@ const getJCLCategory = (item) => {
     return 'Secretary';
   }
 
-  // Asset Custody Register is shared between Secretary and Human Resources
-  if (p === '/jcl/employee-assets' || ['asset custody register', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
+  // Asset Taking / Custody Register is shared between Secretary and Human Resources
+  if (p === '/jcl/employee-assets' || ['asset taking register', 'asset custody register', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
     if (item.section === 'Human Resources' || normalizedLabel.includes('(hr)')) {
       return 'Human Resources';
     }

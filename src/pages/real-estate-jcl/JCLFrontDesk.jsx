@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { X, CalendarDays, Clock3, LogIn, LogOut, Plus, Search, ShieldCheck, UserRound, UsersRound, Building2 } from 'lucide-react';
+import { X, CalendarDays, Clock3, LogIn, LogOut, Plus, Search, ShieldCheck, UserRound, UsersRound, Building2, Printer, Filter } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
@@ -26,6 +26,8 @@ export default function JCLFrontDesk() {
   const [staff, setStaff] = useState([]);
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState('');
+  const [historyFilterDate, setHistoryFilterDate] = useState('');
+  const [historyStatusFilter, setHistoryStatusFilter] = useState('all');
   const [showVisitorForm, setShowVisitorForm] = useState(false);
   const [visitorForm, setVisitorForm] = useState(emptyVisitor);
   const [loading, setLoading] = useState(true);
@@ -51,7 +53,23 @@ export default function JCLFrontDesk() {
   const activeVisitors = visitors.filter(v => v.status === 'checked_in');
   const activeStaff = staff.filter(s => s.status === 'checked_in');
   const todayEvents = events.filter(event => String(event.due_date || event.created_at || '').slice(0, 10) === today);
-  const visibleVisitors = useMemo(() => visitors.filter(v => `${v.visitor_name} ${v.visitor_company || ''} ${v.host_name || ''}`.toLowerCase().includes(search.toLowerCase())), [visitors, search]);
+  const visibleVisitors = useMemo(() => visitors.filter(v => {
+    const matchSearch = `${v.visitor_name} ${v.visitor_company || ''} ${v.host_name || ''}`.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = historyStatusFilter === 'all' || v.status === historyStatusFilter;
+    const matchDate = !historyFilterDate || (v.checked_in_at && String(v.checked_in_at).slice(0, 10) === historyFilterDate);
+    return matchSearch && matchStatus && matchDate;
+  }), [visitors, search, historyStatusFilter, historyFilterDate]);
+
+  const visibleStaff = useMemo(() => staff.filter(s => {
+    const matchSearch = `${s.staff_name || s.name || ''} ${s.staff_email || s.email || ''}`.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = historyStatusFilter === 'all' || s.status === historyStatusFilter;
+    const matchDate = !historyFilterDate || (s.logged_in_at && String(s.logged_in_at).slice(0, 10) === historyFilterDate);
+    return matchSearch && matchStatus && matchDate;
+  }), [staff, search, historyStatusFilter, historyFilterDate]);
+
+  const handlePrintLog = (title) => {
+    window.print();
+  };
 
   const checkInVisitor = async (event) => {
     event.preventDefault();
@@ -184,15 +202,46 @@ export default function JCLFrontDesk() {
       {tab === 'visitors' && (
         <section className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Visitor Records</h2>
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <div>
+              <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Visitor Records & History</h2>
+              <span className="text-[11px] text-muted-foreground">{visibleVisitors.length} entries shown</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative w-full sm:w-56">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                <Input
+                  className="pl-9 h-8 text-xs rounded-xl"
+                  placeholder="Search visitor/host..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
               <Input
-                className="pl-9 h-9 text-xs rounded-xl"
-                placeholder="Search visitor or host..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
+                type="date"
+                value={historyFilterDate}
+                onChange={e => setHistoryFilterDate(e.target.value)}
+                className="h-8 text-xs rounded-xl w-36"
+                title="Filter by arrival date"
               />
+              <select
+                value={historyStatusFilter}
+                onChange={e => setHistoryStatusFilter(e.target.value)}
+                className="h-8 rounded-xl border border-input bg-background px-2.5 text-xs text-foreground"
+              >
+                <option value="all">All Status</option>
+                <option value="checked_in">In Office</option>
+                <option value="checked_out">Checked Out</option>
+              </select>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePrintLog('Visitor Log')}
+                className="h-8 text-xs rounded-xl gap-1.5"
+                title="Print or Export PDF"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print</span>
+              </Button>
             </div>
           </div>
 
@@ -279,13 +328,52 @@ export default function JCLFrontDesk() {
 
       {tab === 'staff' && (
         <section className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-border/60 pb-3">
-            <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Staff Attendance Register</h2>
-            <Badge variant="outline" className="text-xs font-bold">{staff.length} Logged Entries</Badge>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
+            <div>
+              <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Staff Attendance Register & History</h2>
+              <span className="text-[11px] text-muted-foreground">{visibleStaff.length} attendance records</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative w-full sm:w-56">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                <Input
+                  className="pl-9 h-8 text-xs rounded-xl"
+                  placeholder="Search staff/email..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+              <Input
+                type="date"
+                value={historyFilterDate}
+                onChange={e => setHistoryFilterDate(e.target.value)}
+                className="h-8 text-xs rounded-xl w-36"
+                title="Filter by attendance date"
+              />
+              <select
+                value={historyStatusFilter}
+                onChange={e => setHistoryStatusFilter(e.target.value)}
+                className="h-8 rounded-xl border border-input bg-background px-2.5 text-xs text-foreground"
+              >
+                <option value="all">All Status</option>
+                <option value="checked_in">Currently In</option>
+                <option value="logged_out">Logged Out</option>
+              </select>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePrintLog('Staff Attendance')}
+                className="h-8 text-xs rounded-xl gap-1.5"
+                title="Print or Export Attendance"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print</span>
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-2.5">
-            {staff.map(record => (
+            {visibleStaff.map(record => (
               <div key={record.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-border/60 bg-muted/20 p-3 sm:p-4">
                 <div>
                   <p className="font-bold text-sm text-foreground">{record.staff_name || record.name || 'Staff Member'}</p>

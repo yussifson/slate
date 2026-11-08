@@ -64,6 +64,9 @@ export default function PipelinePage() {
 
   const [showPipelineModal, setShowPipelineModal] = useState(false);
   const [editingPipeline, setEditingPipeline] = useState(null);
+  const [employees, setEmployees] = useState([]);
+  const [pipelineStages, setPipelineStages] = useState(DEFAULT_STAGES);
+  const [newStageName, setNewStageName] = useState('');
 
   // Forms
   const [itemForm, setItemForm] = useState({
@@ -175,6 +178,36 @@ export default function PipelinePage() {
       }
 
       setPipelineItems(itemRows);
+
+      // 3. Fetch Staff / Team for Assignees
+      try {
+        const empRes = await powerSync.execute(
+          `SELECT id, name, first_name, last_name, email, role FROM univ_hr_employees WHERE company_id = ? ORDER BY name ASC`,
+          [companyId]
+        );
+        const empList = (empRes.rows._array || Array.from(empRes.rows || [])).map(e => ({
+          id: e.id,
+          name: e.name || [e.first_name, e.last_name].filter(Boolean).join(' ') || e.email,
+          email: e.email,
+          role: e.role
+        }));
+        if (empList.length > 0) {
+          setEmployees(empList);
+        } else {
+          const { data: supaProfiles } = await supabase
+            .from('profiles')
+            .select('id, full_name, email, role')
+            .eq('company_id', companyId);
+          if (supaProfiles) {
+            setEmployees(supaProfiles.map(p => ({
+              id: p.id,
+              name: p.full_name || p.email,
+              email: p.email,
+              role: p.role
+            })));
+          }
+        }
+      } catch (_) {}
     } catch (err) {
       console.error('[PipelinePage] Failed to load pipelines:', err);
       toast.error('Failed to load pipeline data');
@@ -415,6 +448,7 @@ export default function PipelinePage() {
     try {
       const newPipeId = generateUUID();
       const now = new Date().toISOString();
+      const stagesToSave = pipelineStages.length > 0 ? pipelineStages : DEFAULT_STAGES;
       const payload = {
         id: newPipeId,
         company_id: companyId,
@@ -422,7 +456,7 @@ export default function PipelinePage() {
         category: pipelineForm.category || 'real_estate',
         item_label: pipelineForm.item_label || 'Deal',
         description: pipelineForm.description || '',
-        stages: JSON.stringify(DEFAULT_STAGES),
+        stages: JSON.stringify(stagesToSave),
         is_default: 'false',
         created_at: now,
         updated_at: now,
@@ -995,13 +1029,50 @@ export default function PipelinePage() {
             </div>
 
             <div>
-              <Label className="text-xs font-semibold">Assignee</Label>
-              <Input
-                value={itemForm.assignee}
-                onChange={e => setItemForm({ ...itemForm, assignee: e.target.value })}
-                placeholder="Agent / Team lead"
-                className="h-9 rounded-xl text-xs mt-1"
-              />
+              <Label className="text-xs font-semibold">Assignee (Team Members)</Label>
+              {employees.length > 0 ? (
+                <div className="space-y-1.5 mt-1">
+                  <div className="border border-border/70 rounded-xl p-2.5 max-h-36 overflow-y-auto space-y-1.5 bg-background">
+                    {employees.map(emp => {
+                      const selectedAssignees = (itemForm.assignee || '').split(',').map(s => s.trim()).filter(Boolean);
+                      const isSelected = selectedAssignees.includes(emp.name);
+                      return (
+                        <label key={emp.id} className="flex items-center gap-2 text-xs cursor-pointer select-none py-0.5 hover:bg-muted/30 px-1 rounded-lg">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => {
+                              let next;
+                              if (e.target.checked) {
+                                next = [...selectedAssignees, emp.name];
+                              } else {
+                                next = selectedAssignees.filter(n => n !== emp.name);
+                              }
+                              setItemForm({ ...itemForm, assignee: next.join(', ') });
+                            }}
+                            className="rounded text-[#005A9C] focus:ring-[#005A9C]"
+                          />
+                          <span className="font-medium text-foreground">{emp.name}</span>
+                          {emp.role && <span className="text-[10px] text-muted-foreground">({emp.role})</span>}
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <Input
+                    value={itemForm.assignee}
+                    onChange={e => setItemForm({ ...itemForm, assignee: e.target.value })}
+                    placeholder="Selected assignees or type custom name..."
+                    className="h-8 rounded-xl text-xs"
+                  />
+                </div>
+              ) : (
+                <Input
+                  value={itemForm.assignee}
+                  onChange={e => setItemForm({ ...itemForm, assignee: e.target.value })}
+                  placeholder="Agent / Team lead"
+                  className="h-9 rounded-xl text-xs mt-1"
+                />
+              )}
             </div>
 
             <div>
@@ -1073,6 +1144,74 @@ export default function PipelinePage() {
                 placeholder="Pipeline purpose..."
                 className="h-9 rounded-xl text-xs mt-1"
               />
+            </div>
+
+            {/* Pipeline Stage Builder */}
+            <div className="space-y-2 pt-2 border-t border-border/70">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold text-foreground">Pipeline Stages ({pipelineStages.length})</Label>
+                <button
+                  type="button"
+                  onClick={() => setPipelineStages(DEFAULT_STAGES)}
+                  className="text-[10px] text-muted-foreground hover:text-foreground font-semibold"
+                >
+                  Reset Default
+                </button>
+              </div>
+
+              <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                {pipelineStages.map((st, idx) => (
+                  <div key={st.id || idx} className="flex items-center justify-between gap-2 p-2 rounded-xl bg-muted/30 border border-border/60 text-xs">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: st.color || '#3B82F6' }} />
+                      <span className="font-semibold truncate">{st.name}</span>
+                    </div>
+                    {pipelineStages.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setPipelineStages(prev => prev.filter((_, i) => i !== idx))}
+                        className="text-muted-foreground hover:text-rose-500 p-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-1.5 pt-1">
+                <Input
+                  value={newStageName}
+                  onChange={e => setNewStageName(e.target.value)}
+                  placeholder="Add custom stage (e.g. Legal Review)"
+                  className="h-8 text-xs rounded-xl flex-1"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (newStageName.trim()) {
+                        const newId = newStageName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+                        setPipelineStages(prev => [...prev, { id: newId, name: newStageName.trim(), color: '#8B5CF6', order: prev.length }]);
+                        setNewStageName('');
+                      }
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (newStageName.trim()) {
+                      const newId = newStageName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+                      setPipelineStages(prev => [...prev, { id: newId, name: newStageName.trim(), color: '#8B5CF6', order: prev.length }]);
+                      setNewStageName('');
+                    }
+                  }}
+                  className="h-8 px-2.5 text-xs rounded-xl"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </Button>
+              </div>
             </div>
             <DialogFooter className="pt-2">
               <Button type="button" variant="outline" onClick={() => setShowPipelineModal(false)} className="rounded-xl text-xs h-9">

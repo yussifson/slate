@@ -67,7 +67,8 @@ export default function JCLRequisitions() {
 
       if (resReq.error) throw resReq.error;
       setRequisitions(resReq.data || []);
-      setProjects(resProj.data || []);
+      const projList = Array.isArray(resProj) ? resProj : (resProj?.data || []);
+      setProjects(projList);
     } catch (err) {
       console.error('Requisitions load error:', err);
       toast.error(err.message || 'Unable to load requisitions');

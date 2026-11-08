@@ -69,7 +69,8 @@ export default function JCLTechnicalDrawings() {
         console.warn('Drawings load issue:', dwgRes.error);
       }
       setDrawings(dwgRes.data || []);
-      setProjects(projRes.data || []);
+      const projList = Array.isArray(projRes) ? projRes : (projRes?.data || []);
+      setProjects(projList);
 
       if (dwgRes.data?.length > 0) {
         const revRes = await supabase.from('jcl_drawing_revisions')

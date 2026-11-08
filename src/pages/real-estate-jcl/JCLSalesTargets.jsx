@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Target, Award, TrendingUp, Users, Plus, CheckCircle2, Clock, 
+  List, LayoutGrid, Target, Award, TrendingUp, Users, Plus, CheckCircle2, Clock, 
   Calendar, AlertCircle, Sparkles, Filter, ChevronRight, UserCheck, 
   Layers, ArrowUpRight, Check, Trash2, Edit3, RefreshCw
 } from 'lucide-react';
@@ -32,6 +32,7 @@ export default function JCLSalesTargets() {
 
   // Filter & tab
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'active', 'completed', 'my_targets'
+  const [viewMode, setViewMode] = useState('list');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState(null);
 
@@ -385,9 +386,28 @@ export default function JCLSalesTargets() {
             <TabsTrigger value="my_targets" className="text-xs font-semibold px-3 py-1.5">My Assigned Targets</TabsTrigger>
           </TabsList></div>
         </Tabs>
+
+        <div className="flex items-center border border-border/80 rounded-xl p-0.5 bg-muted/40 shrink-0 self-end sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setViewMode('list')}
+            className={cn("p-1.5 rounded-lg text-xs transition-colors", viewMode === 'list' ? "bg-background shadow-xs text-foreground font-bold" : "text-muted-foreground hover:text-foreground")}
+            title="List View"
+          >
+            <List className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('grid')}
+            className={cn("p-1.5 rounded-lg text-xs transition-colors", viewMode === 'grid' ? "bg-background shadow-xs text-foreground font-bold" : "text-muted-foreground hover:text-foreground")}
+            title="Grid View"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
-      {/* ── 4. Target Cards Grid ── */}
+      {/* ── 4. Target View (List by default, Grid selectable) ── */}
       {filteredTargets.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-border rounded-2xl bg-card/40 text-center space-y-3">
           <div className="h-12 w-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600">
@@ -407,6 +427,81 @@ export default function JCLSalesTargets() {
               Create First Target
             </Button>
           )}
+        </div>
+      ) : viewMode === 'list' ? (
+        <div className="space-y-3">
+          {filteredTargets.map(target => {
+            const { achieved, targetVal, percent, isCompleted } = calculateProgress(target);
+            let unitLabel = 'Leads Closed';
+            if (target.target_type === 'revenue') unitLabel = 'GH₵ Revenue';
+            if (target.target_type === 'viewings') unitLabel = 'Client Viewings';
+
+            return (
+              <div
+                key={target.id}
+                className={cn(
+                  "p-4 rounded-2xl border transition-all duration-200 bg-card shadow-xs hover:shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4",
+                  isCompleted ? "border-emerald-500/40 bg-linear-to-r from-card to-emerald-500/5" : "border-border/80"
+                )}
+              >
+                <div className="space-y-1.5 min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider py-0 px-2 bg-muted/60">
+                      {target.target_type?.replace(/_/g, ' ')}
+                    </Badge>
+                    {isCompleted && (
+                      <Badge className="text-[10px] font-bold bg-emerald-500 text-white border-0 gap-1">
+                        <Award className="w-3 h-3" /> Achieved!
+                      </Badge>
+                    )}
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5 text-amber-500" /> Due {target.period_end}
+                    </span>
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-foreground truncate">
+                    {target.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Users className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>
+                      {target.assigned_to === 'all' 
+                        ? `All Marketers (${marketers.length})` 
+                        : target.assigned_to === 'single'
+                        ? '1 Assigned Officer'
+                        : `${(target.assignee_ids || []).length} Marketers`}
+                    </span>
+                    {target.notes && (
+                      <span className="hidden sm:inline-block text-muted-foreground/80 italic truncate max-w-xs">
+                        — "{target.notes}"
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="w-full md:w-80 space-y-1.5 shrink-0 bg-muted/30 p-3 rounded-xl border border-border/50">
+                  <div className="flex items-baseline justify-between text-xs">
+                    <span className="font-semibold text-muted-foreground">Progress</span>
+                    <span className="font-bold text-foreground">
+                      {achieved} / {targetVal} {unitLabel} ({percent}%)
+                    </span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden border border-border/40">
+                    <div 
+                      className={cn(
+                        "h-full transition-all duration-500 rounded-full",
+                        isCompleted ? "bg-emerald-500" : percent > 50 ? "bg-indigo-600" : "bg-amber-500"
+                      )}
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-[10px] text-muted-foreground">
+                    <span>{percent}% Completed</span>
+                    <span>{targetVal - achieved > 0 ? `${targetVal - achieved} remaining` : 'Target reached!'}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

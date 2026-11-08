@@ -93,7 +93,8 @@ export default function JCLEngineering() {
         console.warn('Drawings load issue:', dwgRes.error);
       }
       setDrawings(dwgRes.data || []);
-      setProjects(projRes.data || []);
+      const projList = Array.isArray(projRes) ? projRes : (projRes?.data || []);
+      setProjects(projList);
 
       // If we have drawings, fetch recent revisions
       if (dwgRes.data?.length > 0) {

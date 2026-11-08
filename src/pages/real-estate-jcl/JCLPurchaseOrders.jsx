@@ -68,7 +68,8 @@ export default function JCLPurchaseOrders() {
 
       if (resOrders.error) throw resOrders.error;
       setOrders(resOrders.data || []);
-      setProjects(resProj.data || []);
+      const projList = Array.isArray(resProj) ? resProj : (resProj?.data || []);
+      setProjects(projList);
     } catch (err) {
       console.error('Purchase orders load error:', err);
       toast.error(err.message || 'Unable to load purchase orders');

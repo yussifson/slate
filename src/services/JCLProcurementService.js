@@ -1,4 +1,5 @@
 import { supabase } from '@/api/supabaseClient';
+import { ensureValidProjectId } from '@/services/ProjectLookupService';
 
 const selectError = (error, context) => {
   if (error) throw new Error(`${context}: ${error.message}`);
@@ -111,9 +112,10 @@ export const JCLProcurementService = {
   // --- PURCHASE ORDER CRUD ---
   async createPurchaseOrder(companyId, actorId, payload) {
     const ref = payload.reference || payload.po_number || `PO-${Date.now().toString().slice(-6)}`;
+    const resolvedProjectId = await ensureValidProjectId(companyId, payload.project_id);
     const { data, error } = await supabase.from('jcl_purchase_orders').insert({
       company_id: companyId,
-      project_id: payload.project_id && payload.project_id.trim() !== "" ? payload.project_id : null,
+      project_id: resolvedProjectId,
       reference: ref,
       po_number: ref,
       supplier_name: payload.supplier_name,

@@ -865,7 +865,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
     // JCL department rules must run before dynamic-module fallback so legacy entries cannot fall back to Operations.
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p) || ['item register', 'front desk', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
+      if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p) || ['item register', 'front desk', 'asset taking', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
         return "Secretary";
       }
       if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/sales-targets', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || ['engagement', 'engagements & projects', 'clients', 'crm leads', 'sales targets', 'viewings', 'offers', 'counter offers', 'timeline', 'market analytics'].includes(normalizedLabel)) {

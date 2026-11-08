@@ -84,5 +84,62 @@ export async function getCompanyProjects(companyId) {
     console.warn('[ProjectLookupService] univ_projects lookup caught:', err);
   }
 
+  // 4. Try univ_re_properties (Properties as project contexts in Real Estate)
+  try {
+    const { data, error } = await supabase
+      .from('univ_re_properties')
+      .select('id, address, property_type, status, price, created_at')
+      .eq('company_id', companyId)
+      .order('address', { ascending: true });
+
+    if (!error && Array.isArray(data)) {
+      data.forEach(prop => {
+        const title = prop.address || prop.property_type || `Property ${prop.id.slice(-4)}`;
+        if (!projects.some(existing => existing.id === prop.id || existing.name === title)) {
+          projects.push({
+            id: prop.id,
+            name: title,
+            project_code: `PROP-${prop.id.slice(-4)}`,
+            status: prop.status || 'active',
+            source: 'property'
+          });
+        }
+      });
+    }
+  } catch (err) {
+    console.warn('[ProjectLookupService] univ_re_properties lookup caught:', err);
+  }
+
   return projects;
+}
+
+/**
+ * Ensures a valid project ID exists for tables requiring non-null project_id.
+ * If provided projectId is valid, returns it.
+ * Otherwise returns the first active project or automatically provisions a General Operations project.
+ */
+export async function ensureValidProjectId(companyId, providedId) {
+  if (providedId && String(providedId).trim() !== '' && providedId !== 'unassigned') {
+    return providedId;
+  }
+  const existing = await getCompanyProjects(companyId);
+  if (existing.length > 0 && existing[0]?.id) {
+    return existing[0].id;
+  }
+  // Provision a default ops_project
+  try {
+    const defId = crypto.randomUUID();
+    const { data, error } = await supabase.from('ops_projects').insert({
+      id: defId,
+      company_id: companyId,
+      name: 'General Company Operations',
+      project_code: 'GEN-OPS-01',
+      status: 'active',
+      description: 'Default project container for general procurement and site operations.'
+    }).select().single();
+    if (!error && data?.id) return data.id;
+  } catch (e) {
+    console.warn('[ProjectLookupService] Default project provisioning caught:', e);
+  }
+  return providedId || null;
 }

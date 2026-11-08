@@ -40,8 +40,10 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isEdit = !!initialData?.id;
+  const draftId = React.useMemo(() => initialData?.id || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'task-' + Math.random().toString(36).slice(2)), [initialData?.id]);
 
   const defaultForm = {
+    id: draftId,
     title: "",
     description: "",
     case_id: "",
@@ -61,14 +63,15 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
   const { toast } = useToast();
 
   useEffect(() => {
-    setForm(initialData || defaultForm);
-  }, [open, initialData]);
+    setForm(initialData || { ...defaultForm, id: draftId });
+  }, [open, initialData, draftId]);
 
   const mutation = useMutation({
     mutationFn: (data) => {
       const firstAssignee = data.assignees?.[0];
       const payload = {
          ...data,
+         id: data.id || draftId,
          assigned_to: firstAssignee?.id || null,
          assigned_to_name: firstAssignee?.full_name || null,
          depends_on: data.depends_on ? JSON.stringify(data.depends_on) : null,
@@ -307,17 +310,17 @@ function TaskFormDialog({ open, onClose, initialData, cases, staff, companyId, c
         </TabsContent>
         <TabsContent value="checklist" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
           <div className="w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm min-h-full">
-            <TaskChecklist taskId={initialData?.id} />
+            <TaskChecklist taskId={initialData?.id || form.id || draftId} />
           </div>
         </TabsContent>
         <TabsContent value="comments" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
           <div className="w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm h-full flex flex-col">
-            <TaskComments taskId={initialData?.id} />
+            <TaskComments taskId={initialData?.id || form.id || draftId} />
           </div>
         </TabsContent>
         <TabsContent value="files" className="h-full absolute inset-0 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar m-0 outline-none">
           <div className="w-full bg-white dark:bg-[#2C2C2E] p-6 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm min-h-full">
-            <TaskAttachments taskId={initialData?.id} />
+            <TaskAttachments taskId={initialData?.id || form.id || draftId} />
           </div>
         </TabsContent>
         </div>
@@ -354,9 +357,37 @@ export default function Tasks() {
     queryFn: () => base44.entities.Task.filter({ company_id: companyId }),
     enabled: !!companyId});
 
+  const isRealEstate = String(industry).toLowerCase().includes("real_estate");
   const { data: cases = [] } = useQuery({
-    queryKey: ["cases-list", companyId],
-    queryFn: () => base44.entities.LegalCase.filter({ company_id: companyId }),
+    queryKey: ["cases-list", companyId, isRealEstate],
+    queryFn: async () => {
+      if (isRealEstate) {
+        try {
+          const res = await powerSync.execute("SELECT id, address, property_type, bedrooms, bathrooms, price FROM univ_re_properties WHERE company_id = ? ORDER BY address ASC", [companyId]);
+          const records = res.rows?._array || Array.from(res.rows || []);
+          if (records.length > 0) {
+            return records.map(p => ({
+              id: p.id,
+              title: [p.address, p.property_type].filter(Boolean).join(" - ") || ("Property " + p.id.slice(-6)),
+              isProperty: true
+            }));
+          }
+        } catch (_) {}
+      }
+      try {
+        const rawCases = await base44.entities.LegalCase.filter({ company_id: companyId });
+        return (rawCases || []).map(c => {
+          let displayTitle = c.title || "";
+          if (displayTitle.trim().startsWith("{") && displayTitle.trim().endsWith("}")) {
+            try {
+              const parsed = JSON.parse(displayTitle);
+              displayTitle = parsed.name || parsed.address || parsed.title || parsed.description || "Untitled";
+            } catch (_) {}
+          }
+          return { ...c, title: displayTitle };
+        }).filter(c => c.title && !c.title.startsWith("{"));
+      } catch (_) { return []; }
+    },
     enabled: !!companyId});
 
   const { data: staff = [] } = useQuery({
