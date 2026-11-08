@@ -3,7 +3,7 @@ import { useCompanyId } from '@/hooks/useCompanyId';
 import { 
   Building2, TrendingUp, DollarSign, Receipt, LineChart, 
   WalletCards, BarChart3, Calculator, ShoppingBag, ArrowUpRight, 
-  ArrowDownRight, CheckCircle2, AlertCircle, RefreshCw
+  ArrowDownRight, CheckCircle2, AlertCircle, RefreshCw, BookOpen, FileText
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
