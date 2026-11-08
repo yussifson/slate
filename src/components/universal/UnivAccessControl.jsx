@@ -246,90 +246,36 @@ export default function UnivAccessControl() {
  <p className="text-sm text-[#71717a] dark:text-gray-400 mt-1">Manage users and granular role permissions.</p>
  </div>
  
- {/* Custom Tabs */}
- <div className="flex bg-muted p-1 rounded-xl border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 ">
- <button 
- onClick={() => setActiveTab('users')} 
- className={`px-6 py-2 text-sm font-semibold rounded-xl transition-all flex items-center gap-2 ${activeTab === 'users' ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
- >
- <Users className="w-4 h-4" /> Users
- </button>
- <button 
- onClick={() => setActiveTab('roles')} 
- className={`px-6 py-2 text-sm font-semibold rounded-xl transition-all flex items-center gap-2 ${activeTab === 'roles' ? 'bg-background text-foreground' : 'text-[#71717a] dark:text-gray-400 hover:text-foreground'}`}
- >
- <Key className="w-4 h-4" /> Roles & Permissions
- </button>
- </div>
- </div>
-
- <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
- {/* Sub-header for Tabs */}
- <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
- <h2 className="font-semibold text-foreground flex items-center gap-2">
- {activeTab === 'users' ? 'User Directory' : 'Defined Roles'}
- </h2>
- {activeTab === 'users' ? (
+  <div className="flex items-center gap-3">
     <Link 
       to="/employees" 
-      className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"
+      className="h-9 px-4 bg-muted hover:bg-muted/80 text-foreground rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors border border-border"
     >
-      <Plus className="w-4 h-4" /> Add Employee & Staff
+      <Users className="w-4 h-4 text-primary" /> Manage Employees & Staff
     </Link>
-  ) : (
     <button 
       onClick={() => openRoleModal()} 
-      className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors"
+      className="h-9 px-4 bg-primary text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-primary/90 transition-colors shadow-xs"
     >
       <Plus className="w-4 h-4" /> Create Custom Role
     </button>
-  )}
- </div>
+  </div>
+  </div>
 
- {loading ? (
- <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
- ) : activeTab === 'users' ? (
- <div className="flex-1 overflow-auto custom-scrollbar">
- <table className="w-full text-sm">
- <thead className="bg-muted/50 border-b border-primary/40 sticky top-0">
- <tr>
- <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">User</th>
- <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Assigned Role</th>
- <th className="px-5 py-3 text-left text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Status</th>
- <th className="px-5 py-3 text-right text-xs font-semibold text-[#71717a] dark:text-gray-400 uppercase tracking-wider tracking-[0.04em]">Actions</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border">
- {users.map(u => (
- <tr key={u.id} className="hover:bg-muted/30 transition-colors">
- <td className="px-5 py-4">
- <p className="font-semibold text-foreground">{u.user_name}</p>
- <p className="text-xs text-[#71717a] dark:text-gray-400 tracking-[0.04em]">{u.email}</p>
- </td>
- <td className="px-5 py-4">
- <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border-[0.5px] border-black/9 dark:border-white/8 border-primary/20 tracking-[0.04em]">
- {u.role || 'No Role'}
- </span>
- </td>
- <td className="px-5 py-4">
- <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider ${u.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
- {u.status}
- </span>
- </td>
- <td className="px-5 py-4 text-right">
- <button onClick={() => openUserModal(u)} className="p-2 text-[#71717a] dark:text-gray-400 hover:text-primary transition-colors"><Edit2 className="w-4 h-4" /></button>
- <button onClick={() => deleteUser(u.id)} className="p-2 text-[#71717a] dark:text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
- </td>
- </tr>
- ))}
- {users.length === 0 && <tr><td colSpan={4} className="p-12 text-center text-[#71717a] dark:text-gray-400">No users found.</td></tr>}
- </tbody>
- </table>
- </div>
- ) : (
- <div className="flex-1 overflow-auto custom-scrollbar p-6">
- <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {roles.map(r => (
+  <div className="flex-1 bg-card border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+  <div className="p-4 border-b border-primary/40 flex justify-between items-center bg-muted/20">
+    <h2 className="font-semibold text-foreground flex items-center gap-2">
+      <Key className="w-4 h-4 text-primary" /> System Roles & Permissions
+    </h2>
+    <span className="text-xs text-muted-foreground font-medium">To add staff and assign roles, visit the centralized <strong>Employees & Staff</strong> directory.</span>
+  </div>
+
+  {loading ? (
+    <div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+  ) : (
+    <div className="flex-1 overflow-auto custom-scrollbar p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {roles.map(r => (
  <div key={r.id} className="bg-background border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-2xl p-5 relative group hover:border-primary/50 transition-colors">
  <div className="flex justify-between items-start mb-4">
  <div className="flex items-center gap-2">

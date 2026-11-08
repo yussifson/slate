@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { supabase } from "@/api/supabaseClient";
 import SmartDocumentViewer from "@/components/SmartDocumentViewer";
@@ -67,6 +67,11 @@ function DocumentCard({ doc, onClick, isSelected }) {
           <p className="font-semibold text-sm text-foreground truncate">{doc.name}</p>
           <p className="text-xs text-muted-foreground">{doc.uploaded_by || "Unknown"} Â· {doc.filing_date?.split("T")[0] || "â€”"}</p>
           <div className="flex flex-wrap gap-1 mt-2">
+            {doc.visibility === "private" ? (
+              <Badge className="text-[10px] px-1.5 py-0 h-4 bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200">🔒 Private</Badge>
+            ) : (
+              <Badge className="text-[10px] px-1.5 py-0 h-4 bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">🌐 Public</Badge>
+            )}
             {doc.category && <Badge className={`text-[10px] px-1.5 py-0 h-4 ${CAT_COLORS[doc.category] || "bg-slate-100 text-slate-600"}`}>{doc.category}</Badge>}
             {doc.tags?.split(",").filter(Boolean).slice(0, 2).map(tag => (
               <Badge key={tag} className="text-[10px] px-1.5 py-0 h-4 bg-muted text-muted-foreground">{tag.trim()}</Badge>
@@ -202,13 +207,23 @@ export default function SmartDocs() {
   const [showLinkForm, setShowLinkForm] = useState(false);
   const [showFolderForm, setShowFolderForm] = useState(false);
 
-  const [uploadForm, setUploadForm] = useState({ name: "", category: "Contract", folder_id: "none", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
+  const [uploadForm, setUploadForm] = useState({ 
+    name: "", 
+    category: "Contract", 
+    folder_id: "none", 
+    visibility: "public", // "public" | "private"
+    tags: "", 
+    expiry_date: "", 
+    file_url: "", 
+    signature_status: "unsigned", 
+    notes: "" 
+  });
   const [uploadMode, setUploadMode] = useState("url"); // "url" | "file"
   const [uploadFile, setUploadFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
   const [linkForm, setLinkForm] = useState({ entity_type: "staff", entity_id: "", relationship: "" });
-  const [folderForm, setFolderForm] = useState({ name: "", color: "#6366f1" });
+  const [folderForm, setFolderForm] = useState({ name: "", color: "#6366f1", visibility: "public" });
 
   const loadDocs = useCallback(async () => {
     if (companyId === undefined) return;
@@ -280,6 +295,8 @@ export default function SmartDocs() {
       notes: uploadForm.notes,
       category: uploadForm.category,
       tags: uploadForm.tags,
+      visibility: uploadForm.visibility || "public",
+      owner_id: user?.id || user?.email,
       expiry_date: uploadForm.expiry_date || null,
       signature_status: uploadForm.signature_status,
       folder_id: uploadForm.folder_id === "none" ? null : uploadForm.folder_id
@@ -291,7 +308,17 @@ export default function SmartDocs() {
     );
     await loadDocs();
     setShowUploadForm(false);
-    setUploadForm({ name: "", category: "Contract", folder_id: "none", tags: "", expiry_date: "", file_url: "", signature_status: "unsigned", notes: "" });
+    setUploadForm({ 
+      name: "", 
+      category: "Contract", 
+      folder_id: "none", 
+      visibility: "public",
+      tags: "", 
+      expiry_date: "", 
+      file_url: "", 
+      signature_status: "unsigned", 
+      notes: "" 
+    });
     setUploadFile(null);
     setUploadMode("url");
     toast({ title: "Document added to Smart Docs" });
@@ -324,7 +351,25 @@ export default function SmartDocs() {
     return days >= 0 && days <= 30;
   });
 
+  const isSuperOrAdmin = useMemo(() => {
+    const r = (user?.role || '').toLowerCase();
+    return ['admin', 'super_admin', 'company_admin', 'owner', 'managing_partner'].includes(r);
+  }, [user?.role]);
+
+  const [visibilityScope, setVisibilityScope] = useState("all"); // "all" | "mine"
+
   const filteredDocs = docs.filter(d => {
+    // Access rights: Private documents only visible to author + company admin
+    if (d.visibility === "private" && !isSuperOrAdmin) {
+      const isOwner = d.owner_id === user?.id || d.owner_id === user?.email || d.uploaded_by === user?.full_name || d.uploaded_by === user?.email;
+      if (!isOwner) return false;
+    }
+
+    if (visibilityScope === "mine") {
+      const isOwner = d.owner_id === user?.id || d.owner_id === user?.email || d.uploaded_by === user?.full_name || d.uploaded_by === user?.email;
+      if (!isOwner) return false;
+    }
+
     const matchSearch = !search || d.name?.toLowerCase().includes(search.toLowerCase()) || d.tags?.toLowerCase().includes(search.toLowerCase()) || d.category?.toLowerCase().includes(search.toLowerCase());
     const matchCat = filterCategory === "all" || d.category === filterCategory;
     const matchFolder = filterFolder === "all" || d.folder_id === filterFolder;
@@ -404,6 +449,13 @@ export default function SmartDocs() {
                 {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
               </SelectContent>
             </Select>
+            <Select value={visibilityScope} onValueChange={setVisibilityScope}>
+              <SelectTrigger className="w-40"><SelectValue placeholder="Visibility" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Documents</SelectItem>
+                <SelectItem value="mine">My Documents</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Folder Quick Access */}
@@ -475,6 +527,16 @@ export default function SmartDocs() {
                   <SelectContent>
                     <SelectItem value="none">No Folder</SelectItem>
                     {folders.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="col-span-2">
+                <Label>Access Visibility *</Label>
+                <Select value={uploadForm.visibility} onValueChange={v => setUploadForm(f => ({ ...f, visibility: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">🌐 Public (All company members)</SelectItem>
+                    <SelectItem value="private">🔒 Private (Only me and company admins)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

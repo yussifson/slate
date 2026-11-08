@@ -382,8 +382,25 @@ export default function JCLCrmLeads() {
     toast.success('Leads exported to CSV');
   };
 
+  const [scopeFilter, setScopeFilter] = useState('all'); // 'all' (admin) | 'mine'
+
+  // Admin / Management check: admins see all, individual marketers see their assigned leads
+  const isSuperOrAdmin = useMemo(() => {
+    const r = (user?.role || '').toLowerCase();
+    return ['admin', 'super_admin', 'company_admin', 'owner', 'managing_partner'].includes(r);
+  }, [user?.role]);
+
   const filteredLeads = useMemo(() => {
     return leads.filter(l => {
+      // Access isolation: if not admin, or if user toggled 'mine', filter to user's assigned leads
+      if (!isSuperOrAdmin) {
+        const isOwner = l.assigned_agent_id === user?.id || l.assigned_agent_id === user?.email || !l.assigned_agent_id;
+        if (!isOwner) return false;
+      } else if (scopeFilter === 'mine') {
+        const isOwner = l.assigned_agent_id === user?.id || l.assigned_agent_id === user?.email;
+        if (!isOwner) return false;
+      }
+
       const matchSearch = !search ||
         l.first_name?.toLowerCase().includes(search.toLowerCase()) ||
         l.last_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -392,7 +409,7 @@ export default function JCLCrmLeads() {
       const matchStatus = statusFilter === 'all' || l.status === statusFilter;
       return matchSearch && matchStatus;
     });
-  }, [leads, search, statusFilter]);
+  }, [leads, search, statusFilter, isSuperOrAdmin, scopeFilter, user]);
 
   // Update Status in PowerSync
   const handleUpdateStatus = async (leadId, newStatus) => {
@@ -435,17 +452,18 @@ export default function JCLCrmLeads() {
         toast.success('Lead updated successfully');
       } else {
         const newId = generateUUID();
+        const currentUserId = user?.id || user?.email || null;
         await powerSync.execute(
           `INSERT INTO univ_re_leads (
             id, created_at, company_id, first_name, last_name, email, phone,
-            lead_type, source, status, budget_min, budget_max, lead_score, notes
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            lead_type, source, status, budget_min, budget_max, lead_score, notes, assigned_agent_id
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             newId, now, companyId,
             formData.firstName, formData.lastName, formData.email, formData.phone,
             formData.leadType, formData.source, formData.status,
             Number(formData.budgetMin) || 0, Number(formData.budgetMax) || 0,
-            75, formData.notes
+            75, formData.notes, currentUserId
           ]
         );
         toast.success('New lead captured successfully');
@@ -644,6 +662,18 @@ export default function JCLCrmLeads() {
                 <SelectItem value="lost">Lost</SelectItem>
               </SelectContent>
             </Select>
+
+            {isSuperOrAdmin && (
+              <Select value={scopeFilter} onValueChange={setScopeFilter}>
+                <SelectTrigger className="h-10 w-44 rounded-xl text-xs font-semibold bg-background border-border/80">
+                  <SelectValue placeholder="Access Scope" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Company Leads</SelectItem>
+                  <SelectItem value="mine">Only My Assigned</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">

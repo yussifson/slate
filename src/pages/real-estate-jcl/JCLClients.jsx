@@ -211,8 +211,33 @@ export default function JCLClients() {
     toast.success('Customer list exported to CSV');
   };
 
+  const [scopeFilter, setScopeFilter] = useState('all'); // 'all' (admin) | 'mine'
+
+  // Admin / Management check: admins see all clients, individual agents/marketers see their assigned clients
+  const isSuperOrAdmin = useMemo(() => {
+    const r = (user?.role || '').toLowerCase();
+    return ['admin', 'super_admin', 'company_admin', 'owner', 'managing_partner'].includes(r);
+  }, [user?.role]);
+
   const filteredClients = useMemo(() => {
     return clients.filter(c => {
+      // Access isolation: if not admin, or if user toggled 'mine', restrict to their clients
+      if (!isSuperOrAdmin) {
+        let meta = {};
+        try { if (c.notes && c.notes.startsWith('{')) meta = JSON.parse(c.notes); } catch(_e) {}
+        const ownerId = c.agent_id || meta.assigned_agent_id || meta.created_by;
+        if (ownerId && ownerId !== user?.id && ownerId !== user?.email) {
+          return false;
+        }
+      } else if (scopeFilter === 'mine') {
+        let meta = {};
+        try { if (c.notes && c.notes.startsWith('{')) meta = JSON.parse(c.notes); } catch(_e) {}
+        const ownerId = c.agent_id || meta.assigned_agent_id || meta.created_by;
+        if (ownerId !== user?.id && ownerId !== user?.email) {
+          return false;
+        }
+      }
+
       const matchSearch = search === '' ||
         c.name?.toLowerCase().includes(search.toLowerCase()) ||
         c.email?.toLowerCase().includes(search.toLowerCase()) ||
@@ -222,7 +247,7 @@ export default function JCLClients() {
       const matchType = typeFilter === 'all' || c.type === typeFilter;
       return matchSearch && matchType;
     });
-  }, [clients, search, typeFilter]);
+  }, [clients, search, typeFilter, isSuperOrAdmin, scopeFilter, user]);
 
   // Compute linked items for a specific client
   const getClientLinkedData = (client) => {
