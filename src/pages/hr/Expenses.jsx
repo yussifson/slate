@@ -228,17 +228,17 @@ export default function Expenses() {
 
       {/* ── Add Modal ── */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white dark:bg-card rounded-2xl w-full max-w-md shadow-2xl border-[0.5px] border-black/9 dark:border-white/8">
-            <div className="p-6 border-b border-border/50">
-              <h2 className="text-lg font-bold text-foreground">New Expense Report</h2>
+        <div className="fixed inset-0 z-[9999] flex flex-col justify-end sm:justify-center sm:items-center bg-black/60 dark:bg-black/80 backdrop-blur-sm p-0 sm:p-4" role="dialog" aria-modal="true" onMouseDown={e => { if (e.target === e.currentTarget) setShowModal(false); }}>
+          <div className="bg-white dark:bg-card rounded-t-[28px] sm:rounded-2xl w-full sm:max-w-md shadow-2xl border-t sm:border border-border/80 max-h-[92dvh] sm:max-h-[85vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200 pb-[calc(1.5rem+env(safe-area-inset-bottom,20px))] sm:pb-0">
+            <div className="sm:hidden w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-3 mb-1 shrink-0" aria-hidden="true" />
+            <div className="p-4 sm:p-6 border-b border-border/50 flex items-center justify-between shrink-0">
+              <h2 className="text-base sm:text-lg font-bold text-foreground">New Expense Report</h2>
+              <button onClick={() => setShowModal(false)} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground active:scale-95 transition-all" aria-label="Close">
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <div className="space-y-4 p-6">
+            <div className="space-y-4 p-4 sm:p-6 overflow-y-auto">
               <div className="grid grid-cols-3 gap-3">
-                <div className="col-span-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Amount</label>
-                  <Input type="number" step="0.01" value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} className="mt-1" placeholder="0.00" />
-                </div>
                 <div>
                   <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Currency</label>
                   <select className="mt-1 w-full rounded-xl border-[0.5px] border-black/9 dark:border-white/8 bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" value={formData.currency} onChange={e => setFormData({...formData, currency: e.target.value})}>

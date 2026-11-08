@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { CalendarDays, Clock3, LogIn, LogOut, Plus, Search, ShieldCheck, UserRound, UsersRound, Building2 } from 'lucide-react';
+import { X, CalendarDays, Clock3, LogIn, LogOut, Plus, Search, ShieldCheck, UserRound, UsersRound, Building2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
@@ -310,8 +310,15 @@ export default function JCLFrontDesk() {
 
       {/* Modal Dialog */}
       {showVisitorForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" onMouseDown={event => { if (event.target === event.currentTarget) setShowVisitorForm(false); }}>
-          <Card className="max-h-[90vh] w-full max-w-xl overflow-y-auto border-border shadow-2xl rounded-2xl">
+        <div className="fixed inset-0 z-[9999] flex flex-col justify-end sm:justify-center sm:items-center bg-black/60 dark:bg-black/80 backdrop-blur-sm p-0 sm:p-4" role="dialog" aria-modal="true" onMouseDown={event => { if (event.target === event.currentTarget) setShowVisitorForm(false); }}>
+          <div className="w-full sm:max-w-xl bg-card border-t sm:border border-border/80 rounded-t-[28px] sm:rounded-2xl max-h-[92dvh] sm:max-h-[85vh] overflow-y-auto overscroll-contain shadow-2xl animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200 pb-[calc(1.5rem+env(safe-area-inset-bottom,20px))] sm:pb-0 flex flex-col">
+            <div className="sm:hidden w-12 h-1.5 rounded-full bg-black/20 dark:bg-white/20 mx-auto mt-3 mb-1 shrink-0" aria-hidden="true" />
+            <CardHeader className="flex-row items-center justify-between border-b border-border/60 pb-3 px-5 sm:px-6 pt-4 shrink-0">
+              <CardTitle className="text-base font-bold text-foreground">Front Desk Check-in</CardTitle>
+              <button onClick={() => setShowVisitorForm(false)} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground active:scale-95 transition-all" aria-label="Close">
+                <X className="w-4 h-4" />
+              </button>
+            </CardHeader>
             <CardHeader className="border-b border-border/60 pb-3">
               <CardTitle className="text-base font-bold">Front Desk Check-in</CardTitle>
             </CardHeader>
@@ -364,7 +371,7 @@ export default function JCLFrontDesk() {
                 </div>
               </form>
             </CardContent>
-          </Card>
+          </div>
         </div>
       )}
     </main>
