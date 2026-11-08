@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { BarChart3, Calculator, ClipboardCheck, Plus, TrendingUp, Layers, ArrowDownLeft } from 'lucide-react';
+import { BarChart3, Calculator, ClipboardCheck, Plus, TrendingUp, Layers, DollarSign, ArrowUpRight, ArrowDownLeft, FileText, CheckCircle2 } from 'lucide-react';
 import { useCompanyId } from '@/hooks/useCompanyId';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -21,20 +20,7 @@ const tabs = [
 export default function JCLProjectFinance() {
   const companyId = useCompanyId();
   const { toast } = useToast();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabFromUrl = searchParams.get('tab');
-  const [tab, setTab] = useState(tabFromUrl || 'overview');
-
-  useEffect(() => {
-    if (tabFromUrl && tabFromUrl !== tab) {
-      setTab(tabFromUrl);
-    }
-  }, [tabFromUrl]);
-
-  const handleTabChange = (newTab) => {
-    setTab(newTab);
-    setSearchParams({ tab: newTab });
-  };
+  const [tab, setTab] = useState('overview');
   const [projects, setProjects] = useState([]);
   const [summary, setSummary] = useState([]);
   const [budgets, setBudgets] = useState([]);
@@ -208,7 +194,7 @@ export default function JCLProjectFinance() {
             return (
               <button
                 key={id}
-                onClick={() => handleTabChange(id)}
+                onClick={() => setTab(id)}
                 className={cn(
                   'inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all',
                   isActive

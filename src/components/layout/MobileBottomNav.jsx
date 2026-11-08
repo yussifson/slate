@@ -245,15 +245,18 @@ export default function MobileBottomNav() {
 
       const section = getJCLCategory(item);
 
-      // User requested: in the Finance section on the More pop-up, ONLY show Finance (which opens the full Finance suite)
+      // User requested: in the Finance section on the More pop-up, ONLY show Trust Accounting, Firm Accounting, and Project Finance.
+      // Filter out redundant items (commissions, payments, rent payment, invoices, etc. since they live inside Firm Accounting)
       if (section === 'Finance') {
         const p = (item.path || '').toLowerCase();
         const l = (item.label || '').toLowerCase();
-        const isFinanceRoot = p === '/finance/accounting' || l === 'finance' || l === 'firm accounting';
-        if (!isFinanceRoot) {
-          continue; // skip commission, rent payment, payment schedules, trust accounting, project finance etc.
+        const isAllowedFinance = 
+          p === '/real-estate/trust-accounting' || l.includes('trust accounting') ||
+          p === '/finance/accounting' || l.includes('firm accounting') ||
+          p === '/jcl/project-finance' || l.includes('project finance');
+        if (!isAllowedFinance) {
+          continue; // skip commission, rent payment, payment schedules, etc.
         }
-        item.label = 'Finance';
       }
 
       // User requested: remove redundant "Procurement" button from the mobile More menu (keep Requisitions, Purchase Orders, Materials)

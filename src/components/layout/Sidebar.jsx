@@ -749,9 +749,9 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
   // Trust Accounting is now accessed via Finance inner tabs — removed from main sidebar
 
-    // Inject Finance system — JCL only (single unified button on main sidebar)
+    // Inject Firm Accounting system — JCL only
     if (activeIndustry === 'real_estate_jcl' && !rawNavItems.some(n => n.path === '/finance/accounting')) {
-      rawNavItems.push({ label: "Finance", path: "/finance/accounting", icon: "Landmark" });
+      rawNavItems.push({ label: "Firm Accounting", path: "/finance/accounting", icon: "Landmark" });
     }
 
     // Inject JCL-only navigation that must remain visible in the rendered sidebar.
@@ -812,12 +812,6 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       '/snapshot',
       '/real-estate/marketer-tracker',
       '/real-estate/trust-accounting',
-      '/jcl/project-finance',
-      '/invoices',
-      '/real-estate/rent-payments',
-      '/real-estate/payment-schedules',
-      '/real-estate/commissions',
-      '/real-estate/commission-rules',
       '/engineering',
       '/jcl/procurement'
     ]);
@@ -832,13 +826,6 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       'snapshots',
       'field gps',
       'trust accounting',
-      'project finance',
-      'invoices',
-      'rent payments',
-      'payment schedules',
-      'commissions',
-      'commission rules',
-      'firm accounting',
       'engineering',
       'procurement'
     ]);
@@ -872,17 +859,8 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return aOrder - bOrder;
   });
 
-  // In JCL, all finance sub-features live inside the Finance module's inner sidebar.
-  // The only button on the main sidebar under Finance is Finance itself.
-  if (activeIndustry === 'real_estate_jcl') {
-    navItems = navItems.filter(item => {
-      const p = (item.path || '').toLowerCase();
-      const l = (item.label || '').toLowerCase();
-      if (['/real-estate/trust-accounting', '/jcl/project-finance', '/invoices', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions', '/real-estate/commission-rules'].includes(p)) return false;
-      if (['trust accounting', 'project finance', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'commission rules'].includes(l)) return false;
-      return true;
-    });
-  }
+  // Trust Accounting is available inside Finance and must not appear in the main sidebar.
+  navItems = navItems.filter(item => item.path !== '/real-estate/trust-accounting');
 
   const getCategory = (item) => {
     const p = (item.path || '').split('?')[0];
