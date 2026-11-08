@@ -865,25 +865,25 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
     // JCL department rules must run before dynamic-module fallback so legacy entries cannot fall back to Operations.
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/jcl/front-desk', '/jcl/item-register'].includes(p) || normalizedLabel === 'item register') {
+      if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p) || ['item register', 'front desk', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
         return "Secretary";
       }
-      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || normalizedLabel === 'engagement' || normalizedLabel === 'engagements & projects' || normalizedLabel === 'clients') {
+      if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm') || ['engagement', 'engagements & projects', 'clients', 'crm leads', 'viewings', 'offers', 'counter offers', 'timeline', 'market analytics'].includes(normalizedLabel)) {
         return "Marketing";
       }
-      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land') || ['leases', 'renewals', 'maintenance', 'contractors', 'reviews'].includes(normalizedLabel)) {
+      if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land') || ['properties', 'land parcels', 'leases', 'renewals', 'maintenance', 'contractors', 'reviews', 'contractor reviews'].includes(normalizedLabel)) {
         return "Properties";
       }
-      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p) || ['live gps', 'audit log', 'client portal'].includes(normalizedLabel)) {
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal', '/settings', '/integrations', '/admin', '/firm-setup'].includes(p) || ['live gps', 'audit log', 'client portal', 'settings', 'integrations', 'firm setup'].includes(normalizedLabel)) {
         return "System Admin";
       }
-      if (['/procurement', '/purchase-orders', '/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) || p.startsWith('/procurement') || ['procurement', 'purchase orders', 'suppliers', 'goods receipts'].includes(normalizedLabel)) {
+      if (['/procurement', '/purchase-orders', '/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) || p.startsWith('/procurement') || ['procurement', 'requisitions', 'purchase orders', 'suppliers', 'goods receipts', 'materials & inventory', 'materials'].includes(normalizedLabel)) {
         return "Procurement";
       }
-      if (['/engineering', '/bom', '/boq', '/jcl/projects'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'projects'].includes(normalizedLabel)) {
+      if (['/engineering', '/engineering/drawings', '/bom', '/boq', '/jcl/projects', '/jcl/project-operations', '/jcl/project-collaboration'].includes(p) || ['bill of materials', 'bill of quantities', 'engineering', 'drawings', 'projects', 'project operations', 'project collaboration'].includes(normalizedLabel)) {
         return "Engineering";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting'].includes(normalizedLabel)) {
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance', '/real-estate/rent-payments', '/real-estate/payment-schedules', '/real-estate/commissions'].includes(p) || p.startsWith('/finance/accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') || p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules') || ['finance', 'firm accounting', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'project finance'].includes(normalizedLabel)) {
         return "Finance";
       }
     }
@@ -903,11 +903,14 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 
     // JCL Royal Group is organized by department, not by nested feature groups.
     if (activeIndustry === 'real_estate_jcl') {
-      if (['/jcl/front-desk', '/jcl/item-register'].includes(p)) {
+      if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p)) {
         return "Secretary";
       }
-      if (p === '/jcl/procurement') {
+      if (['/procurement', '/purchase-orders', '/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) || p.startsWith('/procurement')) {
         return "Procurement";
+      }
+      if (['/engineering', '/engineering/drawings', '/bom', '/boq', '/jcl/projects', '/jcl/project-operations', '/jcl/project-collaboration'].includes(p)) {
+        return "Engineering";
       }
       if (['/jcl/engagements', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers', '/real-estate/counter-offers', '/real-estate/customer-timeline', '/real-estate/crm-leads', '/real-estate/marketer-tracker', '/real-estate/analytics'].includes(p) || p.startsWith('/real-estate/crm')) {
         return "Marketing";
@@ -915,10 +918,10 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/real-estate/land', '/real-estate/properties', '/real-estate/comparable-properties', '/real-estate/market-data', '/real-estate/leases', '/real-estate/lease-renewals', '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) || p.startsWith('/real-estate/land')) {
         return "Properties";
       }
-      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal'].includes(p)) {
+      if (['/real-estate/field-tracker', '/real-estate/audit-log', '/client-portal', '/real-estate/client-portal', '/portal', '/settings', '/integrations', '/admin', '/firm-setup'].includes(p)) {
         return "System Admin";
       }
-      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting'].includes(p) ||
+      if (['/invoices', '/billing', '/payroll', '/expenses', '/fees', '/finance/accounting', '/jcl/project-finance'].includes(p) ||
           p.startsWith('/finance/accounting') || p.startsWith('/real-estate/trust-accounting') || p.startsWith('/real-estate/escrow') || p.startsWith('/real-estate/rent-payments') ||
           p.startsWith('/real-estate/payment-schedules') || p.startsWith('/real-estate/commissions') || p.startsWith('/real-estate/commission-rules')) {
         return "Finance";
@@ -926,7 +929,6 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (['/hr', '/employees', '/team', '/recruitment', '/roles', '/departments', '/attendance', '/performance'].includes(p) || p.startsWith('/real-estate/team-management')) {
         return "Human Resources";
       }
-      if (['/settings', '/integrations'].includes(p)) return "System Admin";
       return "Operations";
     }
 

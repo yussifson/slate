@@ -279,101 +279,83 @@ export default function JCLProperties() {
 
   return (
     <div className="p-2 sm:p-4 md:p-6 pb-24 w-full max-w-full space-y-4 sm:space-y-6 font-sans">
-      {/* ── 1. Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20">
-              <Building2 className="h-5 w-5" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                Properties & Units Directory
-              </h1>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Executive portfolio inventory, unit specifications, valuations, and scheduled viewings
-              </p>
-            </div>
+      {/* ── 1. Native Header ── */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shrink-0 shadow-md shadow-[#005A9C]/20">
+            <Building2 className="h-4 w-4 sm:h-5 sm:w-5" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground truncate">
+              Properties
+            </h1>
+            <p className="text-[11px] text-muted-foreground font-medium truncate">
+              {stats.total} listings · {stats.active} available
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchPropertiesData}
-            className="h-9 px-3 text-xs gap-1.5 border-border"
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
-
-          <Button
-            onClick={handleOpenCreate}
-            size="sm"
-            className="h-9 px-4 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/20 gap-1.5"
-          >
-            <Plus className="h-4 w-4" />
-            Add Property
-          </Button>
-        </div>
+        <Button
+          onClick={handleOpenCreate}
+          size="sm"
+          className="h-9 px-3.5 sm:px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-md shadow-[#005A9C]/25 rounded-xl gap-1.5 shrink-0 active:scale-95 transition-all"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Add Property</span>
+        </Button>
       </div>
 
-      {/* ── 2. KPI Hero Row ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Portfolio</p>
-              <p className="text-2xl font-bold text-foreground">{stats.total}</p>
-              <p className="text-[11px] text-muted-foreground">Properties in database</p>
+      {/* ── 2. Native Mobile & Responsive Stats Row ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        {/* Total Portfolio */}
+        <div className="bg-card rounded-2xl p-3 sm:p-4 border border-border/80 shadow-xs flex flex-col items-center sm:items-start text-center sm:text-left active:scale-[0.98] transition-transform">
+          <div className="flex items-center justify-between w-full mb-1">
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Portfolio</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
-            <div className="h-11 w-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <Building2 className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-lg sm:text-2xl font-extrabold text-foreground tracking-tight mt-0.5">{stats.total}</p>
+          <span className="text-[10px] text-muted-foreground font-medium hidden sm:block mt-0.5">Total units cataloged</span>
+        </div>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Active Listings</p>
-              <p className="text-2xl font-bold text-[#005A9C] dark:text-[#FF6B00]">{stats.active}</p>
-              <p className="text-[11px] text-emerald-600/80">Available for sale / lease</p>
+        {/* Active Listings */}
+        <div className="bg-card rounded-2xl p-3 sm:p-4 border border-border/80 shadow-xs flex flex-col items-center sm:items-start text-center sm:text-left active:scale-[0.98] transition-transform">
+          <div className="flex items-center justify-between w-full mb-1">
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Available</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
-            <div className="h-11 w-11 rounded-xl bg-[#005A9C]/10 text-[#005A9C] dark:text-[#FF6B00] flex items-center justify-center">
-              <Sparkles className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-lg sm:text-2xl font-extrabold text-[#005A9C] dark:text-[#FF6B00] tracking-tight mt-0.5">{stats.active}</p>
+          <span className="text-[10px] text-emerald-600/90 font-medium hidden sm:block mt-0.5">Ready for viewing</span>
+        </div>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Sold / Under Offer</p>
-              <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{stats.pending + stats.sold}</p>
-              <p className="text-[11px] text-muted-foreground">{stats.pending} pending, {stats.sold} closed</p>
+        {/* Under Offer / Sold */}
+        <div className="bg-card rounded-2xl p-3 sm:p-4 border border-border/80 shadow-xs flex flex-col items-center sm:items-start text-center sm:text-left active:scale-[0.98] transition-transform">
+          <div className="flex items-center justify-between w-full mb-1">
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">In Deal</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
-            <div className="h-11 w-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <CheckCircle2 className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-lg sm:text-2xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight mt-0.5">{stats.pending + stats.sold}</p>
+          <span className="text-[10px] text-muted-foreground font-medium hidden sm:block mt-0.5">{stats.pending} pending · {stats.sold} closed</span>
+        </div>
 
-        <Card className="border border-border/80 shadow-xs bg-card/60 backdrop-blur-sm">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Gross Asset Valuation</p>
-              <p className="text-2xl font-bold text-foreground truncate">
-                {formatCurrency(stats.totalValuation, 'USD')}
-              </p>
-              <p className="text-[11px] text-muted-foreground">Avg {formatCurrency(stats.avgPrice, 'USD')}/unit</p>
+        {/* Valuation */}
+        <div className="bg-card rounded-2xl p-3 sm:p-4 border border-border/80 shadow-xs flex flex-col items-center sm:items-start text-center sm:text-left active:scale-[0.98] transition-transform">
+          <div className="flex items-center justify-between w-full mb-1">
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider">Valuation</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+              <DollarSign className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
-            <div className="h-11 w-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-              <DollarSign className="h-5 w-5" />
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-lg sm:text-2xl font-extrabold text-foreground tracking-tight truncate w-full mt-0.5">
+            {stats.totalValuation >= 1000000 ? "$" + (stats.totalValuation / 1000000).toFixed(1) + "M" : formatCurrency(stats.totalValuation, "USD")}
+          </p>
+          <span className="text-[10px] text-muted-foreground font-medium hidden sm:block mt-0.5">Avg {formatCurrency(stats.avgPrice, "USD")}</span>
+        </div>
       </div>
 
       {/* ── 3. Filters & View Controls ── */}
@@ -539,91 +521,153 @@ export default function JCLProperties() {
           })}
         </div>
       ) : (
-        /* High Density Table View */
-        <div className="border border-border rounded-xl bg-card overflow-hidden shadow-xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
-                  <th className="py-3 px-4">Property Address</th>
-                  <th className="py-3 px-4">Type</th>
-                  <th className="py-3 px-4">Specs</th>
-                  <th className="py-3 px-4">Price</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Assigned Agent</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filteredProperties.map(property => {
-                  const st = STATUS_CONFIG[property.status] || STATUS_CONFIG.active;
-                  return (
-                    <tr
-                      key={property.id}
-                      className="hover:bg-muted/30 transition-colors cursor-pointer group"
-                      onClick={() => setInspectorProperty(property)}
-                    >
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                          {property.address}
-                        </div>
-                        <div className="text-[11px] text-muted-foreground">
-                          {[property.city, property.state].filter(Boolean).join(', ') || 'N/A'}
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4 capitalize text-foreground">
-                        {property.property_type || 'Residential'}
-                      </td>
-                      <td className="py-3.5 px-4 text-muted-foreground">
-                        <span className="font-medium text-foreground">{property.bedrooms || 0}</span> bd |{' '}
-                        <span className="font-medium text-foreground">{property.bathrooms || 0}</span> ba |{' '}
-                        <span className="font-medium text-foreground">{property.square_feet?.toLocaleString() || 0}</span> sqft
-                      </td>
-                      <td className="py-3.5 px-4 font-bold text-foreground">
-                        {formatCurrency(property.price, 'USD')}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1", st.badge)}>
-                          <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
-                          {st.label}
-                        </Badge>
-                      </td>
-                      <td className="py-3.5 px-4 text-muted-foreground">
-                        {property.agent_name || 'Unassigned'}
-                      </td>
-                      <td className="py-3.5 px-4 text-right" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => setInspectorProperty(property)}
-                          >
-                            <Eye className="h-3.5 w-3.5 text-muted-foreground" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7"
-                            onClick={() => handleOpenEdit(property)}
-                          >
-                            <Edit className="h-3.5 w-3.5 text-muted-foreground" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-rose-500 hover:text-rose-600"
-                            onClick={() => setDeleteTarget(property)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        <div className="space-y-3">
+          {/* Mobile Native Card View (< md) */}
+          <div className="md:hidden space-y-2.5">
+            {filteredProperties.map(property => {
+              const st = STATUS_CONFIG[property.status] || STATUS_CONFIG.active;
+              return (
+                <div
+                  key={property.id}
+                  onClick={() => setInspectorProperty(property)}
+                  className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-transform space-y-2.5"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-foreground text-sm truncate leading-snug">
+                        {property.address}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        {[property.city, property.state].filter(Boolean).join(", ") || "N/A"} · <span className="capitalize">{property.property_type || "Residential"}</span>
+                      </p>
+                    </div>
+                    <Badge variant="outline" className={cn("text-[10px] font-bold border gap-1 shrink-0 py-0.5 px-2", st.badge)}>
+                      <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
+                      {st.label}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                    <span className="font-extrabold text-foreground text-sm">
+                      {formatCurrency(property.price, "USD")}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-medium">
+                      {property.bedrooms || 0} bd · {property.bathrooms || 0} ba · {property.square_feet?.toLocaleString() || 0} sqft
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1 text-[11px] text-muted-foreground">
+                    <span>Agent: <strong className="text-foreground">{property.agent_name || "Unassigned"}</strong></span>
+                    <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-xs font-semibold"
+                        onClick={() => handleOpenEdit(property)}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 text-rose-500 hover:text-rose-600"
+                        onClick={() => setDeleteTarget(property)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop High-Density Table View (>= md) */}
+          <div className="hidden md:block border border-border rounded-xl bg-card overflow-hidden shadow-xs">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-border bg-muted/40 text-muted-foreground font-medium">
+                    <th className="py-3 px-4">Property Address</th>
+                    <th className="py-3 px-4">Type</th>
+                    <th className="py-3 px-4">Specs</th>
+                    <th className="py-3 px-4">Price</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4">Assigned Agent</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {filteredProperties.map(property => {
+                    const st = STATUS_CONFIG[property.status] || STATUS_CONFIG.active;
+                    return (
+                      <tr
+                        key={property.id}
+                        className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                        onClick={() => setInspectorProperty(property)}
+                      >
+                        <td className="py-3.5 px-4">
+                          <div className="font-semibold text-foreground group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                            {property.address}
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {[property.city, property.state].filter(Boolean).join(", ") || "N/A"}
+                          </div>
+                        </td>
+                        <td className="py-3.5 px-4 capitalize text-foreground">
+                          {property.property_type || "Residential"}
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground">
+                          <span className="font-medium text-foreground">{property.bedrooms || 0}</span> bd | 
+                          <span className="font-medium text-foreground">{property.bathrooms || 0}</span> ba | 
+                          <span className="font-medium text-foreground">{property.square_feet?.toLocaleString() || 0}</span> sqft
+                        </td>
+                        <td className="py-3.5 px-4 font-bold text-foreground">
+                          {formatCurrency(property.price, "USD")}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <Badge variant="outline" className={cn("text-[10px] font-medium border gap-1", st.badge)}>
+                            <span className={cn("h-1.5 w-1.5 rounded-full", st.dot)} />
+                            {st.label}
+                          </Badge>
+                        </td>
+                        <td className="py-3.5 px-4 text-muted-foreground">
+                          {property.agent_name || "Unassigned"}
+                        </td>
+                        <td className="py-3.5 px-4 text-right" onClick={e => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => setInspectorProperty(property)}
+                            >
+                              <Eye className="h-3.5 w-3.5 text-muted-foreground" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => handleOpenEdit(property)}
+                            >
+                              <Edit className="h-3.5 w-3.5 text-muted-foreground" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-rose-500 hover:text-rose-600"
+                              onClick={() => setDeleteTarget(property)}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

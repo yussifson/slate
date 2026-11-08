@@ -594,42 +594,40 @@ export default function JCLCrmLeads() {
   return (
     <div className="space-y-5 sm:space-y-6 pb-[max(96px,env(safe-area-inset-bottom))] font-sans min-h-screen -m-4 lg:-m-8 p-3 sm:p-6 lg:p-8 relative bg-background overflow-x-hidden">
       
-      {/* ── Top Header & Breadcrumbs Row ── */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 py-2">
+      {/* ── Top Native Header ── */}
+      <div className="flex items-center justify-between gap-3 py-1">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
-            CRM Leads ({leads.length})
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
+            CRM Leads
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Prospect pipeline, multi-channel activity logs & 1-click customer conversion
+          <p className="text-[11px] text-muted-foreground font-medium mt-0.5">
+            {leads.length} prospects in active acquisition pipeline
           </p>
         </div>
 
-        <div className="flex items-center gap-3 text-[13px] font-semibold text-muted-foreground">
-          <div className="hidden md:flex items-center gap-1.5 mr-2">
-            <span className="hover:text-foreground cursor-pointer transition-colors">Home</span>
-            <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-foreground">CRM Leads</span>
-          </div>
-
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={handleExportCSV}
-            className="h-9 gap-1.5 bg-card border-border text-foreground shadow-sm rounded-xl hover:bg-muted font-bold text-xs"
+            className="h-9 gap-1.5 bg-card border-border text-foreground shadow-xs rounded-xl font-bold text-xs hidden sm:flex"
           >
-            <Download className="w-3.5 h-3.5" /> Export CSV
+            <Download className="w-3.5 h-3.5" /> Export
           </Button>
-
           <Button
-            variant="outline"
-            size="icon"
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="h-9 w-9 bg-card border-border text-foreground shadow-sm rounded-xl hover:bg-muted"
-            title="Refresh Leads"
+            onClick={() => {
+              setEditingId(null);
+              setFormData({
+                firstName: "", lastName: "", email: "", phone: "",
+                leadType: "buyer", source: "referral", status: "new",
+                budgetMin: "", budgetMax: "", notes: "",
+              });
+              setShowForm(true);
+            }}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl h-9 px-3.5 sm:px-4 gap-1.5 shadow-md shadow-emerald-600/20 active:scale-95 transition-all"
           >
-            <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin")} />
+            <UserPlus className="w-4 h-4" />
+            <span>Capture Lead</span>
           </Button>
         </div>
       </div>
@@ -725,106 +723,188 @@ export default function JCLCrmLeads() {
 
         {/* ── Tab Content: List View (Data Table) ── */}
         <TabsContent value="list" className="mt-0">
-          <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-muted/50 uppercase tracking-wider text-muted-foreground font-bold border-b border-border/60">
-                  <tr>
-                    <th className="p-4">Lead Contact</th>
-                    <th className="p-4">Type & Source</th>
-                    <th className="p-4">Budget Range</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4">Date Captured</th>
-                    <th className="p-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/60">
-                  {filteredLeads.map((lead) => {
-                    const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim() || 'Lead Prospect';
-                    const initials = getInitials(lead.first_name, lead.last_name);
-                    const avatarColor = getInitialsBg(lead.first_name || 'L');
+          <div className="space-y-3">
+            {/* Mobile Native Card View (< md) */}
+            <div className="md:hidden space-y-2.5">
+              {filteredLeads.map((lead) => {
+                const fullName = `${lead.first_name || ""} ${lead.last_name || ""}`.trim() || "Lead Prospect";
+                const initials = getInitials(lead.first_name, lead.last_name);
+                const avatarColor = getInitialsBg(lead.first_name || "L");
 
-                    return (
-                      <tr
-                        key={lead.id}
-                        onClick={() => openInspector(lead)}
-                        className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                return (
+                  <div
+                    key={lead.id}
+                    onClick={() => openInspector(lead)}
+                    className="bg-card rounded-2xl p-3.5 border border-border shadow-xs active:scale-[0.99] transition-transform space-y-2.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-xs", avatarColor)}>
+                          {initials}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-foreground text-sm truncate">{fullName}</p>
+                          <p className="text-[11px] text-muted-foreground truncate">{lead.email || lead.phone || "No contact info"}</p>
+                        </div>
+                      </div>
+                      <Badge className={cn("text-[10px] font-bold uppercase border shrink-0 py-0.5 px-2", STATUS_CONFIG[lead.status]?.color || STATUS_CONFIG["new"].color)}>
+                        {STATUS_CONFIG[lead.status]?.label || lead.status || "New"}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
+                      <span className="font-bold text-foreground">
+                        {lead.budget_max ? `${formatCurrency(lead.budget_min || 0, "USD")} - ${formatCurrency(lead.budget_max, "USD")}` : (lead.budget_min ? formatCurrency(lead.budget_min, "USD") : "No budget set")}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground capitalize font-medium">
+                        {lead.lead_type || "Buyer"} · {lead.source || "Referral"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 border-t border-border/40" onClick={e => e.stopPropagation()}>
+                      <Button
+                        size="xs"
+                        variant="outline"
+                        onClick={() => handleConvertToClient(lead)}
+                        className="text-[11px] h-7 px-2.5 font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg"
                       >
-                        <td className="p-4">
-                          <div className="flex items-center gap-3">
-                            <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
-                              {initials}
-                            </div>
-                            <div>
-                              <div className="font-bold text-foreground text-[13px] group-hover:text-emerald-600 transition-colors">{fullName}</div>
-                              <div className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
-                                {lead.email && <span className="flex items-center gap-1"><Mail className="w-2.5 h-2.5 text-blue-500" /> {lead.email}</span>}
-                                {lead.phone && <span className="flex items-center gap-1"><Phone className="w-2.5 h-2.5 text-emerald-500" /> {lead.phone}</span>}
+                        Convert to Client
+                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => { setSelectedLead(lead); setShowActivityModal(true); }}
+                          className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-foreground"
+                          title="Log Activity"
+                        >
+                          <MessageSquare className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => openEditDrawer(lead)}
+                          className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => setDeleteId(lead.id)}
+                          className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table (>= md) */}
+            <div className="hidden md:block bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-muted/50 uppercase tracking-wider text-muted-foreground font-bold border-b border-border/60">
+                    <tr>
+                      <th className="p-4">Lead Contact</th>
+                      <th className="p-4">Type & Source</th>
+                      <th className="p-4">Budget Range</th>
+                      <th className="p-4">Status</th>
+                      <th className="p-4">Date Captured</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/60">
+                    {filteredLeads.map((lead) => {
+                      const fullName = `${lead.first_name || ""} ${lead.last_name || ""}`.trim() || "Lead Prospect";
+                      const initials = getInitials(lead.first_name, lead.last_name);
+                      const avatarColor = getInitialsBg(lead.first_name || "L");
+
+                      return (
+                        <tr
+                          key={lead.id}
+                          onClick={() => openInspector(lead)}
+                          className="hover:bg-muted/30 transition-colors cursor-pointer group"
+                        >
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              <div className={cn("w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0 shadow-sm", avatarColor)}>
+                                {initials}
+                              </div>
+                              <div>
+                                <div className="font-bold text-foreground text-[13px] group-hover:text-emerald-600 transition-colors">{fullName}</div>
+                                <div className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
+                                  {lead.email && <span className="flex items-center gap-1"><Mail className="w-2.5 h-2.5 text-blue-500" /> {lead.email}</span>}
+                                  {lead.phone && <span className="flex items-center gap-1"><Phone className="w-2.5 h-2.5 text-emerald-500" /> {lead.phone}</span>}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <div className="space-y-1">
-                            <Badge variant="outline" className="text-[10px] font-bold uppercase capitalize bg-muted/30">
-                              {lead.lead_type || 'Buyer'}
+                          </td>
+                          <td className="p-4">
+                            <div className="space-y-1">
+                              <Badge variant="outline" className="text-[10px] font-bold uppercase capitalize bg-muted/30">
+                                {lead.lead_type || "Buyer"}
+                              </Badge>
+                              <div className="text-[10px] text-muted-foreground font-semibold capitalize">Source: {lead.source || "Referral"}</div>
+                            </div>
+                          </td>
+                          <td className="p-4 font-bold text-foreground">
+                            {lead.budget_max
+                              ? `${formatCurrency(lead.budget_min || 0, "USD")} - ${formatCurrency(lead.budget_max, "USD")}`
+                              : (lead.budget_min ? formatCurrency(lead.budget_min, "USD") : "—")}
+                          </td>
+                          <td className="p-4">
+                            <Badge className={cn("text-[10px] font-bold uppercase border", STATUS_CONFIG[lead.status]?.color || STATUS_CONFIG["new"].color)}>
+                              {STATUS_CONFIG[lead.status]?.label || lead.status || "New"}
                             </Badge>
-                            <div className="text-[10px] text-muted-foreground font-semibold capitalize">Source: {lead.source || 'Referral'}</div>
-                          </div>
-                        </td>
-                        <td className="p-4 font-bold text-foreground">
-                          {lead.budget_max
-                            ? `${formatCurrency(lead.budget_min || 0, 'USD')} - ${formatCurrency(lead.budget_max, 'USD')}`
-                            : (lead.budget_min ? formatCurrency(lead.budget_min, 'USD') : '—')}
-                        </td>
-                        <td className="p-4">
-                          <Badge className={cn("text-[10px] font-bold uppercase border", STATUS_CONFIG[lead.status]?.color || STATUS_CONFIG['new'].color)}>
-                            {STATUS_CONFIG[lead.status]?.label || lead.status || 'New'}
-                          </Badge>
-                        </td>
-                        <td className="p-4 text-muted-foreground font-medium">
-                          {lead.created_at ? format(new Date(lead.created_at), 'dd MMM yyyy') : '—'}
-                        </td>
-                        <td className="p-4 text-right space-x-1" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            size="xs"
-                            variant="outline"
-                            onClick={() => handleConvertToClient(lead)}
-                            className="text-[11px] h-7 px-2 font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg"
-                          >
-                            Convert
-                          </Button>
-                          <Button
-                            size="xs"
-                            variant="ghost"
-                            onClick={() => { setSelectedLead(lead); setShowActivityModal(true); }}
-                            className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-foreground"
-                            title="Log Activity"
-                          >
-                            <MessageSquare className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            size="xs"
-                            variant="ghost"
-                            onClick={() => openEditDrawer(lead)}
-                            className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                          </Button>
-                          <Button
-                            size="xs"
-                            variant="ghost"
-                            onClick={() => setDeleteId(lead.id)}
-                            className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="p-4 text-muted-foreground font-medium">
+                            {lead.created_at ? format(new Date(lead.created_at), "dd MMM yyyy") : "—"}
+                          </td>
+                          <td className="p-4 text-right space-x-1" onClick={(e) => e.stopPropagation()}>
+                            <Button
+                              size="xs"
+                              variant="outline"
+                              onClick={() => handleConvertToClient(lead)}
+                              className="text-[11px] h-7 px-2 font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg"
+                            >
+                              Convert
+                            </Button>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => { setSelectedLead(lead); setShowActivityModal(true); }}
+                              className="h-7 w-7 p-0 rounded-lg text-muted-foreground hover:text-foreground"
+                              title="Log Activity"
+                            >
+                              <MessageSquare className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => openEditDrawer(lead)}
+                              className="h-7 w-7 p-0 rounded-lg text-muted-foreground"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => setDeleteId(lead.id)}
+                              className="h-7 w-7 p-0 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </TabsContent>

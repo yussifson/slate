@@ -195,7 +195,7 @@ class ErrorBoundary extends React.Component {
         
         setTimeout(() => {
           // Force cache bust on the root reload so it pulls fresh index.html
-          window.location.href = '/dashboard?update=' + new Date().getTime();
+          const currentPath = window.location.pathname || "/"; const sep = window.location.search ? "&" : "?"; window.location.href = currentPath + (window.location.search || "") + sep + "update=" + new Date().getTime();
         }, 150);
       } else {
         this.setState({ updateProgress: Math.min(p, 99) });

@@ -82,16 +82,90 @@ const ROLE_TABS = {
 // Category order matching JCL workflow
 const CATEGORY_ORDER = [
   'Operations',
-  'Marketing',
   'Secretary',
-  'Properties',
+  'Marketing',
   'Procurement',
   'Engineering',
+  'Properties',
   'Finance',
-  'Documents',
-  'System Admin',
-  'Human Resources'
+  'Human Resources',
+  'System Admin'
 ];
+
+// Department classification mapping for JCL
+const getJCLCategory = (item) => {
+  const p = (item.path || '').split('?')[0];
+  const normalizedLabel = (item.label || '').trim().toLowerCase();
+
+  // Secretary
+  if (['/jcl/front-desk', '/jcl/item-register', '/jcl/employee-assets'].includes(p) ||
+      ['front desk', 'item register', 'custody tracker', 'employee custody', 'company assets'].includes(normalizedLabel)) {
+    return 'Secretary';
+  }
+
+  // Marketing
+  if (['/real-estate/crm-leads', '/real-estate/clients', '/real-estate/viewings', '/real-estate/offers',
+       '/real-estate/counter-offers', '/jcl/engagements', '/real-estate/customer-timeline', '/real-estate/analytics'].includes(p) ||
+      p.startsWith('/real-estate/crm') ||
+      ['crm leads', 'leads', 'clients', 'viewings', 'offers', 'counter offers', 'counters', 'engagement', 'engagements & projects', 'timeline', 'market analytics', 'analytics'].includes(normalizedLabel)) {
+    return 'Marketing';
+  }
+
+  // Procurement
+  if (['/jcl/procurement', '/jcl/requisitions', '/jcl/purchase-orders', '/jcl/inventory'].includes(p) ||
+      p.startsWith('/procurement') ||
+      ['procurement', 'requisitions', 'purchase orders', 'materials & inventory', 'materials', 'suppliers'].includes(normalizedLabel)) {
+    return 'Procurement';
+  }
+
+  // Engineering
+  if (['/engineering', '/engineering/drawings', '/jcl/projects', '/jcl/project-operations', '/jcl/project-collaboration', '/boq'].includes(p) ||
+      ['engineering', 'drawings', 'projects', 'project operations', 'project collaboration', 'bill of quantities', 'boq'].includes(normalizedLabel)) {
+    return 'Engineering';
+  }
+
+  // Properties
+  if (['/real-estate/properties', '/real-estate/land', '/real-estate/leases', '/real-estate/lease-renewals',
+       '/real-estate/maintenance', '/real-estate/contractors', '/real-estate/contractor-reviews'].includes(p) ||
+      p.startsWith('/real-estate/land') ||
+      ['properties', 'land parcels', 'leases', 'renewals', 'maintenance', 'contractors', 'reviews', 'contractor reviews'].includes(normalizedLabel)) {
+    return 'Properties';
+  }
+
+  // Finance
+  if (['/finance/accounting', '/invoices', '/real-estate/rent-payments', '/real-estate/payment-schedules',
+       '/real-estate/commissions', '/jcl/project-finance', '/real-estate/trust-accounting'].includes(p) ||
+      p.startsWith('/finance/accounting') || p.startsWith('/real-estate/rent-payments') ||
+      ['firm accounting', 'accounting', 'invoices', 'rent payments', 'payment schedules', 'commissions', 'project finance', 'trust accounting'].includes(normalizedLabel)) {
+    return 'Finance';
+  }
+
+  // Human Resources
+  if (['/hr', '/team', '/employees'].includes(p) ||
+      ['human resources', 'hr', 'hr & leave', 'team', 'employees', 'staff'].includes(normalizedLabel)) {
+    return 'Human Resources';
+  }
+
+  // System Admin (strictly system admin items)
+  if (['/portal', '/client-portal', '/real-estate/audit-log', '/real-estate/field-tracker',
+       '/integrations', '/settings', '/admin', '/firm-setup'].includes(p) ||
+      ['client portal', 'portal', 'audit log', 'live gps', 'field tracker', 'integrations', 'settings', 'firm setup'].includes(normalizedLabel)) {
+    return 'System Admin';
+  }
+
+  // Operations (Dashboard, Intelligence, Calendar, Tasks, Time Tracker, Pipeline, Notifications, Smart Docs)
+  if (['/', '/intelligence', '/calendar', '/tasks', '/time-tracking', '/pipeline', '/notifications', '/smart-docs'].includes(p) ||
+      ['dashboard', 'home', 'intelligence', 'calendar', 'tasks', 'time tracking', 'time tracker', 'pipeline', 'notifications', 'smart docs', 'docs'].includes(normalizedLabel)) {
+    return 'Operations';
+  }
+
+  // Fallback to item.section if defined and valid, else Operations
+  if (item.section && CATEGORY_ORDER.includes(item.section)) {
+    return item.section;
+  }
+
+  return 'Operations';
+};
 
 export default function MobileBottomNav() {
   const { t } = useTranslation();
@@ -153,10 +227,13 @@ export default function MobileBottomNav() {
       overflow.push({ label: 'Integrations', path: '/integrations', icon: 'Blocks', section: 'System Admin' });
     }
 
-    // Group overflow items by section
+    // Group overflow items by section using the exact JCL department classification
     const grouped = {};
     for (const item of overflow) {
-      const section = item.section || 'General';
+      // Exclude marketplace or unconfigured items if any leaked through
+      if (item.path === '/marketplace' || item.path === '/slate/BOLT') continue;
+
+      const section = getJCLCategory(item);
       if (!grouped[section]) grouped[section] = [];
       grouped[section].push(item);
     }
@@ -280,7 +357,7 @@ export default function MobileBottomNav() {
 
                     {/* Collapsible Child Links */}
                     {isExpanded && (
-                      <div className="divide-y divide-border/60 border-t border-border/80 bg-muted/20 animate-in fade-in duration-150">
+                      <div className="divide-y divide-border/60 border-t border-border/80 bg-muted/15 animate-in fade-in duration-150">
                         {group.items.map((item) => {
                           const isRootPath = ["/", "/admin"].includes(item.path);
                           const isActive = location.pathname === item.path || (!isRootPath && item.path && location.pathname.startsWith(item.path));
@@ -292,20 +369,20 @@ export default function MobileBottomNav() {
                               to={item.path}
                               onClick={() => setMobileMenuOpen(false)}
                               className={cn(
-                                "flex items-center gap-3 px-4 py-3 text-xs transition-colors active:bg-muted/60 pl-6",
-                                isActive ? "bg-primary/10 text-primary font-bold" : "text-foreground hover:bg-muted/30"
+                                "flex items-center gap-3.5 px-4 py-3.5 text-sm transition-all duration-150 active:bg-muted/60 pl-5 min-h-[48px]",
+                                isActive ? "bg-primary/10 text-primary font-bold" : "text-foreground hover:bg-muted/30 font-medium"
                               )}
                             >
                               <div className={cn(
-                                "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors",
+                                "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all duration-150 shadow-xs",
                                 isActive ? "bg-primary text-white" : "bg-card border border-border text-primary"
                               )}>
-                                <IconComp className="w-3.5 h-3.5" strokeWidth={isActive ? 2.5 : 2} />
+                                <IconComp className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
                               </div>
-                              <span className="flex-1 truncate text-xs font-medium">
+                              <span className="flex-1 truncate text-[13.5px] leading-tight">
                                 {item.label}
                               </span>
-                              <LucideIcons.ChevronRight className={cn("w-3.5 h-3.5 shrink-0", isActive ? "text-primary" : "text-muted-foreground/40")} />
+                              <LucideIcons.ChevronRight className={cn("w-4 h-4 shrink-0 transition-transform", isActive ? "text-primary translate-x-0.5" : "text-muted-foreground/40")} />
                             </Link>
                           );
                         })}

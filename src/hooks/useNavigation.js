@@ -134,6 +134,22 @@ export function useNavigation(user, impersonatedCompany) {
   const extraItems = isJCL ? [] : (isAdmin ? [appBuilderItem, marketplaceItem, { label: "Firm Setup", icon: "Settings", path: "/firm-setup" }] : [marketplaceItem]);
 
   let navItems = [...baseNav, ...dynamicNavItems, ...extraItems];
+
+  // For JCL, ensure Intelligence and Notifications are explicitly included if not already present
+  if (isJCL) {
+    if (!navItems.some(i => i.path === '/intelligence')) {
+      const dashIdx = navItems.findIndex(i => i.path === '/' || i.path === '/my-dashboard');
+      const intelItem = { section: 'Operations', label: 'Intelligence', path: '/intelligence', icon: 'Brain' };
+      if (dashIdx !== -1) {
+        navItems.splice(dashIdx + 1, 0, intelItem);
+      } else {
+        navItems.unshift(intelItem);
+      }
+    }
+    if (!navItems.some(i => i.path === '/notifications')) {
+      navItems.push({ section: 'Operations', label: 'Notifications', path: '/notifications', icon: 'Bell' });
+    }
+  }
     
   if (user?.role === "super_admin") {
     navItems = [...navItems, { label: "Super Admin Portal", icon: "Shield", path: "/system-admin" }];
