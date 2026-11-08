@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Download, Smartphone, CheckCircle, Shield, ArrowRight } from "lucide-react";
+import { Download, CheckCircle, Shield, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function ApkDownload() {
   const [downloadStarted, setDownloadStarted] = useState(false);
 
-  const apkUrl = "/apk/app.apk";
+  const apkUrl = "/apk/JCL_Office_v3.apk";
 
   useEffect(() => {
     // Automatically trigger download on mount
@@ -19,7 +19,7 @@ export default function ApkDownload() {
     setDownloadStarted(true);
     const link = document.createElement("a");
     link.href = apkUrl;
-    link.download = "JCLOffice.apk";
+    link.download = "JCL_Office_v3.apk";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -70,7 +70,7 @@ export default function ApkDownload() {
           className="w-full h-12 rounded-2xl bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-sm shadow-lg shadow-[#005A9C]/25 transition-all active:scale-95 gap-2"
         >
           <Download className="w-4 h-4" />
-          Download JCLOffice.apk
+          Download JCL Office v3.0 (APK)
         </Button>
 
         {/* Instructions */}
@@ -80,7 +80,7 @@ export default function ApkDownload() {
             Installation Guide:
           </p>
           <ol className="list-decimal list-inside space-y-1 text-[11px] leading-relaxed pl-1">
-            <li>Open the downloaded <strong className="text-foreground">JCLOffice.apk</strong> file on your device.</li>
+            <li>Open the downloaded <strong className="text-foreground">JCL_Office_v3.apk</strong> file on your device.</li>
             <li>If prompted, tap <strong className="text-foreground">Settings</strong> and enable <strong className="text-foreground">Allow from this source</strong>.</li>
             <li>Tap <strong className="text-foreground">Install</strong>, and launch JCL Office.</li>
           </ol>

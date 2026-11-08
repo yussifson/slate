@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'react-hot-toast';
+import { createNotificationEvent } from '@/utils/notificationDispatcher';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';

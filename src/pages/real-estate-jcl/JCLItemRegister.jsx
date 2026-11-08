@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ClipboardCheck, History, Plus, RotateCcw, Search, X, Package, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { createNotificationEvent } from '@/utils/notificationDispatcher';
 import { cn } from '@/lib/utils';
 
 const emptyForm = { personId: '', personName: '', itemName: '', description: '', issuedAt: new Date().toISOString().slice(0, 16), expectedReturn: '', notes: '' };

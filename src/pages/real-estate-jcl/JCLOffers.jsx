@@ -19,6 +19,7 @@ import { toast } from 'react-hot-toast';
 import { formatCurrency } from '@/lib/constants';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { createNotificationEvent } from '@/utils/notificationDispatcher';
 
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -210,6 +211,15 @@ export default function JCLOffers() {
           ]
         );
         toast.success('Purchase offer registered');
+      createNotificationEvent({
+        company_id: companyId,
+        recipient_email: user?.email,
+        recipient_name: user?.full_name || 'Agent',
+        title: 'New Property Offer Registered',
+        message: `Offer of ${formatCurrency(Number(formData.offerAmount) || 0, 'USD')} submitted for ${formData.propertyAddress} by ${formData.buyerName}`,
+        type: 'offer',
+        related_id: '/real-estate/offers'
+      }).catch(() => {});
       }
 
       setShowFormSheet(false);
@@ -230,6 +240,15 @@ export default function JCLOffers() {
         [newStatus, now, offerId, companyId]
       );
       toast.success(`Offer marked as ${STATUS_CONFIG[newStatus]?.label || newStatus}`);
+      createNotificationEvent({
+        company_id: companyId,
+        recipient_email: user?.email,
+        recipient_name: user?.full_name || 'Agent',
+        title: `Offer Status: ${STATUS_CONFIG[newStatus]?.label || newStatus}`,
+        message: `Offer for ${inspectorOffer?.property_address || 'property'} updated to ${STATUS_CONFIG[newStatus]?.label || newStatus}`,
+        type: 'offer',
+        related_id: '/real-estate/offers'
+      }).catch(() => {});
       fetchOffersData();
       if (inspectorOffer && inspectorOffer.id === offerId) {
         setInspectorOffer(prev => ({ ...prev, status: newStatus }));

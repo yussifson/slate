@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'react-hot-toast';
+import { createNotificationEvent } from '@/utils/notificationDispatcher';
 
 const blankRequisitionForm = { 
   project_id: '', 
@@ -111,6 +112,15 @@ export default function JCLRequisitions() {
       } else {
         await JCLProcurementService.createRequisition(companyId, user?.id, form);
         toast.success('Requisition created successfully');
+      createNotificationEvent({
+        company_id: companyId,
+        recipient_email: user?.email,
+        recipient_name: user?.full_name || 'Procurement',
+        title: 'Material Requisition Created',
+        message: `New requisition created for ${form.department || 'Construction'}: ${form.description || 'Materials'}`,
+        type: 'requisition',
+        related_id: '/jcl/requisitions'
+      }).catch(() => {});
       }
       setModalOpen(false);
       loadData();

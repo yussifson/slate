@@ -18,6 +18,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import { toast } from 'react-hot-toast';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { createNotificationEvent } from '@/utils/notificationDispatcher';
 
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -215,6 +216,15 @@ export default function JCLViewings() {
           ]
         );
         toast.success('Viewing scheduled');
+      createNotificationEvent({
+        company_id: companyId,
+        recipient_email: user?.email,
+        recipient_name: user?.full_name || 'Agent',
+        title: 'Property Viewing Scheduled',
+        message: `Viewing scheduled for ${formData.propertyAddress} with client ${formData.clientName}`,
+        type: 'viewing',
+        related_id: '/real-estate/viewings'
+      }).catch(() => {});
       }
 
       setShowFormSheet(false);
