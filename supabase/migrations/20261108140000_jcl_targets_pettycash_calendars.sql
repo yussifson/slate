@@ -1,5 +1,5 @@
 -- Migration: 20261108140000_jcl_targets_pettycash_calendars.sql
--- Adds Sales Targets, Petty Cash, Shared Calendars & Calendar Members
+-- Adds Sales Targets, Petty Cash, Shared Calendars & Calendar Members safely
 
 -- 1. Sales Targets
 CREATE TABLE IF NOT EXISTS public.sales_targets (
@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS public.sales_targets (
   updated_at timestamptz DEFAULT now()
 );
 
--- Index for speed
 CREATE INDEX IF NOT EXISTS idx_sales_targets_company ON public.sales_targets(company_id);
 
 -- 2. Petty Cash
@@ -74,11 +73,17 @@ CREATE TABLE IF NOT EXISTS public.calendar_members (
 CREATE INDEX IF NOT EXISTS idx_calendar_members_cal ON public.calendar_members(calendar_id);
 CREATE INDEX IF NOT EXISTS idx_calendar_members_user ON public.calendar_members(member_id);
 
--- 5. Link events to calendar_id
-ALTER TABLE public.events ADD COLUMN IF NOT EXISTS calendar_id uuid REFERENCES public.calendars(id) ON DELETE SET NULL;
-ALTER TABLE public.hearings ADD COLUMN IF NOT EXISTS calendar_id uuid REFERENCES public.calendars(id) ON DELETE SET NULL;
+-- 5. Safe conditional column additions only if tables exist
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'events') THEN
+    ALTER TABLE public.events ADD COLUMN IF NOT EXISTS calendar_id uuid REFERENCES public.calendars(id) ON DELETE SET NULL;
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'hearings') THEN
+    ALTER TABLE public.hearings ADD COLUMN IF NOT EXISTS calendar_id uuid REFERENCES public.calendars(id) ON DELETE SET NULL;
+  END IF;
+END $$;
 
--- Enable RLS & open policies for company-level multi-tenancy
+-- 6. Enable RLS & open policies for company-level multi-tenancy
 ALTER TABLE public.sales_targets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.petty_cash ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.calendars ENABLE ROW LEVEL SECURITY;
