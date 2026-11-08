@@ -135,121 +135,123 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
   }
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500 font-sans">
+    <div className="w-full max-w-full overflow-x-hidden space-y-5 sm:space-y-6 pb-24 sm:pb-12 animate-in fade-in duration-500 font-sans">
       <Tabs defaultValue="insights" className="w-full">
-        {/* Luxury Navigation Header with Diagnostics Trigger */}
-        <div className="bg-card/70 backdrop-blur-xl border border-border/80 rounded-2xl p-2.5 mb-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-wrap gap-1 border-0">
-            <TabsTrigger 
-              value="insights" 
-              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-            >
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              Insights Engine
-            </TabsTrigger>
-            <TabsTrigger 
-              value="oracle" 
-              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-            >
-              <Bot className="w-4 h-4 text-indigo-500" />
-              Data Oracle AI
-            </TabsTrigger>
-            <TabsTrigger 
-              value="report" 
-              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-            >
-              <FileText className="w-4 h-4 text-emerald-500" />
-              Report Generator
-            </TabsTrigger>
-            <TabsTrigger 
-              value="anomaly" 
-              className="gap-2 rounded-lg py-2.5 px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-            >
-              <Activity className="w-4 h-4 text-rose-500" />
-              Anomaly Scanner
-            </TabsTrigger>
-          </TabsList>
+        {/* Mobile-Native Responsive Navigation Header with Diagnostics Trigger */}
+        <div className="bg-card/70 backdrop-blur-xl border border-border/80 rounded-2xl p-2 sm:p-2.5 mb-5 sm:mb-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="w-full sm:w-auto overflow-x-auto scrollbar-none pb-1 sm:pb-0">
+            <TabsList className="bg-muted/50 p-1 rounded-xl h-auto flex flex-nowrap sm:flex-wrap gap-1 border-0 min-w-max">
+              <TabsTrigger 
+                value="insights" 
+                className="gap-2 rounded-lg py-2 sm:py-2.5 px-3 sm:px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm shrink-0"
+              >
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
+                Insights Engine
+              </TabsTrigger>
+              <TabsTrigger 
+                value="oracle" 
+                className="gap-2 rounded-lg py-2 sm:py-2.5 px-3 sm:px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm shrink-0"
+              >
+                <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-500" />
+                Data Oracle AI
+              </TabsTrigger>
+              <TabsTrigger 
+                value="report" 
+                className="gap-2 rounded-lg py-2 sm:py-2.5 px-3 sm:px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm shrink-0"
+              >
+                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500" />
+                Report Generator
+              </TabsTrigger>
+              <TabsTrigger 
+                value="anomaly" 
+                className="gap-2 rounded-lg py-2 sm:py-2.5 px-3 sm:px-4 text-xs font-bold transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm shrink-0"
+              >
+                <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
+                Anomaly Scanner
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          <div className="flex items-center gap-3 px-2">
+          <div className="flex items-center justify-between sm:justify-end gap-2.5 px-1 sm:px-2">
             <div className="flex items-center gap-1.5">
               <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-muted-foreground hidden sm:inline">Engine Live</span>
+              <span className="text-[11px] font-semibold text-muted-foreground">Live Engine</span>
             </div>
 
             <Button
               onClick={handleRunDiagnostics}
               disabled={isRunning}
               size="sm"
-              className="h-9 gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-4 rounded-xl shadow-md shadow-emerald-900/20 text-xs border-0 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="h-8 sm:h-9 gap-1.5 sm:gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-3 sm:px-4 rounded-xl shadow-md shadow-emerald-900/20 text-xs border-0 transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
             >
               {isRunning ? (
                 <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Scanning...</>
               ) : (
-                <><Zap className="w-3.5 h-3.5 fill-current" /> Execute Full Diagnostics</>
+                <><Zap className="w-3.5 h-3.5 fill-current" /> Run Diagnostics</>
               )}
             </Button>
           </div>
         </div>
 
         {/* TAB 1: INSIGHTS ENGINE */}
-        <TabsContent value="insights" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <TabsContent value="insights" className="space-y-5 sm:space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
           
-          {/* Top 4 Stat Metric Cards (Directly at top now) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-blue-500/40 transition-all">
-              <div className="space-y-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total Discoveries</p>
-                <p className="text-3xl font-extrabold text-foreground tracking-tight">{insights.length}</p>
-                <p className="text-[11px] text-muted-foreground">Active pattern markers</p>
+          {/* Top 4 Stat Metric Cards - Mobile Native 2x2 Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="bg-card border border-border/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center justify-between group hover:border-blue-500/40 transition-all">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Discoveries</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-foreground tracking-tight">{insights.length}</p>
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">Pattern markers</p>
               </div>
-              <div className="h-12 w-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center">
-                <Brain className="w-6 h-6" />
-              </div>
-            </div>
-
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-rose-500/40 transition-all">
-              <div className="space-y-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Critical Escalations</p>
-                <p className="text-3xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">{criticalCount}</p>
-                <p className="text-[11px] text-rose-600/80 font-medium">Immediate attention</p>
-              </div>
-              <div className="h-12 w-12 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center justify-center">
-                <Shield className="w-6 h-6" />
+              <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center shrink-0">
+                <Brain className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-amber-500/40 transition-all">
-              <div className="space-y-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Warning Flags</p>
-                <p className="text-3xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">{warningCount}</p>
-                <p className="text-[11px] text-amber-600/80 font-medium">Threshold alerts</p>
+            <div className="bg-card border border-border/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center justify-between group hover:border-rose-500/40 transition-all">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Critical</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">{criticalCount}</p>
+                <p className="text-[10px] sm:text-[11px] text-rose-600/80 font-medium truncate">Immediate action</p>
               </div>
-              <div className="h-12 w-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6" />
+              <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center justify-center shrink-0">
+                <Shield className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
-              <div className="space-y-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Positive Signals</p>
-                <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">{positiveCount}</p>
-                <p className="text-[11px] text-emerald-600/80 font-medium">Growth indicators</p>
+            <div className="bg-card border border-border/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center justify-between group hover:border-amber-500/40 transition-all">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Warnings</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400 tracking-tight">{warningCount}</p>
+                <p className="text-[10px] sm:text-[11px] text-amber-600/80 font-medium truncate">Threshold alerts</p>
               </div>
-              <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6" />
+              <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-4 h-4 sm:w-6 sm:h-6" />
+              </div>
+            </div>
+
+            <div className="bg-card border border-border/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center justify-between group hover:border-emerald-500/40 transition-all">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <p className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wider truncate">Positive</p>
+                <p className="text-xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">{positiveCount}</p>
+                <p className="text-[10px] sm:text-[11px] text-emerald-600/80 font-medium truncate">Growth indicators</p>
+              </div>
+              <div className="h-9 w-9 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
             </div>
           </div>
 
-          {/* Filters Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 bg-card border border-border/80 p-3 rounded-xl shadow-xs">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50">
+          {/* Filters Bar with Scrollable Filters */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border/80 p-2.5 sm:p-3 rounded-xl shadow-xs">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 sm:pb-0 w-full sm:w-auto">
+              <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50 shrink-0">
                 {SEVERITY_FILTERS.map(f => (
                   <button
                     key={f.key}
                     onClick={() => setSeverityFilter(f.key)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                    className={`px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                       severityFilter === f.key
                         ? 'bg-background text-foreground shadow-xs font-bold'
                         : 'text-muted-foreground hover:text-foreground'
@@ -263,7 +265,7 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
               <select
                 value={typeFilter}
                 onChange={e => setTypeFilter(e.target.value)}
-                className="text-xs border border-border/80 rounded-lg px-3 py-2 bg-background text-foreground font-medium"
+                className="text-xs border border-border/80 rounded-lg px-2.5 sm:px-3 py-1.5 bg-background text-foreground font-medium shrink-0 h-8"
               >
                 {TYPE_FILTERS.map(f => (
                   <option key={f.key} value={f.key}>{f.label}</option>
@@ -272,9 +274,9 @@ export default function IntelligenceDashboard({ vertical: verticalOverride, comp
             </div>
 
             {lastRun && (
-              <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5 px-2">
+              <span className="text-[11px] sm:text-xs font-medium text-muted-foreground flex items-center gap-1.5 px-1 shrink-0">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-                Last audit: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleString() : "Live continuous"}
+                Audit: {(lastRun.completed_at || lastRun.started_at) ? new Date(lastRun.completed_at || lastRun.started_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Live continuous"}
               </span>
             )}
           </div>

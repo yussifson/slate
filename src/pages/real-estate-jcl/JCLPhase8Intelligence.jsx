@@ -50,14 +50,16 @@ function formatDate(value) {
 function MetricCard({ metric, value }) {
   const Icon = metric.icon;
   return (
-    <Card className="border-border/70 bg-card/80 shadow-sm">
-      <CardContent className="flex items-center justify-between p-5">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{metric.label}</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight">{value === null ? '—' : value}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Live tenant-scoped record count</p>
+    <Card className="border-border/70 bg-card/80 shadow-xs">
+      <CardContent className="flex items-center justify-between p-3.5 sm:p-5">
+        <div className="min-w-0 space-y-0.5 sm:space-y-1">
+          <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">{metric.label}</p>
+          <p className="text-xl sm:text-3xl font-extrabold tracking-tight">{value === null ? '—' : value}</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground truncate">Live tenant record</p>
         </div>
-        <div className="rounded-xl bg-primary/10 p-3 text-primary"><Icon className="h-5 w-5" /></div>
+        <div className="rounded-xl bg-primary/10 p-2 sm:p-3 text-primary shrink-0 ml-2">
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+        </div>
       </CardContent>
     </Card>
   );
@@ -103,10 +105,30 @@ function ExecutiveDashboard({ companyId }) {
   useEffect(() => { load(); }, [load]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center"><div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Executive intelligence</p><h2 className="mt-1 text-2xl font-semibold tracking-tight">Business performance</h2><p className="mt-1 text-sm text-muted-foreground">A traceable view of persisted JCL records. No estimates or fabricated metrics.</p></div><Button variant="outline" size="sm" onClick={load} disabled={loading}><RefreshCw className={cn('mr-2 h-4 w-4', loading && 'animate-spin')} />Refresh</Button></div>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">{METRIC_DEFS.map((metric) => <MetricCard key={metric.key} metric={metric} value={loading ? null : metrics[metric.key]} />)}</div>
-      <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]"><Card className="border-border/70 bg-card/80"><CardHeader><CardTitle className="text-base">Management attention</CardTitle></CardHeader><CardContent className="space-y-3"><AttentionRow icon={AlertTriangle} title="Overdue task review" detail={metrics.tasks === null ? 'Task source unavailable' : `${metrics.tasks} open tasks require operational review`} tone="amber" /><AttentionRow icon={Wallet} title="Financial source boundary" detail="Budget, commitments, payments and profitability appear only when their Phase 5 source tables are available." tone="blue" /><AttentionRow icon={CalendarClock} title="Handover readiness" detail="Connect handover and defect records to surface completion obligations without guessing." tone="purple" /></CardContent></Card><DataQuality failures={failures} /></div>
+    <div className="space-y-5 sm:space-y-6">
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Business Performance</h2>
+        </div>
+        <Button variant="outline" size="sm" onClick={load} disabled={loading} className="w-fit self-start sm:self-auto h-8 text-xs font-semibold">
+          <RefreshCw className={cn('mr-1.5 h-3.5 w-3.5', loading && 'animate-spin')} />
+          Refresh
+        </Button>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2.5 sm:gap-4">
+        {METRIC_DEFS.map((metric) => <MetricCard key={metric.key} metric={metric} value={loading ? null : metrics[metric.key]} />)}
+      </div>
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-[1.4fr_1fr]">
+        <Card className="border-border/70 bg-card/80">
+          <CardHeader className="pb-3"><CardTitle className="text-sm sm:text-base font-bold">Management Attention</CardTitle></CardHeader>
+          <CardContent className="space-y-2.5 sm:space-y-3">
+            <AttentionRow icon={AlertTriangle} title="Overdue task review" detail={metrics.tasks === null ? 'Task source unavailable' : `${metrics.tasks} open tasks require operational review`} tone="amber" />
+            <AttentionRow icon={Wallet} title="Financial source boundary" detail="Budget, commitments, payments and profitability appear only when their Phase 5 source tables are available." tone="blue" />
+            <AttentionRow icon={CalendarClock} title="Handover readiness" detail="Connect handover and defect records to surface completion obligations without guessing." tone="purple" />
+          </CardContent>
+        </Card>
+        <DataQuality failures={failures} />
+      </div>
     </div>
   );
 }
@@ -157,6 +179,58 @@ export default function JCLPhase8Intelligence() {
   const companyId = useCompanyId();
   const { user } = useAuth();
   const [tab, setTab] = useState('overview');
-  const tabs = [{ id: 'overview', label: 'Executive dashboard', icon: Gauge }, { id: 'reports', label: 'Report builder', icon: FileSpreadsheet }, { id: 'kpis', label: 'KPI management', icon: Target }, { id: 'alerts', label: 'BI alerts', icon: Bell }];
-  return <div className="min-h-full w-full bg-background p-4 pb-24 sm:p-6 lg:p-8"><div className="mx-auto max-w-[1500px] space-y-6"><header className="flex flex-col gap-4 border-b border-border/60 pb-5 lg:flex-row lg:items-end lg:justify-between"><div><div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary"><BarChart3 className="h-4 w-4" />JCL intelligence</div><h1 className="mt-2 text-3xl font-semibold tracking-tight">Business intelligence & reporting</h1><p className="mt-2 max-w-2xl text-sm text-muted-foreground">Executive visibility across projects, property operations, clients and workforce records with traceable tenant-scoped data.</p></div><Badge variant="outline" className="w-fit gap-2 px-3 py-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />Live data sources</Badge></header><nav className="flex gap-2 overflow-x-auto pb-1" aria-label="Intelligence navigation">{tabs.map(({ id, label, icon: Icon }) => <Button key={id} variant={tab === id ? 'default' : 'outline'} size="sm" onClick={() => setTab(id)} className="shrink-0"><Icon className="mr-2 h-4 w-4" />{label}</Button>)}</nav>{!companyId ? <Card><CardContent className="p-8 text-center text-sm text-muted-foreground">Select or load a company to view authorized intelligence.</CardContent></Card> : tab === 'overview' ? <ExecutiveDashboard companyId={companyId} /> : tab === 'reports' ? <ReportBuilder companyId={companyId} user={user} /> : <ConfiguredLists companyId={companyId} kind={tab} />}</div></div>;
+  const tabs = [
+    { id: 'overview', label: 'Executive Dashboard', icon: Gauge },
+    { id: 'reports', label: 'Report Builder', icon: FileSpreadsheet },
+    { id: 'kpis', label: 'KPI Management', icon: Target },
+    { id: 'alerts', label: 'BI Alerts', icon: Bell }
+  ];
+
+  return (
+    <div className="w-full max-w-full overflow-x-hidden min-h-screen bg-background p-3 sm:p-6 lg:p-8 pb-24 sm:pb-12">
+      <div className="mx-auto max-w-[1500px] space-y-5 sm:space-y-6">
+        <header className="flex flex-col gap-3 sm:gap-4 border-b border-border/60 pb-4 sm:pb-5 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Business Intelligence</h1>
+          </div>
+          <Badge variant="outline" className="w-fit gap-2 px-3 py-1.5 text-xs">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+            Live Data Sources
+          </Badge>
+        </header>
+
+        {/* Scrollable Tab Navigation */}
+        <div className="w-full overflow-x-auto scrollbar-none pb-1">
+          <nav className="flex gap-2 min-w-max" aria-label="Intelligence navigation">
+            {tabs.map(({ id, label, icon: Icon }) => (
+              <Button
+                key={id}
+                variant={tab === id ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setTab(id)}
+                className="shrink-0 h-9 px-3.5 text-xs font-semibold rounded-xl"
+              >
+                <Icon className="mr-2 h-4 w-4" />
+                {label}
+              </Button>
+            ))}
+          </nav>
+        </div>
+
+        {!companyId ? (
+          <Card>
+            <CardContent className="p-8 text-center text-sm text-muted-foreground">
+              Select or load a company to view authorized intelligence.
+            </CardContent>
+          </Card>
+        ) : tab === 'overview' ? (
+          <ExecutiveDashboard companyId={companyId} />
+        ) : tab === 'reports' ? (
+          <ReportBuilder companyId={companyId} user={user} />
+        ) : (
+          <ConfiguredLists companyId={companyId} kind={tab} />
+        )}
+      </div>
+    </div>
+  );
 }
