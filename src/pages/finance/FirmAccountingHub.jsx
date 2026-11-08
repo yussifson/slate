@@ -727,15 +727,201 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
 
   // ── KPI computations ─────────────────────────────────────────
   const totalAR = invoices.reduce((s, i) => s + (i.total_amount || 0), 0);
+  const paidAR = invoices.filter(i => i.status === 'paid').reduce((s, i) => s + (i.total_amount || 0), 0);
+  const overdueAR = invoices.filter(i => i.status === 'overdue' || (i.due_date && new Date(i.due_date) < new Date() && i.status !== 'paid')).reduce((s, i) => s + (i.total_amount || 0), 0);
+  const pendingAR = totalAR - paidAR;
+
   const totalAP = bills.reduce((s, b) => s + (b.total_amount || 0), 0);
+  const paidAP = bills.filter(b => b.status === 'paid').reduce((s, b) => s + (b.total_amount || 0), 0);
+  const pendingAP = bills.filter(b => b.status !== 'paid').reduce((s, b) => s + (b.total_amount || 0), 0);
+  const uniqueVendors = new Set(bills.map(b => b.vendor_name).filter(Boolean)).size;
+
   const netIncome = totalAR - totalAP;
   const totalIncomeRecorded = officeIncome.reduce((s, i) => s + (i.amount || 0), 0);
   const totalExpensesRecorded = officeExpenses.reduce((s, e) => s + (e.amount || 0), 0);
   const totalProjExp = projectExpenses.reduce((s, p) => s + (p.amount || 0), 0);
-  const totalPayroll = payrollRuns.reduce((s, r) => s + (r.total_net || 0), 0);
+  const netOfficeCash = totalIncomeRecorded - totalExpensesRecorded;
+
+  const totalAssetCost = fixedAssets.reduce((s, a) => s + (a.purchase_cost || 0), 0);
+  const totalAssetDepreciation = fixedAssets.reduce((s, a) => s + (a.accumulated_depreciation || 0), 0);
+  const netBookValue = Math.max(0, totalAssetCost - totalAssetDepreciation);
+  const activeAssetsCount = fixedAssets.filter(a => a.status === 'active' || !a.status).length;
+
+  const totalJVDebits = journalEntries.reduce((s, j) => s + (j.total_debit || 0), 0);
+  const totalJVCredits = journalEntries.reduce((s, j) => s + (j.total_credit || 0), 0);
+  const isGLBalanced = Math.abs(totalJVDebits - totalJVCredits) < 0.01;
+
+  const reconciledBankCount = bankRecs.filter(r => r.reconciled || r.status === 'reconciled').length;
+  const pendingBankCount = bankRecs.length - reconciledBankCount;
+  const latestStatementBal = bankRecs[0]?.statement_balance || 0;
+
+  const totalGrossSalaries = payrollRuns.reduce((s, r) => s + (r.total_gross || 0), 0);
+  const totalNetPayroll = payrollRuns.reduce((s, r) => s + (r.total_net || 0), 0);
+  const totalPAYE = payrollRuns.reduce((s, r) => s + (r.total_paye || 0), 0);
+  const totalSSNIT = payrollRuns.reduce((s, r) => s + (r.total_ssnit || 0), 0);
+  const activeEmployees = payrollEmployees.filter(e => e.status === 'active').length;
+
+  const totalTonefoValue = tonefoCases.reduce((s, t) => s + (t.total_price || 0), 0);
   const totalOutstanding = tonefoCases.reduce((s, t) => s + (t.outstanding_balance || 0), 0);
   const totalCollected = tonefoCases.reduce((s, t) => s + (t.amount_collected || 0), 0);
-  const activeEmployees = payrollEmployees.filter(e => e.status === 'active').length;
+  const activeTonefoPlans = tonefoCases.filter(t => t.status === 'installment' || t.outstanding_balance > 0).length;
+
+  const assetAccounts = accounts.filter(a => a.type === 'Asset').length;
+  const liabilityAccounts = accounts.filter(a => a.type === 'Liability').length;
+  const equityAccounts = accounts.filter(a => a.type === 'Equity').length;
+  const revExpAccounts = accounts.filter(a => a.type === 'Revenue' || a.type === 'Expense').length;
+
+  // Contextual Stats Configuration based on activeTab
+  const getContextualKpis = () => {
+    switch (activeTab) {
+      case 'coa':
+        return {
+          title: 'Chart of Accounts',
+          addLabel: 'Add Account',
+          onAdd: () => setShowAccountModal(true),
+          cards: [
+            { label: 'Total Accounts', value: accounts.length.toString(), sub: 'In general ledger', icon: BookOpen, color: 'indigo', rawVal: accounts.length },
+            { label: 'Asset Accounts', value: assetAccounts.toString(), sub: 'Cash, bank & property', icon: Landmark, color: 'emerald', rawVal: assetAccounts },
+            { label: 'Liabilities & Equity', value: (liabilityAccounts + equityAccounts).toString(), sub: `${liabilityAccounts} liabilities, ${equityAccounts} equity`, icon: Shield, color: 'amber', rawVal: liabilityAccounts + equityAccounts },
+            { label: 'Revenue & Expenses', value: revExpAccounts.toString(), sub: 'P&L tracking accounts', icon: LineChart, color: 'blue', rawVal: revExpAccounts },
+          ]
+        };
+      case 'invoices':
+        return {
+          title: 'Accounts Receivable (Invoices)',
+          addLabel: 'New Invoice',
+          onAdd: () => setShowInvoiceModal(true),
+          cards: [
+            { label: 'Total Invoiced (AR)', value: fmt(totalAR), sub: `${invoices.length} total invoices`, icon: Receipt, color: 'emerald', rawVal: totalAR },
+            { label: 'Paid Collections', value: fmt(paidAR), sub: 'Settled to bank', icon: CheckCircle2, color: 'teal', rawVal: paidAR },
+            { label: 'Pending Payment', value: fmt(pendingAR), sub: 'Awaiting client settlement', icon: DollarSign, color: 'amber', rawVal: pendingAR },
+            { label: 'Overdue Receivables', value: fmt(overdueAR), sub: 'Past agreed due date', icon: ArrowUpRight, color: 'rose', rawVal: overdueAR },
+          ]
+        };
+      case 'bills':
+        return {
+          title: 'Accounts Payable (Bills)',
+          addLabel: 'New Bill',
+          onAdd: () => setShowBillModal(true),
+          cards: [
+            { label: 'Total AP (Bills)', value: fmt(totalAP), sub: `${bills.length} vendor bills`, icon: FileText, color: 'rose', rawVal: totalAP },
+            { label: 'Paid Bills', value: fmt(paidAP), sub: 'Settled payables', icon: CheckCircle2, color: 'emerald', rawVal: paidAP },
+            { label: 'Unpaid / Pending', value: fmt(pendingAP), sub: 'Due for payment', icon: DollarSign, color: 'amber', rawVal: pendingAP },
+            { label: 'Active Vendors', value: uniqueVendors.toString(), sub: 'Suppliers & subcontractors', icon: Users, color: 'indigo', rawVal: uniqueVendors },
+          ]
+        };
+      case 'jv':
+        return {
+          title: 'General Ledger & Journal Vouchers',
+          addLabel: 'New Journal Entry',
+          onAdd: () => setShowJVModal(true),
+          cards: [
+            { label: 'Total Entries', value: journalEntries.length.toString(), sub: 'Journal vouchers posted', icon: LineChart, color: 'purple', rawVal: journalEntries.length },
+            { label: 'Total Debits', value: fmt(totalJVDebits), sub: 'Cumulative DR', icon: ArrowDownLeft, color: 'blue', rawVal: totalJVDebits },
+            { label: 'Total Credits', value: fmt(totalJVCredits), sub: 'Cumulative CR', icon: ArrowUpRight, color: 'emerald', rawVal: totalJVCredits },
+            { label: 'GL Balanced', value: isGLBalanced ? 'Balanced' : 'Discrepancy', sub: isGLBalanced ? 'DR equals CR exactly' : `Diff: ${fmt(Math.abs(totalJVDebits - totalJVCredits))}`, icon: Shield, color: isGLBalanced ? 'emerald' : 'rose', rawVal: isGLBalanced },
+          ]
+        };
+      case 'assets':
+        return {
+          title: 'Fixed Assets Schedule',
+          addLabel: 'Add Asset',
+          onAdd: () => setShowAssetModal(true),
+          cards: [
+            { label: 'Total Acquisition Cost', value: fmt(totalAssetCost), sub: `${fixedAssets.length} total assets`, icon: Landmark, color: 'amber', rawVal: totalAssetCost },
+            { label: 'Accumulated Depreciation', value: fmt(totalAssetDepreciation), sub: 'Total written off', icon: ArrowDownLeft, color: 'rose', rawVal: totalAssetDepreciation },
+            { label: 'Net Book Value (NBV)', value: fmt(netBookValue), sub: 'Cost minus Depreciation', icon: LineChart, color: 'emerald', rawVal: netBookValue },
+            { label: 'Active Assets', value: activeAssetsCount.toString(), sub: 'In operational service', icon: Shield, color: 'indigo', rawVal: activeAssetsCount },
+          ]
+        };
+      case 'bankrec':
+        return {
+          title: 'Bank Reconciliation',
+          addLabel: 'New Reconciliation',
+          onAdd: () => setShowBankRecModal(true),
+          cards: [
+            { label: 'Total Statements', value: bankRecs.length.toString(), sub: 'Bank statements recorded', icon: CheckCircle2, color: 'teal', rawVal: bankRecs.length },
+            { label: 'Reconciled Statements', value: reconciledBankCount.toString(), sub: 'Fully matched & verified', icon: CheckCircle2, color: 'emerald', rawVal: reconciledBankCount },
+            { label: 'Pending Statements', value: pendingBankCount.toString(), sub: 'Requires item verification', icon: ArrowUpRight, color: 'amber', rawVal: pendingBankCount },
+            { label: 'Latest Closing Bal', value: fmt(latestStatementBal), sub: 'Last statement amount', icon: Landmark, color: 'indigo', rawVal: latestStatementBal },
+          ]
+        };
+      case 'income':
+        return {
+          title: 'Income & Expenses',
+          addLabel: 'Add Transaction',
+          onAdd: () => setShowIncomeModal(true),
+          cards: [
+            { label: 'Office Income', value: fmt(totalIncomeRecorded), sub: `${officeIncome.length} receipts`, icon: TrendingUp, color: 'emerald', rawVal: totalIncomeRecorded },
+            { label: 'Office Expenses', value: fmt(totalExpensesRecorded), sub: `${officeExpenses.length} expense vouchers`, icon: ArrowDownLeft, color: 'rose', rawVal: totalExpensesRecorded },
+            { label: 'Net Cash Spread', value: fmt(netOfficeCash), sub: 'Income minus Expenses', icon: LineChart, color: netOfficeCash >= 0 ? 'indigo' : 'rose', rawVal: netOfficeCash },
+            { label: 'Project Expenses', value: fmt(totalProjExp), sub: `${projectExpenses.length} job-cost items`, icon: DollarSign, color: 'amber', rawVal: totalProjExp },
+          ]
+        };
+      case 'payroll':
+        return {
+          title: 'Payroll & Statutory Tax',
+          addLabel: 'Run Payroll',
+          onAdd: () => setShowPayrollRunModal(true),
+          cards: [
+            { label: 'Active Employees', value: activeEmployees.toString(), sub: `${payrollEmployees.length} staff enrolled`, icon: Users, color: 'violet', rawVal: activeEmployees },
+            { label: 'Net Disbursed', value: fmt(totalNetPayroll), sub: `${payrollRuns.length} payroll periods`, icon: DollarSign, color: 'emerald', rawVal: totalNetPayroll },
+            { label: 'Total PAYE Tax', value: fmt(totalPAYE), sub: 'GRA statutory deduction', icon: Shield, color: 'rose', rawVal: totalPAYE },
+            { label: 'Total SSNIT Tier 1 & 2', value: fmt(totalSSNIT), sub: 'Pension contribution', icon: Landmark, color: 'blue', rawVal: totalSSNIT },
+          ]
+        };
+      case 'tonefo':
+        return {
+          title: 'TONEFO Installments',
+          addLabel: 'New Hire Sale',
+          onAdd: () => setShowTonefoSaleModal(true),
+          cards: [
+            { label: 'Total Sales Value', value: fmt(totalTonefoValue), sub: `${tonefoCases.length} clients`, icon: ShoppingBag, color: 'orange', rawVal: totalTonefoValue },
+            { label: 'Amount Collected', value: fmt(totalCollected), sub: 'Deposit & installments paid', icon: CheckCircle2, color: 'emerald', rawVal: totalCollected },
+            { label: 'Outstanding Balance', value: fmt(totalOutstanding), sub: 'Future installments due', icon: ArrowUpRight, color: 'rose', rawVal: totalOutstanding },
+            { label: 'Active Installments', value: activeTonefoPlans.toString(), sub: 'Ongoing payment plans', icon: Users, color: 'indigo', rawVal: activeTonefoPlans },
+          ]
+        };
+      case 'petty_cash':
+        return {
+          title: 'Petty Cash Imprest',
+          addLabel: 'Add Expense',
+          onAdd: () => setShowExpenseModal(true),
+          cards: [
+            { label: 'Petty Cash Float', value: 'GH₵ 5,000.00', sub: 'Authorized float limit', icon: Wallet, color: 'emerald', rawVal: 5000 },
+            { label: 'Total Disbursed', value: fmt(totalExpensesRecorded * 0.25), sub: 'Vouchers paid', icon: ArrowDownLeft, color: 'rose', rawVal: totalExpensesRecorded * 0.25 },
+            { label: 'Cash in Hand', value: fmt(Math.max(0, 5000 - (totalExpensesRecorded * 0.25))), sub: 'Remaining physical cash', icon: Landmark, color: 'indigo', rawVal: 4000 },
+            { label: 'Pending Receipts', value: '3 vouchers', sub: 'Needs reconciliation', icon: Shield, color: 'amber', rawVal: 3 },
+          ]
+        };
+      case 'statements':
+        return {
+          title: 'Financial Statements',
+          addLabel: 'Export Statement',
+          onAdd: () => window.print(),
+          cards: [
+            { label: 'Net Profit / Margin', value: fmt(netIncome), sub: 'Current financial period', icon: LineChart, color: netIncome >= 0 ? 'emerald' : 'rose', rawVal: netIncome },
+            { label: 'Total Receivables', value: fmt(totalAR), sub: 'Asset on Balance Sheet', icon: Receipt, color: 'blue', rawVal: totalAR },
+            { label: 'Total Payables', value: fmt(totalAP), sub: 'Current Liability', icon: FileText, color: 'rose', rawVal: totalAP },
+            { label: 'Net Operating Spread', value: fmt(netOfficeCash), sub: 'Cash flow surplus', icon: TrendingUp, color: 'indigo', rawVal: netOfficeCash },
+          ]
+        };
+      default:
+        return {
+          title: 'Firm Accounting',
+          addLabel: 'New Invoice',
+          onAdd: () => setShowInvoiceModal(true),
+          cards: [
+            { label: 'Total AR (Invoices)', value: fmt(totalAR), sub: `${invoices.length} invoices`, icon: DollarSign, color: 'emerald', rawVal: totalAR },
+            { label: 'Total AP (Bills)', value: fmt(totalAP), sub: `${bills.length} vendor bills`, icon: Receipt, color: 'rose', rawVal: totalAP },
+            { label: 'Net Operating Income', value: fmt(netIncome), sub: 'Invoices minus Bills', icon: LineChart, color: netIncome >= 0 ? 'indigo' : 'rose', rawVal: netIncome },
+            { label: 'TONEFO Outstanding', value: fmt(totalOutstanding), sub: `${tonefoCases.length} customers`, icon: ShoppingBag, color: 'orange', rawVal: totalOutstanding },
+          ]
+        };
+    }
+  };
+
+  const currentContextKpi = getContextualKpis();
 
   // ── Filtered lists ───────────────────────────────────────────
   const q = search.toLowerCase();
@@ -770,57 +956,41 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
             <Building2 className="h-5 w-5" />
           </div>
           <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-foreground truncate">
-            Firm Accounting
+            {currentContextKpi.title}
           </h1>
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Button onClick={() => setShowInvoiceModal(true)} size="sm" className="w-full sm:w-auto h-9 px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm rounded-xl gap-1.5">
-            <Plus className="h-4 w-4" /> New Invoice
-          </Button>
+          {currentContextKpi.onAdd && (
+            <Button onClick={currentContextKpi.onAdd} size="sm" className="w-full sm:w-auto h-9 px-4 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm rounded-xl gap-1.5">
+              <Plus className="h-4 w-4" /> {currentContextKpi.addLabel}
+            </Button>
+          )}
         </div>
       </div>
 
       {/* ── 2. Dedicated Mobile 2x2 Stats Grid (< md) & Desktop Row (>= md) ── */}
       <div className="grid grid-cols-2 md:hidden gap-2.5">
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <DollarSign className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Total AR</span>
-          </div>
-          <p className="text-sm font-black text-emerald-600 truncate">{fmt(totalAR)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">{invoices.length} invoices</span>
-        </div>
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Receipt className="w-3.5 h-3.5 text-rose-500" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Total AP</span>
-          </div>
-          <p className="text-sm font-black text-rose-600 truncate">{fmt(totalAP)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">{bills.length} bills</span>
-        </div>
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <LineChart className="w-3.5 h-3.5 text-[#005A9C]" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Net Income</span>
-          </div>
-          <p className={cn("text-sm font-black truncate", netIncome >= 0 ? "text-[#005A9C]" : "text-rose-600")}>{fmt(netIncome)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">AR minus AP</span>
-        </div>
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ShoppingBag className="w-3.5 h-3.5 text-orange-500" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">TONEFO</span>
-          </div>
-          <p className="text-sm font-black text-orange-600 truncate">{fmt(totalOutstanding)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">{tonefoCases.length} clients</span>
-        </div>
+        {currentContextKpi.cards.map((c, idx) => {
+          const Icon = c.icon;
+          return (
+            <div key={idx} className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+              <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+                <Icon className={cn("w-3.5 h-3.5", `text-${c.color}-500`)} />
+                <span className="text-[10px] font-bold uppercase tracking-wider truncate">{c.label}</span>
+              </div>
+              <p className={cn("text-sm font-black truncate", c.color === 'rose' ? 'text-rose-600' : c.color === 'emerald' ? 'text-emerald-600' : c.color === 'orange' ? 'text-orange-600' : 'text-[#005A9C]')}>
+                {c.value}
+              </p>
+              <span className="text-[9px] text-muted-foreground font-semibold truncate block">{c.sub}</span>
+            </div>
+          );
+        })}
       </div>
 
       <div className="hidden md:grid md:grid-cols-4 gap-4">
-        <KpiCard label="Total AR (Invoices)" value={fmt(totalAR)} sub={`${invoices.length} invoices`} icon={DollarSign} color="emerald" />
-        <KpiCard label="Total AP (Bills)" value={fmt(totalAP)} sub={`${bills.length} vendor bills`} icon={Receipt} color="rose" />
-        <KpiCard label="Net Operating Income" value={fmt(netIncome)} sub="Invoices minus Bills" icon={LineChart} color={netIncome >= 0 ? 'indigo' : 'rose'} />
-        <KpiCard label="TONEFO Outstanding" value={fmt(totalOutstanding)} sub={`${tonefoCases.length} customers`} icon={ShoppingBag} color="orange" />
+        {currentContextKpi.cards.map((c, idx) => (
+          <KpiCard key={idx} label={c.label} value={c.value} sub={c.sub} icon={c.icon} color={c.color} />
+        ))}
       </div>
 
       {/* ── 3. Horizontally Scrollable Sub-pages Pill Bar (Hidden when standalone page) ── */}

@@ -41,13 +41,94 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
 
   const selectedProject = useMemo(() => projects.find(project => project.id === projectId), [projects, projectId]);
 
-  const totals = useMemo(() => summary.reduce((acc, row) => ({
-    budget: acc.budget + Number(row.approved_budget || 0),
-    actual: acc.actual + Number(row.actual_cost || 0),
-    committed: acc.committed + Number(row.committed_cost || 0),
-    claims: acc.claims + Number(row.certified_claims || 0),
-    forecast: acc.forecast + Number(row.forecast_final_cost || 0),
-  }), { budget: 0, actual: 0, committed: 0, claims: 0, forecast: 0 }), [summary]);
+  // ── Contextual KPI stats per sub-page ────────────────────────
+  const contextualKpi = useMemo(() => {
+    switch (tab) {
+      case 'budgets': {
+        const approvedBudgetsTotal = budgets.reduce((s, b) => s + Number(b.total_amount || b.amount || 0), 0);
+        const actualCostTotal = totals.actual;
+        const remainingBudget = Math.max(0, approvedBudgetsTotal - actualCostTotal);
+        return {
+          title: 'Project Budgets',
+          desc: 'Capital allocation, milestone budgets, committed costs, and variance tracking.',
+          mobileCards: [
+            { label: 'Total Budgets', value: currency(approvedBudgetsTotal), sub: `${budgets.length} budget sets`, icon: Calculator, color: 'text-blue-600' },
+            { label: 'Actual Spent', value: currency(actualCostTotal), sub: 'Confirmed project costs', icon: ArrowDownLeft, color: 'text-rose-600' },
+            { label: 'Committed Cost', value: currency(totals.committed), sub: 'POs & Subcontracts', icon: Layers, color: 'text-amber-600' },
+            { label: 'Remaining Budget', value: currency(remainingBudget), sub: 'Available margin', icon: TrendingUp, color: 'text-emerald-600' },
+          ],
+          desktopCards: [
+            { label: 'Approved Budgets', value: approvedBudgetsTotal, icon: Calculator, color: 'text-blue-600' },
+            { label: 'Actual Spent', value: actualCostTotal, icon: ArrowDownLeft, color: 'text-rose-600' },
+            { label: 'Commitments', value: totals.committed, icon: Layers, color: 'text-amber-600' },
+            { label: 'Available Budget', value: remainingBudget, icon: TrendingUp, color: 'text-emerald-600' },
+          ]
+        };
+      }
+      case 'variations': {
+        const totalVariationVal = variations.reduce((s, v) => s + Number(v.proposed_value_adjustment || v.cost_impact || 0), 0);
+        const approvedVars = variations.filter(v => v.status === 'approved');
+        const approvedVal = approvedVars.reduce((s, v) => s + Number(v.approved_value || v.proposed_value_adjustment || 0), 0);
+        const pendingVars = variations.filter(v => v.status !== 'approved' && v.status !== 'rejected');
+        return {
+          title: 'Project Variations',
+          desc: 'Scope change orders, site instructions, client adjustments, and margin impact.',
+          mobileCards: [
+            { label: 'Total Variations', value: currency(totalVariationVal), sub: `${variations.length} change orders`, icon: TrendingUp, color: 'text-indigo-600' },
+            { label: 'Approved Value', value: currency(approvedVal), sub: `${approvedVars.length} approved orders`, icon: CheckCircle2, color: 'text-emerald-600' },
+            { label: 'Pending Review', value: `${pendingVars.length} orders`, sub: 'Awaiting QS certification', icon: Layers, color: 'text-amber-600' },
+            { label: 'Active Projects', value: `${projects.length} sites`, sub: 'Under construction', icon: FileText, color: 'text-blue-600' },
+          ],
+          desktopCards: [
+            { label: 'Total Submitted', value: totalVariationVal, icon: TrendingUp, color: 'text-indigo-600' },
+            { label: 'Approved Claims', value: approvedVal, icon: CheckCircle2, color: 'text-emerald-600' },
+            { label: 'Pending Certification', value: pendingVars.reduce((s, v) => s + Number(v.proposed_value_adjustment || 0), 0), icon: Layers, color: 'text-amber-600' },
+            { label: 'Contract Impact', value: approvedVal, icon: ArrowUpRight, color: 'text-blue-600' },
+          ]
+        };
+      }
+      case 'claims': {
+        const totalClaimed = claims.reduce((s, c) => s + Number(c.claimed_amount || 0), 0);
+        const certifiedVal = claims.reduce((s, c) => s + Number(c.certified_amount || 0), 0);
+        const retentionHeld = claims.reduce((s, c) => s + Number(c.retention_amount || 0), 0);
+        const netPayable = Math.max(0, certifiedVal - retentionHeld);
+        return {
+          title: 'Progress Claims',
+          desc: 'IPC interim payment certificates, milestone evaluations, and retention held.',
+          mobileCards: [
+            { label: 'Total Claimed', value: currency(totalClaimed), sub: `${claims.length} interim valuations`, icon: ClipboardCheck, color: 'text-blue-600' },
+            { label: 'Certified Value', value: currency(certifiedVal), sub: 'QS / Consultant approved', icon: CheckCircle2, color: 'text-emerald-600' },
+            { label: 'Retention Held', value: currency(retentionHeld), sub: '5% defects liability', icon: Layers, color: 'text-amber-600' },
+            { label: 'Net Payable', value: currency(netPayable), sub: 'Disbursed to contractor', icon: ArrowUpRight, color: 'text-indigo-600' },
+          ],
+          desktopCards: [
+            { label: 'Cumulative Claimed', value: totalClaimed, icon: ClipboardCheck, color: 'text-blue-600' },
+            { label: 'Certified Amount', value: certifiedVal, icon: CheckCircle2, color: 'text-emerald-600' },
+            { label: 'Retention Held', value: retentionHeld, icon: Layers, color: 'text-amber-600' },
+            { label: 'Net Certified Payable', value: netPayable, icon: ArrowUpRight, color: 'text-indigo-600' },
+          ]
+        };
+      }
+      default:
+        return {
+          title: 'Project Finance Overview',
+          desc: 'Commercial control, project budgets, progress claims, and forecast profitability.',
+          mobileCards: [
+            { label: 'Approved Budget', value: currency(totals.budget), sub: `${summary.length} active projects`, icon: Calculator, color: 'text-blue-600' },
+            { label: 'Actual Cost', value: currency(totals.actual), sub: 'Confirmed accounting', icon: ArrowDownLeft, color: 'text-rose-600' },
+            { label: 'Certified Claims', value: currency(totals.claims), sub: 'Client invoiced', icon: ClipboardCheck, color: 'text-emerald-600' },
+            { label: 'Forecast Final', value: currency(totals.forecast), sub: 'Total expected cost', icon: TrendingUp, color: 'text-indigo-600' },
+          ],
+          desktopCards: [
+            { label: 'Approved Budget', value: totals.budget, icon: Calculator, color: 'text-blue-600' },
+            { label: 'Actual Cost', value: totals.actual, icon: ArrowDownLeft, color: 'text-rose-600' },
+            { label: 'Commitments', value: totals.committed, icon: Layers, color: 'text-amber-600' },
+            { label: 'Certified Claims', value: totals.claims, icon: ClipboardCheck, color: 'text-emerald-600' },
+            { label: 'Forecast Final Cost', value: totals.forecast, icon: TrendingUp, color: 'text-indigo-600' },
+          ]
+        };
+    }
+  }, [tab, budgets, variations, claims, totals, projects, summary]);
 
   const load = async () => {
     if (!companyId) return;
@@ -156,11 +237,11 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-[#005A9C] shrink-0" />
-            Project Finance
+            {contextualKpi.title}
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Commercial control, project budgets, progress claims, and forecast profitability.</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{contextualKpi.desc}</p>
         </div>
-        <div className="w-full sm:w-auto shrink-0">
+        <div className="w-full sm:w-auto shrink-0 flex items-center gap-2">
           <select
             value={projectId}
             onChange={event => setProjectId(event.target.value)}
@@ -178,58 +259,30 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
 
       {/* ── Mobile 2x2 Dedicated Stats Grid (< md) ── */}
       <div className="grid grid-cols-2 gap-2 sm:gap-3 md:hidden">
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Calculator className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Approved Budget</span>
-          </div>
-          <p className="text-sm font-black text-foreground truncate">{currency(totals.budget)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">{summary.length} active projects</span>
-        </div>
-
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ArrowDownLeft className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Actual Cost</span>
-          </div>
-          <p className="text-sm font-black text-rose-600 truncate">{currency(totals.actual)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Confirmed accounting</span>
-        </div>
-
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <ClipboardCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Certified Claims</span>
-          </div>
-          <p className="text-sm font-black text-emerald-600 truncate">{currency(totals.claims)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Client invoiced</span>
-        </div>
-
-        <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <TrendingUp className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-            <span className="text-[10px] font-bold uppercase tracking-wider truncate">Forecast Final</span>
-          </div>
-          <p className="text-sm font-black text-indigo-600 truncate">{currency(totals.forecast)}</p>
-          <span className="text-[9px] text-muted-foreground font-semibold">Total expected cost</span>
-        </div>
+        {contextualKpi.mobileCards.map((c, idx) => {
+          const Icon = c.icon;
+          return (
+            <div key={idx} className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
+              <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
+                <Icon className={cn("w-3.5 h-3.5 shrink-0", c.color)} />
+                <span className="text-[10px] font-bold uppercase tracking-wider truncate">{c.label}</span>
+              </div>
+              <p className={cn("text-sm font-black truncate", c.color)}>{c.value}</p>
+              <span className="text-[9px] text-muted-foreground font-semibold truncate block">{c.sub}</span>
+            </div>
+          );
+        })}
       </div>
 
       {/* ── Desktop Executive KPI Cards (>= md) ── */}
-      <div className="hidden md:grid md:grid-cols-5 gap-3">
-        {[
-          { label: 'Approved Budget', value: totals.budget, icon: Calculator, color: 'text-blue-600' },
-          { label: 'Actual Cost', value: totals.actual, icon: ArrowDownLeft, color: 'text-rose-600' },
-          { label: 'Commitments', value: totals.committed, icon: Layers, color: 'text-amber-600' },
-          { label: 'Certified Claims', value: totals.claims, icon: ClipboardCheck, color: 'text-emerald-600' },
-          { label: 'Forecast Final Cost', value: totals.forecast, icon: TrendingUp, color: 'text-indigo-600' },
-        ].map(({ label, value, icon: Icon, color }) => (
+      <div className={cn("hidden md:grid gap-3", contextualKpi.desktopCards.length === 4 ? "md:grid-cols-4" : "md:grid-cols-5")}>
+        {contextualKpi.desktopCards.map(({ label, value, icon: Icon, color }) => (
           <div key={label} className="rounded-2xl border border-border/80 bg-card p-4 shadow-xs">
             <div className="flex items-center gap-2 mb-1">
               <Icon className={cn('w-4 h-4', color)} />
               <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider">{label}</p>
             </div>
-            <p className={cn('text-lg font-black tracking-tight mt-1', color)}>{currency(value)}</p>
+            <p className={cn('text-lg font-black tracking-tight mt-1', color)}>{typeof value === 'number' ? currency(value) : value}</p>
           </div>
         ))}
       </div>
