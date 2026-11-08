@@ -445,98 +445,125 @@ export default function TimeTracking() {
   }, [filteredEntries]);
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-8 lg:p-10 space-y-8 animate-in fade-in duration-500 pb-24 text-foreground bg-background">
-      {/* Header & Stats */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-2">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight flex items-center gap-3">
-            <Clock className="w-8 h-8 text-primary" /> Time Tracker
-          </h1>
-          <p className="text-muted-foreground mt-2 text-sm">Log hours, manage billables, and monitor project budgets.</p>
+    <div className="w-full max-w-full overflow-x-hidden min-h-screen p-3 sm:p-6 lg:p-8 space-y-5 animate-in fade-in duration-500 pb-24 text-foreground bg-background">
+      {/* Header & 2x2 Mobile Native Stats */}
+      <div className="space-y-3.5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-[#005A9C] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+              <Clock className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">Time Tracker</h1>
+              <p className="text-xs text-muted-foreground font-medium">{filteredEntries.length} entries recorded</p>
+            </div>
+          </div>
+          <Button onClick={() => openModal()} className="bg-[#005A9C] hover:bg-[#00477D] text-white font-bold text-xs rounded-xl h-10 px-4 gap-1.5 shadow-sm shrink-0">
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Manual Entry</span><span className="sm:hidden">Log</span>
+          </Button>
         </div>
-        <div className="flex gap-4">
-            <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-center min-w-[140px]">
-                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">This Week</span>
-                <span className="text-2xl font-bold text-foreground">{totalHoursThisWeek.toFixed(1)}<span className="text-sm font-normal text-muted-foreground ml-1">hrs</span></span>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">This Week</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xl sm:text-2xl font-black text-foreground">{totalHoursThisWeek.toFixed(1)}</span>
+              <span className="text-xs text-muted-foreground font-medium">hrs</span>
             </div>
-            <div className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col justify-center min-w-[140px]">
-                <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">Billable</span>
-                <span className="text-2xl font-bold text-green-600 dark:text-green-500">${totalBillableAmount.toFixed(2)}</span>
-            </div>
+          </div>
+
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Billable Total</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">${totalBillableAmount.toFixed(2)}</span>
+          </div>
+
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Logged Days</span>
+            <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{new Set(filteredEntries.map(e => e.date)).size}</span>
+          </div>
+
+          <div className="bg-card/90 backdrop-blur-xl border border-border/80 rounded-[20px] p-3.5 sm:p-4 shadow-xs">
+            <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block mb-1">Status</span>
+            <span className={cn("text-xs font-black uppercase inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full mt-1", isTimerRunning ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground")}>
+              <span className={cn("w-2 h-2 rounded-full", isTimerRunning ? "bg-emerald-500 animate-pulse" : "bg-muted-foreground")} />
+              {isTimerRunning ? "Running" : "Idle"}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Live Timer Widget */}
-      <div className="bg-card border border-border p-3 md:p-4 rounded-2xl shadow-md flex flex-col xl:flex-row items-center gap-4 transition-all sticky top-4 z-20">
-        <div className="flex-1 w-full xl:w-auto relative">
+      {/* Live Timer Widget - Native Mobile & Responsive */}
+      <div className="bg-card/95 backdrop-blur-xl border border-border/90 p-3 sm:p-4 rounded-[22px] shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 w-full max-w-full">
+        <div className="flex-1 min-w-0">
            <Input 
              placeholder="What are you working on?" 
              value={timerDescription}
              onChange={e => setTimerDescription(e.target.value)}
-             className="w-full bg-transparent border-none text-base md:text-lg focus-visible:ring-0 px-2 h-12 placeholder:text-muted-foreground/60 text-foreground"
+             className="w-full bg-transparent border-none text-sm sm:text-base focus-visible:ring-0 px-1 h-9 placeholder:text-muted-foreground/60 text-foreground"
            />
+           <div className="flex items-center gap-2 pt-1 sm:pt-0">
+             <div className="relative">
+               <Input 
+                 placeholder="Project" 
+                 value={timerProject}
+                 onChange={e => setTimerProject(e.target.value)}
+                 className="w-28 sm:w-32 h-7.5 border-border/80 text-xs rounded-lg bg-background text-foreground"
+               />
+             </div>
+             <button 
+               type="button"
+               className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors text-xs font-semibold"
+               onClick={() => setTimerBillable(!timerBillable)}
+             >
+               <DollarSign className={`w-3.5 h-3.5 ${timerBillable ? 'text-emerald-500' : 'text-muted-foreground'}`} />
+               <span className={timerBillable ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}>
+                 {timerBillable ? 'Billable' : 'Non-billable'}
+               </span>
+             </button>
+           </div>
         </div>
         
-        <div className="flex w-full xl:w-auto items-center justify-between xl:justify-end gap-4 border-t xl:border-t-0 xl:border-l border-border pt-4 xl:pt-0 xl:pl-4">
-            <div className="flex items-center gap-3">
-                <div className="relative hidden sm:block">
-                    <Input 
-                        placeholder="Project" 
-                        value={timerProject}
-                        onChange={e => setTimerProject(e.target.value)}
-                        className="w-32 h-10 border-border text-sm rounded-lg bg-background text-foreground"
-                    />
-                </div>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors" onClick={() => setTimerBillable(!timerBillable)}>
-                    <DollarSign className={`w-4 h-4 ${timerBillable ? 'text-green-500' : 'text-muted-foreground'}`} />
-                    <span className={`text-sm font-medium ${timerBillable ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}`}>
-                        {timerBillable ? 'Billable' : 'Non-billable'}
-                    </span>
-                </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-                <div className={`text-3xl md:text-4xl font-mono font-bold tracking-tight min-w-[160px] w-auto shrink-0 text-center ${isTimerRunning ? 'text-primary' : 'text-foreground'}`}>
-                    {formatTimeFromSeconds(timerSeconds)}
-                </div>
-                
-                <div className="flex items-center gap-2">
-                    {timerSeconds > 0 && !isTimerRunning && (
-                        <Button onClick={handleDiscardTimer} variant="ghost" size="icon" className="h-12 w-12 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                            <Trash2 className="w-5 h-5" />
-                        </Button>
-                    )}
-                    
-                    {!isTimerRunning ? (
-                        <Button 
-                            onClick={handleStartTimer} 
-                            className="h-12 w-32 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold tracking-wide shadow-lg hover:shadow-xl transition-all"
-                        >
-                            <Play className="w-5 h-5 mr-2 fill-current" /> START
-                        </Button>
-                    ) : (
-                        <div className="flex items-center gap-2">
-                            <Button 
-                                onClick={handleStopTimer} 
-                                variant="destructive"
-                                className="h-12 w-32 rounded-full font-bold tracking-wide shadow-lg hover:shadow-xl transition-all"
-                            >
-                                <Square className="w-5 h-5 mr-2 fill-current" /> STOP
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </div>
+        <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 sm:border-l border-border/70 sm:pl-4 shrink-0">
+          <div className={`text-2xl sm:text-3xl font-mono font-black tracking-tight shrink-0 ${isTimerRunning ? 'text-[#005A9C] dark:text-[#FF6B00]' : 'text-foreground'}`}>
+            {formatTimeFromSeconds(timerSeconds)}
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {timerSeconds > 0 && !isTimerRunning && (
+              <Button onClick={handleDiscardTimer} variant="ghost" size="icon" className="h-10 w-10 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
+            
+            {!isTimerRunning ? (
+              <Button 
+                onClick={handleStartTimer} 
+                className="h-10 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wider shadow-sm gap-1.5"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" /> START
+              </Button>
+            ) : (
+              <Button 
+                onClick={handleStopTimer} 
+                variant="destructive"
+                className="h-10 px-5 rounded-xl font-bold text-xs tracking-wider shadow-sm gap-1.5"
+              >
+                <Square className="w-3.5 h-3.5 fill-current" /> STOP
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="mb-4 bg-muted border border-border">
-          <TabsTrigger value="my-timesheets" className="data-[state=active]:bg-background">My Timesheets</TabsTrigger>
-          <TabsTrigger value="approvals" className="data-[state=active]:bg-background">Team Approvals</TabsTrigger>
-          <TabsTrigger value="profitability" className="data-[state=active]:bg-background">Project Budgets</TabsTrigger>
-          <TabsTrigger value="reminders" className="data-[state=active]:bg-background">Reminders</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-full space-y-4">
+        <div className="overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+          <TabsList className="bg-muted/60 p-1 rounded-xl h-10 border border-border/60 shrink-0 inline-flex min-w-full sm:min-w-0">
+            <TabsTrigger value="my-timesheets" className="rounded-lg text-xs font-bold px-3 py-1.5 data-[state=active]:bg-card data-[state=active]:shadow-xs whitespace-nowrap">My Timesheets</TabsTrigger>
+            <TabsTrigger value="approvals" className="rounded-lg text-xs font-bold px-3 py-1.5 data-[state=active]:bg-card data-[state=active]:shadow-xs whitespace-nowrap">Team Approvals</TabsTrigger>
+            <TabsTrigger value="profitability" className="rounded-lg text-xs font-bold px-3 py-1.5 data-[state=active]:bg-card data-[state=active]:shadow-xs whitespace-nowrap">Project Budgets</TabsTrigger>
+            <TabsTrigger value="reminders" className="rounded-lg text-xs font-bold px-3 py-1.5 data-[state=active]:bg-card data-[state=active]:shadow-xs whitespace-nowrap">Reminders</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="my-timesheets" className="space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">

@@ -219,11 +219,13 @@ function PipelineItemCard({ item, provided, snapshot, itemLabel }) {
 }
 
 // Main Kanban board component
-export default function UniversalPipelineKanban({ pipeline, pipelineStates, companyId }) {
+export default function UniversalPipelineKanban({ pipeline, pipelineStates, companyId, searchQuery = "", viewMode: propViewMode }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [addingToStage, setAddingToStage] = useState(null);
-  const [viewMode, setViewMode] = useState("board"); // "board" | "list"
+  const [internalViewMode, setInternalViewMode] = useState("board");
+  const viewMode = propViewMode || internalViewMode;
+  const setViewMode = setInternalViewMode;
   const { user } = useAuth();
 
   const stages = React.useMemo(() => {

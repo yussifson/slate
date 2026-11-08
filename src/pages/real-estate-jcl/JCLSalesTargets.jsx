@@ -252,7 +252,7 @@ export default function JCLSalesTargets() {
   }, [targets, activeTab, leads, viewings, transactions]);
 
   return (
-    <div className="p-4 sm:p-6 w-full max-w-full space-y-6">
+    <div className="p-3 sm:p-6 w-full max-w-full overflow-x-hidden space-y-5">
       {/* ── 1. Top Header ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/80 pb-5">
         <div>
@@ -272,11 +272,6 @@ export default function JCLSalesTargets() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={loadData} className="gap-1.5 text-xs h-9">
-            <RefreshCw className={cn("w-3.5 h-3.5", isLoading && "animate-spin")} />
-            Refresh
-          </Button>
-
           {isManager && (
             <Button 
               onClick={() => setShowCreateModal(true)} 
@@ -291,7 +286,7 @@ export default function JCLSalesTargets() {
       </div>
 
       {/* ── 2. Summary KPI Ribbon ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card className="rounded-2xl border-border/80 shadow-xs">
           <CardContent className="p-4 flex items-center justify-between">
             <div className="space-y-1">
@@ -350,12 +345,12 @@ export default function JCLSalesTargets() {
       {/* ── 3. Tabs / Filter ── */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-border pb-2">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-          <TabsList className="bg-muted/60 p-1 rounded-xl">
+          <div className="overflow-x-auto pb-1 scrollbar-hide"><TabsList className="bg-muted/60 p-1 rounded-xl shrink-0 inline-flex min-w-full sm:min-w-0">
             <TabsTrigger value="all" className="text-xs font-semibold px-3 py-1.5">All Targets</TabsTrigger>
             <TabsTrigger value="active" className="text-xs font-semibold px-3 py-1.5">Active</TabsTrigger>
             <TabsTrigger value="completed" className="text-xs font-semibold px-3 py-1.5">Achieved 🎉</TabsTrigger>
             <TabsTrigger value="my_targets" className="text-xs font-semibold px-3 py-1.5">My Assigned Targets</TabsTrigger>
-          </TabsList>
+          </TabsList></div>
         </Tabs>
       </div>
 
