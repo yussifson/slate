@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useQuery } from "@powersync/react";
+import { powerSync } from "@/api/PowerSyncConnector";
+import { supabase } from "@/api/supabaseClient";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from '@/lib/AuthContext';
+import { useCompanyId } from '@/hooks/useCompanyId';
 import { cn } from '@/lib/utils';
 import { 
   Bell, CheckCircle2, MessageSquare, AlertTriangle, 
@@ -29,10 +31,56 @@ export default function NotificationsInbox() {
   const [optimisticDeletes, setOptimisticDeletes] = useState(new Set());
   const [isGeneratingBriefing, setIsGeneratingBriefing] = useState(false);
 
-  const { data: rawNotifications = [], isLoading } = useQuery(
-    user?.email ? `SELECT * FROM notifications WHERE recipient_email = ?` : `SELECT * FROM notifications WHERE 1=0`,
-    user?.email ? [user?.email] : []
-  );
+  const companyId = useCompanyId();
+  const [rawNotifications, setRawNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchInbox = useCallback(async () => {
+    if (!user?.email) {
+      setIsLoading(false);
+      return;
+    }
+    setIsLoading(true);
+    try {
+      // 1. Direct query via powerSync (intercepted by direct Supabase bridge)
+      const res = await powerSync.execute(
+        `SELECT * FROM notifications WHERE recipient_email = ? ORDER BY created_at DESC`,
+        [user.email]
+      );
+      let list = res?.rows?._array || Array.from(res?.rows || []);
+
+      // 2. Also check if there are company-level notifications or clipad notifications
+      if (list.length === 0 && companyId) {
+        const { data: supaCompanyNotifs } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false })
+          .limit(50);
+        if (supaCompanyNotifs && supaCompanyNotifs.length > 0) {
+          list = supaCompanyNotifs;
+        }
+      }
+
+      setRawNotifications(list || []);
+    } catch (err) {
+      console.warn('[NotificationsInbox] Fetch failed:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.email, companyId]);
+
+  useEffect(() => {
+    fetchInbox();
+    const handleMutation = (e) => {
+      const sql = (e.detail?.sql || '').toUpperCase();
+      if (sql.includes('NOTIFICATIONS')) {
+        fetchInbox();
+      }
+    };
+    window.addEventListener('db:local-mutation-success', handleMutation);
+    return () => window.removeEventListener('db:local-mutation-success', handleMutation);
+  }, [fetchInbox]);
 
   // Sort descending by created_at and apply optimistic states
   const notifications = [...rawNotifications]
