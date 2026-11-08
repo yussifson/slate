@@ -35,7 +35,9 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
   const [projectId, setProjectId] = useState('');
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ title: '', description: '', amount: '' });
+  const [form, setForm] = useState({ title: '', description: '', amount: '', projectId: '' });
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [budgetForm, setBudgetForm] = useState({ title: '', totalAmount: '', currency: 'GHS', notes: '', projectId: '' });
 
   const selectedProject = useMemo(() => projects.find(project => project.id === projectId), [projects, projectId]);
 
@@ -74,12 +76,16 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
 
   const createRecord = async event => {
     event.preventDefault();
-    if (!projectId || !form.title || !form.amount) return;
+    const targetProjectId = form.projectId || projectId || (projects[0]?.id) || '';
+    if (!form.title || !form.amount) {
+      toast({ title: 'Validation error', description: 'Please provide a title and amount.', variant: 'destructive' });
+      return;
+    }
     try {
       if (tab === 'variations') {
         await JCLPhase5FinanceService.createVariation({
           companyId,
-          projectId,
+          projectId: targetProjectId,
           variation: {
             title: form.title,
             description: form.description,
@@ -91,19 +97,55 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
       if (tab === 'claims') {
         await JCLPhase5FinanceService.createClaim({
           companyId,
-          projectId,
+          projectId: targetProjectId,
           claim: {
-            description: form.description,
+            description: form.description || form.title,
             current_claim_amount: form.amount
           }
         });
       }
-      setForm({ title: '', description: '', amount: '' });
+      setForm({ title: '', description: '', amount: '', projectId: '' });
       setShowForm(false);
       await load();
       toast({ title: 'Saved', description: `${tab === 'variations' ? 'Variation' : 'Progress claim'} created successfully.` });
     } catch (error) {
       toast({ title: 'Could not save', description: error.message, variant: 'destructive' });
+    }
+  };
+
+  const createBudgetRecord = async event => {
+    event.preventDefault();
+    const targetProjectId = budgetForm.projectId || projectId || (projects[0]?.id) || '';
+    if (!budgetForm.title) {
+      toast({ title: 'Validation error', description: 'Budget title is required.', variant: 'destructive' });
+      return;
+    }
+    try {
+      await JCLPhase5FinanceService.createBudget({
+        companyId,
+        projectId: targetProjectId,
+        budget: {
+          title: budgetForm.title,
+          currency: budgetForm.currency || 'GHS',
+          notes: budgetForm.notes || '',
+          amount: Number(budgetForm.totalAmount) || 0
+        },
+        lines: [
+          {
+            cost_code: 'BUD-01',
+            description: budgetForm.title,
+            category: 'Capital Budget',
+            quantity: 1,
+            unit_rate: Number(budgetForm.totalAmount) || 0
+          }
+        ]
+      });
+      setBudgetForm({ title: '', totalAmount: '', currency: 'GHS', notes: '', projectId: '' });
+      setShowBudgetModal(false);
+      await load();
+      toast({ title: 'Budget Saved', description: 'Project budget created successfully.' });
+    } catch (error) {
+      toast({ title: 'Could not save budget', description: error.message, variant: 'destructive' });
     }
   };
 
@@ -310,13 +352,74 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
       {/* Budgets Tab */}
       {tab === 'budgets' && (
         <section className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs">
-          <div className="mb-4 flex items-center gap-2 border-b border-border/60 pb-3">
-            <Calculator className="h-5 w-5 text-[#005A9C] shrink-0" />
-            <div>
-              <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Project Budgets Register</h2>
-              <p className="text-xs text-muted-foreground">Approved and draft capital budgets for active projects.</p>
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
+            <div className="flex items-center gap-2">
+              <Calculator className="h-5 w-5 text-[#005A9C] shrink-0" />
+              <div>
+                <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider">Project Budgets Register</h2>
+                <p className="text-xs text-muted-foreground">Approved and draft capital budgets for active projects.</p>
+              </div>
             </div>
+            <Button
+              onClick={() => setShowBudgetModal(value => !value)}
+              className="w-full sm:w-auto h-9 px-3.5 gap-1.5 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm shrink-0 whitespace-nowrap justify-center"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              New Budget Draft
+            </Button>
           </div>
+
+          {showBudgetModal && (
+            <form onSubmit={createBudgetRecord} className="mb-5 grid gap-3 rounded-xl border border-border/80 bg-muted/30 p-4 sm:grid-cols-3">
+              <div className="sm:col-span-3">
+                <label className="text-[11px] font-bold text-muted-foreground uppercase mb-1 block">Project Reference</label>
+                <select
+                  value={budgetForm.projectId || projectId}
+                  onChange={event => setBudgetForm({ ...budgetForm, projectId: event.target.value })}
+                  className="w-full h-9 rounded-lg border border-border bg-background px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#005A9C]/40"
+                >
+                  <option value="">General Company Operations</option>
+                  {projects.map(project => (
+                    <option key={project.id} value={project.id}>
+                      {project.project_code || 'PRJ'} · {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <Input
+                placeholder="Budget Title (e.g. Phase 1 Construction Budget)"
+                value={budgetForm.title}
+                onChange={event => setBudgetForm({ ...budgetForm, title: event.target.value })}
+                required
+                className="h-9 text-xs"
+              />
+              <Input
+                placeholder="Total Allocated Amount (GH₵)"
+                type="number"
+                min="0"
+                step="0.01"
+                value={budgetForm.totalAmount}
+                onChange={event => setBudgetForm({ ...budgetForm, totalAmount: event.target.value })}
+                required
+                className="h-9 text-xs"
+              />
+              <Input
+                placeholder="Notes / Scope Description"
+                value={budgetForm.notes}
+                onChange={event => setBudgetForm({ ...budgetForm, notes: event.target.value })}
+                className="h-9 text-xs"
+              />
+              <div className="sm:col-span-3 flex justify-end gap-2 pt-1">
+                <Button type="button" variant="outline" size="sm" onClick={() => setShowBudgetModal(false)} className="h-8 text-xs">
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" className="h-8 text-xs bg-[#005A9C] text-white">
+                  Save Budget Draft
+                </Button>
+              </div>
+            </form>
+          )}
+
           <div className="space-y-2">
             {budgets.map(row => (
               <div key={row.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-xl border border-border/60 bg-muted/20 p-3 sm:p-4">
@@ -345,12 +448,11 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
                 {tab === 'variations' ? 'Commercial Variations' : 'Client Progress Claims'}
               </h2>
               <p className="text-xs text-muted-foreground">
-                {selectedProject ? selectedProject.name : 'Select a project to create or review drafts.'}
+                {selectedProject ? selectedProject.name : 'Create or review project financial drafts across all projects.'}
               </p>
             </div>
             <Button
               onClick={() => setShowForm(value => !value)}
-              disabled={!projectId}
               className="w-full sm:w-auto h-9 px-3.5 gap-1.5 text-xs font-semibold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm shrink-0 whitespace-nowrap justify-center"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -360,6 +462,21 @@ export default function JCLProjectFinance({ defaultTab, isStandalonePage = false
 
           {showForm && (
             <form onSubmit={createRecord} className="mb-5 grid gap-3 rounded-xl border border-border/80 bg-muted/30 p-4 sm:grid-cols-3">
+              <div className="sm:col-span-3">
+                <label className="text-[11px] font-bold text-muted-foreground uppercase mb-1 block">Project Reference</label>
+                <select
+                  value={form.projectId || projectId}
+                  onChange={event => setForm({ ...form, projectId: event.target.value })}
+                  className="w-full h-9 rounded-lg border border-border bg-background px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#005A9C]/40"
+                >
+                  <option value="">General Company Operations</option>
+                  {projects.map(project => (
+                    <option key={project.id} value={project.id}>
+                      {project.project_code || 'PRJ'} · {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <Input
                 placeholder="Title / Reference"
                 value={form.title}

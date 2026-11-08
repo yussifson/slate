@@ -362,8 +362,9 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
       setFixedAssets(asts || []);
       setBankRecs(recs || []);
 
-      // New tables
-      const [incRes, expRes, projRes, empRes, runRes, tonefoRes, tpayRes] = await Promise.all([
+      // New tables with local SQLite + Remote Cloud Bridge merge
+      const [incLocal, expLocal, projLocal, empLocal, runLocal, tonefoLocal, tpayLocal,
+             incRemote, expRemote, projRemote, empRemote, runRemote, tonefoRemote, tpayRemote] = await Promise.all([
         powerSync.execute('SELECT * FROM jcl_office_income WHERE company_id = ? ORDER BY date DESC', [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute('SELECT * FROM jcl_office_expenses WHERE company_id = ? ORDER BY date DESC', [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute('SELECT * FROM jcl_project_expenses WHERE company_id = ? ORDER BY date DESC', [companyId]).catch(() => ({ rows: [] })),
@@ -371,14 +372,29 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
         powerSync.execute('SELECT * FROM jcl_payroll_runs WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute('SELECT * FROM jcl_installment_sales WHERE company_id = ? ORDER BY created_at DESC', [companyId]).catch(() => ({ rows: [] })),
         powerSync.execute('SELECT * FROM jcl_installment_payments WHERE company_id = ? ORDER BY payment_date DESC', [companyId]).catch(() => ({ rows: [] })),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_office_income').catch(() => []),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_office_expenses').catch(() => []),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_project_expenses').catch(() => []),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_payroll_employees').catch(() => []),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_payroll_runs').catch(() => []),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_installment_sales').catch(() => []),
+        FirmAccountingAPI.getOfficeRecords(companyId, 'jcl_installment_payments').catch(() => []),
       ]);
-      setOfficeIncome(extractRows(incRes));
-      setOfficeExpenses(extractRows(expRes));
-      setProjectExpenses(extractRows(projRes));
-      setPayrollEmployees(extractRows(empRes));
-      setPayrollRuns(extractRows(runRes));
-      setTonefoCases(extractRows(tonefoRes));
-      setTonefoPayments(extractRows(tpayRes));
+
+      const mergeHelper = (localRows, remoteRows, key = 'created_at') => {
+        const m = new Map();
+        (remoteRows || []).forEach(r => { if (r?.id) m.set(r.id, r); });
+        (localRows || []).forEach(r => { if (r?.id) m.set(r.id, { ...(m.get(r.id) || {}), ...r }); });
+        return Array.from(m.values());
+      };
+
+      setOfficeIncome(mergeHelper(extractRows(incLocal), incRemote, 'date'));
+      setOfficeExpenses(mergeHelper(extractRows(expLocal), expRemote, 'date'));
+      setProjectExpenses(mergeHelper(extractRows(projLocal), projRemote, 'date'));
+      setPayrollEmployees(mergeHelper(extractRows(empLocal), empRemote, 'name'));
+      setPayrollRuns(mergeHelper(extractRows(runLocal), runRemote, 'created_at'));
+      setTonefoCases(mergeHelper(extractRows(tonefoLocal), tonefoRemote, 'created_at'));
+      setTonefoPayments(mergeHelper(extractRows(tpayLocal), tpayRemote, 'payment_date'));
     } catch (e) {
       console.error('[FirmAccountingHub] Load failed:', e);
       toast.error('Failed to load accounting data');
@@ -474,10 +490,24 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
   const handleAddIncome = async (e) => {
     e.preventDefault();
     try {
-      await powerSync.execute(
-        'INSERT INTO jcl_office_income (id, company_id, source, amount, category, description, date, created_at) VALUES (?,?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, incomeForm.source, Number(incomeForm.amount), incomeForm.category, incomeForm.description, incomeForm.date, new Date().toISOString()]
-      );
+      const id = generateUUID();
+      const rec = {
+        id,
+        company_id: companyId,
+        source: incomeForm.source,
+        amount: Number(incomeForm.amount),
+        category: incomeForm.category,
+        description: incomeForm.description,
+        date: incomeForm.date,
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_office_income (id, company_id, source, amount, category, description, date, created_at) VALUES (?,?,?,?,?,?,?,?)',
+          [id, companyId, rec.source, rec.amount, rec.category, rec.description, rec.date, rec.created_at]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_office_income', rec);
       toast.success('Income recorded');
       setShowIncomeModal(false);
       setIncomeForm({ source: '', amount: '', category: 'Agency Fee', description: '', date: nowDate() });
@@ -489,10 +519,24 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
   const handleAddExpense = async (e) => {
     e.preventDefault();
     try {
-      await powerSync.execute(
-        'INSERT INTO jcl_office_expenses (id, company_id, description, amount, category, vendor, date, created_at) VALUES (?,?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, expenseForm.description, Number(expenseForm.amount), expenseForm.category, expenseForm.vendor, expenseForm.date, new Date().toISOString()]
-      );
+      const id = generateUUID();
+      const rec = {
+        id,
+        company_id: companyId,
+        description: expenseForm.description,
+        amount: Number(expenseForm.amount),
+        category: expenseForm.category,
+        vendor: expenseForm.vendor,
+        date: expenseForm.date,
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_office_expenses (id, company_id, description, amount, category, vendor, date, created_at) VALUES (?,?,?,?,?,?,?,?)',
+          [id, companyId, rec.description, rec.amount, rec.category, rec.vendor, rec.date, rec.created_at]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_office_expenses', rec);
       toast.success('Expense recorded');
       setShowExpenseModal(false);
       setExpenseForm({ description: '', amount: '', category: 'Rent', vendor: '', date: nowDate() });
@@ -504,10 +548,24 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
   const handleAddProjectExpense = async (e) => {
     e.preventDefault();
     try {
-      await powerSync.execute(
-        'INSERT INTO jcl_project_expenses (id, company_id, project_name, description, amount, category, date, created_at) VALUES (?,?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, projExpenseForm.projectName, projExpenseForm.description, Number(projExpenseForm.amount), projExpenseForm.category, projExpenseForm.date, new Date().toISOString()]
-      );
+      const id = generateUUID();
+      const rec = {
+        id,
+        company_id: companyId,
+        project_name: projExpenseForm.projectName,
+        description: projExpenseForm.description,
+        amount: Number(projExpenseForm.amount),
+        category: projExpenseForm.category,
+        date: projExpenseForm.date,
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_project_expenses (id, company_id, project_name, description, amount, category, date, created_at) VALUES (?,?,?,?,?,?,?,?)',
+          [id, companyId, rec.project_name, rec.description, rec.amount, rec.category, rec.date, rec.created_at]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_project_expenses', rec);
       toast.success('Project expense recorded');
       setShowProjectExpenseModal(false);
       setProjExpenseForm({ projectName: '', description: '', amount: '', category: 'Materials', date: nowDate() });
@@ -519,11 +577,30 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
   const handleAddEmployee = async (e) => {
     e.preventDefault();
     try {
+      const id = generateUUID();
       const calc = calcGhanaPayroll(employeeForm.basicSalary);
-      await powerSync.execute(
-        'INSERT INTO jcl_payroll_employees (id, company_id, name, position, department, basic_salary, ssnit_employee, ssnit_employer, paye, net_pay, start_date, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, employeeForm.name, employeeForm.position, employeeForm.department, calc.salary, calc.ssnitEmployee, calc.ssnitEmployer, calc.paye, calc.netPay, employeeForm.startDate, 'active', new Date().toISOString()]
-      );
+      const rec = {
+        id,
+        company_id: companyId,
+        name: employeeForm.name,
+        position: employeeForm.position,
+        department: employeeForm.department,
+        basic_salary: calc.salary,
+        ssnit_employee: calc.ssnitEmployee,
+        ssnit_employer: calc.ssnitEmployer,
+        paye: calc.paye,
+        net_pay: calc.netPay,
+        start_date: employeeForm.startDate,
+        status: 'active',
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_payroll_employees (id, company_id, name, position, department, basic_salary, ssnit_employee, ssnit_employer, paye, net_pay, start_date, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+          [id, companyId, rec.name, rec.position, rec.department, rec.basic_salary, rec.ssnit_employee, rec.ssnit_employer, rec.paye, rec.net_pay, rec.start_date, rec.status, rec.created_at]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_payroll_employees', rec);
       toast.success(`${employeeForm.name} added — Net Pay: ${fmt(calc.netPay)}`);
       setShowPayrollEmployeeModal(false);
       setEmployeeForm({ name: '', position: '', department: '', basicSalary: '', startDate: nowDate() });
@@ -534,15 +611,33 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
   const handleRunPayroll = async (e) => {
     e.preventDefault();
     try {
-      const totalNet = payrollEmployees.filter(emp => emp.status === 'active').reduce((s, emp) => s + (emp.net_pay || 0), 0);
-      const totalGross = payrollEmployees.filter(emp => emp.status === 'active').reduce((s, emp) => s + (emp.basic_salary || 0), 0);
-      const totalPaye = payrollEmployees.filter(emp => emp.status === 'active').reduce((s, emp) => s + (emp.paye || 0), 0);
-      const totalSsnit = payrollEmployees.filter(emp => emp.status === 'active').reduce((s, emp) => s + (emp.ssnit_employee || 0) + (emp.ssnit_employer || 0), 0);
-      await powerSync.execute(
-        'INSERT INTO jcl_payroll_runs (id, company_id, period, employee_count, total_gross, total_net, total_paye, total_ssnit, notes, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, payrollRunForm.period, payrollEmployees.filter(e => e.status === 'active').length, totalGross, totalNet, totalPaye, totalSsnit, payrollRunForm.notes, 'posted', new Date().toISOString()]
-      );
-      toast.success(`Payroll run posted — ${fmt(totalNet)} net pay to ${payrollEmployees.filter(e => e.status === 'active').length} employees`);
+      const id = generateUUID();
+      const activeEmps = payrollEmployees.filter(emp => emp.status === 'active');
+      const totalNet = activeEmps.reduce((s, emp) => s + (emp.net_pay || 0), 0);
+      const totalGross = activeEmps.reduce((s, emp) => s + (emp.basic_salary || 0), 0);
+      const totalPaye = activeEmps.reduce((s, emp) => s + (emp.paye || 0), 0);
+      const totalSsnit = activeEmps.reduce((s, emp) => s + (emp.ssnit_employee || 0) + (emp.ssnit_employer || 0), 0);
+      const rec = {
+        id,
+        company_id: companyId,
+        period: payrollRunForm.period,
+        employee_count: activeEmps.length,
+        total_gross: totalGross,
+        total_net: totalNet,
+        total_paye: totalPaye,
+        total_ssnit: totalSsnit,
+        notes: payrollRunForm.notes,
+        status: 'posted',
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_payroll_runs (id, company_id, period, employee_count, total_gross, total_net, total_paye, total_ssnit, notes, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+          [id, companyId, rec.period, rec.employee_count, rec.total_gross, rec.total_net, rec.total_paye, rec.total_ssnit, rec.notes, rec.status, rec.created_at]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_payroll_runs', rec);
+      toast.success(`Payroll run posted — ${fmt(totalNet)} net pay to ${activeEmps.length} employees`);
       setShowPayrollRunModal(false);
       setPayrollRunForm({ period: '', notes: '' });
       loadData();
@@ -553,14 +648,33 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
   const handleAddTonefoSale = async (e) => {
     e.preventDefault();
     try {
+      const id = generateUUID();
       const total = Number(tonefoSaleForm.totalPrice);
       const deposit = Number(tonefoSaleForm.depositPaid);
       const balance = total - deposit;
       const installAmt = balance / Math.max(1, Number(tonefoSaleForm.installmentMonths));
-      await powerSync.execute(
-        'INSERT INTO jcl_installment_sales (id, company_id, customer_name, customer_phone, item_description, total_price, deposit_paid, outstanding_balance, installment_months, monthly_installment, amount_collected, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, tonefoSaleForm.customerName, tonefoSaleForm.customerPhone, tonefoSaleForm.itemDescription, total, deposit, balance, Number(tonefoSaleForm.installmentMonths), +installAmt.toFixed(2), deposit, balance <= 0 ? 'paid' : 'installment', new Date().toISOString()]
-      );
+      const rec = {
+        id,
+        company_id: companyId,
+        customer_name: tonefoSaleForm.customerName,
+        customer_phone: tonefoSaleForm.customerPhone,
+        item_description: tonefoSaleForm.itemDescription,
+        total_price: total,
+        deposit_paid: deposit,
+        outstanding_balance: balance,
+        installment_months: Number(tonefoSaleForm.installmentMonths),
+        monthly_installment: +installAmt.toFixed(2),
+        amount_collected: deposit,
+        status: balance <= 0 ? 'paid' : 'installment',
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_installment_sales (id, company_id, customer_name, customer_phone, item_description, total_price, deposit_paid, outstanding_balance, installment_months, monthly_installment, amount_collected, status, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)',
+          [id, companyId, rec.customer_name, rec.customer_phone, rec.item_description, rec.total_price, rec.deposit_paid, rec.outstanding_balance, rec.installment_months, rec.monthly_installment, rec.amount_collected, rec.status, rec.created_at]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_installment_sales', rec);
       toast.success(`Sale recorded for ${tonefoSaleForm.customerName}`);
       setShowTonefoSaleModal(false);
       setTonefoSaleForm({ customerName: '', customerPhone: '', itemDescription: '', totalPrice: '', depositPaid: '', installmentMonths: 6 });
@@ -572,18 +686,37 @@ export default function FirmAccountingHub({ defaultTab, isStandalonePage = false
     e.preventDefault();
     if (!selectedTonefoCase) return;
     try {
+      const payId = generateUUID();
       const payAmt = Number(tonefoPaymentForm.amount);
       const newCollected = (selectedTonefoCase.amount_collected || 0) + payAmt;
       const newBalance = (selectedTonefoCase.total_price || 0) - newCollected;
       const newStatus = newBalance <= 0 ? 'paid' : 'installment';
-      await powerSync.execute(
-        'INSERT INTO jcl_installment_payments (id, company_id, sale_id, amount, payment_date, notes, created_at) VALUES (?,?,?,?,?,?,?)',
-        [generateUUID(), companyId, selectedTonefoCase.id, payAmt, tonefoPaymentForm.paymentDate, tonefoPaymentForm.notes, new Date().toISOString()]
-      );
-      await powerSync.execute(
-        'UPDATE jcl_installment_sales SET amount_collected = ?, outstanding_balance = ?, status = ? WHERE id = ?',
-        [newCollected, Math.max(0, newBalance), newStatus, selectedTonefoCase.id]
-      );
+      const payRec = {
+        id: payId,
+        company_id: companyId,
+        sale_id: selectedTonefoCase.id,
+        amount: payAmt,
+        payment_date: tonefoPaymentForm.paymentDate,
+        notes: tonefoPaymentForm.notes,
+        created_at: new Date().toISOString()
+      };
+      try {
+        await powerSync.execute(
+          'INSERT INTO jcl_installment_payments (id, company_id, sale_id, amount, payment_date, notes, created_at) VALUES (?,?,?,?,?,?,?)',
+          [payId, companyId, payRec.sale_id, payRec.amount, payRec.payment_date, payRec.notes, payRec.created_at]
+        );
+        await powerSync.execute(
+          'UPDATE jcl_installment_sales SET amount_collected = ?, outstanding_balance = ?, status = ? WHERE id = ?',
+          [newCollected, Math.max(0, newBalance), newStatus, selectedTonefoCase.id]
+        );
+      } catch (_) {}
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_installment_payments', payRec);
+      await FirmAccountingAPI.syncOfficeRecord(companyId, 'jcl_installment_sales', {
+        ...selectedTonefoCase,
+        amount_collected: newCollected,
+        outstanding_balance: Math.max(0, newBalance),
+        status: newStatus
+      });
       toast.success(`Payment of ${fmt(payAmt)} recorded`);
       setShowTonefoPaymentModal(false);
       setSelectedTonefoCase(null);

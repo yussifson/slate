@@ -103,9 +103,29 @@ class SupabaseConnector {
     try {
       for (const op of transaction.crud) {
         // Discard ops on tables that do not exist in remote Supabase schema cache
-        const missingRemoteTables = ['gl_accounts'];
+        const missingRemoteTables = [
+          'gl_accounts',
+          'gl_journal_entries',
+          'gl_journal_line_items',
+          'gl_audit_trail',
+          'univ_firm_invoices',
+          'univ_firm_invoice_items',
+          'univ_firm_bills',
+          'univ_firm_bill_items',
+          'univ_firm_fixed_assets',
+          'univ_firm_bank_reconciliations',
+          'jcl_office_income',
+          'jcl_office_expenses',
+          'jcl_project_expenses',
+          'jcl_payroll_employees',
+          'jcl_payroll_runs',
+          'jcl_installment_sales',
+          'jcl_installment_payments',
+          'jcl_project_variations',
+          'jcl_project_finance_summary'
+        ];
         if (missingRemoteTables.includes(op.table)) {
-          console.warn(`[PowerSync SKIPPED] Table '${op.table}' is not in remote schema cache. Discarding op to prevent sync block.`);
+          console.warn(`[PowerSync SKIPPED] Table '${op.table}' is handled via direct industry_records bridge. Discarding op to prevent sync block.`);
           continue;
         }
 
