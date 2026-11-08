@@ -1,4 +1,4 @@
-﻿import { supabase} from '@/api/supabaseClient';
+import { supabase} from '@/api/supabaseClient';
 import { useTranslation} from "react-i18next";
 import React, { useState, useEffect} from 'react';
 import { useAuth} from '@/lib/AuthContext';
@@ -474,7 +474,7 @@ export default function Integrations() {
  const categories = ['All', ...new Set(INTEGRATION_CATALOG.map(a => a.category))];
 
  return (
- <div className="p-6 space-y-6 max-w-7xl mx-auto font-sans">
+ <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-7xl mx-auto font-sans w-full max-w-full overflow-x-hidden pb-20">
  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
  <PageHeader 
  title="App Marketplace" 
@@ -521,7 +521,7 @@ export default function Integrations() {
  <OrbitLoader size="md" />
  </div>
  ) : (
- <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 w-full">
  {filteredApps.map((app) => {
  // Check connected status via the `provider` key, not `id`
  const isConnected = !!connectedApps[app.provider];
@@ -537,10 +537,10 @@ export default function Integrations() {
  return (
  <div 
  key={app.id} 
- className={`bg-white dark:bg-card/40 dark:bg-card/40 dark:bg-card rounded-2xl border-[0.5px] border-black/9 dark:border-white/8 transition-all duration-300 flex flex-col overflow-hidden ${
+ className={`bg-card rounded-2xl border transition-all duration-200 flex flex-col overflow-hidden w-full max-w-full shadow-xs ${
  isConnected 
- ? 'border-primary -emerald-500/10 ring-1 ring-primary/20' 
- : 'border-primary/40 dark:border-primary/40 hover:border-primary/40 dark:hover:border-primary/40 hover:-translate-y-1'
+ ? 'border-[#005A9C] ring-1 ring-[#005A9C]/20' 
+ : 'border-border/80 hover:border-border'
 }`}
  >
  <div className="p-6 sm:p-7 flex-1">
@@ -572,7 +572,7 @@ export default function Integrations() {
  <p className="text-[11px] font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-widest mb-3.5 tracking-[0.04em]">{app.category}</p>
  <p className="text-sm text-slate-600 dark:text-muted-foreground leading-relaxed">{appDescription}</p>
  </div>
- <div className="px-6 py-5 border-t border-primary/40 dark:border-primary/40 dark:border-primary/40 bg-slate-50/80 dark:bg-card/50 flex items-center justify-between">
+ <div className="p-3 sm:px-4 sm:py-3 border-t border-border/60 bg-muted/20 flex flex-wrap items-center justify-between gap-2">
  <a 
  href={app.learnMore} 
  target="_blank" 

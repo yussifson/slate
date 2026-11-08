@@ -810,22 +810,17 @@ export default function JCLMarketerTracker() {
         </DialogContent>
       </Dialog>
 
-      {/* ── TOP EXECUTIVE BANNER (DESKTOP & MOBILE HEADER WITH FULL THEME HARMONY) ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-card text-card-foreground p-6 shadow-md border border-border">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-[#005A9C] text-white flex items-center justify-center font-bold shadow-md shadow-[#005A9C]/20 shrink-0">
-              <Compass className="h-6 w-6 animate-pulse" />
+      {/* ── TOP HEADER (CLEAN MOBILE NATIVE & DESKTOP HARMONY) ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-card text-card-foreground p-4 sm:p-5 shadow-xs border border-border/80">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-[#005A9C] text-white flex items-center justify-center font-bold shadow-sm shrink-0">
+              <Compass className="h-5 w-5 animate-pulse" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl lg:text-2xl font-black text-foreground">
-                  {currentMode === 'admin' ? 'Live GPS Command Dashboard' : 'Field GPS Tracker'}
-                </h1>
-              </div>
-              <p className="text-xs text-muted-foreground font-medium mt-0.5">
-                {currentMode === 'admin' ? 'Interactive Field Marketer Tracking, Site Geofencing & Route Breadcrumbs' : 'High-Precision GPS Location Watch & Property Site Meeting Check-ins'}
-              </p>
+              <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
+                {currentMode === 'admin' ? 'Live GPS Command' : 'Field GPS Tracker'}
+              </h1>
             </div>
           </div>
 
