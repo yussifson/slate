@@ -73,31 +73,26 @@ export default function Employees() {
     if (!companyId) return;
     setIsDbLoading(true);
     try {
-      const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
-      const rows = res.rows?._array || Array.from(res.rows || []);
-      if (rows.length > 0) {
-        setDbRecords(rows);
+      // Direct Supabase as primary source of truth
+      const { data: supaEmps, error: supaErr } = await supabase
+        .from('univ_hr_employees')
+        .select('*')
+        .eq('company_id', companyId)
+        .order('created_at', { ascending: false });
+
+      if (!supaErr && supaEmps) {
+        setDbRecords(supaEmps);
       } else {
-        // Fallback to Supabase direct query if local PowerSync is still syncing
-        const { data: supaEmps } = await supabase
-          .from('univ_hr_employees')
-          .select('*')
-          .eq('company_id', companyId)
-          .order('created_at', { ascending: false });
-        if (supaEmps && supaEmps.length > 0) {
-          setDbRecords(supaEmps);
-        } else {
-          setDbRecords([]);
-        }
+        // Fallback to PowerSync local cache if offline
+        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        const rows = res.rows?._array || Array.from(res.rows || []);
+        setDbRecords(rows);
       }
     } catch (e) {
       try {
-        const { data: supaEmps } = await supabase
-          .from('univ_hr_employees')
-          .select('*')
-          .eq('company_id', companyId)
-          .order('created_at', { ascending: false });
-        if (supaEmps) setDbRecords(supaEmps);
+        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+        const rows = res.rows?._array || Array.from(res.rows || []);
+        setDbRecords(rows);
       } catch (err) {}
     }
     setIsDbLoading(false);
@@ -105,14 +100,33 @@ export default function Employees() {
 
   useEffect(() => {
     fetchEmps();
+
+    // Live subscription directly to Supabase table
+    if (companyId) {
+      const channel = supabase
+        .channel(`univ_hr_employees_${companyId}`)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'univ_hr_employees', filter: `company_id=eq.${companyId}` }, () => {
+          fetchEmps();
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
   }, [companyId]);
         
- const [departmentRecords, setDepartmentRecords] = useState([]);
+  const [departmentRecords, setDepartmentRecords] = useState([]);
   const [roleRecords, setRoleRecords] = useState([]);
   useEffect(() => {
     let active = true;
     const fetchRoles = async () => {
       try {
+        const { data: supaRoles } = await supabase.from('platform_roles').select('*').eq('company_id', companyId);
+        if (supaRoles && active) {
+          setRoleRecords(supaRoles);
+          return;
+        }
         const res = await powerSync.execute('SELECT * FROM platform_roles WHERE company_id = ?', [companyId]);
         if(active) setRoleRecords(res.rows._array || Array.from(res.rows));
       } catch(e){}
@@ -124,6 +138,11 @@ export default function Employees() {
     let active = true;
     const fetchDepts = async () => {
       try {
+        const { data: supaDepts } = await supabase.from('platform_departments').select('*').eq('company_id', companyId);
+        if (supaDepts && active) {
+          setDepartmentRecords(supaDepts);
+          return;
+        }
         const res = await powerSync.execute('SELECT * FROM platform_departments WHERE company_id = ?', [companyId]);
         if(active) setDepartmentRecords(res.rows._array || Array.from(res.rows));
       } catch(e){}
@@ -184,37 +203,60 @@ export default function Employees() {
     
     setIsSubmitting(true);
     try {
+      const parsedSalary = (formData.salary === '' || formData.salary === null || formData.salary === undefined) 
+        ? null 
+        : Number(formData.salary);
+
       if (editTargetId) {
         const emp = employees.find(e => e.id === editTargetId);
+        const trimmedName = (formData.name || '').trim();
+        const nameParts = trimmedName.split(' ');
+        const firstName = nameParts[0] || 'Staff';
+        const lastName = nameParts.slice(1).join(' ') || 'Member';
+
         const payload = { 
-          name: formData.name,
-          department: formData.departmentId,
-          reports_to: formData.reportsTo,
-          role: formData.role,
-          email: formData.email,
-          phone: formData.phone,
-          salary: formData.salary,
-          start_date: formData.startDate,
+          name: trimmedName,
+          first_name: firstName,
+          last_name: lastName,
+          department: formData.departmentId || null,
+          reports_to: formData.reportsTo || null,
+          role: formData.role || 'staff',
+          email: formData.email ? formData.email.trim() : null,
+          phone: formData.phone ? formData.phone.trim() : null,
+          salary: parsedSalary,
+          start_date: formData.startDate || new Date().toISOString().split('T')[0],
           employee_id: emp?.employeeId,
           updated_at: new Date().toISOString()
         };
-        const _k = Object.keys(payload);
-        const _v = Object.values(payload);
-        await powerSync.execute(`UPDATE univ_hr_employees SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editTargetId]);
-        try {
-          await supabase.from('univ_hr_employees').update(payload).eq('id', editTargetId);
-        } catch (e) {
-          console.warn('Direct Supabase update sync failed:', e);
+
+        // 1. Update Supabase DIRECTLY (primary source of truth)
+        const { error: supaUpdErr } = await supabase
+          .from('univ_hr_employees')
+          .update(payload)
+          .eq('id', editTargetId);
+
+        if (supaUpdErr) {
+          console.error('Supabase update failed:', supaUpdErr);
+          throw new Error(supaUpdErr.message);
         }
 
-        // Mirror to staff_records
+        // 2. Also update PowerSync local cache
+        try {
+          const _k = Object.keys(payload);
+          const _v = Object.values(payload);
+          await powerSync.execute(`UPDATE univ_hr_employees SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editTargetId]);
+        } catch (e) {
+          console.warn('PowerSync cache update notice:', e);
+        }
+
+        // 3. Mirror to staff_records
         if (formData.email) {
           try {
             await supabase.from('staff_records').update({
-              full_name: formData.name,
+              full_name: trimmedName,
               department: formData.departmentId,
               phone: formData.phone,
-              salary: formData.salary ? String(formData.salary) : null,
+              salary: parsedSalary ? String(parsedSalary) : null,
               hire_date: formData.startDate,
               updated_at: new Date().toISOString()
             }).eq('company_id', companyId).ilike('user_email', formData.email);
@@ -222,14 +264,14 @@ export default function Employees() {
             console.warn('staff_records mirror update failed:', e);
           }
 
-          // Crucial: Update the user's role in profiles table and by user_id
+          // 4. Update the user's role and details in profiles table
           try {
             const rawEmail = formData.email.trim().toLowerCase();
             const cleanEmail = rawEmail.replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
             await supabase.from('profiles').update({
               role: formData.role,
               department: formData.departmentId,
-              full_name: formData.name
+              full_name: trimmedName
             }).or(`email.ilike.${rawEmail},email.ilike.${cleanEmail}${emp?.userId ? `,id.eq.${emp.userId}` : ''}`);
           } catch (e) {
             console.warn('profiles role sync failed:', e);
@@ -331,16 +373,20 @@ export default function Employees() {
           updated_at: new Date().toISOString()
         };
 
-        // 1. Insert into local PowerSync DB
-        const _k = Object.keys(payload);
-        const _v = Object.values(payload);
-        await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        // 1. Direct insert into Supabase univ_hr_employees with required columns (primary)
+        const { error: supaErr } = await supabase.from('univ_hr_employees').insert([payload]);
+        if (supaErr) {
+          console.error('Direct Supabase insert into univ_hr_employees failed:', supaErr);
+          throw new Error(supaErr.message);
+        }
 
-        // 2. Direct insert into Supabase univ_hr_employees with required columns
+        // 2. Also insert into local PowerSync DB
         try {
-          await supabase.from('univ_hr_employees').insert([payload]);
-        } catch (supaErr) {
-          console.warn('Direct Supabase insert into univ_hr_employees failed:', supaErr);
+          const _k = Object.keys(payload);
+          const _v = Object.values(payload);
+          await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+        } catch (psErr) {
+          console.warn('PowerSync insert notice:', psErr);
         }
 
         // 3. Mirror into profiles table so auth user is linked to company
@@ -431,33 +477,40 @@ export default function Employees() {
  const handleUpdateStatus = async (employee, newStatus) => {
    try {
      const nowIso = new Date().toISOString();
-     await powerSync.execute(`UPDATE univ_hr_employees SET status = ?, updated_at = ? WHERE id = ?`, [newStatus, nowIso, employee.id]);
+     const { error: supaErr } = await supabase.from('univ_hr_employees').update({ status: newStatus, updated_at: nowIso }).eq('id', employee.id);
+     if (supaErr) throw new Error(supaErr.message);
+
      try {
-       await supabase.from('univ_hr_employees').update({ status: newStatus, updated_at: nowIso }).eq('id', employee.id);
+       await powerSync.execute(`UPDATE univ_hr_employees SET status = ?, updated_at = ? WHERE id = ?`, [newStatus, nowIso, employee.id]);
        if (employee.email) {
          await supabase.from('staff_records').update({ status: newStatus.toLowerCase(), updated_at: nowIso }).eq('company_id', companyId).ilike('user_email', employee.email);
          await powerSync.execute(`UPDATE staff_records SET status = ?, updated_at = ? WHERE company_id = ? AND user_email LIKE ?`, [newStatus.toLowerCase(), nowIso, companyId, employee.email]);
        }
      } catch (syncErr) {
-       console.warn('Backend sync error on status update:', syncErr);
+       console.warn('Backend sync notice on status update:', syncErr);
      }
      setDbRecords(prev => prev.map(r => r.id === employee.id ? { ...r, status: newStatus } : r));
      toast.success(`Status updated to ${newStatus}`);
    } catch (err) {
      toast.error('Failed to update status: ' + err.message);
    }
-};
+ };
 
  const handleDeleteEmployee = async () => {
    if (!deleteTargetId) return;
    try {
      const emp = employees.find(e => e.id === deleteTargetId);
      
-     // 1. Delete from local PowerSync DB immediately
-     await powerSync.execute('DELETE FROM univ_hr_employees WHERE id = ?', [deleteTargetId]);
-     
-     // 2. Delete from Supabase cloud database
-     await supabase.from('univ_hr_employees').delete().eq('id', deleteTargetId);
+     // 1. Delete from Supabase cloud database directly (primary)
+     const { error: delErr } = await supabase.from('univ_hr_employees').delete().eq('id', deleteTargetId);
+     if (delErr) throw new Error(delErr.message);
+
+     // 2. Also delete from local PowerSync DB
+     try {
+       await powerSync.execute('DELETE FROM univ_hr_employees WHERE id = ?', [deleteTargetId]);
+     } catch (psErr) {
+       console.warn('PowerSync delete notice:', psErr);
+     }
      
      // 3. If employee is also in staff_records by email, clean that up as well
      if (emp?.email) {
@@ -478,7 +531,7 @@ export default function Employees() {
      toast.error('Failed to remove employee: ' + (err.message || 'Error occurred'));
      setDeleteTargetId(null);
    }
-};
+ };
 
  const filtered = employees.filter(e => 
  e.name?.toLowerCase().includes(search.toLowerCase()) || 
