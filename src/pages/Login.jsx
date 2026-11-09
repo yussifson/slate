@@ -412,7 +412,10 @@ export default function Login() {
       const { isCustomDomain } = getSubdomainAndBase();
       if (isCustomDomain) {
         // They're already on their custom domain, proceed to dashboard
-        if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
+        // Clear stale cached user so new role & permissions hydrate fresh from database
+    try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
+
+    if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
         return;
       }
       
@@ -454,6 +457,9 @@ export default function Login() {
       if (isElectron) { navigate('/portal'); } else { window.location.href = '/portal'; }
       return;
     }
+
+    // Clear stale cached user so new role & permissions hydrate fresh from database
+    try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
 
     if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
 } else {

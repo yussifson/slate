@@ -180,8 +180,9 @@ export const AuthProvider = ({ children }) => {
       // This prevents redundant database queries and layout/sidebar flickering on window refocus.
       // IMPORTANT: We still verify the Supabase session is live so we don't return with stale/expired credentials
       // that would cause all API calls to fail with 401 Unauthorized.
+      // Also, always allow refresh if user's role might have changed in univ_hr_employees.
       const currentUser = userRef.current;
-      if (!forceRefresh && isAuthenticatedRef.current && currentUser && currentUser.id === sessionUser.id) {
+      if (!forceRefresh && isAuthenticatedRef.current && currentUser && currentUser.id === sessionUser.id && currentUser.role && currentUser.role !== 'it' && currentUser.role !== 'staff') {
         // Quick session sanity check: ensure the stored token isn't expired
         const tokenExpiresAt = sessionVal?.expires_at || sessionVal?.session?.expires_at;
         const nowSecs = Math.floor(Date.now() / 1000);

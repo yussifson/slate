@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { powerSync } from "@/api/PowerSyncConnector";
 import { INDUSTRIES, getIndustryNav, clientNav } from "@/config/industries";
 import { useCompany } from "@/hooks/useCompanyId";
+import { getJCLRolePermissions } from "@/config/jclRolePermissions";
 
 export function useNavigation(user, impersonatedCompany) {
   const [dynamicModules, setDynamicModules] = useState([]);
@@ -69,6 +70,14 @@ export function useNavigation(user, impersonatedCompany) {
 
     const fetchPermissions = async () => {
       try {
+        if (activeIndustry === 'real_estate_jcl') {
+          const jclPaths = getJCLRolePermissions(user.role);
+          if (jclPaths) {
+            setAllowedPaths(jclPaths);
+            return;
+          }
+        }
+
         // First find the role ID that matches the user's string role
         const roleRes = await powerSync.execute('SELECT id FROM platform_roles WHERE company_id = ? AND (name = ? OR name = ?)', [user.company_id, user.role, user.role.toLowerCase()]);
         
@@ -83,10 +92,13 @@ export function useNavigation(user, impersonatedCompany) {
         } else {
           // Fallback if role is not found in database (maybe it's predefined but not seeded yet)
           // We allow basic access or no access. Let's provide a safe fallback for unseeded roles.
-          setAllowedPaths(['/', '/my-dashboard']);
+          const jclFallback = activeIndustry === 'real_estate_jcl' ? getJCLRolePermissions(user.role) : null;
+          setAllowedPaths(jclFallback || ['/', '/my-dashboard']);
         }
       } catch (e) {
         console.error("Failed to load RBAC permissions", e);
+        const jclFallback = activeIndustry === 'real_estate_jcl' ? getJCLRolePermissions(user.role) : null;
+        setAllowedPaths(jclFallback || ['/', '/my-dashboard']);
       } finally {
         setLoadingPermissions(false);
       }
