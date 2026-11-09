@@ -186,38 +186,38 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   <>
   {/* ── NATIVE MOBILE TOP BAR ── */}
   <div style={{ backgroundColor: "#005A9C", color: "#ffffff" }} className="md:hidden sticky top-0 left-0 right-0 w-full border-b border-white/15 pt-[env(safe-area-inset-top,0px)] shadow-xs z-[60]">
-    <div className="flex items-center justify-between px-2.5 h-[36px] gap-2">
+    <div className="flex items-center justify-between px-3 h-[44px] gap-2.5">
       {/* Left: User Profile Avatar */}
       <button 
         onClick={() => navigate('/personal-info')} 
-        className="relative w-[26px] h-[26px] shrink-0 rounded-full bg-white/15 border border-white/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform" 
+        className="relative w-[30px] h-[30px] shrink-0 rounded-full bg-white/15 border border-white/20 flex items-center justify-center overflow-hidden active:scale-95 transition-transform" 
         aria-label="Open profile"
       >
         {user?.avatar_url ? (
           <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
         ) : (
-          <span className="text-[10px] font-bold text-white">{initials}</span>
+          <span className="text-[11px] font-bold text-white">{initials}</span>
         )}
       </button>
 
-      {/* Center: Search Bar (Compact sleek height matching minimal top bar) */}
-      <div className="flex-1 min-w-0 max-w-[280px]">
+      {/* Center: Search Bar */}
+      <div className="flex-1 min-w-0 max-w-[320px]">
         <button
           onClick={() => {
             window.dispatchEvent(new CustomEvent('open-spotlight'));
           }}
-          className="w-full h-[26px] px-2 rounded-full bg-white/15 hover:bg-white/20 border border-white/15 flex items-center gap-1.5 text-white/80 transition-all active:scale-[0.98]"
+          className="w-full h-[30px] px-2.5 rounded-full bg-white/15 hover:bg-white/20 border border-white/15 flex items-center gap-1.5 text-white/80 transition-all active:scale-[0.98]"
           aria-label="Search"
         >
-          <Search className="w-3 h-3 text-white/80 shrink-0" strokeWidth={2.2} />
-          <span className="text-[10.5px] font-normal text-white/80 truncate">
+          <Search className="w-3.5 h-3.5 text-white/80 shrink-0" strokeWidth={2.2} />
+          <span className="text-[11px] font-normal text-white/80 truncate">
             {t('search_placeholder', 'Search people, docs, tasks...')}
           </span>
         </button>
       </div>
 
       {/* Right: Notifications Icon */}
-      <div className="shrink-0 flex items-center justify-center text-white scale-80">
+      <div className="shrink-0 flex items-center justify-center text-white scale-90">
         <UnivNotificationCenter />
       </div>
     </div>
