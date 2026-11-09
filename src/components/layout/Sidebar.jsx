@@ -106,14 +106,40 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   }, [location.pathname, companyId]);
 
   const { data: liveRoleRecord } = useQuery({
-    queryKey: ['live_employee_role', user?.id, companyId],
+    queryKey: ['live_employee_role', user?.id, user?.email, companyId],
     queryFn: async () => {
-      if (!user?.id || !companyId) return null;
-      const empRes = await powerSync.execute('SELECT role FROM univ_hr_employees WHERE user_id = ? AND company_id = ? LIMIT 1', [user.id, companyId]);
-      if (empRes.rows?.length > 0) return empRes.rows._array[0].role;
+      if ((!user?.id && !user?.email) || !companyId) return null;
+      try {
+        const cleanEmail = (user?.email || '').replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
+        const rawEmail = user?.raw_email || user?.email || '';
+        const empRes = await powerSync.execute(
+          'SELECT role FROM univ_hr_employees WHERE company_id = ? AND (user_id = ? OR email LIKE ? OR email LIKE ?) LIMIT 1', 
+          [companyId, user?.id || '', rawEmail, cleanEmail]
+        );
+        if (empRes.rows?.length > 0) {
+          const row = empRes.rows._array ? empRes.rows._array[0] : empRes.rows.item(0);
+          if (row?.role) return row.role;
+        }
+      } catch (e) {
+        // Fallback to Supabase
+      }
+
+      try {
+        const cleanEmail = (user?.email || '').replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
+        const rawEmail = user?.raw_email || user?.email || '';
+        const { data: supaEmp } = await supabase
+          .from('univ_hr_employees')
+          .select('role')
+          .eq('company_id', companyId)
+          .or(`user_id.eq.${user?.id || ''},email.ilike.${rawEmail},email.ilike.${cleanEmail}`)
+          .limit(1)
+          .maybeSingle();
+        if (supaEmp?.role) return supaEmp.role;
+      } catch (e) {}
+
       return user?.role; // Fallback to auth token
     },
-    enabled: !!user?.id && !!companyId
+    enabled: (!!user?.id || !!user?.email) && !!companyId
   });
 
   const activeRoleName = liveRoleRecord || user?.role;

@@ -213,7 +213,6 @@ export default function Employees() {
             await supabase.from('staff_records').update({
               full_name: formData.name,
               department: formData.departmentId,
-              role: formData.role,
               phone: formData.phone,
               salary: formData.salary ? String(formData.salary) : null,
               hire_date: formData.startDate,
@@ -221,6 +220,19 @@ export default function Employees() {
             }).eq('company_id', companyId).ilike('user_email', formData.email);
           } catch (e) {
             console.warn('staff_records mirror update failed:', e);
+          }
+
+          // Crucial: Update the user's role in profiles table and by user_id
+          try {
+            const rawEmail = formData.email.trim().toLowerCase();
+            const cleanEmail = rawEmail.replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
+            await supabase.from('profiles').update({
+              role: formData.role,
+              department: formData.departmentId,
+              full_name: formData.name
+            }).or(`email.ilike.${rawEmail},email.ilike.${cleanEmail}${emp?.userId ? `,id.eq.${emp.userId}` : ''}`);
+          } catch (e) {
+            console.warn('profiles role sync failed:', e);
           }
         }
 

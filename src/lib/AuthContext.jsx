@@ -648,27 +648,55 @@ export const AuthProvider = ({ children }) => {
         effectiveStaffRole = 'company_admin';
       }
 
-      // Check employee status (from staff_records or univ_hr_employees)
+      // Check live employee role & status from univ_hr_employees (source of truth for HR)
       let employeeStatus = staffRecord?.status || 'Active';
+      let liveEmployeeRole = null;
       try {
-        if (companyData?.id && sessionUser.email) {
+        if (companyData?.id && (sessionUser.email || sessionUser.id)) {
+          const cleanEmail = unmaskEmail(sessionUser.email);
+          const rawEmail = sessionUser.email;
           const empCheck = await powerSync.execute(
-            `SELECT status FROM univ_hr_employees WHERE company_id = ? AND (email LIKE ? OR user_id = ?) LIMIT 1`,
-            [companyData.id, sessionUser.email, sessionUser.id]
+            `SELECT status, role FROM univ_hr_employees WHERE company_id = ? AND (email LIKE ? OR email LIKE ? OR user_id = ?) LIMIT 1`,
+            [companyData.id, rawEmail, cleanEmail, sessionUser.id]
           );
           if (empCheck.rows && empCheck.rows.length > 0) {
-            const rawStatus = (empCheck.rows._array ? empCheck.rows._array[0] : empCheck.rows.item(0))?.status;
-            if (rawStatus) employeeStatus = rawStatus;
+            const row = empCheck.rows._array ? empCheck.rows._array[0] : empCheck.rows.item(0);
+            if (row?.status) employeeStatus = row.status;
+            if (row?.role) liveEmployeeRole = row.role;
           }
         }
       } catch (e) {
-        // Fallback to staffRecord status
+        // Fallback to staffRecord / profile status & role
       }
+
+      // Also check direct Supabase for univ_hr_employees if liveEmployeeRole wasn't found in offline cache
+      if (!liveEmployeeRole && companyData?.id && (sessionUser.email || sessionUser.id)) {
+        try {
+          const cleanEmail = unmaskEmail(sessionUser.email);
+          const rawEmail = sessionUser.email;
+          const { data: supaEmp } = await supabase
+            .from('univ_hr_employees')
+            .select('role, status')
+            .eq('company_id', companyData.id)
+            .or(`email.ilike.${rawEmail},email.ilike.${cleanEmail},user_id.eq.${sessionUser.id}`)
+            .limit(1)
+            .maybeSingle();
+          if (supaEmp?.role) liveEmployeeRole = supaEmp.role;
+          if (supaEmp?.status) employeeStatus = supaEmp.status;
+        } catch (e) {}
+      }
+
       const isSuspended = String(employeeStatus).toLowerCase() === 'suspended';
+
+      // Global admins retain super privileges
+      const isGlobalAdmin = ['super_admin', 'admin', 'company_admin', 'spaceman'].includes(baseRole);
+      const resolvedRole = isGlobalAdmin 
+        ? baseRole 
+        : (liveEmployeeRole || profile?.role || effectiveStaffRole || baseRole || 'lawyer');
       
       newUser = { 
         ...newUser,
-        role: ['super_admin', 'admin', 'company_admin', 'spaceman'].includes(baseRole) ? baseRole : (effectiveStaffRole || baseRole || 'lawyer'),
+        role: resolvedRole,
         company_logo_url: cleanLogo(companyData?.logo_url || null),
         company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || newUser?.industry_type || localStorage.getItem('slate_onboarding_industry') || 'law',
