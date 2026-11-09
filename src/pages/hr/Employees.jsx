@@ -68,18 +68,43 @@ export default function Employees() {
  
   const [dbRecords, setDbRecords] = useState([]);
   const [isDbLoading, setIsDbLoading] = useState(true);
-  useEffect(() => {
-    let active = true;
-    const fetchEmps = async () => {
-      setIsDbLoading(true);
+
+  const fetchEmps = async () => {
+    if (!companyId) return;
+    setIsDbLoading(true);
+    try {
+      const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
+      const rows = res.rows?._array || Array.from(res.rows || []);
+      if (rows.length > 0) {
+        setDbRecords(rows);
+      } else {
+        // Fallback to Supabase direct query if local PowerSync is still syncing
+        const { data: supaEmps } = await supabase
+          .from('univ_hr_employees')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false });
+        if (supaEmps && supaEmps.length > 0) {
+          setDbRecords(supaEmps);
+        } else {
+          setDbRecords([]);
+        }
+      }
+    } catch (e) {
       try {
-        const res = await powerSync.execute('SELECT * FROM univ_hr_employees WHERE company_id = ? ORDER BY created_at DESC', [companyId]);
-        if(active) setDbRecords(res.rows._array || Array.from(res.rows));
-      } catch(e){}
-      setIsDbLoading(false);
-    };
-    if (companyId) fetchEmps();
-    return () => { active = false; };
+        const { data: supaEmps } = await supabase
+          .from('univ_hr_employees')
+          .select('*')
+          .eq('company_id', companyId)
+          .order('created_at', { ascending: false });
+        if (supaEmps) setDbRecords(supaEmps);
+      } catch (err) {}
+    }
+    setIsDbLoading(false);
+  };
+
+  useEffect(() => {
+    fetchEmps();
   }, [companyId]);
         
  const [departmentRecords, setDepartmentRecords] = useState([]);
@@ -110,17 +135,17 @@ export default function Employees() {
  const employees = dbRecords.map(r => ({
   id: r.id,
   status: r.status || 'Active',
-  employeeId: r.employee_id || r.id.substring(0,6),
-  name: r.name,
-  departmentId: r.department_id,
+  employeeId: r.employee_id || r.id?.substring(0,6) || 'EMP',
+  name: r.name || r.full_name || [r.first_name, r.last_name].filter(Boolean).join(' ') || 'Unnamed Staff',
+  departmentId: r.department || r.department_id,
   role: r.role,
-  roleName: DEFAULT_PLATFORM_ROLES.find(d => d.id === r.role || d.label.toLowerCase() === (r.role||'').toLowerCase())?.label || roleRecords.find(ro => ro.id === r.role || ro.name === r.role)?.name || r.role,
+  roleName: DEFAULT_PLATFORM_ROLES.find(d => d.id === r.role || d.label?.toLowerCase() === (r.role||'').toLowerCase())?.label || roleRecords.find(ro => ro.id === r.role || ro.name === r.role)?.name || r.role,
   email: r.email,
   phone: r.phone,
   salary: r.salary,
   reportsTo: r.reports_to,
   startDate: r.start_date,
-  departmentName: departmentRecords.find(d => d.id === r.department_id)?.name || 'Unassigned',
+  departmentName: departmentRecords.find(d => d.id === (r.department || r.department_id) || d.name === (r.department || r.department_id))?.name || r.department || 'Unassigned',
   reportsToName: dbRecords.find(s => s.id === r.reports_to)?.name || 'None'
 }));
 
@@ -153,101 +178,192 @@ export default function Employees() {
  const mutateRecord = useMutateIndustryRecord();
  const deleteRecord = useDeleteIndustryRecord();
 
- const handleCreateOrUpdateEmployee = async () => {
- if (!formData.name.trim()) return toast.error("Please enter a name");
- if (!editTargetId && createAccount && !password) return toast.error("Please provide a temporary password for the account");
- 
- setIsSubmitting(true);
- try {
-   if (editTargetId) {
-      const emp = employees.find(e => e.id === editTargetId);
-      const payload = { 
-        name: formData.name,
-        department: formData.departmentId,
-        reports_to: formData.reportsTo,
-        role: formData.role,
-        email: formData.email,
-        phone: formData.phone,
-        salary: formData.salary,
-        start_date: formData.startDate,
-        employee_id: emp.employeeId,
-        updated_at: new Date().toISOString()
-      };
+  const handleCreateOrUpdateEmployee = async () => {
+    if (!formData.name.trim()) return toast.error("Please enter a name");
+    if (!editTargetId && createAccount && !password) return toast.error("Please provide a temporary password for the account");
+    
+    setIsSubmitting(true);
+    try {
+      if (editTargetId) {
+        const emp = employees.find(e => e.id === editTargetId);
+        const payload = { 
+          name: formData.name,
+          department: formData.departmentId,
+          reports_to: formData.reportsTo,
+          role: formData.role,
+          email: formData.email,
+          phone: formData.phone,
+          salary: formData.salary,
+          start_date: formData.startDate,
+          employee_id: emp?.employeeId,
+          updated_at: new Date().toISOString()
+        };
         const _k = Object.keys(payload);
         const _v = Object.values(payload);
         await powerSync.execute(`UPDATE univ_hr_employees SET ${_k.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._v, editTargetId]);
-     toast.success('Employee updated successfully!');
-     setShowModal(false);
-     setEditTargetId(null);
-     setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
-     setPassword('');
-   } else {
-     const employeeId = `EMP-${Math.floor(1000 + Math.random() * 9000)}`;
-     let finalRole = formData.role || 'staff';
-     if (useCustomRole && formData.role && !roleRecords.find(r => r.name === formData.role)) {
-         await powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [user?.company_id, formData.role, formData.role]);
-     }
-     let finalDeptId = formData.departmentId;
-     if (useCustomDept && formData.departmentId && !departmentRecords.find(d => d.name === formData.departmentId)) {
-         const newDeptId = crypto.randomUUID();
-         await powerSync.execute("INSERT INTO platform_departments (id, company_id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))", [newDeptId, user?.company_id, formData.departmentId, formData.departmentId]);
-         finalDeptId = newDeptId;
-     }
-     let authUserId = null;
-     if (createAccount) {
-       try {
-         const rawLoginEmail = formData.email.trim().toLowerCase();
-         const [localPart, domain] = rawLoginEmail.split('@');
-         const proxyEmail = `${localPart}+firm${(user?.company_id || '').replace(/-/g, '')}@${domain}`;
+        try {
+          await supabase.from('univ_hr_employees').update(payload).eq('id', editTargetId);
+        } catch (e) {
+          console.warn('Direct Supabase update sync failed:', e);
+        }
 
-         const reg = await base44.auth.adminRegister({
-           email: proxyEmail,
-           password: password,
-           company_id: user?.company_id,
-           role: finalRole
-         });
-         authUserId = reg?.user?.id;
-       } catch (err) {
-         throw new Error("Failed to create user account: " + err.message);
-       }
-     }
-     const newId = crypto.randomUUID();
-      const payload = { 
-        id: newId, 
-        company_id: user?.company_id, 
-        name: formData.name,
-        department: finalDeptId,
-        reports_to: formData.reportsTo,
-        role: finalRole,
-        email: formData.email,
-        phone: formData.phone,
-        salary: formData.salary,
-        start_date: formData.startDate,
-        employee_id: employeeId,
-        user_id: authUserId || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-     const _k = Object.keys(payload);
-     const _v = Object.values(payload);
-     await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
-     if (authUserId) {
-       await supabase.from("staff_records").update({ user_id: authUserId }).eq("company_id", user?.company_id).ilike("user_email", formData.email);
-     }
-     toast.success(createAccount ? 'Employee added and account created successfully!' : 'Employee added successfully!');
-     notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general'}).catch(console.error);
-     powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "New Hire", `${formData.name} was onboarded as ${formData.role}`, "info", 0]).catch(console.error);
-     setShowModal(false);
-     setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
-     setPassword('');
-     setCreateAccount(true);
-   }
- } catch (err) {
-   toast.error(err.message || 'An error occurred');
- } finally {
-   setIsSubmitting(false);
- }
-};
+        // Mirror to staff_records
+        if (formData.email) {
+          try {
+            await supabase.from('staff_records').update({
+              full_name: formData.name,
+              department: formData.departmentId,
+              role: formData.role,
+              phone: formData.phone,
+              salary: formData.salary ? String(formData.salary) : null,
+              hire_date: formData.startDate,
+              updated_at: new Date().toISOString()
+            }).eq('company_id', companyId).ilike('user_email', formData.email);
+          } catch (e) {
+            console.warn('staff_records mirror update failed:', e);
+          }
+        }
+
+        setDbRecords(prev => prev.map(r => r.id === editTargetId ? { ...r, ...payload } : r));
+        toast.success('Employee updated successfully!');
+        setShowModal(false);
+        setEditTargetId(null);
+        setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
+        setPassword('');
+      } else {
+        const employeeId = `EMP-${Math.floor(1000 + Math.random() * 9000)}`;
+        let finalRole = formData.role || 'staff';
+        if (useCustomRole && formData.role && !roleRecords.find(r => r.name === formData.role)) {
+          await powerSync.execute('INSERT INTO platform_roles (id, company_id, name, description) VALUES (uuid(), ?, ?, ?)', [user?.company_id, formData.role, formData.role]);
+        }
+        let finalDeptId = formData.departmentId;
+        if (useCustomDept && formData.departmentId && !departmentRecords.find(d => d.name === formData.departmentId)) {
+          const newDeptId = crypto.randomUUID();
+          await powerSync.execute("INSERT INTO platform_departments (id, company_id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))", [newDeptId, user?.company_id, formData.departmentId, formData.departmentId]);
+          finalDeptId = newDeptId;
+        }
+
+        let authUserId = null;
+        if (createAccount && formData.email) {
+          try {
+            const rawLoginEmail = formData.email.trim().toLowerCase();
+            const [localPart, domain] = rawLoginEmail.split('@');
+            const proxyEmail = `${localPart}+firm${(user?.company_id || '').replace(/-/g, '')}@${domain}`;
+
+            // Try adminRegister first
+            try {
+              const reg = await base44.auth.adminRegister({
+                email: proxyEmail,
+                password: password,
+                company_id: user?.company_id,
+                role: finalRole
+              });
+              authUserId = reg?.user?.id;
+            } catch (regErr) {
+              // Try admin_create_user RPC fallback
+              console.warn("adminRegister failed, trying admin_create_user RPC:", regErr?.message);
+              const { data: rpcUserId, error: rpcErr } = await supabase.rpc('admin_create_user', {
+                user_email: proxyEmail,
+                user_password: password,
+                user_role: finalRole,
+                user_company_id: user?.company_id,
+                user_full_name: formData.name,
+                user_metadata: { company_id: user?.company_id, role: finalRole }
+              });
+              if (!rpcErr && rpcUserId) {
+                authUserId = rpcUserId;
+              } else {
+                // If user already exists, grab profile id
+                const { data: existProf } = await supabase.from('profiles').select('id').eq('email', proxyEmail).maybeSingle();
+                if (existProf?.id) {
+                  authUserId = existProf.id;
+                } else {
+                  throw regErr;
+                }
+              }
+            }
+          } catch (err) {
+            console.error("Account creation warning:", err);
+            toast.error("Could not register user auth: " + (err.message || 'error'));
+          }
+        }
+
+        const newId = crypto.randomUUID();
+        const payload = { 
+          id: newId, 
+          company_id: user?.company_id, 
+          name: formData.name,
+          department: finalDeptId,
+          reports_to: formData.reportsTo || null,
+          role: finalRole,
+          email: formData.email,
+          phone: formData.phone || null,
+          salary: formData.salary ? Number(formData.salary) : null,
+          start_date: formData.startDate,
+          employee_id: employeeId,
+          user_id: authUserId || null,
+          status: 'Active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        // 1. Insert into local PowerSync DB
+        const _k = Object.keys(payload);
+        const _v = Object.values(payload);
+        await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
+
+        // 2. Direct insert into Supabase univ_hr_employees
+        try {
+          await supabase.from('univ_hr_employees').insert([payload]);
+        } catch (supaErr) {
+          console.warn('Direct Supabase insert into univ_hr_employees failed:', supaErr);
+        }
+
+        // 3. Mirror into staff_records and profiles for universal auth and system-wide visibility
+        try {
+          const staffPayload = {
+            id: newId,
+            company_id: user?.company_id,
+            user_email: formData.email,
+            full_name: formData.name,
+            role: finalRole,
+            department: finalDeptId,
+            phone: formData.phone || null,
+            hire_date: formData.startDate,
+            status: 'active',
+            salary: formData.salary ? String(formData.salary) : null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
+          if (authUserId) staffPayload.user_id = authUserId;
+
+          await supabase.from('staff_records').upsert(staffPayload, { onConflict: 'id' });
+          await powerSync.execute(
+            `INSERT OR REPLACE INTO staff_records (id, company_id, user_email, full_name, role, department, phone, hire_date, status, salary, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [newId, user?.company_id, formData.email, formData.name, finalRole, finalDeptId, formData.phone || null, formData.startDate, 'active', formData.salary ? String(formData.salary) : null, new Date().toISOString(), new Date().toISOString()]
+          ).catch(() => {});
+        } catch (staffErr) {
+          console.warn('staff_records sync notice:', staffErr);
+        }
+
+        // 4. Update local state immediately so new employee shows in the UI right away
+        setDbRecords(prev => [payload, ...prev]);
+
+        toast.success(createAccount && authUserId ? 'Employee added and login account created successfully!' : 'Employee added successfully!');
+        notifyTeam({ companyId: user?.company_id, provider: 'slack', message: `New employee onboarded: ${formData.name} as ${formData.role}`, channel: '#general'}).catch(console.error);
+        powerSync.execute(`INSERT INTO univ_notifications (id, company_id, created_at, title, message, type, read) VALUES (?, ?, ?, ?, ?, ?, ?)`, [crypto.randomUUID(), user?.company_id, new Date().toISOString(), "New Hire", `${formData.name} was onboarded as ${formData.role}`, "info", 0]).catch(console.error);
+
+        setShowModal(false);
+        setFormData({ name: '', departmentId: '', reportsTo: '', role: '', email: '', phone: '', salary: '', startDate: new Date().toISOString().split('T')[0] });
+        setPassword('');
+        setCreateAccount(true);
+      }
+    } catch (err) {
+      toast.error(err.message || 'An error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
  const openEdit = (emp) => {
  setFormData({
