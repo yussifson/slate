@@ -36,19 +36,44 @@ export default function ForgotPassword() {
  : `${window.location.protocol}//${baseDomain}${port}`;
 
  const handleSubmit = async (e) => {
- e.preventDefault();
- setError('');
- setLoading(true);
- try {
- const { error: err} = await supabase.auth.resetPasswordForEmail(email, {
- redirectTo: `${base}/reset-password`});
- if (err) throw err;
- setSent(true);
-} catch (err) {
- setError(err.message || 'Failed to send reset email.');
-} finally {
- setLoading(false);
-}
+  e.preventDefault();
+  setError('');
+  setLoading(true);
+  try {
+    const cleanEmail = email.trim().toLowerCase();
+    let targetEmail = cleanEmail;
+
+    // In multi-tenant firm workspaces, auth users are salted: <local>+firm<company_id>@<domain>
+    if (currentSubdomain) {
+      try {
+        const { data: brandData } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: currentSubdomain });
+        const compId = Array.isArray(brandData) ? brandData[0]?.id : brandData?.id;
+        if (compId) {
+          const [localPart, domain] = cleanEmail.split('@');
+          targetEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
+        }
+      } catch (e) {
+        console.warn('Subdomain resolution notice:', e);
+      }
+    }
+
+    let res = await supabase.auth.resetPasswordForEmail(targetEmail, {
+      redirectTo: `${base}/reset-password`
+    });
+
+    if (res?.error && targetEmail !== cleanEmail) {
+      res = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+        redirectTo: `${base}/reset-password`
+      });
+    }
+
+    if (res?.error) throw res.error;
+    setSent(true);
+  } catch (err) {
+    setError(err.message || 'Failed to send reset email.');
+  } finally {
+    setLoading(false);
+  }
 };
 
  return (

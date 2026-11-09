@@ -6,7 +6,7 @@ import { supabase} from "@/api/supabaseClient";
 import { Button} from '@/components/ui/button';
 import { Input} from '@/components/ui/input';
 import { useAuth} from '@/lib/AuthContext';
-import { AlertCircle} from 'lucide-react';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Logo} from '@/components/ui/Logo';
 import JCL_LOGO_BASE64 from '@/assets/jclLogoBase64';
 import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
@@ -42,6 +42,7 @@ export default function Login() {
  const { t} = useTranslation();
  const [email, setEmail] = useState('');
  const [password, setPassword] = useState('');
+ const [showPassword, setShowPassword] = useState(false);
  const [workspace, setWorkspace] = useState('');
  const [error, setError] = useState('');
  const [loading, setLoading] = useState(false);
@@ -660,14 +661,24 @@ export default function Login() {
           {t("forgot_password", "Forgot?")}
         </Link>
       </div>
-      <Input
-        type="password"
-        required
-        placeholder="••••••••"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full h-11 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
-      />
+      <div className="relative">
+        <Input
+          type={showPassword ? "text" : "password"}
+          required
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full h-11 pr-10 text-sm bg-slate-50 border-primary/40 text-slate-900 focus:bg-white focus:ring-2 focus:ring-primary/20 hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200"
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1"
+          aria-label={showPassword ? "Hide password" : "Show password"}
+        >
+          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+        </button>
+      </div>
     </div>
 
     <Button type="submit" className="w-full h-12 mt-2 text-base font-semibold transition-all active:scale-[0.98]" disabled={loading}>

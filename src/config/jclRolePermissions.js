@@ -141,7 +141,7 @@ export function getJCLRolePermissions(roleName) {
     ]));
   }
 
-  // IT & Support (Everything EXCEPT HR and Finance)
+  // IT & Support (Operations + All modules, plus Employees onboarding access under HR)
   if (['it', 'it_support', 'tech', 'system_admin', 'developer'].includes(r)) {
     return Array.from(new Set([
       ...JCL_OPERATIONS_PATHS,
@@ -150,6 +150,9 @@ export function getJCLRolePermissions(roleName) {
       ...JCL_ENGINEERING_PATHS,
       ...JCL_SECRETARY_PATHS,
       ...JCL_PROPERTIES_PATHS,
+      '/hr',
+      '/employees',
+      '/team',
       '/sites',
       '/integrations',
       '/real-estate/audit-log'

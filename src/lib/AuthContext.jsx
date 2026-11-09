@@ -637,6 +637,11 @@ export const AuthProvider = ({ children }) => {
         return finalUrl;
       };
 
+      const unmaskEmail = (emailStr) => {
+        if (!emailStr || typeof emailStr !== 'string') return emailStr;
+        return emailStr.replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
+      };
+
       let baseRole = profile?.role || sessionUser.user_metadata?.role;
       let effectiveStaffRole = staffRecord?.role;
       if (effectiveStaffRole === 'Company Admin' || effectiveStaffRole === 'Managing Partner') {
@@ -668,7 +673,8 @@ export const AuthProvider = ({ children }) => {
         company_name: companyData?.name || newUser?.company_name || sessionUser.user_metadata?.company_name || "Slate",
         company_industry: companyData?.industry_type || newUser?.industry_type || localStorage.getItem('slate_onboarding_industry') || 'law',
         company_currency: companyData?.currency || null,
-        email: sessionUser.email, 
+        email: profile?.email || unmaskEmail(sessionUser.email),
+        raw_email: sessionUser.email, 
         full_name: staffRecord?.full_name || newUser?.full_name || sessionUser.user_metadata?.full_name || "Admin",
         avatar_url: sessionUser.user_metadata?.avatar_url || newUser?.avatar_url || null,
         subscription_plan: companyData?.subscription_plan || 'starter',

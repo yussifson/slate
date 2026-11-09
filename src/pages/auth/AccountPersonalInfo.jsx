@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { User, Camera, Crown } from 'lucide-react';
+import { User, Camera, Crown, Lock, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from "@/api/supabaseClient";
+import { toast } from 'react-hot-toast';
 
 export default function AccountPersonalInfo() {
   const { user, profile, refreshUser } = useAuth();
@@ -33,6 +34,14 @@ export default function AccountPersonalInfo() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Security & Password Change State
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
 
   const defaultAvatars = [
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
@@ -212,6 +221,43 @@ export default function AccountPersonalInfo() {
       setIsEditingCategory(false);
     } catch (err) {
       alert("Error updating category: " + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e?.preventDefault();
+    if (!newPassword) {
+      toast.error("Please enter a new password");
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      if (error) throw error;
+
+      setPasswordSuccess(true);
+      toast.success("Password changed successfully!");
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => {
+        setIsChangingPassword(false);
+        setPasswordSuccess(false);
+      }, 2000);
+    } catch (err) {
+      toast.error("Failed to update password: " + err.message);
     } finally {
       setIsSaving(false);
     }
@@ -486,6 +532,101 @@ export default function AccountPersonalInfo() {
                  </div>
                )}
             </div>
+          </div>
+        </div>
+
+        {/* Security & Password */}
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-card overflow-hidden">
+          <div className="p-6 md:p-8 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+             <div>
+               <h2 className="text-xl font-medium text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                 <Lock className="w-5 h-5 text-primary" /> Security & Password
+               </h2>
+               <p className="text-sm text-gray-500 dark:text-gray-400">Manage your login password and credentials</p>
+             </div>
+          </div>
+          
+          <div className="p-6 md:p-8">
+            {isChangingPassword ? (
+              <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
+                {passwordSuccess && (
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center gap-2 text-emerald-800 dark:text-emerald-300 text-sm">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                    <span>Password successfully updated!</span>
+                  </div>
+                )}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">New Password</label>
+                  <div className="relative">
+                    <input 
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
+                      placeholder="Minimum 6 characters"
+                      className="w-full h-10 px-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                  <div className="relative">
+                    <input 
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      className="w-full h-10 px-3 pr-10 border border-gray-300 dark:border-gray-600 rounded-md bg-transparent text-gray-900 dark:text-white text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button 
+                    type="submit" 
+                    disabled={isSaving} 
+                    className="px-4 py-2 bg-primary text-white rounded-md text-sm font-medium hover:bg-primary/90 disabled:opacity-50"
+                  >
+                    {isSaving ? "Updating..." : "Update Password"}
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => { setIsChangingPassword(false); setNewPassword(''); setConfirmPassword(''); }} 
+                    className="px-4 py-2 text-gray-600 dark:text-gray-300 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="flex items-center justify-between w-full">
+                <div className="flex-1 grid grid-cols-[120px_1fr] md:grid-cols-[160px_1fr] items-center">
+                   <div className="text-sm font-medium text-gray-500 dark:text-gray-400">Password</div>
+                   <div className="text-sm text-gray-900 dark:text-white font-medium">••••••••••••</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsChangingPassword(true)}
+                  className="px-3.5 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-xs font-semibold transition-colors"
+                >
+                  Change Password
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
