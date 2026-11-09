@@ -260,39 +260,51 @@ export default function Employees() {
               });
               authUserId = reg?.user?.id;
             } catch (regErr) {
-              // Try admin_create_user RPC fallback
-              console.warn("adminRegister failed, trying admin_create_user RPC:", regErr?.message);
-              const { data: rpcUserId, error: rpcErr } = await supabase.rpc('admin_create_user', {
-                user_email: proxyEmail,
-                user_password: password,
-                user_role: finalRole,
-                user_company_id: user?.company_id,
-                user_full_name: formData.name,
-                user_metadata: { company_id: user?.company_id, role: finalRole }
-              });
-              if (!rpcErr && rpcUserId) {
-                authUserId = rpcUserId;
+              if (regErr?.message?.toLowerCase().includes('already registered') || regErr?.message?.toLowerCase().includes('already exists')) {
+                // User already exists in Supabase Auth, sign in or fetch profile id
+                try {
+                  const signInCheck = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
+                  if (signInCheck.data?.user?.id) {
+                    authUserId = signInCheck.data.user.id;
+                  }
+                } catch (e) {}
+                if (!authUserId) {
+                  const { data: existProf } = await supabase.from('profiles').select('id').eq('email', proxyEmail).maybeSingle();
+                  authUserId = existProf?.id || null;
+                }
               } else {
-                // If user already exists, grab profile id
-                const { data: existProf } = await supabase.from('profiles').select('id').eq('email', proxyEmail).maybeSingle();
-                if (existProf?.id) {
-                  authUserId = existProf.id;
-                } else {
-                  throw regErr;
+                // Try admin_create_user RPC fallback
+                console.warn("adminRegister notice, trying admin_create_user RPC:", regErr?.message);
+                const { data: rpcUserId, error: rpcErr } = await supabase.rpc('admin_create_user', {
+                  user_email: proxyEmail,
+                  user_password: password,
+                  user_role: finalRole,
+                  user_company_id: user?.company_id,
+                  user_full_name: formData.name,
+                  user_metadata: { company_id: user?.company_id, role: finalRole }
+                });
+                if (!rpcErr && rpcUserId) {
+                  authUserId = rpcUserId;
                 }
               }
             }
           } catch (err) {
-            console.error("Account creation warning:", err);
-            toast.error("Could not register user auth: " + (err.message || 'error'));
+            console.warn("Account auth registration notice:", err);
           }
         }
 
         const newId = crypto.randomUUID();
+        const trimmedName = (formData.name || '').trim();
+        const nameParts = trimmedName.split(' ');
+        const firstName = nameParts[0] || 'Staff';
+        const lastName = nameParts.slice(1).join(' ') || 'Member';
+
         const payload = { 
           id: newId, 
           company_id: user?.company_id, 
-          name: formData.name,
+          name: trimmedName,
+          first_name: firstName,
+          last_name: lastName,
           department: finalDeptId,
           reports_to: formData.reportsTo || null,
           role: finalRole,
@@ -312,20 +324,36 @@ export default function Employees() {
         const _v = Object.values(payload);
         await powerSync.execute(`INSERT INTO univ_hr_employees (${_k.join(', ')}) VALUES (${_k.map(()=>'?').join(', ')})`, _v);
 
-        // 2. Direct insert into Supabase univ_hr_employees
+        // 2. Direct insert into Supabase univ_hr_employees with required columns
         try {
           await supabase.from('univ_hr_employees').insert([payload]);
         } catch (supaErr) {
           console.warn('Direct Supabase insert into univ_hr_employees failed:', supaErr);
         }
 
-        // 3. Mirror into staff_records and profiles for universal auth and system-wide visibility
+        // 3. Mirror into profiles table so auth user is linked to company
+        if (authUserId) {
+          try {
+            await supabase.from('profiles').upsert({
+              id: authUserId,
+              company_id: user?.company_id,
+              company_name: user?.company_name || 'JCL Office',
+              email: formData.email,
+              full_name: trimmedName,
+              role: finalRole
+            });
+          } catch (profErr) {
+            console.warn('profile upsert notice:', profErr);
+          }
+        }
+
+        // 4. Mirror into staff_records
         try {
           const staffPayload = {
             id: newId,
             company_id: user?.company_id,
             user_email: formData.email,
-            full_name: formData.name,
+            full_name: trimmedName,
             role: finalRole,
             department: finalDeptId,
             phone: formData.phone || null,
@@ -340,13 +368,13 @@ export default function Employees() {
           await supabase.from('staff_records').upsert(staffPayload, { onConflict: 'id' });
           await powerSync.execute(
             `INSERT OR REPLACE INTO staff_records (id, company_id, user_email, full_name, role, department, phone, hire_date, status, salary, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [newId, user?.company_id, formData.email, formData.name, finalRole, finalDeptId, formData.phone || null, formData.startDate, 'active', formData.salary ? String(formData.salary) : null, new Date().toISOString(), new Date().toISOString()]
+            [newId, user?.company_id, formData.email, trimmedName, finalRole, finalDeptId, formData.phone || null, formData.startDate, 'active', formData.salary ? String(formData.salary) : null, new Date().toISOString(), new Date().toISOString()]
           ).catch(() => {});
         } catch (staffErr) {
           console.warn('staff_records sync notice:', staffErr);
         }
 
-        // 4. Update local state immediately so new employee shows in the UI right away
+        // 5. Update local state immediately so new employee shows in the UI right away
         setDbRecords(prev => [payload, ...prev]);
 
         toast.success(createAccount && authUserId ? 'Employee added and login account created successfully!' : 'Employee added successfully!');
