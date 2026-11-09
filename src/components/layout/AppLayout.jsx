@@ -363,6 +363,22 @@ export default function AppLayout() {
  </Button>
  </div>
  )}
+
+ {/* Suspended Staff Restriction Banner */}
+ {(user?.is_suspended || String(user?.employee_status).toLowerCase() === 'suspended') && (
+ <div className="bg-amber-500 text-slate-950 px-4 py-2 flex items-center justify-between gap-3 text-xs md:text-sm shrink-0 font-medium z-50 border-b border-amber-600/30 shadow-sm">
+   <div className="flex items-center gap-2">
+     <span className="p-1 bg-amber-600/30 rounded-md font-bold text-amber-950 text-xs">⚠️</span>
+     <span className="font-bold tracking-wide uppercase text-[11px] text-amber-950">{t("account_suspended", "Account Suspended")}</span>
+     <span className="text-amber-950/90 font-normal">
+       · {t("suspended_notice", "Your staff account has been placed on suspended status by HR. Your access to operations is restricted.")}
+     </span>
+   </div>
+   <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-black/10 text-amber-950">
+     {t("restricted_access", "Restricted Access")}
+   </span>
+ </div>
+ )}
  <TopBar 
  user={user} 
  isSidebarCollapsed={isSidebarCollapsed} 

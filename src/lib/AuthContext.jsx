@@ -642,6 +642,24 @@ export const AuthProvider = ({ children }) => {
       if (effectiveStaffRole === 'Company Admin' || effectiveStaffRole === 'Managing Partner') {
         effectiveStaffRole = 'company_admin';
       }
+
+      // Check employee status (from staff_records or univ_hr_employees)
+      let employeeStatus = staffRecord?.status || 'Active';
+      try {
+        if (companyData?.id && sessionUser.email) {
+          const empCheck = await powerSync.execute(
+            `SELECT status FROM univ_hr_employees WHERE company_id = ? AND (email LIKE ? OR user_id = ?) LIMIT 1`,
+            [companyData.id, sessionUser.email, sessionUser.id]
+          );
+          if (empCheck.rows && empCheck.rows.length > 0) {
+            const rawStatus = (empCheck.rows._array ? empCheck.rows._array[0] : empCheck.rows.item(0))?.status;
+            if (rawStatus) employeeStatus = rawStatus;
+          }
+        }
+      } catch (e) {
+        // Fallback to staffRecord status
+      }
+      const isSuspended = String(employeeStatus).toLowerCase() === 'suspended';
       
       newUser = { 
         ...newUser,
@@ -669,7 +687,9 @@ export const AuthProvider = ({ children }) => {
         subscription_status: companyData?.subscription_status || 'trial',
         company_status: companyData?.status || 'active',
         company_created_date: companyData?.created_date || null,
-        available_companies: availableCompanies
+        available_companies: availableCompanies,
+        employee_status: employeeStatus,
+        is_suspended: isSuspended
       };
 
       const updatedUser = userRef.current;

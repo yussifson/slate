@@ -31,6 +31,7 @@ const getDeptColor = (name) => DEPT_COLORS[name] || { bg: 'from-violet-500 to-vi
 const STATUS_STYLES = {
   'Active':     'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
   'On Leave':   'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+  'Suspended':  'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-300 dark:border-amber-800',
   'Terminated': 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
 };
 
@@ -273,7 +274,17 @@ export default function Employees() {
 
  const handleUpdateStatus = async (employee, newStatus) => {
    try {
-     await powerSync.execute(`UPDATE univ_hr_employees SET status = ?, updated_at = ? WHERE id = ?`, [newStatus, new Date().toISOString(), employee.id]);
+     const nowIso = new Date().toISOString();
+     await powerSync.execute(`UPDATE univ_hr_employees SET status = ?, updated_at = ? WHERE id = ?`, [newStatus, nowIso, employee.id]);
+     try {
+       await supabase.from('univ_hr_employees').update({ status: newStatus, updated_at: nowIso }).eq('id', employee.id);
+       if (employee.email) {
+         await supabase.from('staff_records').update({ status: newStatus.toLowerCase(), updated_at: nowIso }).eq('company_id', companyId).ilike('user_email', employee.email);
+         await powerSync.execute(`UPDATE staff_records SET status = ?, updated_at = ? WHERE company_id = ? AND user_email LIKE ?`, [newStatus.toLowerCase(), nowIso, companyId, employee.email]);
+       }
+     } catch (syncErr) {
+       console.warn('Backend sync error on status update:', syncErr);
+     }
      setDbRecords(prev => prev.map(r => r.id === employee.id ? { ...r, status: newStatus } : r));
      toast.success(`Status updated to ${newStatus}`);
    } catch (err) {
@@ -281,18 +292,36 @@ export default function Employees() {
    }
 };
 
- const handleDeleteEmployee = () => {
- if (!deleteTargetId) return;
- deleteRecord.mutate(deleteTargetId, {
- onSuccess: () => {
- toast.success('Employee removed successfully!');
- setDeleteTargetId(null);
-},
- onError: (err) => {
- toast.error('Failed to remove employee: ' + err.message);
- setDeleteTargetId(null);
-}
-});
+ const handleDeleteEmployee = async () => {
+   if (!deleteTargetId) return;
+   try {
+     const emp = employees.find(e => e.id === deleteTargetId);
+     
+     // 1. Delete from local PowerSync DB immediately
+     await powerSync.execute('DELETE FROM univ_hr_employees WHERE id = ?', [deleteTargetId]);
+     
+     // 2. Delete from Supabase cloud database
+     await supabase.from('univ_hr_employees').delete().eq('id', deleteTargetId);
+     
+     // 3. If employee is also in staff_records by email, clean that up as well
+     if (emp?.email) {
+       try {
+         await supabase.from('staff_records').delete().eq('company_id', companyId).ilike('user_email', emp.email);
+         await powerSync.execute('DELETE FROM staff_records WHERE company_id = ? AND user_email LIKE ?', [companyId, emp.email]);
+       } catch (e) {
+         console.warn('Failed to clean staff_records for deleted employee:', e);
+       }
+     }
+
+     // 4. Update local state immediately so they disappear
+     setDbRecords(prev => prev.filter(r => r.id !== deleteTargetId));
+     toast.success('Employee deleted and removed from system successfully!');
+     setDeleteTargetId(null);
+   } catch (err) {
+     console.error('Failed to remove employee:', err);
+     toast.error('Failed to remove employee: ' + (err.message || 'Error occurred'));
+     setDeleteTargetId(null);
+   }
 };
 
  const filtered = employees.filter(e => 
@@ -459,6 +488,7 @@ export default function Employees() {
                       >
                         <option value="Active">Active</option>
                         <option value="On Leave">On Leave</option>
+                        <option value="Suspended">Suspended</option>
                         <option value="Terminated">Terminated</option>
                       </select>
                     </td>
