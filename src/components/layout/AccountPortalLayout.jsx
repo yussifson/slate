@@ -43,9 +43,7 @@ export default function AccountPortalLayout() {
         return 'Web Browser';
       };
       if (user?.email) {
-        supabase.functions.invoke('send-auth-alert', {
-          body: { email: user.email, type: 'Logout', deviceInfo: getDevice() }
-        }).catch(() => { /* Silenced: CORS on some origins is expected */ });
+        /* send-auth-alert disabled */
       }
     } catch (e) {}
 

@@ -283,7 +283,7 @@ export const AuthProvider = ({ children }) => {
           try {
             await powerSync.execute(`INSERT INTO profiles (${_keys.join(', ')}) VALUES (${_keys.map(()=>'?').join(', ')})`, _vals);
             const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
-            newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
+            newProfile = __resNew.rows && __resNew.rows.length > 0 ? (__resNew.rows._array ? __resNew.rows._array[0] : (__resNew.rows.item ? __resNew.rows.item(0) : __resNew.rows[0])) : null;
           } catch(err) {
             console.warn('[AuthContext] PowerSync offline insert failed:', err);
             insertError = err;
@@ -309,13 +309,14 @@ export const AuthProvider = ({ children }) => {
             !profile.company_name ||
             profile.email?.toLowerCase() !== sessionUser.email?.toLowerCase()
           ) {
-                        const _payload = {
+          const _payload = {
               company_id: staffRecord.company_id,
               company_name: companyName || profile.company_name,
               email: sessionUser.email?.toLowerCase() || profile.email || null,
               phone: staffRecord.phone || profile.phone || null,
               department: staffRecord.department || null,
-              bar_number: staffRecord.bar_number || null
+              bar_number: staffRecord.bar_number || null,
+              ...(shouldUpdateRole && staffRecord.role ? { role: staffRecord.role } : {})
             };
             const _keys = Object.keys(_payload);
             const _vals = Object.values(_payload).map(v => typeof v === 'object' && v !== null ? JSON.stringify(v) : v);
@@ -323,9 +324,15 @@ export const AuthProvider = ({ children }) => {
             let updatedProfile = null;
             let updateError = null;
             try {
+              // Direct Supabase update first for real-time cloud sync
+              await supabase.from('profiles').update(_payload).eq('id', sessionUser.id);
+            } catch (supaErr) {
+              console.warn('[AuthContext] Supabase profile sync caught:', supaErr);
+            }
+            try {
               await powerSync.execute(`UPDATE profiles SET ${_keys.map(k=>k+' = ?').join(', ')} WHERE id = ?`, [..._vals, sessionUser.id]);
               const __resUpd = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
-              updatedProfile = __resUpd.rows && __resUpd.rows.length > 0 ? __resUpd.rows.item(0) : null;
+              updatedProfile = __resUpd.rows && __resUpd.rows.length > 0 ? (__resUpd.rows._array ? __resUpd.rows._array[0] : (__resUpd.rows.item ? __resUpd.rows.item(0) : __resUpd.rows[0])) : null;
             } catch(err) {
               console.warn('[AuthContext] PowerSync offline update failed:', err);
               updateError = err;
@@ -417,7 +424,7 @@ export const AuthProvider = ({ children }) => {
               console.warn('[AuthContext] Profile insert skipped (likely already synced):', insertErr);
             }
             const __resNew = await powerSync.execute(`SELECT * FROM profiles WHERE id = ?`, [sessionUser.id]);
-            const newProfile = __resNew.rows && __resNew.rows.length > 0 ? __resNew.rows.item(0) : null;
+            const newProfile = __resNew.rows && __resNew.rows.length > 0 ? (__resNew.rows._array ? __resNew.rows._array[0] : (__resNew.rows.item ? __resNew.rows.item(0) : __resNew.rows[0])) : null;
             const insertError = null;
             
             if (!insertError && newProfile) {
@@ -661,7 +668,7 @@ export const AuthProvider = ({ children }) => {
             [companyData.id, rawEmail, cleanEmail, sessionUser.id]
           );
           if (empCheck.rows && empCheck.rows.length > 0) {
-            const row = empCheck.rows._array ? empCheck.rows._array[0] : empCheck.rows.item(0);
+            const row = empCheck.rows._array ? empCheck.rows._array[0] : (empCheck.rows.item ? empCheck.rows.item(0) : empCheck.rows[0]);
             if (row?.status) employeeStatus = row.status;
             if (row?.role) liveEmployeeRole = row.role;
           }
@@ -689,11 +696,11 @@ export const AuthProvider = ({ children }) => {
 
       const isSuspended = String(employeeStatus).toLowerCase() === 'suspended';
 
-      // Global admins retain super privileges
-      const isGlobalAdmin = ['super_admin', 'admin', 'company_admin', 'spaceman'].includes(baseRole);
-      const resolvedRole = isGlobalAdmin 
+      // Global super admins retain platform super privileges
+      const isSuperPlatformAdmin = ['super_admin', 'spaceman'].includes(baseRole);
+      const resolvedRole = isSuperPlatformAdmin 
         ? baseRole 
-        : (liveEmployeeRole || profile?.role || effectiveStaffRole || baseRole || 'lawyer');
+        : (liveEmployeeRole || effectiveStaffRole || profile?.role || baseRole || 'lawyer');
       
       newUser = { 
         ...newUser,

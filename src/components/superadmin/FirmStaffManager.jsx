@@ -46,7 +46,25 @@ export default function FirmStaffManager({ firm, onClose }) {
     enabled: !!firm.id});
 
   const updateRoleMutation = useMutation({
-    mutationFn: ({ id, role }) => base44.entities.StaffRecord.update(id, { role }),
+    mutationFn: async ({ id, role, user_email, user_id }) => {
+      // 1. Update StaffRecord
+      await base44.entities.StaffRecord.update(id, { role });
+
+      // 2. Sync to profiles and univ_hr_employees so login takes effect immediately
+      const staffMember = staffRecords.find(s => s.id === id);
+      const email = (user_email || staffMember?.user_email || '').trim().toLowerCase();
+      const uid = user_id || staffMember?.user_id;
+      const cleanEmail = email.replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
+
+      if (email || uid) {
+        try {
+          await supabase.from('profiles').update({ role }).or(`email.ilike.${email},email.ilike.${cleanEmail}${uid ? `,id.eq.${uid}` : ''}`);
+        } catch (_) {}
+        try {
+          await supabase.from('univ_hr_employees').update({ role, updated_at: new Date().toISOString() }).eq('company_id', firm.id).or(`email.ilike.${email},email.ilike.${cleanEmail}${uid ? `,user_id.eq.${uid}` : ''}`);
+        } catch (_) {}
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["firm-staff", firm.id] });
       toast({ title: "Role updated" });
@@ -309,7 +327,7 @@ export default function FirmStaffManager({ firm, onClose }) {
                   {staff.department && <p className="text-[10px] text-[#71717a] dark:text-gray-400">{staff.department}</p>}
                 </div>
                 {/* Role selector */}
-                <Select value={staff.role} onValueChange={v => updateRoleMutation.mutate({ id: staff.id, role: v })}>
+                <Select value={staff.role} onValueChange={v => updateRoleMutation.mutate({ id: staff.id, role: v, user_email: staff.user_email, user_id: staff.user_id })}>
                   <SelectTrigger className="w-36 h-7 text-xs tracking-[0.04em]"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {ROLES.map(r => {

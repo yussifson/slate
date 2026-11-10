@@ -611,10 +611,19 @@ async function executeViaDirectSupabase(sql, parameters = []) {
           continue;
         }
       }
-      return { rows: { _array: [aggRow], length: 1, 0: aggRow } };
+      return { rows: { _array: [aggRow], length: 1, 0: aggRow, item: (idx) => (idx === 0 ? aggRow : null) } };
     }
 
-    const resObj = { _array: rows, length: rows.length };
+    const resObj = {
+      _array: rows,
+      length: rows.length,
+      item: (idx) => rows[idx] || null,
+      [Symbol.iterator]: function* () {
+        for (let i = 0; i < rows.length; i++) {
+          yield rows[i];
+        }
+      }
+    };
     rows.forEach((r, idx) => { resObj[idx] = r; });
     return { rows: resObj };
   }

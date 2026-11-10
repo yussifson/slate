@@ -380,14 +380,12 @@ export default function Login() {
      if (ua.includes('Android')) return 'Android';
      return 'Web Browser';
    };
-   supabase.functions.invoke('send-auth-alert', {
-     body: { email: loginEmail, type: 'Login', deviceInfo: getDevice() }
-   }).catch(() => { /* Silenced: CORS on some origins is expected */ });
+   /* send-auth-alert disabled for custom domains */
  } catch (e) { /* Silenced */ }
  
  if (targetSubdomain) {
     // Check if user belongs to this subdomain via Supabase directly (local DB might not be synced yet)
-    const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+    const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).maybeSingle();
     
     // Only go to onboarding if they explicitly have no company_id anywhere
     if (!profile?.company_id) {
@@ -464,7 +462,7 @@ export default function Login() {
     if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
 } else {
     // Base domain login
-    const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).single();
+    const { data: profile } = await supabase.from('profiles').select('company_id, role, onboarding_completed').eq('id', authData.user.id).maybeSingle();
     
     // Only go to onboarding if they explicitly have no company_id anywhere
     if (!profile?.company_id) {
@@ -511,8 +509,9 @@ export default function Login() {
       }
 }
  
- // 3. Fallback if they somehow have no company but ARE onboarded
- if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
+    // 3. Fallback if they somehow have no company but ARE onboarded
+    try { localStorage.removeItem('slate_cached_user'); } catch(e) {}
+    if (isElectron) { navigate('/'); } else { window.location.href = '/'; }
 }
 };
 

@@ -176,6 +176,35 @@ export default function Team() {
         onSubmit={async (data, password) => {
           if (editingStaff) {
             await updateMutation.mutateAsync({ id: editingStaff.id, data });
+            
+            // Critical: Also sync updated role to profiles and univ_hr_employees so login immediately adopts it
+            const targetEmail = (data.user_email || editingStaff.user_email || '').trim().toLowerCase();
+            const cleanEmail = targetEmail.replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
+            
+            try {
+              if (data.role) {
+                // 1. Sync profiles table
+                await supabase.from('profiles').update({
+                  role: data.role,
+                  full_name: data.full_name || editingStaff.full_name,
+                  department: data.department || null,
+                  phone: data.phone || null
+                }).or(`email.ilike.${targetEmail},email.ilike.${cleanEmail}${editingStaff.user_id ? `,id.eq.${editingStaff.user_id}` : ''}`);
+
+                // 2. Sync univ_hr_employees table
+                await supabase.from('univ_hr_employees').update({
+                  role: data.role,
+                  first_name: (data.full_name || '').split(' ')[0] || editingStaff.full_name,
+                  last_name: (data.full_name || '').split(' ').slice(1).join(' ') || '',
+                  department: data.department || null,
+                  phone: data.phone || null,
+                  updated_at: new Date().toISOString()
+                }).eq('company_id', companyId).or(`email.ilike.${targetEmail},email.ilike.${cleanEmail}${editingStaff.user_id ? `,user_id.eq.${editingStaff.user_id}` : ''}`);
+              }
+            } catch (syncErr) {
+              console.warn('[Team] Role sync to profile/univ_hr_employees caught:', syncErr);
+            }
+
             setShowCreate(false);
             setEditingStaff(null);
             toast({ title: "Staff updated" });
