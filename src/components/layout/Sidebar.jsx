@@ -420,8 +420,8 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  return paths;
 }, [univAccessData, industryNavRaw]);
 
- const jclCalculatedPaths = (univAllowedPaths && univAllowedPaths.length > 5) ? null : (activeIndustry === 'real_estate_jcl' ? getJCLRolePermissions(activeRoleName) : null);
- const allowedPaths = isAdmin ? null : (univAllowedPaths || jclCalculatedPaths || customRolePermissions || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
+ const jclCalculatedPaths = activeIndustry === 'real_estate_jcl' ? getJCLRolePermissions(activeRoleName) : null;
+ const allowedPaths = isAdmin ? null : (jclCalculatedPaths || (univAllowedPaths && univAllowedPaths.length > 5 ? univAllowedPaths : null) || customRolePermissions || ROLE_PERMISSIONS[activeRoleName?.toLowerCase()] || INDUSTRY_BASE_PERMISSIONS[activeIndustry] || INDUSTRY_BASE_PERMISSIONS.default);
 
  const coreOrbitNav = [
  { label: "Search", icon: "Search", path: "/search"},

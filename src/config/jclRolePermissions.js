@@ -46,6 +46,7 @@ export const JCL_HR_PATHS = [
 ];
 
 export const JCL_FINANCE_PATHS = [
+  '/finance',
   '/finance/accounting',
   '/jcl/project-finance',
   '/invoices',
