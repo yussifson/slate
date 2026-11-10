@@ -127,11 +127,15 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       try {
         const cleanEmail = (user?.email || '').replace(/\+firm[a-zA-Z0-9_-]+@/, '@');
         const rawEmail = user?.raw_email || user?.email || '';
+        // Build filter safely — only include user_id filter if we have a valid id
+        const orParts = [`email.ilike.${rawEmail}`];
+        if (cleanEmail && cleanEmail !== rawEmail) orParts.push(`email.ilike.${cleanEmail}`);
+        if (user?.id) orParts.push(`user_id.eq.${user.id}`);
         const { data: supaEmp } = await supabase
           .from('univ_hr_employees')
           .select('role')
           .eq('company_id', companyId)
-          .or(`user_id.eq.${user?.id || ''},email.ilike.${rawEmail},email.ilike.${cleanEmail}`)
+          .or(orParts.join(','))
           .limit(1)
           .maybeSingle();
         if (supaEmp?.role) return supaEmp.role;

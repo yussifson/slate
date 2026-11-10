@@ -682,11 +682,17 @@ export const AuthProvider = ({ children }) => {
         try {
           const cleanEmail = unmaskEmail(sessionUser.email);
           const rawEmail = sessionUser.email;
+          // Build filter safely — avoid malformed .or() when id is missing
+          const orParts = [];
+          if (rawEmail) orParts.push(`email.ilike.${rawEmail}`);
+          if (cleanEmail && cleanEmail !== rawEmail) orParts.push(`email.ilike.${cleanEmail}`);
+          if (sessionUser.id) orParts.push(`user_id.eq.${sessionUser.id}`);
+          if (orParts.length === 0) throw new Error('No identifiers');
           const { data: supaEmp } = await supabase
             .from('univ_hr_employees')
             .select('role, status')
             .eq('company_id', companyData.id)
-            .or(`email.ilike.${rawEmail},email.ilike.${cleanEmail},user_id.eq.${sessionUser.id}`)
+            .or(orParts.join(','))
             .limit(1)
             .maybeSingle();
           if (supaEmp?.role) liveEmployeeRole = supaEmp.role;
