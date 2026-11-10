@@ -153,6 +153,7 @@ export default function Employees() {
 
  const employees = dbRecords.map(r => ({
   id: r.id,
+  userId: r.user_id,
   status: r.status || 'Active',
   employeeId: r.employee_id || r.id?.substring(0,6) || 'EMP',
   name: r.name || r.full_name || [r.first_name, r.last_name].filter(Boolean).join(' ') || 'Unnamed Staff',
@@ -254,6 +255,7 @@ export default function Employees() {
           try {
             await supabase.from('staff_records').update({
               full_name: trimmedName,
+              role: formData.role,
               department: formData.departmentId,
               phone: formData.phone,
               salary: parsedSalary ? String(parsedSalary) : null,

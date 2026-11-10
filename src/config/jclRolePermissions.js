@@ -87,7 +87,9 @@ export const JCL_ENGINEERING_PATHS = [
   '/engineering/drawings',
   '/boq',
   '/bom',
-  '/jcl/projects'
+  '/jcl/projects',
+  '/jcl/project-operations',
+  '/jcl/project-collaboration'
 ];
 
 export const JCL_SECRETARY_PATHS = [
@@ -194,6 +196,11 @@ export function getJCLRolePermissions(roleName) {
     ]));
   }
 
+  // General Manager / CEO / Director (full access — same as company_admin)
+  if (['general_manager', 'gm', 'ceo', 'director', 'managing_director', 'md'].includes(r)) {
+    return null; // null = unrestricted full access
+  }
+
   // Default fallback: Always grant Operations paths to any valid authenticated employee
   return JCL_OPERATIONS_PATHS;
 }
@@ -210,6 +217,7 @@ export const DEFAULT_PLATFORM_ROLES = [
   { id: 'procurement', label: 'Procurement & Logistics', department: 'Procurement', description: 'Access to requisitions, purchase orders, inventory & suppliers' },
   { id: 'secretary', label: 'Secretary / Front Desk', department: 'Administration', description: 'Access to visitor logs, front desk reception & office custody items' },
   { id: 'it', label: 'IT & Support / Systems', department: 'IT & Support', description: 'Technical infrastructure, system settings, integrations & audit logs' },
-  { id: 'property_manager', label: 'Property Manager', department: 'Operations', description: 'Management of properties, tenant leases, inspections & maintenance' }
+  { id: 'property_manager', label: 'Property Manager', department: 'Operations', description: 'Management of properties, tenant leases, inspections & maintenance' },
+  { id: 'general_manager', label: 'General Manager', department: 'Administration', description: 'Full access to all departments and system modules as General Manager / GM' }
 ];
 

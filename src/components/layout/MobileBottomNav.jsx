@@ -80,7 +80,8 @@ const ROLE_TABS = {
   receptionist: ['/jcl/front-desk', '/jcl/item-register', '/real-estate/clients'],
   company_admin: ['/real-estate/properties', '/real-estate/crm-leads', '/finance/accounting'],
   admin: ['/real-estate/properties', '/real-estate/crm-leads', '/finance/accounting'],
-  super_admin: ['/real-estate/properties', '/real-estate/crm-leads', '/finance/accounting']
+  super_admin: ['/real-estate/properties', '/real-estate/crm-leads', '/finance/accounting'],
+  general_manager: ['/', '/hr', '/finance/accounting', '/real-estate/clients']
 };
 
 // Category order matching JCL workflow
