@@ -357,7 +357,7 @@ export default function Tasks() {
     queryFn: () => base44.entities.Task.filter({ company_id: companyId }),
     enabled: !!companyId});
 
-  const isLentride = window.location.hostname.includes("lentride") || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
+  const isLentride = window.location.hostname.includes("zentride") || window.location.hostname.includes("lentride") || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
   const isRealEstate = String(industry).toLowerCase().includes("real_estate");
   const { data: cases = [] } = useQuery({
     queryKey: ["cases-list", companyId, isRealEstate],

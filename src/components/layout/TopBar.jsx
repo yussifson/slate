@@ -52,11 +52,15 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
  const { company} = useCompany();
  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
- const isLentride = host.includes('lentride') || 
+ const isZentride = host.includes('zentride') || 
+   host.includes('lentride') || 
+   (company?.name || '').toLowerCase().includes('zentride') || 
    (company?.name || '').toLowerCase().includes('lentride') || 
+   (user?.company_name || '').toLowerCase().includes('zentride') || 
    (user?.company_name || '').toLowerCase().includes('lentride') ||
    user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
    company?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
+ const isLentride = isZentride;
 
  const [currentVersion, setCurrentVersion] = useState(() => {
    return sessionStorage.getItem('slate_version_override') || localStorage.getItem('slate_version_override') || 'v1';
@@ -242,10 +246,21 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
      : "bg-[#005A9C] dark:bg-[#0B1418]/95 text-white border-b border-white/10 dark:border-white/5"
  )}>
  {/* Breadcrumb space reserved for the sidebar rail */}
- <div className="flex items-center gap-2 shrink-0">
+ <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+    {isLentride && (
+      <Button
+        variant="outline"
+        size="icon"
+        className="hidden md:flex h-8.5 w-8.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-xs shrink-0"
+        onClick={toggleSidebar}
+        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        <PanelLeft className="h-4 w-4" />
+      </Button>
+    )}
     {isLentride ? (
       <div className="flex items-center gap-2">
-        <span className="text-[12px] font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-widest">LENTRIDE</span>
+        <span className="text-[12px] font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-widest">ZENTRIDE</span>
       </div>
     ) : (
       <span className="font-bold text-sm tracking-tight text-white/90 capitalize">{title || 'Overview'}</span>

@@ -489,8 +489,9 @@ const LentrideDashboard = React.lazy(() => import('./pages/real-estate/LentrideD
 const SmartDocsRouter = () => {
   const { user } = useAuth();
   const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-  const isLentride = host.includes('lentride') || 
+  const isLentride = host.includes('zentride') || host.includes('lentride') || 
     user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+    (user?.company_name || '').toLowerCase().includes('zentride') ||
     (user?.company_name || '').toLowerCase().includes('lentride');
   if (isLentride) return <LentrideSmartDocs />;
   return <HCMSmartDocs />;
@@ -499,8 +500,9 @@ const SmartDocsRouter = () => {
 const SmartTasksRouter = () => {
   const { user } = useAuth();
   const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-  const isLentride = host.includes('lentride') || 
+  const isLentride = host.includes('zentride') || host.includes('lentride') || 
     user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+    (user?.company_name || '').toLowerCase().includes('zentride') ||
     (user?.company_name || '').toLowerCase().includes('lentride');
   if (isLentride) return <LentrideTasks />;
   return <Tasks />;
@@ -510,8 +512,9 @@ const SmartRealEstateDashboard = () => {
   const { user } = useAuth();
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
   const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-  const isLentride = host.includes('lentride') || 
+  const isLentride = host.includes('zentride') || host.includes('lentride') || 
     user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+    (user?.company_name || '').toLowerCase().includes('zentride') ||
     (user?.company_name || '').toLowerCase().includes('lentride');
 
   if (isLentride) return <LentrideDashboard />;

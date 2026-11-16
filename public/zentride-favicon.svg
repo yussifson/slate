@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Zentride">
+  <title>Zentride</title>
+  <defs>
+    <linearGradient id="zg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59C7D"/>
+      <stop offset="50%" stop-color="#D2603F"/>
+      <stop offset="100%" stop-color="#B04A31"/>
+    </linearGradient>
+    <linearGradient id="tile" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#242B35"/>
+      <stop offset="100%" stop-color="#0E1217"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#tile)"/>
+  <g transform="translate(6, 6) scale(0.96)">
+    <path d="M8 13 C8 9 11 6 15 6 L39 6 C42 6 45 8.5 45 11.5 C45 13.5 44 15 42.5 16 L20 32 L39 32 C43 32 46 35 46 39 C46 43 43 46 39 46 L15 46 C12 46 9 43.5 9 40.5 C9 38.5 10 37 11.5 36 L34 20 L15 20 C11 20 8 17 8 13 Z" fill="url(#zg)"/>
+  </g>
+</svg>

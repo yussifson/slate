@@ -238,13 +238,14 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   };
 
   const hostName = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-  const isLentride = hostName.includes('lentride') || companyData?.name?.toLowerCase().includes('lentride') || user?.company_name?.toLowerCase().includes('lentride') || user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' || companyData?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
-  const isJCL = !isLentride && (companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl') || hostName.includes('jcloffice') || hostName.includes('jclroyalgh'));
+  const isZentride = hostName.includes('zentride') || hostName.includes('lentride') || companyData?.name?.toLowerCase().includes('zentride') || companyData?.name?.toLowerCase().includes('lentride') || user?.company_name?.toLowerCase().includes('zentride') || user?.company_name?.toLowerCase().includes('lentride') || user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' || companyData?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
+  const isLentride = isZentride;
+  const isJCL = !isZentride && (companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl') || hostName.includes('jcloffice') || hostName.includes('jclroyalgh'));
   
-  const rawLogo = isLentride ? '/lentride-logo-white.svg' : (isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png'));
-  const activeCompanyLogoDark = isLentride ? '/lentride-logo-white.svg' : cleanLogo(rawLogo);
-  const activeCompanyLogoLight = isLentride ? '/lentride-logo.svg' : cleanLogo(rawLogo);
-  const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || (isLentride ? "Lentride" : "Slate");
+  const rawLogo = isZentride ? '/zentride-logo-white.svg' : (isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png'));
+  const activeCompanyLogoDark = isZentride ? '/zentride-logo-white.svg' : cleanLogo(rawLogo);
+  const activeCompanyLogoLight = isZentride ? '/zentride-logo.svg' : cleanLogo(rawLogo);
+  const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || (isZentride ? "Zentride" : "Slate");
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;
@@ -1095,35 +1096,39 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       isLentride ? "bg-[#0C1322] dark:bg-[#070B14]" : "bg-[#005A9C] dark:bg-[#091114]"
     )}>
       <div className={cn(
-        "h-[72px] border-b flex items-center transition-all shrink-0",
+        "h-[68px] border-b flex items-center transition-all shrink-0",
         isLentride ? "bg-[#090F1C]/80 border-[#1B2539] dark:border-[#141C2B]" : "bg-[#005A9C] dark:bg-[#091114] border-white/10 dark:border-white/5",
-        collapsed ? "px-2 justify-center" : "px-3 gap-2.5"
+        collapsed ? "px-2 justify-center" : (isLentride ? "px-3.5 justify-center" : "px-3 gap-2.5")
       )}>
-        <button
-          type="button"
-          onClick={() => setIsCollapsed(!collapsed)}
-          className="shrink-0 rounded-lg p-1.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          <PanelLeft className="h-4 w-4" />
-        </button>
+        {!isLentride && (
+          <button
+            type="button"
+            onClick={() => setIsCollapsed(!collapsed)}
+            className="shrink-0 rounded-lg p-1.5 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <PanelLeft className="h-4 w-4" />
+          </button>
+        )}
 
-        {/* Clean Rectangular Corporate Logo Card (Only logo, no redundant text) */}
+        {/* Floating Brand Dock matching Yoga System Design */}
         <div className={cn(
           "flex items-center justify-center rounded-xl transition-all overflow-hidden",
           isLentride
-            ? (collapsed ? "w-10 h-10 p-1 bg-white shadow-sm border border-slate-200" : "flex-1 h-12 px-3 py-1 bg-white shadow-sm border border-slate-200")
+            ? (collapsed 
+                ? "w-10 h-10 bg-[#141D2E] shadow-sm p-1.5 border border-[#223049]" 
+                : "w-full bg-white rounded-xl py-1 px-3 shadow-sm border border-slate-200")
             : (collapsed ? "w-10 h-10 p-1 bg-white shadow-md" : "flex-1 h-12 px-2.5 py-1 bg-white shadow-md")
         )}>
           <img
-            src={isLentride ? "/lentride-logo.svg" : (companyData?.logo_url || "/jcl-logo.png")}
+            src={isLentride ? (collapsed ? "/zentride-favicon.svg" : "/zentride-logo.svg") : (companyData?.logo_url || "/jcl-logo.png")}
             alt={activeCompanyName}
-            className={cn("w-full h-full object-contain", collapsed ? "max-h-8" : "max-h-10")}
-            onError={(e) => { e.currentTarget.src = isLentride ? "/lentride-logo.svg" : "/jcl-logo.png"; }}
+            className={cn("object-contain", isLentride ? (collapsed ? "w-6 h-6" : "h-8 w-auto max-w-[185px]") : (collapsed ? "max-h-8" : "max-h-10"))}
+            onError={(e) => { e.currentTarget.src = isLentride ? "/zentride-logo.svg" : "/jcl-logo.png"; }}
           />
         </div>
- </div>
+      </div>
 
  {/* AI Sort feature removed per request */}
  <div className="pt-4" />

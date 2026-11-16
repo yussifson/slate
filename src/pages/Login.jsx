@@ -47,15 +47,15 @@ export default function Login() {
  const [error, setError] = useState('');
  const [loading, setLoading] = useState(false);
  const { currentSubdomain, baseDomain, isCustomDomain } = getSubdomainAndBase();
- const isLentrideSub = currentSubdomain === 'lentride' || (typeof window !== 'undefined' && window.location.hostname.includes('lentride'));
- const defaultLogo = isLentrideSub ? '/lentride-logo.svg' : JCL_LOGO_BASE64;
- const defaultName = isLentrideSub ? 'Lentride' : 'JCL Real Estate';
+ const isLentrideSub = currentSubdomain === 'zentride' || currentSubdomain === 'lentride' || (typeof window !== 'undefined' && (window.location.hostname.includes('zentride') || window.location.hostname.includes('lentride')));
+ const defaultLogo = isLentrideSub ? '/zentride-logo.svg' : JCL_LOGO_BASE64;
+ const defaultName = isLentrideSub ? 'Zentride' : 'JCL Real Estate';
 
  const [branding, setBranding] = useState({ 
    name: defaultName, 
    logo_url: defaultLogo, 
    industry_type: 'real_estate_jcl', 
-   tagline: isLentrideSub ? 'Enter your credentials to access your Lentride Workspace' : 'Enter your credentials to access your JCL Portal'
+   tagline: isLentrideSub ? 'Enter your credentials to access your Zentride Workspace' : 'Enter your credentials to access your JCL Portal'
  });
 
  const randomQuote = useMemo(() => {
@@ -190,10 +190,10 @@ export default function Login() {
 
        // Company exists → always show login. Only show "Not Found" if company is truly missing.
        if (brandData?.id) {
-        const isThisLentride = cleanSub === 'lentride' || (brandData.name || '').toLowerCase().includes('lentride');
-        const fallbackLogo = isThisLentride ? '/lentride-logo.svg' : JCL_LOGO_BASE64;
+        const isThisLentride = cleanSub === 'zentride' || cleanSub === 'lentride' || (brandData.name || '').toLowerCase().includes('zentride') || (brandData.name || '').toLowerCase().includes('lentride');
+        const fallbackLogo = isThisLentride ? '/zentride-logo.svg' : JCL_LOGO_BASE64;
         setBranding({
-        name: brandData.name || (isThisLentride ? 'Lentride' : 'Your Workslate'),
+        name: brandData.name || (isThisLentride ? 'Zentride' : 'Your Workslate'),
         logo_url: cleanLogo(brandData.logo_url || brandData.logo_light_url) || fallbackLogo,
         industry_type: brandData.industry_type || 'real_estate_jcl',
         tagline: brandData.tagline || `Sign in to ${brandData.name || 'your workslate'}`
@@ -562,10 +562,10 @@ export default function Login() {
  <div className="max-w-lg w-full mx-auto">
  <div className="flex items-center gap-3 mb-8">
   <img 
-    src={branding.logo_url || (isLentrideSub ? '/lentride-logo.svg' : JCL_LOGO_BASE64)} 
+    src={branding.logo_url || (isLentrideSub ? '/zentride-logo.svg' : JCL_LOGO_BASE64)} 
     alt={branding.name || "Office"} 
     className="h-11 max-w-[200px] object-contain rounded-lg shadow-xs"
-    onError={(e) => { e.currentTarget.src = isLentrideSub ? '/lentride-logo.svg' : JCL_LOGO_BASE64; }}
+    onError={(e) => { e.currentTarget.src = isLentrideSub ? '/zentride-logo.svg' : JCL_LOGO_BASE64; }}
   />
   {!isRootAccount && (
     <span className="text-[10px] text-[#71717a] dark:text-gray-400 font-semibold tracking-[0.2em] uppercase mt-0.5">
@@ -728,10 +728,10 @@ export default function Login() {
     <div className="relative z-10">
       <div className="flex items-center gap-3 mb-5">
         <img 
-          src={isLentrideSub ? '/lentride-logo-white.svg' : (branding.logo_url || JCL_LOGO_BASE64)} 
+          src={isLentrideSub ? '/zentride-logo-white.svg' : (branding.logo_url || JCL_LOGO_BASE64)} 
           alt={branding.name || "Office"} 
           className="h-10 w-auto object-contain drop-shadow-md rounded-md"
-          onError={(e) => { e.currentTarget.src = isLentrideSub ? '/lentride-logo-white.svg' : JCL_LOGO_BASE64; }}
+          onError={(e) => { e.currentTarget.src = isLentrideSub ? '/zentride-logo-white.svg' : JCL_LOGO_BASE64; }}
         />
         <div className="h-5 w-px bg-white/20" />
         <span className="text-xs font-bold uppercase tracking-[0.25em] text-[#FF6B00]">
@@ -763,12 +763,12 @@ export default function Login() {
             <div>
               <div className="flex items-center gap-2 mb-4 pb-2 border-b border-white/10">
                 <img 
-                  src={isLentrideSub ? '/lentride-favicon.svg' : (branding.logo_url || JCL_LOGO_BASE64)} 
+                  src={isLentrideSub ? '/zentride-favicon.svg' : (branding.logo_url || JCL_LOGO_BASE64)} 
                   alt={branding.name || "Office"} 
                   className="w-5 h-5 object-contain"
-                  onError={(e) => { e.currentTarget.src = isLentrideSub ? '/lentride-favicon.svg' : JCL_LOGO_BASE64; }}
+                  onError={(e) => { e.currentTarget.src = isLentrideSub ? '/zentride-favicon.svg' : JCL_LOGO_BASE64; }}
                 />
-                <span className="font-bold tracking-tight text-xs text-white">{isLentrideSub ? 'Lentride Suite' : 'JCL Office'}</span>
+                <span className="font-bold tracking-tight text-xs text-white">{isLentrideSub ? 'Zentride Suite' : 'JCL Office'}</span>
               </div>
 
               <div className="text-[9px] uppercase font-bold text-white/40 tracking-wider mb-1.5">Commercial</div>

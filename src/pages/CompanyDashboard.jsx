@@ -68,8 +68,10 @@ export default function CompanyDashboard() {
     return <LogisticsDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'real_estate_jcl') {
     const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-    const isLentride = host.includes('lentride') || 
+    const isLentride = host.includes('zentride') || host.includes('lentride') || 
+      (company?.name || '').toLowerCase().includes('zentride') || 
       (company?.name || '').toLowerCase().includes('lentride') || 
+      (user?.company_name || '').toLowerCase().includes('zentride') || 
       (user?.company_name || '').toLowerCase().includes('lentride') ||
       companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
       company?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||

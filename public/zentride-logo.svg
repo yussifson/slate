@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80" role="img" aria-label="Zentride">
+  <title>Zentride</title>
+  <defs>
+    <linearGradient id="zg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59C7D"/>
+      <stop offset="50%" stop-color="#D2603F"/>
+      <stop offset="100%" stop-color="#B04A31"/>
+    </linearGradient>
+    <linearGradient id="zrose" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFA9C6"/>
+      <stop offset="50%" stop-color="#F0709B"/>
+      <stop offset="100%" stop-color="#D14E7E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Modern Geometric Monogram Icon -->
+  <g transform="translate(14, 15)">
+    <!-- Dynamic stylized Z glyph -->
+    <path d="M6 12 C6 7.58 9.58 4 14 4 L42 4 C45.31 4 48 6.69 48 10 C48 12.06 46.94 13.97 45.2 15.08 L18.8 32 L42 32 C46.42 32 50 35.58 50 40 C50 44.42 46.42 48 42 48 L14 48 C10.69 48 8 45.31 8 42 C8 39.94 9.06 38.03 10.8 36.92 L37.2 20 L14 20 C9.58 20 6 16.42 6 12 Z" fill="url(#zg)"/>
+  </g>
+
+  <!-- Clean Brand Name Wordmark -->
+  <text x="76" y="52" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', 'Helvetica Neue', sans-serif" 
+        font-size="36" 
+        font-weight="800" 
+        letter-spacing="-0.03em" 
+        fill="#1F2328">Zentride</text>
+</svg>

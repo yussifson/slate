@@ -176,7 +176,7 @@ export default function LentrideDashboard() {
       {/* Yoga Style Premium Page Header */}
       <YogaPageHeader
         title="Executive Real Estate Dashboard"
-        subtitle={`Welcome to Lentride Operations · Real-time portfolio performance and pipeline intelligence.`}
+        subtitle={`Welcome to Zentride Operations · Real-time portfolio performance and pipeline intelligence.`}
         actions={
           <div className="flex items-center gap-2">
             <Button

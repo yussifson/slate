@@ -52,7 +52,7 @@ export default function CalendarPage() {
   const [reminderForm, setReminderForm] = useState({ title: "", description: "", dueDate: format(new Date(), "yyyy-MM-dd"), priority: "medium" });
 
   const activeIndustry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
-  const isLentride = window.location.hostname.includes("lentride") || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
+  const isLentride = window.location.hostname.includes("zentride") || window.location.hostname.includes("lentride") || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
 
   // ── Three-Way Scope Filter: 'all' | 'personal' | 'departmental' | 'general' ──
   const [scopeFilter, setScopeFilter] = useState('all');
