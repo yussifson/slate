@@ -357,6 +357,7 @@ export default function Tasks() {
     queryFn: () => base44.entities.Task.filter({ company_id: companyId }),
     enabled: !!companyId});
 
+  const isLentride = window.location.hostname.includes("lentride") || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
   const isRealEstate = String(industry).toLowerCase().includes("real_estate");
   const { data: cases = [] } = useQuery({
     queryKey: ["cases-list", companyId, isRealEstate],
@@ -496,18 +497,66 @@ export default function Tasks() {
   const [activeView, setActiveView] = useState('list');
 
   return (
-    <div className="space-y-6 school-page-enter font-dmsans">
-      <PageHeader
-        title="Tasks"
-        subtitle="Manage and track team tasks"
-        actions={
-          <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2">
-            <Plus className="w-4 h-4" /> {t("new_task", "New Task")}
+    <div className={cn("space-y-6 school-page-enter font-dmsans", isLentride && "max-w-[1700px] w-full mx-auto pb-32 md:pb-10 font-sans")}>
+      {isLentride ? (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">Operations Tasks & Workflows</h1>
+              {stats.pending > 0 && (
+                <Badge className="bg-primary text-white font-bold text-xs">
+                  {stats.pending} Pending
+                </Badge>
+              )}
+            </div>
+            <p className="hidden sm:block text-sm font-medium text-muted-foreground mt-1">
+              Assign tasks to staff, track notes and progress updates, and verify completed operations.
+            </p>
+          </div>
+          <Button 
+            onClick={() => { setEditing(null); setShowForm(true); }}
+            className="gap-2 shrink-0 bg-primary hover:bg-primary/90 text-white rounded-lg shadow-sm font-bold h-10 px-4 transition-all"
+          >
+            <Plus className="w-4 h-4 stroke-[2]" /> New Task
           </Button>
-        }
-      />
+        </div>
+      ) : (
+        <PageHeader
+          title="Tasks"
+          subtitle="Manage and track team tasks"
+          actions={
+            <Button onClick={() => { setEditing(null); setShowForm(true); }} className="gap-2">
+              <Plus className="w-4 h-4" /> {t("new_task", "New Task")}
+            </Button>
+          }
+        />
+      )}
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      {isLentride ? (
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div className="bg-card border border-border/60 rounded-xl p-4 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Tasks</span>
+            <div className="text-2xl font-bold tracking-tight text-foreground mt-1">{stats.total} Tasks</div>
+            <p className="text-xs text-muted-foreground">All operational assignments</p>
+          </div>
+          <div className="bg-card border border-border/60 rounded-xl p-4 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Pending</span>
+            <div className="text-2xl font-bold tracking-tight text-primary mt-1">{stats.pending} Pending</div>
+            <p className="text-xs text-muted-foreground">Awaiting completion</p>
+          </div>
+          <div className="bg-card border border-border/60 rounded-xl p-4 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">In Progress</span>
+            <div className="text-2xl font-bold tracking-tight text-blue-600 dark:text-blue-400 mt-1">{stats.in_progress}</div>
+            <p className="text-xs text-muted-foreground">Currently underway</p>
+          </div>
+          <div className="bg-card border border-border/60 rounded-xl p-4 shadow-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Completed</span>
+            <div className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400 mt-1">{stats.completed}</div>
+            <p className="text-xs text-muted-foreground">Verified & closed</p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { label: "Total", value: stats.total, icon: Clock, bg: "bg-gradient-to-br from-emerald-500 to-emerald-600", text: "text-white", border: "border-emerald-500/20" },
           { label: "Pending", value: stats.pending, icon: AlertCircle, bg: "bg-white dark:bg-[#2C2C2E]", text: "text-emerald-700 dark:text-emerald-400", border: "border-emerald-500/20", iconBg: "bg-emerald-50 dark:bg-emerald-500/10" },
@@ -535,6 +584,7 @@ export default function Tasks() {
           );
         })}
       </div>
+      )}
 
       {/* View Toggle + Filters */}
       <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 sm:items-center justify-between bg-card/90 backdrop-blur-xl p-2.5 sm:p-3.5 rounded-[20px] border border-border/80 shadow-xs">

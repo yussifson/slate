@@ -234,12 +234,22 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
 
   {/* ── DESKTOP TOP BAR ── */}
  <div className={cn(
-   "hidden md:flex h-[64px] border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200",
-   isLentride ? "bg-[#0F172A] dark:bg-[#090D15]/95" : "bg-[#005A9C] dark:bg-[#0B1418]/95"
+   "hidden md:flex h-[64px] backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200",
+   isLentride 
+     ? "bg-[#F1F5F9]/90 dark:bg-[#090E17]/90 text-slate-900 dark:text-white border-b border-slate-200/90 dark:border-slate-800" 
+     : "bg-[#005A9C] dark:bg-[#0B1418]/95 text-white border-b border-white/10 dark:border-white/5"
  )}>
  {/* Breadcrumb space reserved for the sidebar rail */}
  <div className="flex items-center gap-2 shrink-0">
-    <span className="font-bold text-sm tracking-tight text-white/90 capitalize">{title || 'Overview'}</span>
+    {isLentride ? (
+      <div className="flex items-center gap-2">
+        <span className="text-[11.5px] font-bold text-slate-500 uppercase tracking-wider">LENTRIDE</span>
+        <span className="text-slate-300 dark:text-slate-700 text-xs">/</span>
+        <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-white capitalize">{title || 'Overview'}</span>
+      </div>
+    ) : (
+      <span className="font-bold text-sm tracking-tight text-white/90 capitalize">{title || 'Overview'}</span>
+    )}
   </div>
  {/* Right */}
  <div className="flex items-center justify-end gap-1.5 sm:gap-3 ml-auto">
@@ -317,18 +327,26 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
 
  {/* Clippad Full Capsule Search Bar */}
-        <div className="hidden md:block w-full max-w-sm rounded-full p-[1px] bg-white/20 hover:bg-white/30 transition-all cursor-text group">
+        <div className={cn(
+          "hidden md:block w-full max-w-sm rounded-full p-[1px] transition-all cursor-text group",
+          isLentride ? "bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600" : "bg-white/20 hover:bg-white/30"
+        )}>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('open-spotlight'))}
-            className="flex items-center h-9 w-full bg-[#00477D] dark:bg-[#101D22] rounded-full px-3.5 text-white/70 hover:text-white transition-colors"
+            className={cn(
+              "flex items-center h-9 w-full rounded-full px-3.5 transition-colors",
+              isLentride 
+                ? "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 shadow-xs" 
+                : "bg-[#00477D] dark:bg-[#101D22] text-white/70 hover:text-white"
+            )}
             title="Search across people, docs, tasks... (⌘K)"
           >
-            <Search className="w-4 h-4 shrink-0 text-white/60 group-hover:text-white" />
-            <div className="w-[1px] h-4 bg-white/20 mx-2.5 shrink-0" />
-            <span className="text-xs font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis text-white/60 group-hover:text-white/80">
+            <Search className={cn("w-4 h-4 shrink-0", isLentride ? "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200" : "text-white/60 group-hover:text-white")} />
+            <div className={cn("w-[1px] h-4 mx-2.5 shrink-0", isLentride ? "bg-slate-200 dark:bg-slate-700" : "bg-white/20")} />
+            <span className={cn("text-xs font-medium flex-1 text-left whitespace-nowrap overflow-hidden text-ellipsis", isLentride ? "text-slate-500 dark:text-slate-400" : "text-white/60 group-hover:text-white/80")}>
               Search people, docs, tasks...
             </span>
-            <kbd className="text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded text-white/60 border border-white/15 shrink-0 hidden lg:block font-bold">⌘K</kbd>
+            <kbd className={cn("text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 hidden lg:block font-bold", isLentride ? "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700" : "bg-white/10 text-white/60 border-white/15")}>⌘K</kbd>
           </button>
         </div>
 
@@ -355,14 +373,34 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  )}
 
  {/* User */}
- <button onClick={() => navigate('/personal-info')} aria-label="Open profile" title="Open profile" className="flex items-center gap-2 sm:ml-1 hover:bg-muted/50 p-1 rounded-xl transition-colors">
- <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary transition-all overflow-hidden border border-black/10 dark:border-white/10">
+ <button 
+   onClick={() => navigate('/personal-info')} 
+   aria-label="Open profile" 
+   title="Open profile" 
+   className={cn(
+     "flex items-center gap-2 sm:ml-1 p-1 rounded-xl transition-all active:scale-95",
+     isLentride
+       ? "bg-white hover:bg-white/90 dark:bg-white/10 dark:hover:bg-white/20 border border-slate-200 dark:border-white/15 shadow-xs"
+       : "hover:bg-muted/50"
+   )}
+ >
+ <div className={cn(
+   "w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all overflow-hidden",
+   isLentride
+     ? "bg-gradient-to-tr from-[#F0709B] to-[#E84C7B] text-white shadow-xs"
+     : "bg-primary border border-black/10 dark:border-white/10 hover:ring-2 hover:ring-primary"
+ )}>
  {user?.avatar_url ? (
  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
  ) : (
- <span className="text-[10px] sm:text-[11px] font-semibold text-white">{initials}</span>
+ <span className="text-[10px] sm:text-[11px] font-extrabold text-white">{initials}</span>
  )}
  </div>
+ {isLentride && (
+   <span className="hidden md:inline pr-1 text-xs font-semibold text-slate-800 dark:text-slate-100 max-w-[90px] truncate">
+     {user?.full_name?.split(' ')[0] || "Admin"}
+   </span>
+ )}
  </button>
  </div>
  </div>

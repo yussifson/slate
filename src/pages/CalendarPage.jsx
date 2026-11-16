@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, isToday, startOfWeek, endOfWeek, isSameMonth } from "date-fns";
 import { useCompany } from "@/hooks/useCompanyId";
 import { supabase } from "@/api/supabaseClient";
 import { powerSync } from "@/api/PowerSyncConnector";
@@ -52,6 +52,7 @@ export default function CalendarPage() {
   const [reminderForm, setReminderForm] = useState({ title: "", description: "", dueDate: format(new Date(), "yyyy-MM-dd"), priority: "medium" });
 
   const activeIndustry = sessionStorage.getItem("slate_industry_override") || company?.industry_type || user?.company_industry || "law";
+  const isLentride = window.location.hostname.includes("lentride") || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
 
   // ── Three-Way Scope Filter: 'all' | 'personal' | 'departmental' | 'general' ──
   const [scopeFilter, setScopeFilter] = useState('all');
@@ -315,6 +316,9 @@ export default function CalendarPage() {
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
+  const startDate = startOfWeek(monthStart);
+  const endDate = endOfWeek(monthEnd);
+  const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
   const startPad = monthStart.getDay();
 
@@ -376,34 +380,56 @@ export default function CalendarPage() {
   const venueTerm = getTerm(activeIndustry, "venue");
 
   return (
-    <div className="space-y-4 font-sans w-full max-w-full">
+    <div className={cn("space-y-4 font-sans w-full max-w-full", isLentride && "max-w-[1700px] mx-auto pb-10 space-y-6")}>
       {/* ── Top Bar with Actions ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-[#005A9C]" />
-            Corporate & Team Calendar
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Coordinate individual schedules, departmental deadlines, and company-wide events.
-          </p>
+      {isLentride ? (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Operations Schedule</h1>
+            <p className="hidden sm:block text-sm font-medium text-muted-foreground mt-1">Manage viewings, site inspections, lease meetings, and operations alerts.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center bg-card border border-border p-1 rounded-lg shadow-xs">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}><ChevronLeft className="w-4 h-4" /></Button>
+              <div className="px-3 text-xs font-bold text-foreground">{format(currentMonth, "MMMM yyyy")}</div>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}><ChevronRight className="w-4 h-4" /></Button>
+            </div>
+            <Button 
+              onClick={() => { setSelectedDate(new Date()); setShowForm(true); }}
+              className="gap-2 bg-primary hover:bg-primary/90 text-white rounded-lg shadow-xs font-bold h-10 px-4 transition-all"
+            >
+              <Plus className="w-4 h-4 stroke-[2]" /> New Event
+            </Button>
+          </div>
         </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-[#005A9C]" />
+              Corporate & Team Calendar
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Coordinate individual schedules, departmental deadlines, and company-wide events.
+            </p>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <Button onClick={() => setShowNewCalendarModal(true)} variant="outline" size="sm" className="h-9 px-3 text-xs gap-1.5 rounded-xl border-border">
-            <Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">New Custom Calendar</span>
-          </Button>
-          <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-3.5 text-xs gap-1.5 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md shadow-[#005A9C]/20 active:scale-95 transition-all">
-            <Plus className="w-4 h-4" /> <span>Add Event</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button onClick={() => setShowNewCalendarModal(true)} variant="outline" size="sm" className="h-9 px-3 text-xs gap-1.5 rounded-xl border-border">
+              <Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">New Custom Calendar</span>
+            </Button>
+            <Button onClick={() => setShowForm(true)} size="sm" className="h-9 px-3.5 text-xs gap-1.5 font-bold bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl shadow-md shadow-[#005A9C]/20 active:scale-95 transition-all">
+              <Plus className="w-4 h-4" /> <span>Add Event</span>
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── 3-Way Calendar Scope Pills: Personal, Departmental, General ── */}
-      <div className="bg-card rounded-2xl border border-border p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+      <div className={cn("bg-card border border-border p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs", isLentride ? "rounded-xl" : "rounded-2xl")}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mr-1 flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-[#005A9C]" /> View Scope:
+            <Filter className={cn("w-3.5 h-3.5", isLentride ? "text-primary" : "text-[#005A9C]")} /> View Scope:
           </span>
 
           <button
@@ -411,7 +437,7 @@ export default function CalendarPage() {
             className={cn(
               "text-xs px-3.5 py-1.5 rounded-xl font-bold transition-all border",
               scopeFilter === 'all'
-                ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
+                ? isLentride ? "bg-primary text-white border-primary shadow-xs" : "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
                 : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
             )}
           >
@@ -423,7 +449,7 @@ export default function CalendarPage() {
             className={cn(
               "inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-xl font-bold transition-all border",
               scopeFilter === 'personal'
-                ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
+                ? isLentride ? "bg-primary text-white border-primary shadow-xs" : "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
                 : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
             )}
           >
@@ -436,7 +462,7 @@ export default function CalendarPage() {
             className={cn(
               "inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-xl font-bold transition-all border",
               scopeFilter === 'departmental'
-                ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
+                ? isLentride ? "bg-primary text-white border-primary shadow-xs" : "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
                 : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
             )}
           >
@@ -449,7 +475,7 @@ export default function CalendarPage() {
             className={cn(
               "inline-flex items-center gap-1.5 text-xs px-3.5 py-1.5 rounded-xl font-bold transition-all border",
               scopeFilter === 'general'
-                ? "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
+                ? isLentride ? "bg-primary text-white border-primary shadow-xs" : "bg-[#005A9C] text-white border-[#005A9C] shadow-xs"
                 : "bg-muted/40 text-muted-foreground border-border hover:bg-muted"
             )}
           >
@@ -478,7 +504,7 @@ export default function CalendarPage() {
 
       {/* Calendar Controls (Admin / Staff visibility toggles) */}
       {isAdminUser && (
-        <div className="bg-card rounded-xl border border-border p-3 flex gap-6 items-center text-xs select-none">
+        <div className={cn("bg-card border border-border p-3 flex gap-6 items-center text-xs select-none", isLentride ? "rounded-xl" : "rounded-xl")}>
           <span className="font-semibold text-muted-foreground uppercase text-[10px] tracking-wider">
             {t("toggles", "Admin Filters:")}
           </span>
@@ -487,7 +513,7 @@ export default function CalendarPage() {
               type="checkbox"
               checked={showAdminCalendar}
               onChange={(e) => setShowAdminCalendar(e.target.checked)}
-              className="rounded text-[#005A9C] focus:ring-[#005A9C] border-border"
+              className={cn("rounded border-border", isLentride ? "text-primary focus:ring-primary" : "text-[#005A9C] focus:ring-[#005A9C]")}
             />
             <span className="font-medium text-foreground">{t("firm_admin_calendar", "Leadership & Executive")}</span>
           </label>
@@ -496,7 +522,7 @@ export default function CalendarPage() {
               type="checkbox"
               checked={showStaffCalendar}
               onChange={(e) => setShowStaffCalendar(e.target.checked)}
-              className="rounded text-[#005A9C] focus:ring-[#005A9C] border-border"
+              className={cn("rounded border-border", isLentride ? "text-primary focus:ring-primary" : "text-[#005A9C] focus:ring-[#005A9C]")}
             />
             <span className="font-medium text-foreground">{t("staff_calendars", "Team Operational Events")}</span>
           </label>
@@ -504,130 +530,232 @@ export default function CalendarPage() {
       )}
 
       {/* Main Grid: Calendar Month View & Upcoming Column */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className={cn("grid min-h-0 flex-1 grid-cols-1 items-start gap-4", isLentride ? "lg:grid-cols-[minmax(0,1fr)_320px]" : "lg:grid-cols-3")}>
         {/* Calendar Grid */}
-        <div className="lg:col-span-2 bg-card rounded-2xl border border-border p-4 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-foreground">{format(currentMonth, "MMMM yyyy")}</h3>
-            <div className="flex gap-2">
-              <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setCurrentMonth(new Date())}>{t("today", "Today")}</Button>
-              <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-7 gap-px bg-border rounded-xl overflow-hidden border border-border">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
-              <div key={d} className="bg-muted/50 p-2 text-center text-xs font-semibold text-muted-foreground">
-                {d}
+        <div className={cn("bg-card border border-border shadow-sm flex flex-col overflow-hidden", isLentride ? "rounded-xl min-h-[520px]" : "lg:col-span-2 rounded-2xl p-4 shadow-xs")}>
+          {!isLentride && (
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-foreground">{format(currentMonth, "MMMM yyyy")}</h3>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => setCurrentMonth(new Date())}>{t("today", "Today")}</Button>
+                <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
               </div>
-            ))}
-            {Array(startPad).fill(null).map((_, i) => (
-              <div key={`pad-${i}`} className="bg-card min-h-[85px] p-1 opacity-40" />
-            ))}
-            {days.map(day => {
-              const dayHearings = getHearingsForDay(day);
-              return (
-                <div
-                  key={day.toISOString()}
-                  className={`bg-card min-h-[90px] p-1.5 hover:bg-muted/40 cursor-pointer transition-colors ${isToday(day) ? "ring-2 ring-[#005A9C] ring-inset" : ""}`}
-                  onClick={() => { setSelectedDate(day); setShowForm(true); }}
-                >
-                  <span className={`text-xs font-semibold ${isToday(day) ? "text-[#005A9C] font-bold" : "text-foreground"}`}>
-                    {format(day, "d")}
-                  </span>
-                  <div className="mt-1 space-y-1">
-                    {dayHearings.slice(0, 2).map(h => {
-                      const meta = parseEventMeta(h);
-                      const calMatch = calendars.find(c => c.id === h.calendar_id);
-                      const color = meta.scope === 'personal'
-                        ? '#8b5cf6'
-                        : meta.scope === 'departmental'
-                        ? '#005A9C'
-                        : calMatch?.color || '#0284c7';
+            </div>
+          )}
 
-                      return (
-                        <div 
-                          key={h.id} 
-                          className="text-[10px] rounded px-1.5 py-0.5 truncate font-medium flex items-center justify-between gap-1 shadow-2xs text-white"
-                          style={{ backgroundColor: color }}
-                          title={`${h.title} (${meta.scope.toUpperCase()})`}
-                        >
-                          <span className="truncate">{h.title}</span>
-                          <span className="text-[8px] opacity-80 uppercase tracking-tighter shrink-0">
-                            {meta.scope === 'personal' ? 'Me' : meta.scope === 'departmental' ? 'Dept' : 'All'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    {dayHearings.length > 2 && (
-                      <span className="text-[10px] text-muted-foreground font-semibold">+{dayHearings.length - 2} more</span>
-                    )}
-                  </div>
+          {isLentride ? (
+            <>
+              <div className="grid shrink-0 grid-cols-7 border-b border-border/50 bg-muted/30">
+                {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map(d => (
+                  <div key={d} className="p-3.5 text-center text-xs font-semibold tracking-wide text-muted-foreground uppercase">{d}</div>
+                ))}
+              </div>
+              <div className="grid flex-1 grid-cols-7">
+                {calendarDays.map((day) => {
+                  const dayHearings = getHearingsForDay(day);
+                  const isCurrentMonth = isSameMonth(day, monthStart);
+                  const isCurrentDay = isToday(day);
+                  return (
+                    <div
+                      key={day.toISOString()}
+                      className={`min-h-[110px] cursor-pointer border-b border-r border-border/60 p-2 transition-colors ${!isCurrentMonth ? "bg-muted/5 opacity-50" : "bg-card hover:bg-muted/20"} ${isCurrentDay ? "bg-primary/5" : ""}`}
+                      onClick={() => { setSelectedDate(day); setShowForm(true); }}
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className={`flex size-6 items-center justify-center rounded-full text-xs font-bold ${isCurrentDay ? "bg-primary text-white" : !isCurrentMonth ? "text-muted-foreground/40" : "text-foreground"}`}>
+                          {format(day, "d")}
+                        </span>
+                      </div>
+                      <div className="mt-1.5 max-h-[85px] space-y-1.5 overflow-y-auto scrollbar-hide">
+                        {dayHearings.map(h => {
+                          const meta = parseEventMeta(h);
+                          const creator = h.created_by_name || h.lawyer_name || h.created_by_email || "Staff";
+                          return (
+                            <div
+                              key={h.id}
+                              className="truncate rounded-lg border border-primary/20 bg-primary/10 text-primary px-2 py-1.5 text-[10px] font-bold shadow-2xs hover:bg-primary/15 transition-colors"
+                              onClick={(evt) => { evt.stopPropagation(); setSelectedDate(day); setShowForm(true); }}
+                              title={`${h.title} — ${creator}`}
+                            >
+                              <span className="block truncate text-foreground font-semibold">{h.title}</span>
+                              <span className="block truncate text-[9px] font-medium text-muted-foreground">
+                                {h.time ? `${h.time} · ` : ''}{creator}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="grid grid-cols-7 gap-px bg-border rounded-xl overflow-hidden border border-border">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(d => (
+                <div key={d} className="bg-muted/50 p-2 text-center text-xs font-semibold text-muted-foreground">
+                  {d}
                 </div>
-              );
-            })}
-          </div>
+              ))}
+              {Array(startPad).fill(null).map((_, i) => (
+                <div key={`pad-${i}`} className="bg-card min-h-[85px] p-1 opacity-40" />
+              ))}
+              {days.map(day => {
+                const dayHearings = getHearingsForDay(day);
+                return (
+                  <div
+                    key={day.toISOString()}
+                    className={`bg-card min-h-[90px] p-1.5 hover:bg-muted/40 cursor-pointer transition-colors ${isToday(day) ? "ring-2 ring-[#005A9C] ring-inset" : ""}`}
+                    onClick={() => { setSelectedDate(day); setShowForm(true); }}
+                  >
+                    <span className={`text-xs font-semibold ${isToday(day) ? "text-[#005A9C] font-bold" : "text-foreground"}`}>
+                      {format(day, "d")}
+                    </span>
+                    <div className="mt-1 space-y-1">
+                      {dayHearings.slice(0, 2).map(h => {
+                        const meta = parseEventMeta(h);
+                        const calMatch = calendars.find(c => c.id === h.calendar_id);
+                        const color = meta.scope === 'personal'
+                          ? '#8b5cf6'
+                          : meta.scope === 'departmental'
+                          ? '#005A9C'
+                          : calMatch?.color || '#0284c7';
+
+                        return (
+                          <div 
+                            key={h.id} 
+                            className="text-[10px] rounded px-1.5 py-0.5 truncate font-medium flex items-center justify-between gap-1 shadow-2xs text-white"
+                            style={{ backgroundColor: color }}
+                            title={`${h.title} (${meta.scope.toUpperCase()})`}
+                          >
+                            <span className="truncate">{h.title}</span>
+                            <span className="text-[8px] opacity-80 uppercase tracking-tighter shrink-0">
+                              {meta.scope === 'personal' ? 'Me' : meta.scope === 'departmental' ? 'Dept' : 'All'}
+                            </span>
+                          </div>
+                        );
+                      })}
+                      {dayHearings.length > 2 && (
+                        <span className="text-[10px] text-muted-foreground font-semibold">+{dayHearings.length - 2} more</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Upcoming Events Column */}
-        <div className="bg-card rounded-2xl border border-border shadow-xs overflow-hidden flex flex-col">
-          <div className="p-4 border-b border-border bg-muted/15 flex items-center justify-between">
-            <h3 className="text-sm font-bold flex items-center gap-2 text-foreground">
-              <Calendar className="w-4 h-4 text-[#005A9C]" /> Upcoming Agenda
-            </h3>
-            <Badge variant="outline" className="text-[10px] uppercase font-bold text-[#005A9C] border-[#005A9C]/30">
-              {scopeFilter}
-            </Badge>
-          </div>
-          <div className="divide-y divide-border overflow-y-auto max-h-[520px]">
-            {upcomingHearings.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">
-                No upcoming events in this scope.
+        {isLentride ? (
+          <aside aria-labelledby="upcoming-events-heading" className="flex min-h-[320px] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <header className="flex items-center justify-between gap-3 border-b border-border px-4 py-3.5">
+              <div className="flex items-center gap-2.5">
+                <Calendar className="size-4 text-primary" aria-hidden="true" />
+                <h2 id="upcoming-events-heading" className="text-sm font-semibold text-foreground">Upcoming events</h2>
               </div>
-            ) : upcomingHearings.map(h => {
-              const meta = parseEventMeta(h);
-              const calMatch = calendars.find(c => c.id === h.calendar_id);
-              const scopeBadgeColor = meta.scope === 'personal'
-                ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300'
-                : meta.scope === 'departmental'
-                ? 'bg-blue-100 text-[#005A9C] dark:bg-blue-950/40 dark:text-sky-300'
-                : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300';
-
-              return (
-                <div key={h.id} className="px-4 py-3.5 space-y-1.5 hover:bg-muted/20 transition-colors">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-foreground truncate">{h.title}</p>
-                    <Badge className={cn("text-[9px] px-2 py-0.5 uppercase font-bold shrink-0 border-0", scopeBadgeColor)}>
-                      {meta.scope}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {format(new Date(h.date), "MMM d, yyyy")} · {h.time || "All Day"} {h.court_name ? `· ${h.court_name}` : ''}
-                  </p>
-                  {meta.department && (
-                    <p className="text-[11px] font-semibold text-[#005A9C] dark:text-sky-400">
-                      Dept: {meta.department}
-                    </p>
-                  )}
-                  {meta.attendees && meta.attendees.length > 0 && (
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground pt-0.5">
-                      <Users className="w-3 h-3 text-muted-foreground shrink-0" />
-                      <span className="truncate">{meta.attendees.length} attendee(s) tagged</span>
-                    </div>
-                  )}
-                  {h.notes && !h.notes.startsWith('[scope:') && (
-                    <p className="text-xs text-muted-foreground line-clamp-1 italic">{h.notes}</p>
-                  )}
+              <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary" aria-label={`${upcomingHearings.length} upcoming events`}>
+                {upcomingHearings.length}
+              </span>
+            </header>
+            <div className="max-h-[520px] flex-1 space-y-3 overflow-y-auto p-3 lg:max-h-[calc(100vh-280px)]">
+              {upcomingHearings.length === 0 ? (
+                <div className="flex min-h-52 flex-col items-center justify-center gap-2 px-4 text-center">
+                  <Calendar className="size-8 text-muted-foreground/50" aria-hidden="true" />
+                  <p className="hidden sm:block text-sm font-medium text-foreground">No upcoming events</p>
+                  <p className="text-xs text-muted-foreground">New schedule events will appear here.</p>
                 </div>
-              );
-            })}
+              ) : upcomingHearings.map(h => {
+                const meta = parseEventMeta(h);
+                const assignedTo = (meta.attendees && meta.attendees.length > 0) ? meta.attendees.join(", ") : h.lawyer_name || h.lawyer_email;
+                const createdBy = h.created_by_name || h.created_by_email || "Staff";
+                return (
+                  <article key={h.id} className="rounded-xl border border-border/70 bg-background/70 p-3.5 space-y-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <time className="text-xs font-semibold text-muted-foreground">
+                        {format(new Date(h.date), "EEE, MMM d, yyyy")}
+                      </time>
+                      <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold capitalize text-muted-foreground bg-muted/30">
+                        {meta.scope || "Operational"}
+                      </span>
+                    </div>
+                    <h3 className="break-words text-sm font-bold leading-snug text-foreground">{h.title || "Untitled Event"}</h3>
+                    <p className="text-xs text-muted-foreground">Created by {createdBy}</p>
+                    {assignedTo && (
+                      <div className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                        <Users className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+                        <span className="break-words">Assigned to {assignedTo}</span>
+                      </div>
+                    )}
+                    {h.notes && !h.notes.startsWith('[scope:') && (
+                      <p className="border-t border-border/70 pt-2 text-xs leading-relaxed text-muted-foreground italic">{h.notes}</p>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          </aside>
+        ) : (
+          <div className="bg-card rounded-2xl border border-border shadow-xs overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-border bg-muted/15 flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2 text-foreground">
+                <Calendar className="w-4 h-4 text-[#005A9C]" /> Upcoming Agenda
+              </h3>
+              <Badge variant="outline" className="text-[10px] uppercase font-bold text-[#005A9C] border-[#005A9C]/30">
+                {scopeFilter}
+              </Badge>
+            </div>
+            <div className="divide-y divide-border overflow-y-auto max-h-[520px]">
+              {upcomingHearings.length === 0 ? (
+                <div className="p-8 text-center text-sm text-muted-foreground">
+                  No upcoming events in this scope.
+                </div>
+              ) : upcomingHearings.map(h => {
+                const meta = parseEventMeta(h);
+                const calMatch = calendars.find(c => c.id === h.calendar_id);
+                const scopeBadgeColor = meta.scope === 'personal'
+                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300'
+                  : meta.scope === 'departmental'
+                  ? 'bg-blue-100 text-[#005A9C] dark:bg-blue-950/40 dark:text-sky-300'
+                  : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300';
+
+                return (
+                  <div key={h.id} className="px-4 py-3.5 space-y-1.5 hover:bg-muted/20 transition-colors">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-bold text-foreground truncate">{h.title}</p>
+                      <Badge className={cn("text-[9px] px-2 py-0.5 uppercase font-bold shrink-0 border-0", scopeBadgeColor)}>
+                        {meta.scope}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {format(new Date(h.date), "MMM d, yyyy")} · {h.time || "All Day"} {h.court_name ? `· ${h.court_name}` : ''}
+                    </p>
+                    {meta.department && (
+                      <p className="text-[11px] font-semibold text-[#005A9C] dark:text-sky-400">
+                        Dept: {meta.department}
+                      </p>
+                    )}
+                    {meta.attendees && meta.attendees.length > 0 && (
+                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground pt-0.5">
+                        <Users className="w-3 h-3 text-muted-foreground shrink-0" />
+                        <span className="truncate">{meta.attendees.length} attendee(s) tagged</span>
+                      </div>
+                    )}
+                    {h.notes && !h.notes.startsWith('[scope:') && (
+                      <p className="text-xs text-muted-foreground line-clamp-1 italic">{h.notes}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
+      </div>
       </div>
 
       {/* Corporate Reminders Section */}
