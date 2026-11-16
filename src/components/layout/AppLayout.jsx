@@ -24,6 +24,7 @@ import OrbitBoltWorkspace from "@/components/orbitbolt/OrbitBoltWorkspace";
 import FeatureAnnouncementModal from "./FeatureAnnouncementModal";
 import ElectronTitleBar from "./ElectronTitleBar";
 import DockResizer from "./DockResizer";
+import JCLSubscriptionLockModal from "@/components/jcl/JCLSubscriptionLockModal";
 
 import { cn } from "@/lib/utils";
 
@@ -46,6 +47,15 @@ export default function AppLayout() {
  const [isPrefsLoaded, setIsPrefsLoaded] = useState(false);
  const [orbitContext, setOrbitContext] = useState(null);
  const [uiPrefsId, setUiPrefsId] = useState(null);
+ const [isJCLLockModalOpen, setIsJCLLockModalOpen] = useState(false);
+
+ useEffect(() => {
+   const handleLock = () => {
+     setIsJCLLockModalOpen(true);
+   };
+   window.addEventListener('jcl:subscription-required', handleLock);
+   return () => window.removeEventListener('jcl:subscription-required', handleLock);
+ }, []);
 
  useEffect(() => {
  if (!user?.email || !user?.company_id || isPrefsLoaded) return;
@@ -435,6 +445,7 @@ export default function AppLayout() {
    {isBoltOpen && <OrbitBoltWorkspace onClose={toggleBolt} />}
    <SpotlightSearch />
    <FeatureAnnouncementModal />
+   <JCLSubscriptionLockModal isOpen={isJCLLockModalOpen} onClose={() => setIsJCLLockModalOpen(false)} />
   </div>
   );
 }

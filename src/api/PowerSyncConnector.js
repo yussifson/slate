@@ -750,6 +750,28 @@ powerSync.getOptional = async (sql, parameters) => {
 
 const originalExecute = powerSync.execute.bind(powerSync);
 powerSync.execute = async (sql, parameters) => {
+  const upperSql = typeof sql === 'string' ? sql.trim().toUpperCase() : '';
+  const isMutation = upperSql.startsWith('INSERT') || upperSql.startsWith('UPDATE') || upperSql.startsWith('DELETE');
+
+  // Hard write lock exclusively for JCL Real Estate (jcloffice / JCL domain)
+  if (isMutation && typeof window !== 'undefined') {
+    const host = window.location.hostname.toLowerCase();
+    const isJCLDomain = host.includes('jcloffice') || host.includes('jclroyalgh');
+    // Also ignore background telemetry/logs/chat
+    const isBackgroundTelemetry = upperSql.includes('USAGE_METRICS') || 
+                                  upperSql.includes('SYNC_ERRORS') || 
+                                  upperSql.includes('NOTIFICATIONS') ||
+                                  upperSql.includes('INDUSTRY_RECORDS'); // ui_prefs
+
+    if (isJCLDomain && !isBackgroundTelemetry) {
+      window.dispatchEvent(new CustomEvent('jcl:subscription-required', {
+        detail: { sql, operation: upperSql.split(' ')[0] }
+      }));
+      // Reject write immediately to protect the database and trigger the lock modal
+      return { rowsAffected: 0, rows: { _array: [], length: 0 } };
+    }
+  }
+
   // If query belongs to JCL Real Estate, bypass local PowerSync and read/write directly to Supabase cloud!
   if (isJCLRealEstateQuery(sql)) {
     try {
