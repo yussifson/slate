@@ -1089,8 +1089,15 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
 };
 
   const renderNavContent = (collapsed) => (
-    <div className="flex flex-col h-full bg-[#005A9C] dark:bg-[#091114] text-white overflow-x-hidden">
-      <div className={cn("h-[72px] border-b border-white/10 dark:border-white/5 flex items-center transition-all bg-[#005A9C] dark:bg-[#091114] shrink-0", collapsed ? "px-2 justify-center" : "px-3 gap-2.5")}>
+    <div className={cn(
+      "flex flex-col h-full text-white overflow-x-hidden",
+      isLentride ? "bg-[#0F172A] dark:bg-[#090D15]" : "bg-[#005A9C] dark:bg-[#091114]"
+    )}>
+      <div className={cn(
+        "h-[72px] border-b border-white/10 dark:border-white/5 flex items-center transition-all shrink-0",
+        isLentride ? "bg-[#0F172A] dark:bg-[#090D15]" : "bg-[#005A9C] dark:bg-[#091114]",
+        collapsed ? "px-2 justify-center" : "px-3 gap-2.5"
+      )}>
         <button
           type="button"
           onClick={() => setIsCollapsed(!collapsed)}
@@ -1107,9 +1114,10 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
           collapsed ? "w-10 h-10 p-1" : "flex-1 h-12 px-2.5 py-1"
         )}>
           <img
-            src="/jcl-logo.png"
-            alt="JCL Real Estate"
+            src={isLentride ? "/lentride-logo.svg" : (companyData?.logo_url || "/jcl-logo.png")}
+            alt={activeCompanyName}
             className={cn("w-full h-full object-contain", collapsed ? "max-h-8" : "max-h-10")}
+            onError={(e) => { e.currentTarget.src = isLentride ? "/lentride-logo.svg" : "/jcl-logo.png"; }}
           />
         </div>
  </div>
@@ -1141,16 +1149,20 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
               "flex items-center rounded-xl text-sm transition-all duration-200 relative font-medium",
               collapsed
                 ? isActive
-                  ? "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold shadow-sm"
+                  ? isLentride
+                    ? "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#F0709B]/25 to-transparent text-[#FFA9C6] font-bold shadow-sm"
+                    : "justify-center mx-auto w-9 h-9 bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold shadow-sm"
                   : "justify-center mx-auto w-9 h-9 text-white/70 hover:text-white hover:bg-white/10"
                 : "gap-3 px-3 py-2 pr-8",
               !collapsed && (isActive
-                ? "bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold border-l-4 border-[#FF6B00] pl-2.5 shadow-sm"
+                ? isLentride
+                  ? "bg-gradient-to-r from-[#F0709B]/25 to-transparent text-[#FFA9C6] font-bold border-l-4 border-[#F0709B] pl-2.5 shadow-sm"
+                  : "bg-gradient-to-r from-[#FF6B00]/20 to-transparent text-[#FF6B00] font-bold border-l-4 border-[#FF6B00] pl-2.5 shadow-sm"
                 : "text-white/70 hover:text-white hover:bg-white/10 font-medium")
             )}
           >
             <span className="relative flex-shrink-0 flex items-center justify-center">
-              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive ? "text-[#FF6B00]" : "text-white/60 group-hover:text-white")} />
+              <IconComp className={cn("transition-all", collapsed ? "w-4 h-4" : "w-4 h-4", isActive ? (isLentride ? "text-[#FFA9C6]" : "text-[#FF6B00]") : "text-white/60 group-hover:text-white")} />
               {showLiveDot && (
                 <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />

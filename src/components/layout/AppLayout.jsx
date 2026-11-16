@@ -50,6 +50,17 @@ export default function AppLayout() {
  const [isJCLLockModalOpen, setIsJCLLockModalOpen] = useState(false);
 
  useEffect(() => {
+   const host = window.location.hostname.toLowerCase();
+   const isLentride = host.includes('lentride') || (user?.company_name || '').toLowerCase().includes('lentride');
+   const root = document.documentElement;
+   if (isLentride) {
+     root.classList.add('tenant-lentride');
+   } else {
+     root.classList.remove('tenant-lentride');
+   }
+ }, [user]);
+
+ useEffect(() => {
    const handleLock = () => {
      setIsJCLLockModalOpen(true);
    };

@@ -51,6 +51,8 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const [isRefreshing, setIsRefreshing] = useState(false);
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
  const { company} = useCompany();
+ const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+ const isLentride = host.includes('lentride') || (company?.name || '').toLowerCase().includes('lentride') || (user?.company_name || '').toLowerCase().includes('lentride');
 
  const [currentVersion, setCurrentVersion] = useState(() => {
    return sessionStorage.getItem('slate_version_override') || localStorage.getItem('slate_version_override') || 'v1';
@@ -185,7 +187,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   return (
   <>
   {/* ── NATIVE MOBILE TOP BAR ── */}
-  <div style={{ backgroundColor: "#005A9C", color: "#ffffff" }} className="md:hidden sticky top-0 left-0 right-0 w-full border-b border-white/15 pt-[env(safe-area-inset-top,0px)] shadow-xs z-[60]">
+  <div 
+    style={{ backgroundColor: isLentride ? "#0F172A" : "#005A9C", color: "#ffffff" }} 
+    className="md:hidden sticky top-0 left-0 right-0 w-full border-b border-white/15 pt-[env(safe-area-inset-top,0px)] shadow-xs z-[60]"
+  >
     <div className="flex items-center justify-between px-3 h-[44px] gap-2.5">
       {/* Left: User Profile Avatar */}
       <button 
@@ -224,7 +229,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
   </div>
 
   {/* ── DESKTOP TOP BAR ── */}
- <div className="hidden md:flex h-[64px] bg-[#005A9C] dark:bg-[#0B1418]/95 border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200">
+ <div className={cn(
+   "hidden md:flex h-[64px] border-b border-white/10 dark:border-white/5 text-white backdrop-blur-xl relative z-30 items-center pl-4 pr-5 lg:px-5 gap-3 shrink-0 w-full overflow-x-auto scrollbar-none hover:shadow-[0_2px_8px_rgba(0,0,0,0.07)] transition-shadow duration-200",
+   isLentride ? "bg-[#0F172A] dark:bg-[#090D15]/95" : "bg-[#005A9C] dark:bg-[#0B1418]/95"
+ )}>
  {/* Breadcrumb space reserved for the sidebar rail */}
  <div className="flex items-center gap-2 shrink-0">
     <span className="font-bold text-sm tracking-tight text-white/90 capitalize">{title || 'Overview'}</span>
