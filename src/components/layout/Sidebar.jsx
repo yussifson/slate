@@ -237,11 +237,14 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     return finalUrl;
   };
 
- const isJCL = activeIndustry === 'real_estate_jcl' || companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl');
- const rawLogo = isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png');
- const activeCompanyLogoDark = cleanLogo(rawLogo);
- const activeCompanyLogoLight = cleanLogo(rawLogo);
- const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || "Slate";
+  const hostName = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+  const isLentride = hostName.includes('lentride') || companyData?.name?.toLowerCase().includes('lentride') || user?.company_name?.toLowerCase().includes('lentride');
+  const isJCL = !isLentride && (companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl') || hostName.includes('jcloffice') || hostName.includes('jclroyalgh'));
+  
+  const rawLogo = isLentride ? '/lentride-logo-white.svg' : (isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png'));
+  const activeCompanyLogoDark = isLentride ? '/lentride-logo-white.svg' : cleanLogo(rawLogo);
+  const activeCompanyLogoLight = isLentride ? '/lentride-logo.svg' : cleanLogo(rawLogo);
+  const activeCompanyName = companyData?.name || impersonatedCompany?.name || user?.company_name || (isLentride ? "Lentride" : "Slate");
  const activeEducationLevel = impersonatedCompany?.industry || impersonatedCompany?.industry_type || companyData?.industry_type || 'primary';
 
  const industryData = INDUSTRIES[activeIndustry] || INDUSTRIES.law;

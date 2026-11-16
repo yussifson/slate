@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 130" fill="none">
+  <defs>
+    <linearGradient id="lentride_grad_w" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <linearGradient id="lentride_dark_w" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="accent_emerald_w" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(18, 15)">
+    <path d="M12 85 V22 C12 16.477 16.477 12 22 12 H42 C44.209 12 46 13.791 46 16 V68 C46 72.418 49.582 76 54 76 H88 C90.209 76 92 77.791 92 80 V88 C92 93.523 87.523 98 82 98 H25 C17.82 98 12 92.18 12 85 Z" fill="url(#lentride_dark_w)"/>
+    <path d="M48 6 C48 3.791 49.791 2 52 2 H72 C74.209 2 76 3.791 76 6 V54 C76 56.209 74.209 58 72 58 H52 C49.791 58 48 56.209 48 54 V6 Z" fill="url(#lentride_grad_w)"/>
+    <path d="M80 34 C80 31.791 81.791 30 84 30 H96 C98.209 30 100 31.791 100 34 V68 C100 70.209 98.209 72 96 72 H84 C81.791 72 80 70.209 80 68 V34 Z" fill="url(#accent_emerald_w)"/>
+    
+    <rect x="56" y="12" width="12" height="10" rx="2" fill="#FFFFFF" opacity="0.9"/>
+    <rect x="56" y="28" width="12" height="10" rx="2" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="28" cy="30" r="4" fill="#FFFFFF" opacity="0.8"/>
+  </g>
+
+  <!-- Typography in White for Dark Mode -->
+  <text x="140" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif" font-size="46" font-weight="900" letter-spacing="-0.03em" fill="#FFFFFF">
+    LENTRIDE
+  </text>
+  
+  <text x="142" y="98" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif" font-size="12" font-weight="700" letter-spacing="0.22em" fill="#38BDF8">
+    REAL ESTATE &amp; PROPERTIES
+  </text>
+</svg>

@@ -133,11 +133,17 @@
         var isClipad = host.includes('clipad');
         var isSlate = host.includes('slate');
         
+        var isLentride = host.includes('lentride');
+        
         var appTitle = 'JCL Office - Enterprise Workspace';
         var faviconHref = '/jcl-logo.png';
         var logoSrc = '/jcl-logo.png';
 
-        if (isClipad) {
+        if (isLentride) {
+          appTitle = 'Lentride - Real Estate & Operations Platform';
+          faviconHref = '/lentride-favicon.svg';
+          logoSrc = '/lentride-logo.svg';
+        } else if (isClipad) {
           appTitle = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Platform';
           faviconHref = '/clipad-logo.svg';
           logoSrc = '/clipad-logo-green.svg';
