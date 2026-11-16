@@ -133,16 +133,16 @@
         var isClipad = host.includes('clipad');
         var isSlate = host.includes('slate');
         
-        var isLentride = host.includes('lentride');
+        var isZentride = host.includes('zentride') || host.includes('lentride');
         
         var appTitle = 'JCL Office - Enterprise Workspace';
         var faviconHref = '/jcl-logo.png';
         var logoSrc = '/jcl-logo.png';
 
-        if (isLentride) {
-          appTitle = 'Lentride - Real Estate & Operations Platform';
-          faviconHref = '/lentride-favicon.svg';
-          logoSrc = '/lentride-logo.svg';
+        if (isZentride) {
+          appTitle = 'Zentride - Modern Real Estate & Operations Platform';
+          faviconHref = '/zentride-favicon.svg';
+          logoSrc = '/zentride-logo.svg';
         } else if (isClipad) {
           appTitle = 'CliPad - #1 Enterprise AI-Powered Organizational Memory Platform';
           faviconHref = '/clipad-logo.svg';

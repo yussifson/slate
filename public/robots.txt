@@ -14,3 +14,4 @@ Disallow: /settings
 Disallow: /api/*
 
 Sitemap: https://optavel.com/sitemap.xml
+Sitemap: https://zentride.optavel.com/sitemap-zentride.xml
