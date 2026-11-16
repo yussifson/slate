@@ -54,7 +54,65 @@ export default function AppLayout() {
      setIsJCLLockModalOpen(true);
    };
    window.addEventListener('jcl:subscription-required', handleLock);
-   return () => window.removeEventListener('jcl:subscription-required', handleLock);
+
+   // Global Capture Phase click interceptor:
+   // If on JCL domain, proactively intercept clicks on "New", "Create", "Add", "Edit", "Delete" buttons
+   // before child click handlers can open forms or mutate state.
+   const handleGlobalClickCapture = (e) => {
+     const host = window.location.hostname.toLowerCase();
+     const isJCL = host.includes('jcloffice') || host.includes('jclroyalgh');
+     if (!isJCL) return;
+
+     // Find closest clickable button or interactive trigger
+     const target = e.target.closest('button, [role="button"], a.btn, input[type="submit"]');
+     if (!target) return;
+
+     // Check if target is inside the lock modal itself (allow closing and contacting admin)
+     if (target.closest('[data-jcl-lock-modal="true"]')) return;
+
+     // Navigation links, tabs, and filters should stay completely functional for reading
+     const isSidebarNav = target.closest('nav') || target.closest('[data-sidebar]') || target.closest('[data-mobile-bottom-nav]');
+     const isSearchOrFilter = target.closest('[role="combobox"]') || target.closest('[data-state="checked"]') || target.closest('[data-filter]');
+     if (isSidebarNav || isSearchOrFilter) return;
+
+     const text = (target.textContent || '').trim().toLowerCase();
+     const ariaLabel = (target.getAttribute('aria-label') || '').toLowerCase();
+     const title = (target.getAttribute('title') || '').toLowerCase();
+     const combined = `${text} ${ariaLabel} ${title}`;
+
+     // Check for action keywords that indicate creating, adding, editing, or deleting
+     const isActionTrigger = 
+       combined.includes('new ') || 
+       combined.startsWith('new') ||
+       combined.includes('create') || 
+       combined.includes('add ') || 
+       combined.startsWith('add') ||
+       combined.includes('check-in') ||
+       combined.includes('check in') ||
+       combined.includes('checkout') ||
+       combined.includes('check-out') ||
+       combined.includes('edit') || 
+       combined.includes('delete') || 
+       combined.includes('remove') ||
+       combined.includes('save') ||
+       combined.includes('submit') ||
+       combined.includes('upload') ||
+       combined.includes('generate');
+
+     if (isActionTrigger) {
+       e.preventDefault();
+       e.stopPropagation();
+       e.stopImmediatePropagation();
+       setIsJCLLockModalOpen(true);
+     }
+   };
+
+   document.addEventListener('click', handleGlobalClickCapture, true);
+
+   return () => {
+     window.removeEventListener('jcl:subscription-required', handleLock);
+     document.removeEventListener('click', handleGlobalClickCapture, true);
+   };
  }, []);
 
  useEffect(() => {

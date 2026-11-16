@@ -26,6 +26,30 @@ const customFetch = async (url, options) => {
     finalUrl = finalUrl.replace('company_id=eq.null', 'company_id=is.null');
   }
 
+  // Check write lock on JCL domain: block POST, PUT, PATCH, DELETE to Supabase REST tables
+  if (typeof window !== 'undefined') {
+    const method = (options?.method || 'GET').toUpperCase();
+    const isWrite = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+    const host = window.location.hostname.toLowerCase();
+    const isJCL = host.includes('jcloffice') || host.includes('jclroyalgh');
+    const isRestApi = finalUrl.includes('/rest/v1/');
+    const isBackgroundLog = finalUrl.includes('sync_errors') || finalUrl.includes('usage_metrics') || finalUrl.includes('industry_records');
+
+    if (isJCL && isWrite && isRestApi && !isBackgroundLog) {
+      window.dispatchEvent(new CustomEvent('jcl:subscription-required', {
+        detail: { url: finalUrl, method }
+      }));
+      // Return 403 Forbidden payload so the UI doesn't save and aborts immediately
+      return new Response(JSON.stringify({ 
+        message: "Database & Cloud Storage subscription required",
+        code: "JCL_SUBSCRIPTION_REQUIRED"
+      }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
+
   const controller = new AbortController();
   // Uploads and Edge Functions get a longer timeout; auth gets 20s; everything else 30s
   const isUpload = finalUrl.includes('/storage/v1/object/');
