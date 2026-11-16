@@ -863,6 +863,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
     rawNavItems = rawNavItems.filter(item => {
       if (item.path && JCL_BLOCKED_PATHS.has(item.path)) return false;
       if (item.label && JCL_BLOCKED_LABELS.has(item.label.toLowerCase())) return false;
+      if (isLentride && (item.path === '/time-tracking' || item.label?.toLowerCase() === 'time tracking')) return false;
       return true;
     });
   }

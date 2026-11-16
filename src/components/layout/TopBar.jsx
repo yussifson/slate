@@ -173,8 +173,10 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
         </DropdownMenu>
       )}
 
-      {/* Language Switcher */}
-      <LanguageSwitcher className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm ${inPopover ? '!flex' : ''} h-[28px] max-w-[110px]`} />
+      {/* Language Switcher (Hidden for Lentride per UI specifications) */}
+      {!isLentride && (
+        <LanguageSwitcher className={`hidden lg:flex items-center gap-1.5 text-xs font-medium text-[#71717a] dark:text-gray-400 border-[0.5px] border-black/9 dark:border-white/8 border-primary/40 rounded-lg px-2 py-1.5 hover:bg-muted/50 bg-card tracking-[0.02em] transition-colors focus:outline-none shadow-sm ${inPopover ? '!flex' : ''} h-[28px] max-w-[110px]`} />
+      )}
 
 
 
@@ -243,9 +245,7 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  <div className="flex items-center gap-2 shrink-0">
     {isLentride ? (
       <div className="flex items-center gap-2">
-        <span className="text-[11.5px] font-bold text-slate-500 uppercase tracking-wider">LENTRIDE</span>
-        <span className="text-slate-300 dark:text-slate-700 text-xs">/</span>
-        <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-white capitalize">{title || 'Overview'}</span>
+        <span className="text-[12px] font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-widest">LENTRIDE</span>
       </div>
     ) : (
       <span className="font-bold text-sm tracking-tight text-white/90 capitalize">{title || 'Overview'}</span>

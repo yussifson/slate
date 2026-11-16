@@ -301,8 +301,10 @@ const Clients = React.lazy(() => import('./pages/Clients.jsx'));
 const CalendarPage = React.lazy(() => import('./pages/CalendarPage'));
 const Invoices = React.lazy(() => import('./pages/Invoices'));
 const Tasks = React.lazy(() => import('./pages/Tasks'));
+const LentrideTasks = React.lazy(() => import('./pages/real-estate/LentrideTasks'));
 const Documents = React.lazy(() => import('./pages/Documents'));
 const HCMSmartDocs = React.lazy(() => import('./pages/SmartDocs'));
+const LentrideSmartDocs = React.lazy(() => import('./pages/real-estate/LentrideSmartDocs'));
 const Team = React.lazy(() => import('./pages/Team'));
 
 const Settings = React.lazy(() => import('./pages/Settings'));
@@ -482,10 +484,37 @@ const JCLTransactionsPage = React.lazy(() => import('./pages/real-estate-jcl/JCL
 const JCLViewingsPage = React.lazy(() => import('./pages/real-estate-jcl/JCLViewings'));
 const JCLLeasesPage = React.lazy(() => import('./pages/real-estate-jcl/JCLLeases'));
 const JCLOffersPage = React.lazy(() => import('./pages/real-estate-jcl/JCLOffers'));
+const LentrideDashboard = React.lazy(() => import('./pages/real-estate/LentrideDashboard'));
+
+const SmartDocsRouter = () => {
+  const { user } = useAuth();
+  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+  const isLentride = host.includes('lentride') || 
+    user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+    (user?.company_name || '').toLowerCase().includes('lentride');
+  if (isLentride) return <LentrideSmartDocs />;
+  return <HCMSmartDocs />;
+};
+
+const SmartTasksRouter = () => {
+  const { user } = useAuth();
+  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+  const isLentride = host.includes('lentride') || 
+    user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+    (user?.company_name || '').toLowerCase().includes('lentride');
+  if (isLentride) return <LentrideTasks />;
+  return <Tasks />;
+};
 
 const SmartRealEstateDashboard = () => {
   const { user } = useAuth();
   const ind = sessionStorage.getItem('slate_industry_override') || user?.company_industry;
+  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+  const isLentride = host.includes('lentride') || 
+    user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+    (user?.company_name || '').toLowerCase().includes('lentride');
+
+  if (isLentride) return <LentrideDashboard />;
   if (ind === 'real_estate_jcl') return <JCLDashboardPage />;
   return <RealEstateDashboard />;
 };
@@ -1051,9 +1080,9 @@ function PlatformRoutes() {
       <Route path="/jcl/project-operations" element={<JCLProjectOperationsPage />} />
       <Route path="/jcl/project-collaboration" element={<JCLProjectCollaborationPage />} />
       <Route path="/invoices" element={<UnivInvoice />} />
-      <Route path="/tasks" element={<Tasks />} />
+      <Route path="/tasks" element={<SmartTasksRouter />} />
       <Route path="/documents" element={<Navigate to="/smart-docs" replace />} />
-      <Route path="/smart-docs" element={<HCMSmartDocs />} />
+      <Route path="/smart-docs" element={<SmartDocsRouter />} />
       <Route path="/team" element={<UnivHREmployee />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/personal-info" element={<AccountPersonalInfo />} />
