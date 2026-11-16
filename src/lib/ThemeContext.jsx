@@ -23,7 +23,7 @@ export const ThemeProvider = ({ children }) => {
     // Scoped tenant theme marker for Lentride:
     // Ensures Lentride custom brand tokens apply strictly to Lentride without affecting other tenants!
     const host = window.location.hostname.toLowerCase();
-    const isLentride = host.includes('lentride') || (user?.company_name || '').toLowerCase().includes('lentride');
+    const isLentride = host.includes('lentride') || (user?.company_name || '').toLowerCase().includes('lentride') || user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
     if (isLentride) {
       root.classList.add('tenant-lentride');
     } else {

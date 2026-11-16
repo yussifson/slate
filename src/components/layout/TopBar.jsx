@@ -52,7 +52,11 @@ export default function TopBar({ user, isSidebarCollapsed, toggleSidebar, isAIOp
  const [showAvatarDialog, setShowAvatarDialog] = useState(false);
  const { company} = useCompany();
  const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
- const isLentride = host.includes('lentride') || (company?.name || '').toLowerCase().includes('lentride') || (user?.company_name || '').toLowerCase().includes('lentride');
+ const isLentride = host.includes('lentride') || 
+   (company?.name || '').toLowerCase().includes('lentride') || 
+   (user?.company_name || '').toLowerCase().includes('lentride') ||
+   user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+   company?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
 
  const [currentVersion, setCurrentVersion] = useState(() => {
    return sessionStorage.getItem('slate_version_override') || localStorage.getItem('slate_version_override') || 'v1';

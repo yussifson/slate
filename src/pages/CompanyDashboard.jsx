@@ -15,6 +15,7 @@ import LogisticsDashboard from "@/components/dashboard/LogisticsDashboard";
 import GenericDashboard from "@/components/dashboard/GenericDashboard";
 import RealEstateDashboard from "@/pages/real-estate/RealEstateDashboard";
 import JCLDashboard from "@/pages/real-estate-jcl/JCLDashboard";
+import LentrideDashboard from "@/pages/real-estate/LentrideDashboard";
 import PharmacyDashboard from "@/pages/pharmacy/Dashboard";
 import OptavelCommandCenter from "@/pages/optavel/OptavelCommandCenter";
 
@@ -66,6 +67,17 @@ export default function CompanyDashboard() {
   } else if (industry === 'logistics') {
     return <LogisticsDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'real_estate_jcl') {
+    const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+    const isLentride = host.includes('lentride') || 
+      (company?.name || '').toLowerCase().includes('lentride') || 
+      (user?.company_name || '').toLowerCase().includes('lentride') ||
+      companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+      company?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' ||
+      user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
+    
+    if (isLentride) {
+      return <LentrideDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
+    }
     return <JCLDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;
   } else if (industry === 'real_estate' || industry === 'realestate') {
     return <RealEstateDashboard companyId={companyId} company={company} isAdmin={isAdmin} />;

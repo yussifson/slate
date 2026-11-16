@@ -238,7 +238,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
   };
 
   const hostName = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
-  const isLentride = hostName.includes('lentride') || companyData?.name?.toLowerCase().includes('lentride') || user?.company_name?.toLowerCase().includes('lentride');
+  const isLentride = hostName.includes('lentride') || companyData?.name?.toLowerCase().includes('lentride') || user?.company_name?.toLowerCase().includes('lentride') || user?.company_id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' || companyData?.id === '27563caf-8c0b-4c67-b9ff-2abf587a755b' || companyId === '27563caf-8c0b-4c67-b9ff-2abf587a755b';
   const isJCL = !isLentride && (companyData?.name?.toLowerCase().includes('jcl') || user?.company_name?.toLowerCase().includes('jcl') || hostName.includes('jcloffice') || hostName.includes('jclroyalgh'));
   
   const rawLogo = isLentride ? '/lentride-logo-white.svg' : (isJCL ? '/jcl-logo.png' : (companyData?.logo_url || impersonatedCompany?.logo_url || user?.company_logo_url || '/jcl-logo.png'));
@@ -741,7 +741,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  // Put AI pages FIRST, then dynamic modules, custom pages, and FINALLY the baseNav (Chat, Board, Settings)
  // Extract dashboard from baseNav to put it at the very top
   const dashboardNav = baseNav.filter(item => item.label === "Dashboard" || item.label === "My Dashboard" || item.path === "/" || item.path === "/my-dashboard");
-  const intelligenceNav = [{ label: "Intelligence", icon: "Brain", path: "/intelligence"}];
+  const intelligenceNav = isLentride ? [] : [{ label: "Intelligence", icon: "Brain", path: "/intelligence"}];
   const remainingBaseNav = baseNav.filter(item => item.label !== "Dashboard" && item.label !== "My Dashboard" && item.path !== "/" && item.path !== "/my-dashboard");
  
  let rawNavItems = [];
@@ -749,7 +749,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
  const isSuperAdmin = user?.role === "super_admin";
 
  if (isPortalUser) {
-   rawNavItems = clientNav;
+   rawNavItems = isLentride ? clientNav.filter(item => item.path !== "/intelligence") : clientNav;
  } else {
    rawNavItems = isAdmin
    ? [...dashboardNav, ...intelligenceNav, ...orbitBuildNavItems, ...dynamicNavItems, ...customPageItems, ...remainingBaseNav, notificationsItem, createSlateItem, marketplaceItem]
@@ -1272,7 +1272,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
        <div key={cat} className="space-y-0.5">
          {!collapsed && (
             <div className="flex items-center gap-2.5 px-3 py-2 mb-1">
-              <div className="w-1 h-3.5 rounded-full bg-[#FF6B00]" />
+              <div className={cn("w-1 h-3.5 rounded-full", isLentride ? "bg-[#F0709B]" : "bg-[#FF6B00]")} />
               <p className="text-[11px] font-bold text-white/65 uppercase tracking-[0.15em]">{cat}</p>
             </div>
          )}
@@ -1389,7 +1389,7 @@ return (
       {/* Desktop sidebar - Full height sidebar matching reference design */}
       <aside className={cn(
         "hidden md:flex flex-col h-full sticky top-0 border-r border-white/10 dark:border-white/5 transition-all duration-300 relative z-20 overflow-hidden",
-        "bg-[#005A9C] text-white dark:bg-[#091114] border-white/10 dark:border-white/5",
+        isLentride ? "bg-[#0F172A] text-white dark:bg-[#090D15] border-white/10 dark:border-white/5" : "bg-[#005A9C] text-white dark:bg-[#091114] border-white/10 dark:border-white/5",
         isCollapsed ? "w-[64px] min-w-[64px] max-w-[64px]" : "w-[240px] min-w-[240px] max-w-[240px]"
       )}>
         {renderNavContent(isCollapsed)}
