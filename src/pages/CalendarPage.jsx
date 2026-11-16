@@ -756,7 +756,6 @@ export default function CalendarPage() {
           </div>
         )}
       </div>
-      </div>
 
       {/* Corporate Reminders Section */}
       <section className="bg-card rounded-2xl border border-border p-4 shadow-xs">
