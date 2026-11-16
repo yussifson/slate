@@ -20,6 +20,16 @@ export const ThemeProvider = ({ children }) => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
 
+    // Scoped tenant theme marker for Lentride:
+    // Ensures Lentride custom brand tokens apply strictly to Lentride without affecting other tenants!
+    const host = window.location.hostname.toLowerCase();
+    const isLentride = host.includes('lentride') || (user?.company_name || '').toLowerCase().includes('lentride');
+    if (isLentride) {
+      root.classList.add('tenant-lentride');
+    } else {
+      root.classList.remove('tenant-lentride');
+    }
+
     // Force light mode on marketing pages regardless of user setting
     const path = window.location.pathname;
     const isMarketingPage = path === '/features' || path === '/solutions' || path === '/pricing';

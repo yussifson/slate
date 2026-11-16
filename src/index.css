@@ -158,6 +158,104 @@ html, body {
     --sidebar-border: 197 37% 16%;
     --sidebar-ring: 175 100% 37.3%;
   }
+
+  /* ───────────────────────────────────────────────────────────── */
+  /* 🌸 LENTRIDE TENANT SCOPED THEME SPECIFICATION                  */
+  /* Strictly active ONLY under .tenant-lentride (Zero bleed-over) */
+  /* ───────────────────────────────────────────────────────────── */
+  :root.tenant-lentride, 
+  .light.tenant-lentride, 
+  .tenant-lentride {
+    /* Brand Identity Tokens */
+    --color-primary: #F0709B;
+    --color-primary-light: #F494B6;
+    --color-primary-dark: #E84C7B;
+    --color-secondary: #2E7D4F;
+    --color-secondary-dark: #1F5C38;
+    --color-success: #2E7D4F;
+    --color-warning: #F0709B;
+    --color-danger: #EF4444;
+
+    /* Light Theme Surface & Text */
+    --background: 210 20% 98%;          /* #F8FAFC */
+    --foreground: 222 47% 11%;          /* #0F172A */
+    --card: 0 0% 100%;                  /* #FFFFFF */
+    --card-foreground: 222 47% 11%;     /* #0F172A */
+    --popover: 0 0% 100%;               /* #FFFFFF */
+    --popover-foreground: 222 47% 11%;  /* #0F172A */
+    --primary: 340 82% 58%;             /* #E5467A */
+    --primary-foreground: 0 0% 100%;    /* #FFFFFF */
+    --secondary: 210 25% 95%;           /* #EDF2F7 */
+    --secondary-foreground: 222 47% 11%;/* #0F172A */
+    --muted: 210 28% 96%;               /* #F1F5F9 */
+    --muted-foreground: 215 16% 47%;    /* #64748B */
+    --accent: 340 82% 97%;              /* #FDF2F5 */
+    --accent-foreground: 340 82% 45%;   /* #D12965 */
+    --destructive: 0 84% 60%;           /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;/* #FFFFFF */
+    --border: 214 20% 89%;              /* #E2E8F0 */
+    --input: 214 20% 89%;               /* #E2E8F0 */
+    --ring: 340 82% 58%;                /* #E5467A */
+    --radius: 0.625rem;
+
+    /* Sidebar Light */
+    --sidebar-background: 222 47% 11%;  /* #0F172A Deep Navy Executive Slate */
+    --sidebar-foreground: 214 32% 86%;  /* #CBD5E1 */
+    --sidebar-primary: 340 82% 58%;     /* #E5467A */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 18%;      /* #1E293B */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 217 33% 18%;      /* #1E293B */
+    --sidebar-ring: 340 82% 58%;
+
+    /* Charts */
+    --chart-1: 340 82% 58%;             /* #E5467A Velvet Rose */
+    --chart-2: 152 57% 38%;             /* #299863 Forest Emerald */
+    --chart-3: 217 91% 60%;             /* #3B82F6 Cobalt Blue */
+    --chart-4: 38 92% 50%;              /* #F59E0B Warm Amber */
+    --chart-5: 262 83% 58%;             /* #8B5CF6 Executive Purple */
+  }
+
+  /* Lentride Dark Mode */
+  .dark.tenant-lentride, 
+  .dark .tenant-lentride {
+    --background: 222 47% 8%;           /* #0B0F19 Deep Obsidian */
+    --foreground: 210 40% 98%;          /* #F8FAFC */
+    --card: 222 47% 11%;                /* #0F172A Elevated Slate */
+    --card-foreground: 210 40% 98%;     /* #F8FAFC */
+    --popover: 222 47% 11%;             /* #0F172A */
+    --popover-foreground: 210 40% 98%;  /* #F8FAFC */
+    --primary: 340 82% 64%;             /* #EE5E8F High-Visibility Luminous Rose */
+    --primary-foreground: 0 0% 100%;    /* #FFFFFF */
+    --secondary: 217 33% 16%;           /* #162032 */
+    --secondary-foreground: 210 40% 98%;/* #F8FAFC */
+    --muted: 217 33% 16%;               /* #162032 */
+    --muted-foreground: 215 20% 68%;    /* #94A3B8 */
+    --accent: 340 82% 20%;              /* #5D102A */
+    --accent-foreground: 340 82% 80%;   /* #F7A8C4 */
+    --destructive: 0 72% 51%;           /* #DC2626 */
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 18%;              /* #1E293B */
+    --input: 217 33% 18%;               /* #1E293B */
+    --ring: 340 82% 64%;                /* #EE5E8F */
+
+    /* Sidebar Dark */
+    --sidebar-background: 222 47% 7%;   /* #090D15 */
+    --sidebar-foreground: 214 32% 84%;  /* #CBD5E1 */
+    --sidebar-primary: 340 82% 64%;     /* #EE5E8F */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 16%;      /* #162032 */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 217 33% 14%;      /* #141C2B */
+    --sidebar-ring: 340 82% 64%;
+
+    /* Charts Dark */
+    --chart-1: 340 82% 64%;             /* #EE5E8F */
+    --chart-2: 152 57% 45%;             /* #31B476 */
+    --chart-3: 217 91% 65%;             /* #5393F8 */
+    --chart-4: 38 92% 55%;              /* #F7AA25 */
+    --chart-5: 262 83% 65%;             /* #9E77F7 */
+  }
 }
 
 @layer utilities {
