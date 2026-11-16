@@ -23,12 +23,31 @@ export default function Documents() {
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
 
-  const { data: documents = [], isLoading } = useQuery({
+  const { data: rawDocuments = [], isLoading } = useQuery({
     queryKey: ["documents"],
-    queryFn: () => base44.entities.Document.filter()
-  ,
-  enabled: !!user,
-});
+    queryFn: () => base44.entities.Document.filter(),
+    enabled: !!user,
+  });
+
+  const documents = (rawDocuments || []).map(d => {
+    let cleanNotes = d.notes;
+    let cleanCategory = d.category;
+    let cleanExpiry = d.expiry_date;
+    if (d.notes && typeof d.notes === 'string' && d.notes.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(d.notes);
+        cleanNotes = parsed.notes || '';
+        if (parsed.category) cleanCategory = parsed.category;
+        if (parsed.expiry_date) cleanExpiry = parsed.expiry_date;
+      } catch (e) {}
+    }
+    return {
+      ...d,
+      notes: cleanNotes,
+      category: cleanCategory || d.category || 'other',
+      expiry_date: cleanExpiry || d.expiry_date
+    };
+  });
 
   const deleteMutation = useMutation({
     mutationFn: (id) => base44.entities.Document.delete(id),

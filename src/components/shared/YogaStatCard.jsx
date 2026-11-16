@@ -1,45 +1,57 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-export default function StatCard({ title, value, subtitle, icon: Icon, iconBg, trend, trendUp, trendLabel, className, accent }) {
+export default function StatCard({ 
+  title, 
+  value, 
+  subtitle, 
+  icon: Icon, 
+  iconBg, 
+  badge,
+  badgeVariant = "default",
+  className 
+}) {
   return (
     <div className={cn(
-      "bg-card rounded-lg border border-border p-4 sm:p-5 flex flex-col gap-3 transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.07)] dark:hover:shadow-[0_4px_16px_rgba(0,0,0,0.25)] relative overflow-hidden",
-      accent && "border-l-[3px]",
+      "bg-card rounded-xl border border-border p-4 sm:p-5 flex flex-col justify-between shadow-xs transition-all duration-200 hover:shadow-sm relative overflow-hidden group",
       className
-    )} style={accent ? { borderLeftColor: accent } : {}}>
-
-      {/* Header row */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="section-label mb-1">{title}</p>
-          <p className="text-xl font-bold text-foreground tracking-tight tabular-nums">{value}</p>
-          {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
-        </div>
+    )}>
+      {/* Top Header: Label on left, Clean Icon Pill on right */}
+      <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground truncate">
+          {title}
+        </span>
         {Icon && (
           <div className={cn(
-            "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-            iconBg || "bg-primary/10"
+            "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-xs",
+            iconBg || "bg-primary/10 text-primary dark:bg-primary/20"
           )}>
-            <Icon className="w-5 h-5 text-primary" />
+            <Icon className="w-4 h-4" />
           </div>
         )}
       </div>
 
-      {/* Trend row */}
-      {trend && (
-        <div className="flex items-center gap-1.5 pt-1 border-t border-border">
-          {trendUp ? (
-            <TrendingUp className="w-3 h-3 text-emerald-500" />
-          ) : (
-            <TrendingDown className="w-3 h-3 text-red-500" />
-          )}
-          <span className={cn("text-xs font-semibold", trendUp ? "text-emerald-600" : "text-red-500")}>
-            {trendUp ? "+" : ""}{trend}
-          </span>
-          <span className="text-xs text-muted-foreground">{trendLabel || "vs last month"}</span>
-        </div>
+      {/* Main Metric Value and optional Badge */}
+      <div className="flex items-baseline gap-2">
+        <p className="text-2xl sm:text-[26px] font-bold tracking-tight text-foreground truncate">
+          {value}
+        </p>
+        {badge && (
+          <Badge 
+            variant={badgeVariant} 
+            className="text-[10px] h-4.5 px-1.5 font-bold shrink-0"
+          >
+            {badge}
+          </Badge>
+        )}
+      </div>
+
+      {/* Clean Descriptive Subtitle */}
+      {subtitle && (
+        <p className="text-xs font-medium text-muted-foreground mt-1 truncate">
+          {subtitle}
+        </p>
       )}
     </div>
   );

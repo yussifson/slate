@@ -790,12 +790,7 @@ function TaskNotesModal({ task, onClose, currentUser }) {
                 <span className="font-bold capitalize text-primary">{task.priority || "Medium"}</span>
               </div>
             </div>
-            {task.description && (
-              <div className="pt-2 border-t border-border/40 text-xs text-foreground">
-                <span className="font-bold text-muted-foreground block text-[10px] uppercase">Instructions:</span>
-                {task.description}
-              </div>
-            )}
+            
           </div>
 
           {/* Notes & Submission Timeline */}

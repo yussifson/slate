@@ -207,13 +207,18 @@ class ErrorBoundary extends React.Component {
       const isChunkError = this.state.error?.message?.includes('Failed to fetch dynamically imported module') || this.state.error?.toString()?.includes('Failed to fetch dynamically imported module');
       
       if (isChunkError) {
+        const host = typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : '';
+        const isZentride = host.includes('zentride') || host.includes('lentride');
+        const updateLogo = isZentride ? '/zentride-logo.svg' : '/jcl-logo.png';
+        const updateBrand = isZentride ? 'Zentride' : 'JCL Office';
+
         return (
           <div className="min-h-[100dvh] bg-[#f8fafc] flex flex-col items-center justify-center p-6 font-sans">
-            <div className="hidden md:flex bg-[#0B1418] p-8 md:p-12 rounded-[24px] border border-white/10 shadow-2xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#005A9C]"></div>
+            <div className={cn("hidden md:flex p-8 md:p-12 rounded-[24px] border shadow-2xl flex-col items-center text-center max-w-md w-full relative overflow-hidden text-white", isZentride ? "bg-[#0C1322] border-[#1B2539]" : "bg-[#0B1418] border-white/10")}>
+              <div className={cn("absolute top-0 left-0 right-0 h-1.5", isZentride ? "bg-[#F0709B]" : "bg-[#005A9C]")}></div>
               
               <div className="w-20 h-20 bg-white rounded-2xl shadow-lg p-2.5 flex items-center justify-center mb-6">
-                 <img src="/jcl-logo.png" alt="JCL Office" className="w-full h-full object-contain animate-pulse" />
+                 <img src={updateLogo} alt={updateBrand} className="w-full h-full object-contain animate-pulse" />
               </div>
 
               <h2 className="text-2xl font-black text-white mb-3 tracking-tight">
@@ -226,17 +231,17 @@ class ErrorBoundary extends React.Component {
               {this.state.isUpdating ? (
                 <div className="w-full mb-2">
                   <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden p-0.5 border border-white/10">
-                    <div className="bg-gradient-to-r from-[#005A9C] to-[#FF6B00] h-full rounded-full transition-all duration-200" style={{ width: `${this.state.updateProgress}%` }}></div>
+                    <div className={cn("h-full rounded-full transition-all duration-200", isZentride ? "bg-gradient-to-r from-[#F0709B] to-[#D2603F]" : "bg-gradient-to-r from-[#005A9C] to-[#FF6B00]")} style={{ width: `${this.state.updateProgress}%` }}></div>
                   </div>
                   <div className="flex justify-between items-center text-xs text-white/70 font-bold mt-2">
                     <span>Installing...</span>
-                    <span className="text-[#FF6B00]">{this.state.updateProgress}%</span>
+                    <span className={isZentride ? "text-[#F0709B]" : "text-[#FF6B00]"}>{this.state.updateProgress}%</span>
                   </div>
                 </div>
               ) : (
                 <button 
                   onClick={this.handleUpdate} 
-                  className="w-full py-4 px-6 bg-[#005A9C] hover:bg-[#00477D] text-white font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0 border border-white/20"
+                  className={cn("w-full py-4 px-6 text-white font-bold rounded-xl shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0 border", isZentride ? "bg-[#F0709B] hover:bg-[#D2603F] border-[#F0709B]/30" : "bg-[#005A9C] hover:bg-[#00477D] border-white/20")}
                 >
                   Refresh Page Now
                 </button>
@@ -244,25 +249,25 @@ class ErrorBoundary extends React.Component {
             </div>
 
             {/* Native Mobile Version */}
-            <div className="md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto p-6 bg-[#0B1418] rounded-3xl border border-white/10 shadow-2xl">
+            <div className={cn("md:hidden flex flex-col items-center justify-center w-full max-w-sm mt-auto mb-auto p-6 rounded-3xl border shadow-2xl", isZentride ? "bg-[#0C1322] border-[#1B2539]" : "bg-[#0B1418] border-white/10")}>
                <div className="w-20 h-20 bg-white rounded-2xl shadow-lg p-2.5 flex items-center justify-center mb-6">
-                  <img src="/jcl-logo.png" alt="JCL Office" className="w-full h-full object-contain animate-pulse" />
+                  <img src={updateLogo} alt={updateBrand} className="w-full h-full object-contain animate-pulse" />
                </div>
                <h2 className="text-2xl font-black text-white mb-2 text-center tracking-tight">
-                 {this.state.isUpdating ? "Installing JCL Update..." : "New Update Available"}
+                 {this.state.isUpdating ? `Installing ${updateBrand} Update...` : "New Update Available"}
                </h2>
                <p className="text-white/75 mb-6 text-sm font-medium leading-relaxed text-center px-2">
-                 {this.state.isUpdating ? "Optimizing workspace files, please do not close the app." : "A newer version of JCL Office is available with bug fixes and new features."}
+                 {this.state.isUpdating ? "Optimizing workspace files, please do not close the app." : `A newer version of ${updateBrand} is available with bug fixes and new features.`}
                </p>
                
                {this.state.isUpdating ? (
                  <div className="w-full mb-2">
                    <div className="w-full bg-white/10 rounded-full h-3.5 overflow-hidden shadow-inner p-0.5 border border-white/10">
-                     <div className="bg-gradient-to-r from-[#005A9C] to-[#FF6B00] h-full rounded-full transition-all duration-200 shadow-sm" style={{ width: `${this.state.updateProgress}%` }}></div>
+                     <div className={cn("h-full rounded-full transition-all duration-200 shadow-sm", isZentride ? "bg-gradient-to-r from-[#F0709B] to-[#D2603F]" : "bg-gradient-to-r from-[#005A9C] to-[#FF6B00]")} style={{ width: `${this.state.updateProgress}%` }}></div>
                    </div>
                    <div className="flex justify-between items-center text-xs text-white/70 font-bold mt-2.5 px-1">
                      <span>Updating system...</span>
-                     <span className="text-[#FF6B00]">{this.state.updateProgress}%</span>
+                     <span className={isZentride ? "text-[#F0709B]" : "text-[#FF6B00]"}>{this.state.updateProgress}%</span>
                    </div>
                  </div>
                ) : (

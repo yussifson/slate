@@ -192,8 +192,8 @@ export default function NotificationsInbox() {
   };
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-slate-50 dark:bg-background overflow-hidden relative">
-      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10 max-w-5xl mx-auto w-full">
+    <div className="flex-1 flex flex-col bg-background overflow-hidden relative">
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10 w-full max-w-7xl mx-auto">
         
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">

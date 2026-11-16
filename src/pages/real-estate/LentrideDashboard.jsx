@@ -223,47 +223,43 @@ export default function LentrideDashboard() {
         </div>
       )}
 
-      {/* KPI Stats Grid — Yoga StatCards with Left Accent Borders */}
+      {/* KPI Stats Grid — Exact Yoga StatCards Layout */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <YogaStatCard
           title="Active Listings"
           value={activePropertiesCount}
           subtitle={`${availableLand} available · ${activeLandAllocations} reserved`}
           icon={Compass}
-          iconBg="bg-[#F0709B]/10 text-[#F0709B]"
-          accent="#F0709B"
-          trend="12% vs last month"
-          trendUp={true}
+          iconBg="bg-primary/10 text-primary dark:bg-primary/20"
+          badge={activePropertiesCount > 0 ? "Active" : undefined}
+          badgeVariant="default"
         />
         <YogaStatCard
           title="Active Clients"
           value={totalClientsCount}
           subtitle={`${leads.length} in pipeline`}
           icon={Users}
-          iconBg="bg-[#2E7D4F]/10 text-[#2E7D4F]"
-          accent="#2E7D4F"
-          trend="8% growth"
-          trendUp={true}
+          iconBg="bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+          badge={totalClientsCount > 0 ? "Growth" : undefined}
+          badgeVariant="success"
         />
         <YogaStatCard
           title="Closed Volume"
           value={`${currencySymbol}${totalClosedVolume > 1000 ? `${(totalClosedVolume / 1000).toFixed(0)}k` : totalClosedVolume.toLocaleString()}`}
           subtitle={`${transactions.filter(t => t.status === "closed" || t.status === "completed").length} completed deals`}
           icon={ArrowUpRight}
-          iconBg="bg-blue-500/10 text-blue-600"
-          accent="#3B82F6"
-          trend="Verified settlement"
-          trendUp={true}
+          iconBg="bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400"
+          badge="Settled"
+          badgeVariant="secondary"
         />
         <YogaStatCard
           title="Pending Tasks"
           value={pendingTasksCount}
           subtitle={`${offers.filter(o => o.status === "pending").length} offers · ${leases.filter(l => l.status === "active").length} leases`}
           icon={Activity}
-          iconBg="bg-purple-500/10 text-purple-600"
-          accent="#8B5CF6"
-          trend="Action required"
-          trendUp={false}
+          iconBg="bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400"
+          badge={pendingTasksCount > 0 ? "Pending" : undefined}
+          badgeVariant="destructive"
         />
       </div>
 

@@ -524,7 +524,7 @@ export default function PipelinePage() {
               setShowItemForm(true);
             }}
             size="sm"
-            className="flex-1 sm:flex-initial h-9 px-3.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-sm rounded-xl gap-1.5"
+            className="flex-1 sm:flex-initial h-9 px-3.5 text-xs font-bold bg-primary hover:bg-primary/90 text-white shadow-sm rounded-xl gap-1.5"
           >
             <Plus className="h-4 w-4" />
             <span>Add {activePipeline?.item_label || 'Deal'}</span>
@@ -536,7 +536,7 @@ export default function PipelinePage() {
       <div className="grid grid-cols-2 md:hidden gap-2.5">
         <div className="bg-card/95 border border-border/80 rounded-2xl p-3 shadow-xs">
           <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Briefcase className="w-3.5 h-3.5 text-[#005A9C]" />
+            <Briefcase className="w-3.5 h-3.5 text-primary" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Total Deals</span>
           </div>
           <p className="text-sm font-black text-foreground truncate">{stats.totalCount}</p>
@@ -563,7 +563,7 @@ export default function PipelinePage() {
             <DollarSign className="w-3.5 h-3.5 text-blue-500" />
             <span className="text-[10px] font-bold uppercase tracking-wider">Pipeline Value</span>
           </div>
-          <p className="text-sm font-black text-[#005A9C] truncate">{formatCurrency(stats.totalValue, 'USD')}</p>
+          <p className="text-sm font-black text-primary truncate">{formatCurrency(stats.totalValue, 'USD')}</p>
           <span className="text-[9px] text-muted-foreground font-semibold">Gross deal value</span>
         </div>
       </div>
@@ -576,7 +576,7 @@ export default function PipelinePage() {
               <p className="text-2xl font-extrabold text-foreground tracking-tight">{stats.totalCount}</p>
               <p className="text-[11px] text-muted-foreground font-semibold">{activePipeline?.name || 'Sales Flow'}</p>
             </div>
-            <div className="h-12 w-12 rounded-2xl bg-[#005A9C]/10 text-[#005A9C] flex items-center justify-center border border-[#005A9C]/20 shadow-inner">
+            <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shadow-inner">
               <Briefcase className="h-6 w-6" />
             </div>
           </CardContent>
@@ -612,7 +612,7 @@ export default function PipelinePage() {
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Valuation</span>
-              <p className="text-2xl font-extrabold text-[#005A9C] tracking-tight">{formatCurrency(stats.totalValue, 'USD')}</p>
+              <p className="text-2xl font-extrabold text-primary tracking-tight">{formatCurrency(stats.totalValue, 'USD')}</p>
               <p className="text-[11px] text-muted-foreground font-semibold">Pipeline deal value</p>
             </div>
             <div className="h-12 w-12 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center border border-blue-500/20 shadow-inner">
@@ -633,7 +633,7 @@ export default function PipelinePage() {
                 className={cn(
                   'inline-flex shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all',
                   activePipeline?.id === p.id
-                    ? 'bg-[#005A9C] text-white shadow-sm'
+                    ? 'bg-primary text-white shadow-sm'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
               >
@@ -705,7 +705,7 @@ export default function PipelinePage() {
                     <p className="font-bold text-xs text-foreground truncate">{item.title}</p>
                     <p className="text-[10px] text-muted-foreground truncate">{item.assignee || 'Unassigned'}</p>
                   </div>
-                  <span className="font-bold font-mono text-sm text-[#005A9C] shrink-0">
+                  <span className="font-bold font-mono text-sm text-primary shrink-0">
                     {formatCurrency(item.value, 'USD')}
                   </span>
                 </div>
@@ -806,7 +806,7 @@ export default function PipelinePage() {
                       <td className="p-3.5 text-muted-foreground font-medium">
                         {item.assignee || 'Unassigned'}
                       </td>
-                      <td className="p-3.5 font-bold font-mono text-sm text-[#005A9C]">
+                      <td className="p-3.5 font-bold font-mono text-sm text-primary">
                         {formatCurrency(item.value, 'USD')}
                       </td>
                       <td className="p-3.5 font-mono text-muted-foreground">
@@ -864,7 +864,7 @@ export default function PipelinePage() {
                   <Badge variant="outline" className="text-[10px] font-bold uppercase">
                     {inspectorItem.priority} priority
                   </Badge>
-                  <Badge className="bg-[#005A9C]/10 text-[#005A9C] border-[#005A9C]/30 text-[10px]">
+                  <Badge className="bg-primary/10 text-primary border-primary/30 text-[10px]">
                     {inspectorItem.stageName}
                   </Badge>
                 </div>
@@ -872,7 +872,7 @@ export default function PipelinePage() {
                   {inspectorItem.title}
                 </SheetTitle>
                 <SheetDescription className="text-xs text-muted-foreground">
-                  Est. Valuation: <span className="font-bold text-[#005A9C]">{formatCurrency(inspectorItem.value, 'USD')}</span>
+                  Est. Valuation: <span className="font-bold text-primary">{formatCurrency(inspectorItem.value, 'USD')}</span>
                 </SheetDescription>
               </SheetHeader>
 
@@ -938,7 +938,7 @@ export default function PipelinePage() {
                       setInspectorItem(null);
                       setShowItemForm(true);
                     }}
-                    className="flex-1 h-9 rounded-xl text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white"
+                    className="flex-1 h-9 rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-white"
                   >
                     <Edit2 className="w-3.5 h-3.5 mr-1.5" /> Edit Deal
                   </Button>
@@ -1050,7 +1050,7 @@ export default function PipelinePage() {
                               }
                               setItemForm({ ...itemForm, assignee: next.join(', ') });
                             }}
-                            className="rounded text-[#005A9C] focus:ring-[#005A9C]"
+                            className="rounded text-primary focus:ring-[#005A9C]"
                           />
                           <span className="font-medium text-foreground">{emp.name}</span>
                           {emp.role && <span className="text-[10px] text-muted-foreground">({emp.role})</span>}
@@ -1086,7 +1086,7 @@ export default function PipelinePage() {
               />
             </div>
 
-            <Button type="submit" className="w-full h-9 rounded-xl text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white mt-2">
+            <Button type="submit" className="w-full h-9 rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-white mt-2">
               {editingItemId ? 'Update Deal' : 'Save Deal to Pipeline'}
             </Button>
           </form>
@@ -1217,7 +1217,7 @@ export default function PipelinePage() {
               <Button type="button" variant="outline" onClick={() => setShowPipelineModal(false)} className="rounded-xl text-xs h-9">
                 Cancel
               </Button>
-              <Button type="submit" className="bg-[#005A9C] hover:bg-[#00477D] text-white rounded-xl text-xs h-9 font-bold">
+              <Button type="submit" className="bg-primary hover:bg-primary/90 text-white rounded-xl text-xs h-9 font-bold">
                 Create Pipeline
               </Button>
             </DialogFooter>
