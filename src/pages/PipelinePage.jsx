@@ -485,7 +485,7 @@ export default function PipelinePage() {
       {/* ── 1. Top Native Header (Clean, dedicated for Pipelines, exact CRM Leads design) ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-md shadow-[#005A9C]/20 shrink-0">
+          <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-tr from-[#F0709B] to-[#D14E7E] flex items-center justify-center text-white shadow-md shadow-[#F0709B]/25 shrink-0">
             <GitBranch className="h-5 w-5" />
           </div>
           <div>

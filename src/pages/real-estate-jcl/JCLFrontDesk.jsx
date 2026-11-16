@@ -203,7 +203,7 @@ export default function JCLFrontDesk() {
   };
 
   return (
-    <main className="w-full max-w-full space-y-4 sm:space-y-6 p-3 sm:p-6 lg:p-8 pb-24 overflow-x-hidden">
+    <main className="w-full max-w-7xl mx-auto space-y-5 sm:space-y-6 p-4 sm:p-6 lg:p-8 pb-24 font-sans bg-background overflow-x-hidden">
       {/* ── 1. Clean Header (No redundant subtext) ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -213,7 +213,7 @@ export default function JCLFrontDesk() {
         </div>
         <Button
           onClick={() => setShowVisitorForm(true)}
-          className="w-full sm:w-auto h-9 px-4 gap-1.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-xs rounded-xl justify-center shrink-0"
+          className="w-full sm:w-auto h-9 px-4 gap-1.5 text-xs font-bold bg-primary hover:bg-primary/90 text-white shadow-xs rounded-xl justify-center shrink-0"
         >
           <Plus className="w-3.5 h-3.5" /> Check in Visitor / Staff
         </Button>
@@ -250,10 +250,10 @@ export default function JCLFrontDesk() {
 
         <div className="bg-card/95 border border-border/80 rounded-2xl p-3.5 shadow-xs">
           <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-            <Clock3 className="w-3.5 h-3.5 text-[#005A9C] shrink-0" />
+            <Clock3 className="w-3.5 h-3.5 text-primary shrink-0" />
             <span className="text-[10px] font-bold uppercase tracking-wider truncate">All Logged</span>
           </div>
-          <p className="text-xl font-black text-[#005A9C] truncate">{visitors.length}</p>
+          <p className="text-xl font-black text-primary truncate">{visitors.length}</p>
           <span className="text-[10px] text-muted-foreground font-semibold">Total records</span>
         </div>
       </div>
@@ -272,7 +272,7 @@ export default function JCLFrontDesk() {
             onClick={() => setTab('visitors')}
             className={cn(
               'flex items-center justify-center gap-2 rounded-xl py-2.5 px-3 text-xs font-bold transition-all',
-              tab === 'visitors' ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              tab === 'visitors' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
             <UsersRound className="w-4 h-4 shrink-0" />
@@ -282,7 +282,7 @@ export default function JCLFrontDesk() {
             onClick={() => setTab('staff')}
             className={cn(
               'flex items-center justify-center gap-2 rounded-xl py-2.5 px-3 text-xs font-bold transition-all',
-              tab === 'staff' ? 'bg-[#005A9C] text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              tab === 'staff' ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
             <UserRound className="w-4 h-4 shrink-0" />
@@ -546,7 +546,7 @@ export default function JCLFrontDesk() {
                   <Button type="button" variant="outline" size="sm" onClick={() => setShowVisitorForm(false)} className="h-8 text-xs rounded-xl">
                     Cancel
                   </Button>
-                  <Button type="submit" size="sm" className="h-8 text-xs font-bold bg-[#005A9C] text-white rounded-xl gap-1.5">
+                  <Button type="submit" size="sm" className="h-8 text-xs font-bold bg-primary text-white rounded-xl gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5" /> Save Arrival
                   </Button>
                 </div>
@@ -563,7 +563,7 @@ function Metric({ icon: Icon, label, value, detail }) {
   return (
     <Card className="rounded-2xl border border-border/80 shadow-xs">
       <CardContent className="flex items-center gap-3.5 p-4">
-        <div className="rounded-xl bg-[#005A9C]/10 text-[#005A9C] p-2.5 shrink-0">
+        <div className="rounded-xl bg-primary/10 text-primary p-2.5 shrink-0">
           <Icon className="w-5 h-5" />
         </div>
         <div>

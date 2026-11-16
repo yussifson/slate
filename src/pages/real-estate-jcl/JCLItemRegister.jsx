@@ -193,7 +193,7 @@ export default function JCLItemRegister() {
   };
 
   return (
-    <main className="w-full max-w-full space-y-4 sm:space-y-6 p-3 sm:p-6 lg:p-8 pb-24 overflow-x-hidden">
+    <main className="w-full max-w-7xl mx-auto space-y-5 sm:space-y-6 p-4 sm:p-6 lg:p-8 pb-24 font-sans bg-background overflow-x-hidden">
       {/* ── 1. Clean Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -203,7 +203,7 @@ export default function JCLItemRegister() {
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="w-full sm:w-auto h-9 px-4 gap-1.5 text-xs font-bold bg-[#005A9C] hover:bg-[#00477D] text-white shadow-xs rounded-xl justify-center shrink-0"
+          className="w-full sm:w-auto h-9 px-4 gap-1.5 text-xs font-bold bg-primary hover:bg-primary/90 text-white shadow-xs rounded-xl justify-center shrink-0"
         >
           <Plus className="w-3.5 h-3.5" /> Issue Item Record
         </Button>
@@ -294,7 +294,7 @@ export default function JCLItemRegister() {
                     <p className="font-bold text-sm text-foreground">{item.item_name}</p>
                     <p className="text-xs text-muted-foreground">{item.description || 'No description'}</p>
                   </div>
-                  <Badge variant={status === 'returned' ? 'secondary' : 'default'} className={cn("text-[10px] font-bold capitalize", status === 'overdue' ? 'bg-rose-500 text-white' : status === 'issued' ? 'bg-[#005A9C] text-white' : '')}>
+                  <Badge variant={status === 'returned' ? 'secondary' : 'default'} className={cn("text-[10px] font-bold capitalize", status === 'overdue' ? 'bg-rose-500 text-white' : status === 'issued' ? 'bg-primary text-white' : '')}>
                     {status}
                   </Badge>
                 </div>
@@ -346,7 +346,7 @@ export default function JCLItemRegister() {
                     <td className="p-3 text-muted-foreground font-mono">{new Date(item.issued_at).toLocaleString()}</td>
                     <td className="p-3 text-muted-foreground font-mono">{item.expected_return_at ? new Date(item.expected_return_at).toLocaleDateString() : '—'}</td>
                     <td className="p-3">
-                      <Badge variant={status === 'returned' ? 'secondary' : 'default'} className={status === 'overdue' ? 'bg-rose-500 text-white' : status === 'issued' ? 'bg-[#005A9C] text-white' : ''}>
+                      <Badge variant={status === 'returned' ? 'secondary' : 'default'} className={status === 'overdue' ? 'bg-rose-500 text-white' : status === 'issued' ? 'bg-primary text-white' : ''}>
                         {status}
                       </Badge>
                     </td>
@@ -410,7 +410,7 @@ export default function JCLItemRegister() {
             <Field label="Notes">
               <Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className="text-xs" />
             </Field>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] text-white rounded-xl">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-primary text-white rounded-xl">
               Save Issuance Record
             </Button>
           </form>
@@ -430,7 +430,7 @@ export default function JCLItemRegister() {
             <Field label="Notes">
               <Textarea value={returning.notes} onChange={e => setReturning({ ...returning, notes: e.target.value })} className="text-xs" />
             </Field>
-            <Button type="submit" className="w-full h-9 text-xs font-bold bg-[#005A9C] text-white rounded-xl">
+            <Button type="submit" className="w-full h-9 text-xs font-bold bg-primary text-white rounded-xl">
               Confirm Return
             </Button>
           </form>
@@ -463,7 +463,7 @@ export default function JCLItemRegister() {
 
 function Metric({ label, value, icon: Icon, tone = 'blue' }) {
   const tones = {
-    blue: 'bg-[#005A9C]/10 text-[#005A9C]',
+    blue: 'bg-primary/10 text-primary',
     amber: 'bg-amber-500/10 text-amber-600',
     emerald: 'bg-emerald-500/10 text-emerald-600',
     rose: 'bg-rose-500/10 text-rose-600'

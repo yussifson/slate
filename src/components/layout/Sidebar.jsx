@@ -800,7 +800,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
         { label: "Drawings", path: "/engineering/drawings", icon: "Layers" },
         { label: "Projects", path: "/jcl/projects", icon: "BriefcaseBusiness" },
         { label: "Bill of Quantities", path: "/boq", icon: "Calculator" },
-        { label: "Asset Taking", path: "/jcl/employee-assets", icon: "ShieldCheck" }
+        ...(isLentride ? [] : [{ label: "Asset Taking", path: "/jcl/employee-assets", icon: "ShieldCheck" }])
       ];
       jclItems.forEach(item => {
         if (!rawNavItems.some(n => n.path === item.path)) rawNavItems.push(item);
@@ -865,6 +865,7 @@ const isDefaultOpen = activeIndustry === 'real_estate_jcl'
       if (item.path && JCL_BLOCKED_PATHS.has(item.path)) return false;
       if (item.label && JCL_BLOCKED_LABELS.has(item.label.toLowerCase())) return false;
       if (isLentride && (item.path === '/time-tracking' || item.label?.toLowerCase() === 'time tracking')) return false;
+      if (isLentride && (item.path === '/jcl/employee-assets' || item.label?.toLowerCase().includes('asset custody') || item.label?.toLowerCase().includes('asset taking'))) return false;
       return true;
     });
   }

@@ -284,13 +284,13 @@ export default function JCLESignatures() {
       {/* ── 1. Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[#005A9C] to-[#00477D] flex items-center justify-center text-white shadow-lg shadow-primary/20 shrink-0">
+          <div className="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[#F0709B] to-[#D14E7E] flex items-center justify-center text-white shadow-lg shadow-[#F0709B]/25 shrink-0">
             <Shield className="h-6 w-6" />
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground flex items-center gap-2 flex-wrap">
               E-Signatures & Cryptographic Vault
-              <Badge className="bg-primary/10 text-primary dark:text-[#FF6B00] border-primary/30 text-[10px] uppercase font-mono px-2 py-0.5 shrink-0">
+              <Badge className="bg-primary/10 text-primary border-primary/30 text-[10px] uppercase font-mono px-2 py-0.5 shrink-0">
                 ESIGN & UETA Compliant
               </Badge>
             </h1>
