@@ -66,6 +66,13 @@ export default function Login() {
  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
  const [invalidSubdomain, setInvalidSubdomain] = useState(false);
 
+ useEffect(() => {
+   if (!invalidSubdomain || isLoadingAuth || isAuthenticated) return;
+
+   const mainLoginUrl = isDesktopApp() ? '/login' : `${getMainAppUrl()}/login`;
+   window.location.replace(mainLoginUrl);
+ }, [invalidSubdomain, isLoadingAuth, isAuthenticated]);
+
  const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
  const showOptavelButtonOnly = !isRootAccount && !isLocalhost && !isElectron;
