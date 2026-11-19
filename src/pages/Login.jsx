@@ -9,7 +9,8 @@ import { useAuth} from '@/lib/AuthContext';
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Logo} from '@/components/ui/Logo';
 import JCL_LOGO_BASE64 from '@/assets/jclLogoBase64';
-import { getSubdomainAndBase, getMainAppUrl, isDesktopApp } from '@/lib/domainUtils';
+import { getSubdomainAndBase, isDesktopApp } from '@/lib/domainUtils';
+import { resolveCompanyBySubdomain } from '@/lib/companyDomainResolver';
 import IndustryFeatureShowcase from '@/components/shared/IndustryFeatureShowcase';
 
 
@@ -65,13 +66,6 @@ export default function Login() {
 
  const [checkingSubdomain, setCheckingSubdomain] = useState(!!currentSubdomain);
  const [invalidSubdomain, setInvalidSubdomain] = useState(false);
-
- useEffect(() => {
-   if (!invalidSubdomain || isLoadingAuth || isAuthenticated) return;
-
-   const mainLoginUrl = isDesktopApp() ? '/login' : `${getMainAppUrl()}/login`;
-   window.location.replace(mainLoginUrl);
- }, [invalidSubdomain, isLoadingAuth, isAuthenticated]);
 
  const isRootAccount = typeof window !== 'undefined' && window.location.hostname.startsWith('account.');
  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -168,15 +162,7 @@ export default function Login() {
        }
 
        if (!brandData) {
-        console.log("RPC missed, trying direct table query...");
-        const { data: directData} = await supabase.from('companies').select('id, name, logo_url, logo_light_url, tagline, industry_type').or(`subdomain.ilike.${cleanSub},custom_domain.ilike.${cleanSub}`).maybeSingle();
-        
-        if (directData) {
-          brandData = directData;
-        } else {
-          const { data: tableData} = await powerSync.execute('SELECT id, name, logo_url, logo_light_url, tagline, industry_type FROM companies WHERE LOWER(subdomain) = ? OR LOWER(custom_domain) = ? LIMIT 1', [cleanSub, cleanSub]).then(res => ({ data: res.rows._array[0] || null})).catch(() => ({ data: null}));
-          brandData = tableData;
-        }
+         brandData = await resolveCompanyBySubdomain(cleanSub);
        }
 
        // Clean up accidentally duplicated URLs and ensure protocol
@@ -223,7 +209,17 @@ export default function Login() {
            }
          } catch(e) {}
          
-         setInvalidSubdomain(true);
+         const isKnownJCLHost = ['jcloffice', 'jclroyalgh'].includes(cleanSub);
+         if (isKnownJCLHost) {
+           setBranding({
+             name: 'JCL Real Estate',
+             logo_url: JCL_LOGO_BASE64,
+             industry_type: 'real_estate_jcl',
+             tagline: 'Enter your credentials to access your JCL Portal'
+           });
+         } else {
+           setInvalidSubdomain(true);
+         }
        }
      } catch (err) {
        console.error("Could not fetch branding", err);
@@ -304,12 +300,8 @@ export default function Login() {
 
  if (targetSubdomain) {
   // Fetch company_id for this subdomain to generate the salted email
-  const { data: brandData, error: brandErr} = await supabase.rpc('get_company_by_subdomain', { p_subdomain: targetSubdomain});
-  let compId = null;
-  if (!brandErr && brandData) {
-    const d = Array.isArray(brandData) ? brandData[0] : brandData;
-    compId = d?.id;
-  } 
+  const company = await resolveCompanyBySubdomain(targetSubdomain);
+  let compId = company?.id || null;
   
   if (!compId) {
     try {

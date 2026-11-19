@@ -17,11 +17,70 @@ export function cleanLogo(url) {
   return finalUrl;
 }
 
+export async function resolveCompanyBySubdomain(subdomain) {
+  const cleanSub = (subdomain || '').toLowerCase().trim();
+  if (!cleanSub) return null;
+
+  let company = null;
+  try {
+    const { data, error } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: cleanSub });
+    if (!error && data) company = Array.isArray(data) ? data[0] : data;
+  } catch (e) {}
+
+  if (!company) {
+    try {
+      const { data } = await supabase
+        .from('companies')
+        .select('id, name, logo_url, logo_light_url, tagline, industry_type, primary_color, subdomain, custom_domain')
+        .or(`subdomain.ilike.${cleanSub},custom_domain.ilike.${cleanSub}`)
+        .maybeSingle();
+      if (data) company = data;
+    } catch (e) {}
+  }
+
+  if (!company) {
+    try {
+      const result = await powerSync.execute(
+        'SELECT id, name, logo_url, logo_light_url, tagline, industry_type, primary_color, subdomain, custom_domain FROM companies WHERE LOWER(subdomain) = ? OR LOWER(custom_domain) = ? LIMIT 1',
+        [cleanSub, cleanSub]
+      );
+      if (result.rows?._array?.[0]) company = result.rows._array[0];
+    } catch (e) {}
+  }
+
+  // Known JCL hostnames may predate the companies.subdomain mapping. Resolve only
+  // when exactly one matching JCL tenant exists; never guess across tenants.
+  if (!company && ['jcloffice', 'jclroyalgh'].includes(cleanSub)) {
+    try {
+      const { data, error } = await supabase
+        .from('companies')
+        .select('id, name, logo_url, logo_light_url, tagline, industry_type, primary_color, subdomain, custom_domain')
+        .eq('industry_type', 'real_estate_jcl')
+        .ilike('name', '%jcl%')
+        .limit(2);
+      if (!error && data?.length === 1) company = data[0];
+    } catch (e) {}
+
+    if (!company) {
+      try {
+        const result = await powerSync.execute(
+          "SELECT id, name, logo_url, logo_light_url, tagline, industry_type, primary_color, subdomain, custom_domain FROM companies WHERE industry_type = ? AND LOWER(name) LIKE '%jcl%' LIMIT 2",
+          ['real_estate_jcl']
+        );
+        const matches = result.rows?._array || [];
+        if (matches.length === 1) company = matches[0];
+      } catch (e) {}
+    }
+  }
+
+  return company;
+}
+
 export async function fetchCompanyBrandingFromDomain() {
   const { currentSubdomain, isCustomDomain } = getSubdomainAndBase();
   const isRootAccount = typeof window !== 'undefined' && (
-    window.location.hostname.startsWith('account.') || 
-    window.location.hostname === 'optavel.com' || 
+    window.location.hostname.startsWith('account.') ||
+    window.location.hostname === 'optavel.com' ||
     window.location.hostname === 'slate.optavel.com' ||
     window.location.hostname === 'staging.slate.optavel.com'
   );
@@ -30,41 +89,11 @@ export async function fetchCompanyBrandingFromDomain() {
     return { company: null, isCustomDomain: false, hasCustomCompany: false };
   }
 
-  const cleanSub = currentSubdomain.toLowerCase().trim();
-  let brandData = null;
-
-  try {
-    const { data: rpcData, error: rpcError } = await supabase.rpc('get_company_by_subdomain', { p_subdomain: cleanSub });
-    if (!rpcError && rpcData) {
-      brandData = Array.isArray(rpcData) ? rpcData[0] : rpcData;
-    }
-  } catch (e) {}
-
-  if (!brandData) {
-    try {
-      const { data: directData } = await supabase
-        .from('companies')
-        .select('id, name, logo_url, logo_light_url, tagline, industry_type, primary_color, subdomain, custom_domain')
-        .or(`subdomain.ilike.${cleanSub},custom_domain.ilike.${cleanSub}`)
-        .maybeSingle();
-      if (directData) brandData = directData;
-    } catch (e) {}
-  }
-
-  if (!brandData) {
-    try {
-      const res = await powerSync.execute(
-        'SELECT id, name, logo_url, logo_light_url, tagline, industry_type, primary_color, subdomain, custom_domain FROM companies WHERE LOWER(subdomain) = ? OR LOWER(custom_domain) = ? LIMIT 1',
-        [cleanSub, cleanSub]
-      );
-      if (res.rows?._array?.[0]) brandData = res.rows._array[0];
-    } catch (e) {}
-  }
-
+  const company = await resolveCompanyBySubdomain(currentSubdomain);
   return {
-    company: brandData,
-    isCustomDomain: isCustomDomain || !!brandData,
-    hasCustomCompany: !!brandData
+    company,
+    isCustomDomain: isCustomDomain || !!company,
+    hasCustomCompany: !!company
   };
 }
 
