@@ -162,6 +162,7 @@ export default function Login() {
        }
 
        if (!brandData) {
+         // resolveCompanyBySubdomain handles direct-table + PowerSync fallback internally
          brandData = await resolveCompanyBySubdomain(cleanSub);
        }
 
@@ -302,7 +303,10 @@ export default function Login() {
   // Fetch company_id for this subdomain to generate the salted email
   const company = await resolveCompanyBySubdomain(targetSubdomain);
   let compId = company?.id || null;
-  
+  let workspaceConfirmedExists = !!compId; // resolveCompanyBySubdomain confirmed the workspace exists
+
+  // 3. Try cached user as last resort for compId (don't set workspaceConfirmedExists here
+  //    since we can't verify the workspace still exists from cache alone)
   if (!compId) {
     try {
       const cached = localStorage.getItem('slate_cached_user');
@@ -318,7 +322,7 @@ export default function Login() {
   
   signInError = { message: "Invalid login credentials" }; // Initial state to trigger fallback chain
   
-  // 1. Try the primary UUID salt strategy
+  // Try the primary UUID salt strategy
   if (compId) {
     const proxyEmail = `${localPart}+firm${compId.replace(/-/g, '')}@${domain}`;
     const primaryAuth = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
@@ -331,7 +335,7 @@ export default function Login() {
     }
   }
   
-  // 2. If it fails with Invalid Credentials (or compId was null), try the legacy Subdomain salt strategy
+  // If it fails with Invalid Credentials (or compId was null), try the legacy Subdomain salt strategy
   if (signInError && signInError.message === "Invalid login credentials") {
     const proxyEmail = `${localPart}+firm_${targetSubdomain}@${domain}`;
     const retry = await supabase.auth.signInWithPassword({ email: proxyEmail, password });
@@ -344,7 +348,7 @@ export default function Login() {
     }
   }
   
-  // 3. If that STILL fails, try the RAW unsalted email
+  // If that STILL fails, try the RAW unsalted email
   if (signInError && signInError.message === "Invalid login credentials") {
     const rawRetry = await supabase.auth.signInWithPassword({ email: rawLoginEmail, password });
     if (!rawRetry.error) {
@@ -356,9 +360,13 @@ export default function Login() {
     }
   }
   
-  if (signInError && signInError.message === "Invalid login credentials" && !compId) {
-     // If everything failed and we didn't even have a compId, show the workspace error
-     setError(`Workspace '${targetSubdomain}' not found.`);
+  // Only show "workspace not found" if we have confirmed via DB lookup that the
+  // workspace genuinely does not exist. If the RPC was simply unavailable (brandErr),
+  // we fall through to the generic "Invalid email/password" message below instead
+  // so a temporary RPC outage never locks users out with a misleading error.
+  if (signInError && signInError.message === "Invalid login credentials" && !compId && !workspaceConfirmedExists) {
+     // Workspace truly not found in DB — tell the user clearly
+     setError(`Workspace '${targetSubdomain}' not found. Please check the workspace URL and try again.`);
      setLoading(false);
      return;
   }
