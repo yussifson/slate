@@ -76,8 +76,8 @@ function ClientDistributionDonut({ buyers, investors, tenants, sellers, total })
   const sellerOffset = tenantOffset - tenantDash;
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 bg-card/90 backdrop-blur-xl rounded-[22px] border border-border/80 shadow-sm">
-      <div className="relative w-28 h-28 shrink-0">
+    <div className="flex items-center justify-between gap-4 p-4 bg-card rounded-xl border border-border shadow-xs">
+      <div className="relative w-24 h-24 shrink-0">
         <svg className="w-full h-full transform -rotate-90" viewBox="0 0 140 140">
           <circle cx="70" cy="70" r={radius} className="stroke-muted/30" strokeWidth="12" fill="none" />
           {buyerPct > 0 && (
@@ -98,12 +98,12 @@ function ClientDistributionDonut({ buyers, investors, tenants, sellers, total })
           )}
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-xl font-extrabold text-foreground">{total}</span>
-          <span className="text-[8px] font-bold text-muted-foreground uppercase">Clients</span>
+          <span className="text-lg font-bold text-foreground">{total}</span>
+          <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">Clients</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[11px] font-semibold flex-1">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs font-medium flex-1">
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           <span className="text-muted-foreground">Buyers ({buyers})</span>
@@ -406,32 +406,32 @@ export default function JCLClients() {
         </div>
       </div>
 
-      {/* ── KPI Metric Strip & Donut Gauge (Law Management System Style) ── */}
+      {/* ── KPI Metric Strip & Donut Gauge (Yoga Style) ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left: 2 KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:col-span-2">
-          <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
-            <CardContent className="p-5 flex items-center justify-between">
+          <Card className="rounded-xl border border-border bg-card shadow-xs hover:shadow-sm transition-all">
+            <CardContent className="p-4 sm:p-5 flex items-center justify-between">
               <div className="space-y-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Registered Clients</span>
-                <div className="text-2xl font-extrabold text-foreground tracking-tight">{metrics.total}</div>
-                <p className="text-[11px] text-muted-foreground font-semibold">{metrics.buyers + metrics.investors} Active Investors & Buyers</p>
+                <div className="text-2xl sm:text-[26px] font-bold text-foreground tracking-tight">{metrics.total}</div>
+                <p className="text-xs text-muted-foreground font-medium">{metrics.buyers + metrics.investors} Active Investors & Buyers</p>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-emerald-500/5 flex items-center justify-center text-[#005A9C] dark:text-[#FF6B00] border border-[#005A9C]/20 shadow-inner">
-                <Users className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-[22px] border border-border/80 bg-card/85 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-md transition-all">
-            <CardContent className="p-5 flex items-center justify-between">
+          <Card className="rounded-xl border border-border bg-card shadow-xs hover:shadow-sm transition-all">
+            <CardContent className="p-4 sm:p-5 flex items-center justify-between">
               <div className="space-y-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Registered Purchasing Power</span>
-                <div className="text-2xl font-extrabold text-foreground tracking-tight">{formatCurrency(metrics.totalBudget, 'USD')}</div>
-                <p className="text-[11px] text-muted-foreground font-semibold">Active Client Investment Capital</p>
+                <div className="text-2xl sm:text-[26px] font-bold text-foreground tracking-tight">{formatCurrency(metrics.totalBudget, 'USD')}</div>
+                <p className="text-xs text-muted-foreground font-medium">Active Client Investment Capital</p>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-500/20 to-blue-500/5 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner">
-                <DollarSign className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <DollarSign className="w-5 h-5" />
               </div>
             </CardContent>
           </Card>
@@ -449,7 +449,7 @@ export default function JCLClients() {
 
       <Tabs value={viewMode} onValueChange={setViewMode} className="w-full space-y-4">
         {/* ── Search, Filters & Action Hub Bar ── */}
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-card/90 backdrop-blur-xl p-3 sm:p-4 rounded-[20px] border border-border/80 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-card p-3 sm:p-4 rounded-xl border border-border shadow-xs">
           <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
             <div className="relative w-full sm:w-80">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -504,10 +504,10 @@ export default function JCLClients() {
         <TabsContent value="grid" className="hidden">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-pulse">
-              {[1, 2, 3].map(i => <div key={i} className="h-72 bg-muted rounded-[26px]" />)}
+              {[1, 2, 3].map(i => <div key={i} className="h-72 bg-muted rounded-xl" />)}
             </div>
           ) : filteredClients.length === 0 ? (
-            <div className="text-center py-20 bg-card/60 backdrop-blur-xl rounded-[28px] border border-dashed border-border/80 p-8 space-y-4">
+            <div className="text-center py-20 bg-card rounded-xl border border-dashed border-border p-8 space-y-4">
               <div className="w-16 h-16 rounded-full bg-[#005A9C]/10 text-emerald-600 flex items-center justify-center mx-auto">
                 <Users className="w-8 h-8 opacity-75" />
               </div>
@@ -541,17 +541,17 @@ export default function JCLClients() {
                   <div
                     key={client.id}
                     onClick={() => setSelectedClient(client)}
-                    className="bg-card/95 backdrop-blur-xl rounded-[26px] border border-border/90 shadow-[0_4px_24px_rgba(0,0,0,0.03)] hover:shadow-xl hover:border-emerald-500/50 transition-all cursor-pointer flex flex-col justify-between overflow-hidden group relative"
+                    className="bg-card rounded-xl border border-border shadow-xs hover:shadow-sm hover:border-primary/30 transition-all cursor-pointer flex flex-col justify-between overflow-hidden group relative"
                   >
                     <div className="p-5 pb-4 space-y-3.5">
                       {/* Card Top: Avatar & Name */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className={cn("w-11 h-11 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform", avatarColor)}>
+                          <div className={cn("w-11 h-11 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 shadow-sm group-hover:scale-105 transition-transform", avatarColor)}>
                             {initials}
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-extrabold text-[15px] text-foreground group-hover:text-emerald-600 transition-colors truncate">
+                            <h3 className="font-semibold text-[15px] text-foreground group-hover:text-primary transition-colors truncate">
                               {client.name}
                             </h3>
                             <Badge variant="outline" className="text-[9px] font-bold uppercase py-0 h-4 bg-muted/40 capitalize mt-0.5">
@@ -560,7 +560,7 @@ export default function JCLClients() {
                           </div>
                         </div>
 
-                        <Badge className="bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] font-extrabold text-[10px] uppercase border-emerald-200">
+                        <Badge className="bg-[#005A9C]/15 text-[#005A9C] dark:bg-[#FF6B00]/15 dark:text-[#FF6B00] font-semibold text-[10px] uppercase border-0">
                           Active
                         </Badge>
                       </div>
@@ -590,16 +590,16 @@ export default function JCLClients() {
                       {/* Linked Assets Summary */}
                       <div className="grid grid-cols-3 gap-2 text-center pt-1">
                         <div className="p-2 bg-muted/20 rounded-xl border border-border/40">
-                          <span className="text-[9px] font-black uppercase text-muted-foreground block">Plots Held</span>
-                          <span className="font-black text-amber-600 text-xs">{allocations.length}</span>
+                          <span className="text-[9px] font-semibold uppercase text-muted-foreground block">Plots Held</span>
+                          <span className="font-bold text-amber-600 text-xs">{allocations.length}</span>
                         </div>
                         <div className="p-2 bg-muted/20 rounded-xl border border-border/40">
-                          <span className="text-[9px] font-black uppercase text-muted-foreground block">Leases</span>
-                          <span className="font-black text-blue-600 text-xs">{clientLeases.length}</span>
+                          <span className="text-[9px] font-semibold uppercase text-muted-foreground block">Leases</span>
+                          <span className="font-bold text-blue-600 text-xs">{clientLeases.length}</span>
                         </div>
                         <div className="p-2 bg-muted/20 rounded-xl border border-border/40">
-                          <span className="text-[9px] font-black uppercase text-muted-foreground block">Closed Deals</span>
-                          <span className="font-black text-emerald-600 text-xs">{clientTxns.length}</span>
+                          <span className="text-[9px] font-semibold uppercase text-muted-foreground block">Closed Deals</span>
+                          <span className="font-bold text-emerald-600 text-xs">{clientTxns.length}</span>
                         </div>
                       </div>
                     </div>
@@ -607,8 +607,8 @@ export default function JCLClients() {
                     {/* Card Footer */}
                     <div className="p-4 px-5 border-t border-border/70 bg-muted/15 flex items-center justify-between">
                       <div>
-                        <span className="text-[9px] font-black uppercase text-muted-foreground tracking-wider block">Investment Budget</span>
-                        <span className="text-base font-black text-foreground">
+                        <span className="text-[9px] font-semibold uppercase text-muted-foreground tracking-wider block">Investment Budget</span>
+                        <span className="text-base font-bold text-foreground">
                           {client.budget ? formatCurrency(client.budget, 'USD') : 'Open'}
                         </span>
                       </div>
@@ -659,10 +659,10 @@ export default function JCLClients() {
 
         {/* ── Tab Content: Executive Data Table List View ── */}
         <TabsContent value="list" className="mt-0">
-          <div className="bg-card/90 backdrop-blur-xl rounded-[24px] border border-border/80 overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div className="bg-card rounded-xl border border-border overflow-hidden shadow-xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-muted/60 uppercase tracking-wider text-muted-foreground font-extrabold border-b border-border/80 text-[10px]">
+                <thead className="bg-muted/60 uppercase tracking-wider text-muted-foreground font-semibold border-b border-border text-[10px]">
                   <tr>
                     <th className="p-4 pl-5">Client Profile</th>
                     <th className="p-4">Contact Info</th>
@@ -687,11 +687,11 @@ export default function JCLClients() {
                       >
                         <td className="p-4 pl-5">
                           <div className="flex items-center gap-3">
-                            <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center font-extrabold text-sm shrink-0 shadow-sm", avatarColor)}>
+                            <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 shadow-sm", avatarColor)}>
                               {initials}
                             </div>
                             <div>
-                              <div className="font-extrabold text-foreground text-[13px] group-hover:text-emerald-600 transition-colors">
+                              <div className="font-semibold text-foreground text-[13px] group-hover:text-primary transition-colors">
                                 {client.name}
                               </div>
                               <div className="text-[11px] text-muted-foreground">
@@ -714,7 +714,7 @@ export default function JCLClients() {
                           </Badge>
                         </td>
 
-                        <td className="p-4 font-black text-foreground text-sm">
+                        <td className="p-4 font-bold text-foreground text-sm">
                           {client.budget ? formatCurrency(client.budget, 'USD') : '—'}
                         </td>
 
@@ -788,11 +788,11 @@ export default function JCLClients() {
                 <SheetHeader className="pb-4 border-b border-border/80">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center font-black text-lg shrink-0 shadow", getInitialsBg(selectedClient.name))}>
+                      <div className={cn("w-14 h-14 rounded-lg flex items-center justify-center font-bold text-lg shrink-0 shadow", getInitialsBg(selectedClient.name))}>
                         {getInitials(selectedClient.name)}
                       </div>
                       <div>
-                        <SheetTitle className="text-xl font-extrabold text-foreground">
+                        <SheetTitle className="text-xl font-bold text-foreground">
                           {selectedClient.name}
                         </SheetTitle>
                         <SheetDescription className="text-xs flex items-center gap-2 mt-0.5">
@@ -1083,7 +1083,7 @@ export default function JCLClients() {
 
       {/* ── Dialog: Delete Confirmation ── */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <AlertDialogContent className="rounded-[24px]">
+        <AlertDialogContent className="rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-base font-bold text-foreground">
               Delete Customer Profile?

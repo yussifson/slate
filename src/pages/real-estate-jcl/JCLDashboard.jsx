@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/constants';
+import YogaStatCard from '@/components/shared/YogaStatCard';
+import YogaSectionCard from '@/components/shared/YogaSectionCard';
 
 export default function JCLDashboard() {
   const { t } = useTranslation();
@@ -260,9 +262,9 @@ export default function JCLDashboard() {
   if (isLoading) {
     return (
       <div className="space-y-6 p-6 animate-pulse">
-        <div className="h-48 bg-muted rounded-[24px]" />
+        <div className="h-48 bg-muted rounded-xl" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-muted rounded-[24px]" />)}
+          {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-muted rounded-xl" />)}
         </div>
       </div>
     );
@@ -319,87 +321,56 @@ export default function JCLDashboard() {
         {/* ── Dashboard Header ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h1 className="text-xl sm:text-2xl md:text-[28px] font-bold text-foreground tracking-tight flex items-center gap-2">
+            <h1 className="text-[22px] font-bold text-foreground tracking-tight">
               {greetingData.salutation}, {user?.full_name?.split(' ')[0] || user?.name?.split(' ')[0] || "Executive"} {greetingData.emoji}
             </h1>
-            <p className="text-xs sm:text-[13px] font-medium text-muted-foreground mt-0.5">
-              {format(new Date(), "EEEE, do MMMM yyyy")} · <strong>{company?.name || 'JCL Royal Group Real Estate'}</strong>
+            <p className="text-xs text-muted-foreground mt-0.5 font-medium">
+              {format(new Date(), "EEEE, do MMMM yyyy")} · <span className="font-semibold text-foreground/70">{company?.name || 'JCL Royal Group Real Estate'}</span>
             </p>
           </div>
         </div>
 
-        {/*  Unified Stats Container (Native Mobile Cards)  */}
-        <div className="px-0 sm:px-2 pt-1 sm:pt-4 pb-1">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-4">
-
-            {/* Active Land / Properties */}
-            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#FFB6C1] to-[#FFE4E1] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(255,182,193,0.4)]">
-                <Compass className="w-4 h-4 text-[#D05370]" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Active Listings</p>
-              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
-                {activePropertiesCount}
-              </h2>
-              <p className="text-[10px] sm:text-[11px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5 line-clamp-1">
-                {availableLand} available • {activeLandAllocations} reserved
-              </p>
-            </div>
-
-            {/* Active Clients */}
-            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#A7F3D0] to-[#D1FAE5] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(167,243,208,0.4)]">
-                <Users className="w-4 h-4 text-[#047857]" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Active Clients</p>
-              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
-                {totalClientsCount}
-              </h2>
-              <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground mt-0.5 line-clamp-1">
-                {leads.length} in pipeline
-              </p>
-            </div>
-
-            {/* Closed Sales Volume */}
-            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#FCA5A5] to-[#FEE2E2] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(252,165,165,0.4)]">
-                <ArrowUpRight className="w-4 h-4 text-[#B91C1C]" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Closed Volume</p>
-              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
-                {currencySymbol}{totalClosedVolume > 1000 ? `${(totalClosedVolume / 1000).toFixed(0)}k` : totalClosedVolume.toLocaleString()}
-              </h2>
-              <p className="text-[10px] sm:text-[11px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5 line-clamp-1">
-                {transactions.filter(t => t.status === "closed" || t.status === "completed").length} completed
-              </p>
-            </div>
-
-            {/* Pending Tasks & Actions */}
-            <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl bg-card border border-border/80 shadow-sm active:scale-[0.98] transition-transform">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#C4B5FD] to-[#EDE9FE] flex items-center justify-center mb-2 shadow-[0_2px_8px_rgba(196,181,253,0.4)]">
-                <Activity className="w-4 h-4 text-[#5B21B6]" />
-              </div>
-              <p className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Pending Tasks</p>
-              <h2 className="text-xl sm:text-[24px] font-extrabold text-foreground tracking-tight">
-                {pendingTasksCount}
-              </h2>
-              <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground mt-0.5 line-clamp-1">
-                {offers.filter(o => o.status === "pending").length} offers • {leases.filter(l => l.status === "active").length} leases
-              </p>
-            </div>
-
-          </div>
+        {/* ── KPI Stats Grid — Yoga Executive Layout ── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <YogaStatCard
+            title="Active Listings"
+            value={activePropertiesCount}
+            subtitle={`${availableLand} available · ${activeLandAllocations} reserved`}
+            icon={Compass}
+            iconBg="bg-blue-500/10 text-blue-600 dark:text-blue-400"
+          />
+          <YogaStatCard
+            title="Active Clients"
+            value={totalClientsCount}
+            subtitle={`${leads.length} in pipeline`}
+            icon={Users}
+            iconBg="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+          />
+          <YogaStatCard
+            title="Closed Volume"
+            value={`${currencySymbol}${totalClosedVolume > 1000 ? `${(totalClosedVolume / 1000).toFixed(0)}k` : totalClosedVolume.toLocaleString()}`}
+            subtitle={`${transactions.filter(t => t.status === "closed" || t.status === "completed").length} deals completed`}
+            icon={ArrowUpRight}
+            iconBg="bg-amber-500/10 text-amber-600 dark:text-amber-400"
+          />
+          <YogaStatCard
+            title="Pending Actions"
+            value={pendingTasksCount}
+            subtitle={`${offers.filter(o => o.status === "pending").length} offers · ${leases.filter(l => l.status === "active").length} leases`}
+            icon={Activity}
+            iconBg="bg-purple-500/10 text-purple-600 dark:text-purple-400"
+          />
         </div>
 
         {/* ── Row 2: Analytics Bar Chart & Portfolio Summary Donut ── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
           {/* Bar Chart: Sales & Cashflow */}
-          <div className="lg:col-span-8 bg-card/90 backdrop-blur-xl rounded-2xl sm:rounded-[24px] p-4 sm:p-6 md:p-8 shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-border/80 flex flex-col min-h-[380px] sm:h-[400px]">
+          <div className="lg:col-span-8 bg-card rounded-xl p-5 sm:p-6 shadow-xs border border-border flex flex-col min-h-[380px] sm:h-[400px]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-8">
               <div>
-                <h3 className="text-base sm:text-[18px] font-bold text-foreground tracking-tight">Sales & Revenue Velocity</h3>
-                <p className="text-[11px] text-muted-foreground font-medium sm:hidden mt-0.5">Commercial volume and commission performance</p>
+                <h3 className="text-base sm:text-[16px] font-semibold text-foreground tracking-tight">Sales & Revenue Velocity</h3>
+                <p className="text-xs text-muted-foreground font-normal mt-0.5">Commercial volume and commission performance</p>
               </div>
 
               <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-5 flex-wrap">
@@ -414,14 +385,14 @@ export default function JCLDashboard() {
                   </div>
                 </div>
 
-                {/* Responsive Pill Filter (Segmented control on mobile, compact trigger on desktop) */}
+                {/* Responsive Pill Filter */}
                 <div className="inline-flex items-center p-0.5 rounded-lg bg-muted border border-border shrink-0">
                   {['Monthly', 'Quarterly'].map((view) => (
                     <button
                       key={view}
                       onClick={() => setDateRangeView(view)}
                       className={cn(
-                        "px-2.5 py-1 text-[11px] font-bold rounded-md transition-all",
+                        "px-2.5 py-1 text-xs font-medium rounded-md transition-all",
                         dateRangeView === view
                           ? "bg-card text-foreground shadow-xs"
                           : "text-muted-foreground hover:text-foreground"
@@ -442,7 +413,7 @@ export default function JCLDashboard() {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#9CA3AF', fontWeight: 500 }} tickFormatter={(val) => `${currencySymbol}${val >= 1000 ? (val / 1000) + 'k' : val}`} dx={-10} />
                   <Tooltip
                     cursor={{ fill: 'currentColor', opacity: 0.05 }}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', fontSize: '12px', fontWeight: 600 }}
+                    contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', fontSize: '12px' }}
                   />
                   <Bar dataKey="income" fill="#F59E0B" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="expense" fill="#10B981" radius={[4, 4, 0, 0]} />
@@ -452,13 +423,13 @@ export default function JCLDashboard() {
           </div>
 
           {/* Portfolio Summary Donut */}
-          <div className="lg:col-span-4 bg-card/90 backdrop-blur-xl rounded-2xl sm:rounded-[24px] p-4 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-border/80 min-h-[380px] sm:h-[400px] flex flex-col">
+          <div className="lg:col-span-4 bg-card rounded-xl p-5 sm:p-6 shadow-xs border border-border min-h-[380px] sm:h-[400px] flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[18px] font-bold text-foreground">Asset Distribution</h3>
+              <h3 className="text-[15px] font-semibold text-foreground tracking-tight">Asset Distribution</h3>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="text-muted-foreground hover:text-foreground outline-none p-1 rounded-md hover:bg-accent transition-colors">
-                    <MoreVertical className="w-5 h-5" />
+                    <MoreVertical className="w-4 h-4" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -489,43 +460,43 @@ export default function JCLDashboard() {
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute flex flex-col items-center justify-center text-center">
-                <span className="text-[28px] font-extrabold text-foreground tracking-tight">
+                <span className="text-2xl font-bold text-foreground tracking-tight">
                   {totalAssetsCount}
                 </span>
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mt-0.5">
                   Properties
                 </span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-4 mt-2">
-              <div className="space-y-1">
+            <div className="grid grid-cols-2 gap-3 pt-3 mt-1 border-t border-border/50">
+              <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#10B981] rounded-full" />
-                  <span className="text-[11px] font-bold text-muted-foreground">Available</span>
+                  <span className="text-[11px] font-medium text-muted-foreground">Available</span>
                 </div>
-                <p className="text-[15px] font-bold text-foreground pl-3">{availableCount}</p>
+                <p className="text-sm font-semibold text-foreground pl-3">{availableCount}</p>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#F59E0B] rounded-full" />
-                  <span className="text-[11px] font-bold text-muted-foreground">Reserved</span>
+                  <span className="text-[11px] font-medium text-muted-foreground">Reserved</span>
                 </div>
-                <p className="text-[15px] font-bold text-foreground pl-3">{reservedCount}</p>
+                <p className="text-sm font-semibold text-foreground pl-3">{reservedCount}</p>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#6366F1] rounded-full" />
-                  <span className="text-[11px] font-bold text-muted-foreground">Allocated</span>
+                  <span className="text-[11px] font-medium text-muted-foreground">Allocated</span>
                 </div>
-                <p className="text-[15px] font-bold text-foreground pl-3">{allocatedCount}</p>
+                <p className="text-sm font-semibold text-foreground pl-3">{allocatedCount}</p>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full" />
-                  <span className="text-[11px] font-bold text-muted-foreground">Closed/Sold</span>
+                  <span className="text-[11px] font-medium text-muted-foreground">Closed/Sold</span>
                 </div>
-                <p className="text-[15px] font-bold text-foreground pl-3">{closedCount}</p>
+                <p className="text-sm font-semibold text-foreground pl-3">{closedCount}</p>
               </div>
             </div>
           </div>
@@ -535,10 +506,10 @@ export default function JCLDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
           {/* Real Estate Stage Pipeline Table */}
-          <div className="lg:col-span-8 bg-card/90 backdrop-blur-xl rounded-[24px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-border/80">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-[18px] font-bold text-foreground">Active Deal Pipeline</h3>
-              <button onClick={() => navigate("/real-estate/transactions")} className="text-[12px] font-semibold text-muted-foreground hover:text-foreground">
+          <div className="lg:col-span-8 bg-card rounded-xl p-5 sm:p-6 shadow-xs border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[15px] font-semibold text-foreground tracking-tight">Active Deal Pipeline</h3>
+              <button onClick={() => navigate("/real-estate/transactions")} className="text-xs font-medium text-muted-foreground hover:text-foreground">
                 View All Deals
               </button>
             </div>
@@ -547,11 +518,11 @@ export default function JCLDashboard() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="pb-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Property / Parcel</th>
-                    <th className="pb-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider text-center">Inquiry</th>
-                    <th className="pb-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider text-center">Viewing</th>
-                    <th className="pb-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider text-center">Offer</th>
-                    <th className="pb-3 text-[11px] font-bold text-muted-foreground uppercase tracking-wider text-center">Closed</th>
+                    <th className="pb-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Property / Parcel</th>
+                    <th className="pb-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Inquiry</th>
+                    <th className="pb-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Viewing</th>
+                    <th className="pb-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Offer</th>
+                    <th className="pb-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Closed</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/40">
@@ -562,16 +533,16 @@ export default function JCLDashboard() {
                                         p.status === 'sold' || p.status === 'closed' ? 'closed' : 'inquiry';
                     return (
                       <tr key={p.id || idx} className="hover:bg-muted/40 transition-colors">
-                        <td className="py-4 pr-4">
-                          <p className="text-[13px] font-bold text-foreground truncate max-w-[200px]">{p.title || p.address || "Land Parcel"}</p>
-                          <p className="text-[11px] font-medium text-muted-foreground mt-0.5">
+                        <td className="py-3 pr-4">
+                          <p className="text-xs font-semibold text-foreground truncate max-w-[200px]">{p.title || p.address || "Land Parcel"}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">
                             Type: {p.property_type || "Commercial"} · {p.price ? formatCurrency(p.price, 'USD') : 'N/A'}
                           </p>
                         </td>
-                        <td className="py-4 px-1">{getDealBadgeStyle(mappedStage, "inquiry") ? <span className={getDealBadgeStyle(mappedStage, "inquiry")}>Inquiry</span> : null}</td>
-                        <td className="py-4 px-1">{getDealBadgeStyle(mappedStage, "viewing") ? <span className={getDealBadgeStyle(mappedStage, "viewing")}>Viewing</span> : null}</td>
-                        <td className="py-4 px-1">{getDealBadgeStyle(mappedStage, "offer") ? <span className={getDealBadgeStyle(mappedStage, "offer")}>Allocated</span> : null}</td>
-                        <td className="py-4 px-1">{getDealBadgeStyle(mappedStage, "closed") ? <span className={getDealBadgeStyle(mappedStage, "closed")}>Closed</span> : null}</td>
+                        <td className="py-3 px-1">{getDealBadgeStyle(mappedStage, "inquiry") ? <span className={getDealBadgeStyle(mappedStage, "inquiry")}>Inquiry</span> : null}</td>
+                        <td className="py-3 px-1">{getDealBadgeStyle(mappedStage, "viewing") ? <span className={getDealBadgeStyle(mappedStage, "viewing")}>Viewing</span> : null}</td>
+                        <td className="py-3 px-1">{getDealBadgeStyle(mappedStage, "offer") ? <span className={getDealBadgeStyle(mappedStage, "offer")}>Allocated</span> : null}</td>
+                        <td className="py-3 px-1">{getDealBadgeStyle(mappedStage, "closed") ? <span className={getDealBadgeStyle(mappedStage, "closed")}>Closed</span> : null}</td>
                       </tr>
                     );
                   })}
@@ -581,32 +552,32 @@ export default function JCLDashboard() {
           </div>
 
           {/* Action Tasks List */}
-          <div className="lg:col-span-4 bg-card/90 backdrop-blur-xl rounded-[24px] p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] border border-border/80">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-[18px] font-bold text-foreground">Action To-Dos</h3>
+          <div className="lg:col-span-4 bg-card rounded-xl p-5 sm:p-6 shadow-xs border border-border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[15px] font-semibold text-foreground tracking-tight">Action To-Dos</h3>
               <button
                 onClick={() => navigate("/tasks")}
-                className="w-7 h-7 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-amber-600 hover:text-white transition-colors"
+                className="w-7 h-7 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 <Plus className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {(tasks.length > 0 ? tasks : [
                 { id: "1", title: "Review buyer escrow deposit", due_date: new Date() },
                 { id: "2", title: "Conduct land parcel boundary inspection", due_date: new Date() },
                 { id: "3", title: "Finalize tenant lease renewal agreement", due_date: new Date() }
               ]).slice(0, 5).map((t, idx) => (
                 <div key={t.id || idx} className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center shrink-0 mt-0.5 border border-border/60">
+                  <div className="w-7 h-7 rounded-md bg-muted/60 flex items-center justify-center shrink-0 mt-0.5 border border-border">
                     <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-foreground truncate leading-tight">
+                    <p className="text-xs font-medium text-foreground truncate leading-tight">
                       {t.title}
                     </p>
-                    <span className="text-[11px] font-medium text-muted-foreground">
+                    <span className="text-[11px] text-muted-foreground">
                       {t.due_date ? format(new Date(t.due_date), "HH:mm a") : "09:00 AM"}
                     </span>
                   </div>
@@ -627,14 +598,14 @@ export default function JCLDashboard() {
             <Link
               key={i}
               to={item.link}
-              className="bg-card rounded-2xl p-3.5 sm:p-5 border border-border shadow-sm hover:border-primary/40 active:scale-[0.98] transition-all duration-200 flex flex-row sm:flex-col items-center sm:text-center gap-3 group"
+              className="bg-card rounded-xl p-3.5 sm:p-4 border border-border shadow-xs hover:border-border/80 hover:shadow-sm active:scale-[0.98] transition-all duration-200 flex flex-row sm:flex-col items-center sm:text-center gap-3 group"
             >
-              <div className={cn("w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105", item.bg, item.color, item.border)}>
-                <item.icon className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.2} />
+              <div className={cn("w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 border transition-transform duration-200 group-hover:scale-105", item.bg, item.color, item.border)}>
+                <item.icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={2} />
               </div>
               <div className="flex flex-col min-w-0 text-left sm:text-center">
-                <span className="text-xs sm:text-sm font-bold text-foreground tracking-tight truncate">{item.label}</span>
-                <span className="text-[10px] text-muted-foreground font-medium hidden sm:block">{item.sub}</span>
+                <span className="text-xs font-semibold text-foreground tracking-tight truncate">{item.label}</span>
+                <span className="text-[11px] text-muted-foreground font-normal hidden sm:block">{item.sub}</span>
               </div>
             </Link>
           ))}
